@@ -1,0 +1,14 @@
+@CHARSET "ISO-8859-1";
+.main-app .room-week-wrap .rooms .room-accordian .room-category .cell-text {
+  background-color: #ffffff;
+  color: #4a4a4a;
+  font-size: 14px;
+  padding: 10px 12px;
+  height: 40px;
+  font-weight: 600;
+  text-align: left;
+  display: block;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+}

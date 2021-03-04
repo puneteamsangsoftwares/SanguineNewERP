@@ -1,0 +1,7328 @@
+package com.sanguine.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.sanguine.model.clsCompanyMasterModel;
+import com.sanguine.service.clsGlobalFunctionsService;
+import com.sanguine.service.clsLocationMasterService;
+import com.sanguine.service.clsSetupMasterService;
+import com.sanguine.webbooks.apgl.service.clsAPGLBudgetMasterService;
+import com.sanguine.webclub.service.clsWebClubOtherFieldCreationService;
+import com.sanguine.webpms.service.clsBookerMasterService;
+
+@Repository("clsStructureUpdateDao")
+public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
+	@Autowired
+	private SessionFactory sessionFactory;
+
+	@Autowired
+	private SessionFactory webBooksSessionFactory;
+
+	@Autowired
+	private SessionFactory webPMSSessionFactory;
+
+	@Autowired
+	private SessionFactory WebClubSessionFactory;
+	
+	@Autowired
+	private clsGlobalFunctionsService objGlobalFunctionsService;
+
+	@Autowired
+	private clsSetupMasterService objSetupMasterService;
+
+	@Autowired
+	private clsBookerMasterService objBookerMasterService;
+
+	@Autowired
+	private clsWebClubOtherFieldCreationService objWebClubOtherFieldCreationService;
+	
+	
+	@Autowired
+	private clsAPGLBudgetMasterService objAPGLBudgetMasterService;
+	
+	
+	@Override
+	public void funUpdateStructure(String clientCode, HttpServletRequest req) {
+		String sql = "";
+		sql = "ALTER TABLE `tblpropertymaster` DROP COLUMN `strAdd1`;";
+		funExecuteQuery(sql);
+		sql = "ALTER TABLE `tblpropertymaster` DROP COLUMN `strAdd2`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertymaster` DROP COLUMN `strCity`;";
+		funExecuteQuery(sql);
+		sql = "ALTER TABLE `tblpropertymaster` DROP COLUMN `strState`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertymaster` DROP COLUMN `strCountry`;";
+		funExecuteQuery(sql);
+		sql = "ALTER TABLE `tblpropertymaster` DROP COLUMN `strPin`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertymaster` DROP COLUMN `strPhone`;";
+		funExecuteQuery(sql);
+		sql = "ALTER TABLE `tblpropertymaster` DROP COLUMN `strMobile`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertymaster` DROP COLUMN `strFax`;";
+		funExecuteQuery(sql);
+		sql = "ALTER TABLE `tblpropertymaster` DROP COLUMN `strContact`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertymaster` DROP COLUMN `strEmail`;";
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblposlinkup` (" + "  `strPOSItemCode` varchar(20) NOT NULL," + " `strPOSItemName` varchar(100) NOT NULL," + " `strWSItemCode` varchar(20) NOT NULL DEFAULT ''," + " `strWSItemName` varchar(100) NOT NULL DEFAULT ''," + "  `strClientCode` varchar(20) NOT NULL," + "  PRIMARY KEY (`strPOSItemCode`,`strClientCode`)" + ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblpossalesdtl` (" + " `strPOSItemCode` varchar(20) NOT NULL," + "  `strPOSItemName` varchar(100) NOT NULL," + "  `dblQuantity` decimal(18,4) NOT NULL," + "  `dblRate` decimal(18,4) NOT NULL," + "  `strPOSCode` varchar(20) NOT NULL," + "  `dteBillDate` datetime NOT NULL," + "  `strClientCode` varchar(20) NOT NULL,"
+				+ "  `strWSItemCode` varchar(20) NOT NULL DEFAULT ''," + "  `strSACode` varchar(30) NOT NULL DEFAULT ''" + ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblpotaxdtl` (" + " `strPOCode` varchar(15) NOT NULL," + " `intId` bigint(20) NOT NULL AUTO_INCREMENT," + " `strTaxCode` varchar(15) NOT NULL," + " `strTaxDesc` varchar(100) NOT NULL," + "  `strTaxableAmt` decimal(18,4) NOT NULL DEFAULT '0.0000'," + "  `strTaxAmt` decimal(18,4) NOT NULL DEFAULT '0.0000'," + "  `strClientCode` varchar(15) NOT NULL,"
+				+ "  PRIMARY KEY (`intId`)) ENGINE=InnoDB DEFAULT CHARSET=latin1";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbltallylinkup` ( " + "  `strGroupCode` varchar(50) NOT NULL, " + "  `strGDes` varchar(50) NOT NULL DEFAULT '',  " + " `strGroupName` varchar(255) NOT NULL DEFAULT '', " + "  `strTallyCode` varchar(50) NOT NULL,  " + " `strUserCreated` varchar(50) NOT NULL, " + "  `strUserEdited` varchar(50) NOT NULL, " + "  `dteCreatedDate` datetime NOT NULL,  "
+				+ " `dteLastModified` datetime NOT NULL, " + "  `strClientCode` varchar(50) NOT NULL," + " PRIMARY KEY (`strGroupCode`)) ENGINE=InnoDB DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblimportdatadoc` ( `strOldDocCode` VARCHAR(50) NOT NULL DEFAULT ''," + " `strNewDocCode` VARCHAR(50) NOT NULL DEFAULT ''," + " `strTableName` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strSubCode1` VARCHAR(50) NOT NULL DEFAULT ''," + " `strSubCode2` VARCHAR(50) NOT NULL DEFAULT ''," + " `strSubCode3` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ " `strTableType` VARCHAR(50) NOT NULL DEFAULT ''," + " `strClientCode` VARCHAR(50) NOT NULL DEFAULT '' )" + "  COLLATE='latin1_swedish_ci' ENGINE=InnoDB  ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblcountrymaster` ( 	`strCountryCode` VARCHAR(10) NOT NULL," + "	`strCountryName` VARCHAR(50) NOT NULL," + "	`strUserCreated` VARCHAR(20) NOT NULL," + "	`dtCreatedDate` DATETIME NOT NULL," + "	`strUserModified` VARCHAR(20) NOT NULL," + "	`dtLastModified` DATETIME NOT NULL," + "	`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "	`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT ''," + "	`intGId` BIGINT(20) NOT NULL," + "	PRIMARY KEY (`strCountryCode`, `strClientCode`) )" + " COLLATE='latin1_swedish_ci'" + " ENGINE=InnoDB ; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblstatemaster` (	`strStateCode` VARCHAR(10) NOT NULL," + "	`strStateName` VARCHAR(50) NOT NULL," + "	`strStateDesc` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strCountryCode` VARCHAR(10) NOT NULL," + "	`strUserCreated` VARCHAR(20) NOT NULL," + "	`dtCreatedDate` DATETIME NOT NULL," + "	`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "	`dtLastModified` DATETIME NOT NULL," + "	`strClientCode` VARCHAR(20) NOT NULL," + "	`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT ''," + "	`intGId` BIGINT(20) NOT NULL," + "	PRIMARY KEY (`strStateCode`, `strClientCode`) )" + " COLLATE='latin1_swedish_ci'" + " ENGINE=InnoDB ; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblcitymaster` (	`strCityCode` VARCHAR(10) NOT NULL," + "	`strCityName` VARCHAR(50) NOT NULL," + "	`strCountryCode` VARCHAR(10) NOT NULL," + "	`strStateCode` VARCHAR(10) NOT NULL," + "	`strUserCreated` VARCHAR(20) NOT NULL," + "	`dtCreatedDate` DATETIME NOT NULL," + "	`strUserModified` VARCHAR(20) NOT NULL," + "	`dtLastModified` DATETIME NOT NULL,"
+				+ "	`intGId` BIGINT(20) NOT NULL," + "	`strClientCode` VARCHAR(20) NOT NULL," + "	`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT ''," + "	PRIMARY KEY (`strCityCode`, `strClientCode`) ) COLLATE='latin1_swedish_ci'" + " ENGINE=InnoDB ; ";
+		funExecuteQuery(sql);
+
+		sql = "  CREATE TABLE IF NOT EXISTS `tblvehiclemaster` ( " + "`strVehCode` VARCHAR(15) NOT NULL," + "	`strVehNo` VARCHAR(15) NOT NULL," + "	`strDesc` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strUserCreated` VARCHAR(50) NOT NULL," + "	`dtCreatedDate` DATE NOT NULL," + "	`strUserModified` VARCHAR(50) NOT NULL," + "	`dtLastModified` DATE NOT NULL,	" + "`strClientCode` VARCHAR(15) NOT NULL,"
+				+ " `intId` BIGINT(20) NOT NULL," + "	PRIMARY KEY (`strVehCode`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ;  ";
+
+		funExecuteQuery(sql);
+
+		sql = "  CREATE TABLE IF NOT EXISTS `tblroutemaster` (" + "	`strRouteCode` VARCHAR(15) NOT NULL," + "	`strRouteName` VARCHAR(255) NOT NULL," + "	`strDesc` VARCHAR(255) NOT NULL DEFAULT ''," + "	`strUserCreated` VARCHAR(50) NOT NULL," + "	`strUserModified` VARCHAR(50) NOT NULL," + "	`dtCreatedDate` DATETIME NOT NULL," + " 	`dtLastModified` DATETIME NOT NULL, "
+				+ "	`strClientCode` VARCHAR(15) NOT NULL," + " `intId` BIGINT(20) NOT NULL, " + "	PRIMARY KEY (`strRouteCode`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ;  ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblvehroutedtl` ( " + " 	`intId` BIGINT NOT NULL AUTO_INCREMENT,	" + " `strRouteCode` VARCHAR(15) NOT NULL," + "	`strVehCode` VARCHAR(15) NOT NULL,	" + "`dtFromDate` DATETIME NOT NULL," + "	`dtToDate` DATETIME NOT NULL," + "	`strUserCreated` VARCHAR(50) NOT NULL," + "	`strUserModified` VARCHAR(50) NOT NULL," + "	`dtCreatedDate` DATETIME NOT NULL,"
+				+ "	`dtLastModified` DATETIME NOT NULL," + "	`strClientCode` VARCHAR(15) NOT NULL," + "	PRIMARY KEY (`intId`, `strClientCode`) )" + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ;   ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbluserlocdtl` ( " + "	`strUserCode` VARCHAR(20) NOT NULL," + "	`strPropertyCode` VARCHAR(10) NOT NULL," + "	`strLocCode` VARCHAR(20) NOT NULL," + "	`strClientCode` VARCHAR(20) NOT NULL " + " ) COLLATE='latin1_swedish_ci' " + " ENGINE=InnoDB; ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE `tbltransportermaster` ( 	`strTransCode` VARCHAR(15) NOT NULL, " + "	`strTransName` VARCHAR(50) NOT NULL, " + "	`strDesc` VARCHAR(50) NOT NULL DEFAULT ''," + " `strUserCreated` VARCHAR(50) NOT NULL, " + "	`dteCreatedDate` DATE NOT NULL," + "	`strUserModified` VARCHAR(50) NOT NULL," + "	`dteLastModified` VARCHAR(50) NOT NULL," + "	`strClientCode` VARCHAR(50) NOT NULL,"
+				+ "	`intId` BIGINT(20) NOT NULL DEFAULT '0'," + "	PRIMARY KEY (`strTransCode`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE `tbltransportermasterdtl` ( 	`strTransCode` VARCHAR(15) NOT NULL, " + " `intId` BIGINT(20) NOT NULL AUTO_INCREMENT, " + "	`strVehCode` VARCHAR(15) NOT NULL, " + "	`strVehNo` VARCHAR(20) NOT NULL DEFAULT '', " + "	`strClientCode` VARCHAR(15) NOT NULL," + "	PRIMARY KEY (`intId`) ) " + " COLLATE='latin1_swedish_ci' " + " ENGINE=InnoDB AUTO_INCREMENT=13;  ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbllinkup` ( 	`strSGCode` VARCHAR(50) NOT NULL, " + "	`strGDes` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strSGName` VARCHAR(255) NOT NULL DEFAULT '', " + "	`strAccountCode` VARCHAR(50) NOT NULL, " + "	`strUserCreated` VARCHAR(50) NOT NULL, " + "	`strUserEdited` VARCHAR(50) NOT NULL, 	" + " `dteCreatedDate` DATETIME NOT NULL, "
+				+ "	`dteLastModified` DATETIME NOT NULL, " + "	`strClientCode` VARCHAR(50) NOT NULL, " + "	`strExSuppCode` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strExSuppName` VARCHAR(255) NOT NULL DEFAULT '', " + "	PRIMARY KEY (`strSGCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE `tblproductstandard` (  	`id` BIGINT(10) NOT NULL AUTO_INCREMENT,  " + "	 `strProdCode` VARCHAR(10) NOT NULL,  " + "	`dblQty` DECIMAL(18,2) NOT NULL DEFAULT '0.00',  " + "	`dblUnitPrice` DECIMAL(18,2) NOT NULL DEFAULT '0.00', " + " 	`dblTotalPrice` DECIMAL(18,2) NOT NULL DEFAULT '0.00',  " + "	`strRemarks` VARCHAR(250) NOT NULL DEFAULT '',  "
+				+ "	`strClientCode` VARCHAR(10) NOT NULL DEFAULT '',  " + "	`strStandardType` VARCHAR(20) NOT NULL, " + " 	PRIMARY KEY (`id`, `strClientCode`) " + " ) COLLATE='latin1_swedish_ci' " + " ENGINE=InnoDB AUTO_INCREMENT=16 ; ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblcurrencymaster` (  " + "	`strCurrencyCode` VARCHAR(30) NOT NULL, " + "	`intID` INT(11) NOT NULL DEFAULT '0', " + "	`strCurrencyName` VARCHAR(30) NOT NULL DEFAULT '', " + "	`strShortName` VARCHAR(30) NOT NULL DEFAULT '', " + "	`strBankName` VARCHAR(30) NOT NULL DEFAULT '', " + "	`strSwiftCode` VARCHAR(30) NOT NULL DEFAULT '', "
+				+ "	`strIbanNo` VARCHAR(30) NOT NULL DEFAULT '', " + "	`strRouting` VARCHAR(30) NOT NULL DEFAULT '', " + "	`strUserCreated` VARCHAR(10) NOT NULL, " + "	`dtCreatedDate` DATETIME NOT NULL, " + "	`strUserModified` VARCHAR(10) NOT NULL, " + "	`dtLastModified` DATETIME NOT NULL, " + "	`strAccountNo` VARCHAR(30) NOT NULL DEFAULT '', "
+				+ "	`dblConvToBaseCurr` DECIMAL(18,2) NOT NULL DEFAULT '1.00', " + "	`strSubUnit` VARCHAR(30) NOT NULL DEFAULT '', " + "	`strClientCode` VARCHAR(30) NOT NULL, " + "	PRIMARY KEY (`strCurrencyCode`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS  `tbltransactiontime` (  " + "	`strLocCode` VARCHAR(50) NOT NULL,  " + "	`strPropertyCode` VARCHAR(50) NOT NULL,  " + "	`strClientCode` VARCHAR(50) NOT NULL, " + "	`tmeFrom` TIME NOT NULL,  	`tmeTo` TIME NOT NULL,  " + "	`strTransactionName` VARCHAR(50) NOT NULL DEFAULT '', " + " 	PRIMARY KEY (`strLocCode`, `strPropertyCode`, `strClientCode`)  ) "
+				+ " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ;    ";
+		funExecuteQuery(sql);
+
+		sql = "  CREATE TABLE IF NOT EXISTS  `tbldeliveryschedulehd` (  " + "	`strDSCode` VARCHAR(50) NOT NULL, " + " 	`strPOCode` VARCHAR(50) NOT NULL, " + "	`strAgainst` VARCHAR(50) NOT NULL, " + "	`dteDSDate` DATE NOT NULL, " + "	`dteScheduleDate` DATE NOT NULL, " + "	`dblTotalAmount` DOUBLE NOT NULL, " + "	`strUserCreated` VARCHAR(50) NOT NULL, " + "	`strUserEdited` VARCHAR(50) NOT NULL, "
+				+ "	`strLocCode` VARCHAR(50) NOT NULL, " + " 	`dteDateCreated` DATE NOT NULL, " + "	`dteDateEdited` DATE NOT NULL, " + "	`strClientCode` VARCHAR(50) NOT NULL, " + "	`strNarration` VARCHAR(300) NOT NULL, " + "	`strCloseDS` VARCHAR(1) NOT NULL DEFAULT 'N', " + "	PRIMARY KEY (`strDSCode`, `strClientCode`) " + " ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS  `tbldeliveryscheduledtl` ( " + "	`strDSCode` VARCHAR(50) NOT NULL, " + "	`strProdCode` VARCHAR(50) NOT NULL, " + "	`dblQty` DOUBLE NOT NULL DEFAULT '0', " + "	`strUOM` VARCHAR(50) NOT NULL, " + "	`dblUnitPrice` DOUBLE NOT NULL, " + "	`dblTotalPrice` DOUBLE NOT NULL, " + "	`strClientCode` VARCHAR(50) NOT NULL, " + "	`dblWeight` DOUBLE NOT NULL "
+				+ " ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbllinklocotherproploc` ( " + " `strPropertyCode` VARCHAR(10) NOT NULL, " + " `strLocCode` VARCHAR(10) NOT NULL, " + " `strToLoc` VARCHAR(10) NOT NULL, " + " `strUserCreated` VARCHAR(10) NULL DEFAULT NULL, " + " `dtCreatedDate` DATETIME NOT NULL, " + " `strUserModified` VARCHAR(10) NULL DEFAULT NULL, " + " `dtLastModified` DATETIME NULL DEFAULT NULL, "
+				+ " `strClientCode` VARCHAR(10) NOT NULL, " + " PRIMARY KEY (`strPropertyCode`, `strLocCode`, `strToLoc`) " + " ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB ;";
+
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblsessionmaster` ( " + " `strSessionCode` VARCHAR(10) NOT NULL, " + " `intSId` BIGINT(20) NOT NULL DEFAULT '0', " + " `strSessionName` VARCHAR(30) NOT NULL DEFAULT '', " + " `strSDesc` VARCHAR(50) NOT NULL DEFAULT '', " + " `strUserCreated` VARCHAR(50) NOT NULL DEFAULT '', " + " `dtCreatedDate` DATETIME NOT NULL, "
+				+ " `strUserModified` VARCHAR(50) NOT NULL DEFAULT '', " + " `dtLastModified` DATETIME NOT NULL, " + " `strClientCode` VARCHAR(10) NOT NULL " + " ) " + " COLLATE='latin1_swedish_ci' " + " ENGINE=InnoDB ; ";
+
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS  `tblbudgetmasterhd` ( " + " `strPropertyCode` VARCHAR(10) NOT NULL, " + " `strFinYear` VARCHAR(15) NOT NULL, " + " `strStartMonth` VARCHAR(20) NOT NULL, " + " `strBudgetCode` VARCHAR(10) NOT NULL, " + "  `strClientCode` VARCHAR(50) NOT NULL, " + " `strUserCreated` VARCHAR(50) NOT NULL, " + " `strUserEdited` VARCHAR(50) NOT NULL, "
+				+ " `dteDateCreated` DATE NOT NULL, " + " `dteDateEdited` DATE NOT NULL, " + " `intBId` BIGINT(20) NOT NULL DEFAULT '0', " + " PRIMARY KEY (`strBudgetCode`, `strClientCode`) " + " ) " + " COLLATE='latin1_swedish_ci' " + " ENGINE=InnoDB;";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblbudgetmasterdtl` ( " + " `strBudgetCode` VARCHAR(10) NOT NULL, " + " `strGroupCode` VARCHAR(50) NOT NULL, " + " `strMonth1` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " `strMonth2` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " `strMonth3` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " `strMonth4` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+				+ " `strMonth5` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " `strMonth6` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " `strMonth7` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " `strMonth8` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " `strMonth9` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " `strMonth10` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+				+ " `strMonth11` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " `strMonth12` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " `strClientCode` VARCHAR(50) NOT NULL " + " ) " + " COLLATE='latin1_swedish_ci' " + " ENGINE=InnoDB ;";
+		funExecuteQuery(sql);
+
+		sql=" CREATE TABLE `tbltaxsettlementmaster` ( "
+		  +" `intId` BIGINT NOT NULL AUTO_INCREMENT, "
+		  +" `strTaxCode` VARCHAR(20) NOT NULL DEFAULT '', "
+		  +" `strSettlementCode` VARCHAR(20) NOT NULL DEFAULT '', "
+		  +" PRIMARY KEY (`intId`) "
+		  +" ) "
+		  +" COLLATE='utf16_general_ci' "
+		  +" ENGINE=InnoDB ";
+		funExecuteQuery(sql);
+		
+
+		sql=" CREATE TABLE `tbltaxsettlement` ( "
+		+" `strSettlementCode` VARCHAR(10) NOT NULL DEFAULT '', "
+		+" `strTaxCode` VARCHAR(10) NOT NULL , "
+		+" `strApplicable` VARCHAR(10) NOT NULL DEFAULT 'No', "
+		+" `strClientCode` VARCHAR (10) NOT NULL , "
+		+" PRIMARY KEY (`strClientCode`, `strTaxCode`) "
+		+" ) "
+		+" COLLATE='utf16_general_ci' "
+		+" ENGINE=InnoDB ";
+		
+		funExecuteQuery(sql);
+		
+		sql="DROP TABLE `tbltaxsettlementmaster`;";
+		funExecuteQuery(sql);
+		
+		
+		sql="CREATE TABLE `tbldatabasebckup` ( "
+	       +" `dteDbBckkUp` DATETIME NOT NULL, "
+	       +" `strClientCode` VARCHAR(50) NOT NULL, "
+	       +" `strDbName` VARCHAR(50) NOT NULL "
+	       +" ) "
+	       +" COLLATE='latin1_swedish_ci' "
+	       +" ENGINE=InnoDB ";
+		funExecuteQuery(sql);
+
+		
+//		
+//		CREATE TABLE `tbltaxsettlementmaster` (
+//				`strSettlementCode` VARCHAR(10) NOT NULL DEFAULT '',
+//				`strTaxCode` VARCHAR(10) NOT NULL,
+//				`strApplicable` VARCHAR(10) NOT NULL DEFAULT 'No',
+//				`strClientCode` VARCHAR(10) NOT NULL,
+//				PRIMARY KEY (`strClientCode`, `strTaxCode`)
+//			)
+//			COLLATE='utf16_general_ci'
+//			ENGINE=InnoDB
+//			;
+
+
+		
+		
+		// Indexing in table
+
+		sql = "ALTER TABLE `tblpossalesdtl`	ADD COLUMN `intId` BIGINT NOT NULL AUTO_INCREMENT AFTER `strWSItemCode`,DROP PRIMARY KEY,ADD PRIMARY KEY (`intId`, `strClientCode`);";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblmisdtl` " + " ADD INDEX `strMISCode_strProdCode_strClientCode` (`strMISCode`, `strProdCode`, `strClientCode`);";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblreqdtl` " + " ADD INDEX `strReqCode_strProdCode_strClientCode` (`strReqCode`, `strProdCode`, `strClientCode`);";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblstocktransferhd` " + " ADD COLUMN `dblTotalAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `intLevel` ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblstocktransferdtl` " + " ADD COLUMN `dblTotalPrice` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strClientCode` ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpurchaseindenddtl` " + " CHANGE COLUMN `dblQty` `dblQty` DECIMAL(18,4) NULL DEFAULT NULL AFTER `strProdCode`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductionorderhd` HANGE COLUMN `strAuthorise` `strAuthorise` VARCHAR(3) NULL DEFAULT NULL AFTER `strBOMFlag`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblbommasterhd`	ADD COLUMN `strBOMType` VARCHAR(1) NOT NULL DEFAULT 'R' AFTER `strMethod`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductmaster` ADD COLUMN `dblYieldPer` DECIMAL(10,0) NOT NULL DEFAULT '100.00' AFTER `strNonStockableItem`;  ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblproductmaster`  ADD COLUMN `strBarCode` VARCHAR(50) NOT NULL DEFAULT 'NA' AFTER `dblYieldPer`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblproductionorderhd` CHANGE COLUMN `strAuthorise` `strAuthorise` VARCHAR(3) NULL DEFAULT NULL AFTER `strBOMFlag`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpartymaster` ADD COLUMN `strPartyIndi` VARCHAR(1) NOT NULL DEFAULT '' AFTER `strClientCode` ; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblrateconthd`	CHANGE COLUMN `strAuthorise` `strAuthorise` VARCHAR(3) NOT NULL DEFAULT 'No' AFTER `dtLastModified`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductmaster` CHANGE COLUMN `strDesc` `strDesc` VARCHAR(1000) NOT NULL DEFAULT '' AFTER `strSaleNo`, " + "	CHANGE COLUMN `strSpecification` `strSpecification` VARCHAR(1000) NOT NULL DEFAULT '' AFTER `strType`;  ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblworkorderdtl` DROP PRIMARY KEY; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblgrnhd`	CHANGE COLUMN `strNarration` `strNarration` VARCHAR(1000) NOT NULL DEFAULT '' AFTER `dblTotal`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblgrnhd` CHANGE COLUMN `strBillNo` `strBillNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strPONo`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblprodchar` CHANGE COLUMN `dblValue` `strTollerance` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCharCode` ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblprodchar` ADD COLUMN `intId` BIGINT NOT NULL AUTO_INCREMENT AFTER `strProdCode`, DROP PRIMARY KEY,	ADD PRIMARY KEY (`intId`, `strClientCode`); ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblcompanymaster`	DROP PRIMARY KEY, DROP INDEX `intId`,	ADD PRIMARY KEY (`intId`); ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertysetup`	ADD COLUMN `strShowAllProdToAllLoc` CHAR(1) NULL DEFAULT 'Y' AFTER `strMonthEnd` ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblattachdocument` ADD COLUMN `strModuleName` VARCHAR(50) NOT NULL AFTER `strClientCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblstocktransferhd` CHANGE COLUMN `strWOCode` `strWOCode` VARCHAR(500) NOT NULL DEFAULT '' AFTER `strMaterialIssue`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertysetup`CHANGE COLUMN `strRangeAdd` `strRangeAdd` VARCHAR(255) NULL DEFAULT NULL AFTER `strMask`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblprodsuppmaster`	ADD COLUMN `dblMargin` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `strUOM`;  ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tbltaxhd` ADD COLUMN `strTaxOnTaxCode` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strClientCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpropertysetup`	ADD COLUMN `strLocWiseProductionOrder` CHAR(1) NULL DEFAULT 'Y' AFTER `strShowAllProdToAllLoc`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductmaster` ADD COLUMN `dblMRP` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `strBarCode`;  ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpropertysetup` " + " ADD COLUMN `strShowStockInOP` CHAR(1) NOT NULL DEFAULT 'Y' AFTER `strLocWiseProductionOrder`, " + " ADD COLUMN `strShowAvgQtyInOP` CHAR(1) NULL DEFAULT 'Y' AFTER `strShowStockInOP`, " + " ADD COLUMN `strShowStockInSO` CHAR(1) NULL DEFAULT 'Y' AFTER `strShowAvgQtyInOP`, "
+				+ " ADD COLUMN `strShowAvgQtyInSO` CHAR(1) NULL DEFAULT 'Y' AFTER `strShowStockInSO`, " + " ADD COLUMN `strDivisionAdd` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strShowAvgQtyInSO`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblsubgroupmaster` ADD COLUMN `strExciseable` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strClientCode`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbltaxhd` ADD COLUMN `strCalTaxOnMRP` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strTaxOnSubGroup`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductmaster` ADD COLUMN `strPickMRPForTaxCal` VARCHAR(50) NOT NULL DEFAULT 'N' AFTER `dblMRP`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblsubgroupmaster`ADD COLUMN `strExciseChapter` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strExciseable` ; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertysetup`	ADD COLUMN `strEffectOfDiscOnPO` VARCHAR(1) NULL DEFAULT 'Y' AFTER `strDivisionAdd`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpropertysetup`	ADD COLUMN `strInvFormat` VARCHAR(30) NOT NULL AFTER `strEffectOfDiscOnPO`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductmaster` ADD COLUMN `strExciseable` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strPickMRPForTaxCal`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbltaxhd` ADD COLUMN `dblAbatement` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `strCalTaxOnMRP`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbltaxhd` ADD COLUMN `strTOTOnMRPItems` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `dblAbatement`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertysetup`	ADD COLUMN `strECCNo` VARCHAR(150) NOT NULL DEFAULT '' AFTER `strInvFormat`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblvehiclemaster` ADD COLUMN `intId` BIGINT NOT NULL AFTER `strClientCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tbluserdtl` 	ADD COLUMN `strModule` VARCHAR(10) NULL DEFAULT NULL AFTER `strClientCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tbluserdefinedreport`  ALTER `strTable` DROP DEFAULT; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tbluserdefinedreport` CHANGE COLUMN `strTable` `strTable` VARCHAR(500) NOT NULL AFTER `strType`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tbluserdefinedreport` ALTER `strGroupBy` DROP DEFAULT, ALTER `strSortBy` DROP DEFAULT; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tbluserdefinedreport` " + "	CHANGE COLUMN `strGroupBy` `strGroupBy` VARCHAR(500) NOT NULL AFTER `strFieldSize`, " + "	CHANGE COLUMN `strSortBy` `strSortBy` VARCHAR(500) NOT NULL AFTER `strGroupBy`;  ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpartymaster` 	ADD COLUMN `strECCNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strOperational`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblsubgroupmaster` ADD COLUMN `intSortingNo` INT(10) NOT NULL AFTER `strExciseChapter`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblsubgroupmaster`  ADD COLUMN `strSGDescHeader` VARCHAR(100) NOT NULL DEFAULT '' AFTER `intSortingNo`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblexcelimport` 	ADD COLUMN `strBarCode` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dblPriceChangePercentage`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblexcelimport` 	CHANGE COLUMN `strBankAdd1` `strBankAdd1` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strBankName`, " + " CHANGE COLUMN `strBankAdd2` `strBankAdd2` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strBankAdd1`,  " + "	CHANGE COLUMN `strMAdd1` `strMAdd1` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strAcCrCode`, "
+				+ "	CHANGE COLUMN `strMAdd2` `strMAdd2` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strMAdd1`, " + "	CHANGE COLUMN `strBAdd1` `strBAdd1` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strMCountry`, " + "	CHANGE COLUMN `strBAdd2` `strBAdd2` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strBAdd1`, " + "	CHANGE COLUMN `strSAdd1` `strSAdd1` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strBCountry`, "
+				+ "	CHANGE COLUMN `strSAdd2` `strSAdd2` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strSAdd1`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpartymaster` " + "	ADD COLUMN `dtInstallions` DATE NOT NULL DEFAULT '1900-01-01' AFTER `strECCNo`, " + "	ADD COLUMN `strAccManager` VARCHAR(100) NOT NULL DEFAULT '' AFTER `dtInstallions`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpartymaster`  " + " ADD COLUMN `strDebtorCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strAccManager`; ";
+		funExecuteQuery(sql);
+
+		// sql =" ALTER TABLE `tblarlinkup`"
+		// +
+		// "	ADD COLUMN `strExSuppCode` VARCHAR(50) NOT NULL DEFAULT ''  AFTER `strClientCode`, "
+		// +
+		// "	ADD COLUMN `strExSuppName` VARCHAR(255) NOT NULL DEFAULT ''  AFTER `strExSuppCode`; ";
+		//
+		// funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblstockpostingdtl`" + "	CHANGE COLUMN `strDisplyVariance` `strDisplyVariance` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strDisplyQty`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblstockadjustmentdtl` " + "	CHANGE COLUMN `dblQty` `dblQty` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `strProdCode`,  " + "	CHANGE COLUMN `dblPrice` `dblPrice` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `strType`, " + "	CHANGE COLUMN `dblWeight` `dblWeight` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `dblPrice`; ";
+
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblstockadjustmentdtl`" + "	ADD COLUMN `strWSLinkedProdCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strDisplayQty`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbluserlocdtl` " + "	ADD COLUMN `strModule` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strClientCode`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblcompanymaster` " + "	ADD COLUMN `strWebBookAPGLModule` VARCHAR(3) NULL DEFAULT 'No' AFTER `strPassword`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertysetup` " + "	ADD COLUMN `strSMSProvider` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strECCNo`, " + " ADD COLUMN `strSMSAPI` VARCHAR(300) NOT NULL DEFAULT '' AFTER `strSMSProvider`,  " + "	ADD COLUMN `strSMSContent` VARCHAR(500) NOT NULL DEFAULT '' AFTER `strSMSAPI`;";
+		funExecuteQuery(sql);
+
+		sql = "  ALTER TABLE `tblpurchaseindendhd` " + "	ADD COLUMN `strAgainst` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strClosePI`, " + "	ADD COLUMN `strDocCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strAgainst`; ";
+		funExecuteQuery(sql);
+
+		sql = " DROP FUNCTION IF EXISTS `funGetUOM`; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE DEFINER=`root`@`localhost` FUNCTION `funGetUOM`(  	`transQty` varchar(20),  	`recipeConv` double,  	`issueConv` double,  	`receivedUOM` varchar(10),  	`recipeUOM` varchar(10)  )  " + " RETURNS varchar(30) CHARSET latin1 " + "LANGUAGE SQL " + "DETERMINISTIC " + "CONTAINS SQL " + "SQL SECURITY DEFINER " + "COMMENT '' " + "BEGIN " + "  DECLARE uomString varchar(30); "
+				+ " set uomString=concat(if(Left(transQty,INSTR(transQty,'.')-1), concat(Left(transQty,INSTR(transQty,'.')-1) " + "        ,concat(' ',concat(receivedUOM,'.'))),'') " + "        ,if(MID(transQty,INSTR(transQty,'.'),LENGTH(transQty)) " + "        , concat((MID(transQty,INSTR(transQty,'.'),LENGTH(transQty)))*(recipeConv * issueConv), concat(' ',recipeUOM)),'')); "
+				+ " RETURN (uomString); " + " END;  ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpartymaster` " + "	ADD COLUMN `strGSTNo` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strDebtorCode`;    ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tbltaxhd` " + "	ADD COLUMN `strShortName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strTOTOnMRPItems`, " + "	ADD COLUMN `strGSTNo` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strShortName`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductmaster` " + "	ADD COLUMN `strProdNameMarathi` VARCHAR(200) NOT NULL DEFAULT '' " + " AFTER `strExciseable`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductmaster` " + "	ADD COLUMN `strManufacturerCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strProdNameMarathi`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbluserhd` " + " ADD COLUMN `strShowDashBoard` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strClientCode`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbltaxhd` CHANGE COLUMN `strGSTNo` " + " `strGSTNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strShortName`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpropertysetup`  " + " CHANGE COLUMN `strInvFormat` `strInvFormat` VARCHAR(150) NOT NULL AFTER `strEffectOfDiscOnPO`;  ";
+
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpropertysetup` " + "	ADD COLUMN `strInvNote` VARCHAR(500) NOT NULL DEFAULT '' AFTER `strSMSContent`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpropertysetup` " + "	ADD COLUMN `strCurrencyCode` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strInvNote`;  ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpropertysetup` " + "	ADD COLUMN `strShowAllPropCustomer` VARCHAR(1) NOT NULL DEFAULT 'Y' AFTER `strCurrencyCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpartymaster` " + "	ADD COLUMN `strPNHindi` VARCHAR(200) NOT NULL DEFAULT ''  AFTER `strGSTNo`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpartymaster` " + "	ADD COLUMN `strLocCode` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strPNHindi`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpartymaster` " + "	ADD COLUMN `strPropCode` VARCHAR(10) NOT NULL DEFAULT '01' AFTER `strLocCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblreorderlevel` " + "	ADD COLUMN `dblPrice` DOUBLE NOT NULL DEFAULT '0.0' AFTER `strClientCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblinvoicehd` " + "	ADD COLUMN `strCurrencyCode` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strSettlementCode`, " + "	ADD COLUMN `dblCurrencyConv` DOUBLE NOT NULL DEFAULT '1.0' AFTER `strCurrencyCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpropertysetup` " + "	ADD COLUMN `strEffectOfInvoice` VARCHAR(20) NOT NULL DEFAULT 'DC' AFTER `strShowAllPropCustomer`;  ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblbommasterdtl` " + "	CHANGE COLUMN `dblQty` `dblQty` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `strChildCode`,  " + "	CHANGE COLUMN `dblWeight` `dblWeight` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `dblQty`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblreqhd`  " + "	ADD COLUMN `strReqFrom` VARCHAR(10) NOT NULL DEFAULT 'System' AFTER `dtReqiredDate`;  ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblstockpostinghd` " + "	ADD COLUMN `strPhyStkFrom` VARCHAR(10) NOT NULL DEFAULT 'System' AFTER `strConversionUOM`;  ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblstockpostingdtl` " + "	ADD COLUMN `dblActualRate` DECIMAL(10,2) NOT NULL DEFAULT '0.00' AFTER `strDisplyVariance`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblstockpostingdtl` " + "	ADD COLUMN `dblActualValue` DECIMAL(10,2) NOT NULL DEFAULT '0.00' AFTER `dblActualRate`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tbllinkup` " + "	ADD COLUMN `strPropertyCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strExSuppName`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpropertysetup` " + "	ADD COLUMN `strEffectOfGRNWebBook` VARCHAR(20) NOT NULL DEFAULT 'Payment' AFTER `strEffectOfInvoice`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tbllinkup` 	DROP PRIMARY KEY,  " + "	ADD PRIMARY KEY (`strSGCode`, `strPropertyCode`, `strClientCode`);  ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductstandard` " + "	ADD COLUMN `strLocCode` VARCHAR(20) NOT NULL AFTER `strStandardType`, " + "	ADD COLUMN `strPropertyCode` VARCHAR(20) NOT NULL AFTER `strLocCode`, " + "	DROP COLUMN `strLocCode`, " + "	DROP COLUMN `strPropertyCode` ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductstandard` " + "	DROP PRIMARY KEY, " + "	ADD PRIMARY KEY (`strProdCode`, `strLocCode`, `strPropertyCode`, `strClientCode`); ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblgrnhd` " + "	ADD COLUMN `dblRoundOff` DOUBLE(18,4) NULL DEFAULT '0' AFTER `intLevel`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductstandard`  " + "	CHANGE COLUMN `id` `id` BIGINT(10) NOT NULL DEFAULT '0' FIRST, " + "	ADD COLUMN `strLocCode` VARCHAR(20) NOT NULL AFTER `strStandardType`, " + "	ADD COLUMN `strPropertyCode` VARCHAR(20) NOT NULL AFTER `strLocCode`, " + "	DROP PRIMARY KEY, " + "	ADD PRIMARY KEY (`strProdCode`, `strClientCode`, `strLocCode`, `strPropertyCode`);  ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductmaster` " + "	CHANGE COLUMN `strNonStockableItem` `strNonStockableItem` VARCHAR(3) NULL DEFAULT 'N' AFTER `strProductImage` ";
+		funExecuteQuery(sql);
+
+		sql = " update tblproductmaster  set strNonStockableItem='Y' where strNonStockableItem='Yes' ";
+		funExecuteQuery(sql);
+
+		sql = " update tblproductmaster  set strNonStockableItem='Y' where strNonStockableItem='YES' ";
+		funExecuteQuery(sql);
+
+		sql = " update tblproductmaster  set strNonStockableItem='N' where strNonStockableItem='No' ";
+		funExecuteQuery(sql);
+
+		sql = " update tblproductmaster  set strNonStockableItem='N' where strNonStockableItem='NO' ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbllinkup`ADD COLUMN `strSGType` VARCHAR(50) NOT NULL DEFAULT '' " + "AFTER `strPropertyCode`;";
+
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbllinkup`DROP PRIMARY KEY, " + "ADD PRIMARY KEY (`strSGCode`, `strPropertyCode`, `strClientCode`, `strSGType`);";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpropertysetup` " + "	ADD COLUMN `strMultiCurrency` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strEffectOfGRNWebBook` ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductmaster` " + "	CHANGE COLUMN `strProdName` `strProdName` VARCHAR(300) NOT NULL AFTER `strPartNo` ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblexcelimport` " + "	CHANGE COLUMN `strProdName` `strProdName` VARCHAR(300) NOT NULL DEFAULT '' FIRST ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblexcelimport` ADD COLUMN `strManufacturerCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strBarCode`, " + " ADD COLUMN `strManufacturerName` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strManufacturerCode`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpartymaster` " + " CHANGE COLUMN `strPName` `strPName` VARCHAR(100) NOT NULL DEFAULT '' AFTER `intPId`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblreqhd` ADD COLUMN `strSessionCode` VARCHAR(10) NOT NULL DEFAULT ''  AFTER `strReqFrom` ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbltransportermasterdtl` DROP COLUMN `intId`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbltaxhd` ADD COLUMN `strExternalCode` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strGSTNo`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpartymaster` ADD COLUMN `strExternalCode` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strPropCode`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbllocationmaster` ADD COLUMN `strUnderLocCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strLocPropertyCode`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertysetup` " + " ADD COLUMN `strShowAllPartyToAllLoc` CHAR(1) NULL DEFAULT 'Y' AFTER `strMultiCurrency`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblreasonmaster` ADD COLUMN `dtExpiryDate` DATETIME NOT NULL AFTER `strClientCode`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbllinkup` ADD COLUMN `strModuleType` VARCHAR(10) NOT NULL AFTER `strOperationType`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpurchaseorderhd` " + "ADD COLUMN `dblClearingAgentCharges` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblCIF`, " + "ADD COLUMN `dblVATClaim` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblClearingAgentCharges`";
+		funExecuteQuery(sql);
+		
+		sql = " ALTER TABLE `tblpropertysetup`	ADD COLUMN `strRateHistoryFormat` VARCHAR(30) NOT NULL AFTER `strSOKOTPrint`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpropertysetup`	ADD COLUMN `strPOSlipFormat` VARCHAR(30) NOT NULL AFTER `strRateHistoryFormat`; ";
+		funExecuteQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup` ADD COLUMN `strSRSlipFormat` VARCHAR(30) NOT NULL AFTER `strPOSlipFormat`;";
+		funExecuteQuery(sql);
+		
+		sql = "ALTER TABLE `tblwalkinroomratedtl`	ADD COLUMN `dblDiscount` DECIMAL(18,4) NOT NULL DEFAULT '0.0' AFTER `strClientCode`;";
+		funExecuteQuery(sql);
+		
+		sql = "ALTER TABLE `tblgrndtl` "
+				+ "ADD COLUMN `dblFreeQty` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `strMISCode`;";
+		funExecuteQuery(sql);
+		
+		sql = "ALTER TABLE `tblpartymaster`"
+				+ "	CHANGE COLUMN `dtInstallions` `dtInstallions` DATETIME NOT NULL DEFAULT '1900-01-01' AFTER `strECCNo`;";
+		
+		funExecuteQuery(sql);
+		
+		sql = " select strMasterCode from tbllinkup ";
+		int i=funExecute(sql);
+		
+		if(i==1)
+		{
+			sql = "DROP TABLE IF EXISTS `tbllinkup`; ";
+			funExecuteQuery(sql);
+			
+			sql="CREATE TABLE `tbllinkup` ( "
+				+" `strMasterCode` VARCHAR(50) NOT NULL, "
+				+" `strMasterDesc` VARCHAR(50) NOT NULL DEFAULT '', "
+				+" `strMasterName` VARCHAR(255) NOT NULL DEFAULT '', "
+				+" `strAccountCode` VARCHAR(50) NOT NULL, "
+				+" `strUserCreated` VARCHAR(50) NOT NULL, "
+				+" `strUserEdited` VARCHAR(50) NOT NULL, "
+				+" `dteCreatedDate` DATETIME NOT NULL, "
+				+" `dteLastModified` DATETIME NOT NULL, "
+				+" `strClientCode` VARCHAR(50) NOT NULL, "
+				+" `strExSuppCode` VARCHAR(50) NOT NULL DEFAULT '', "
+				+" `strExSuppName` VARCHAR(255) NOT NULL DEFAULT '', "
+				+" `strPropertyCode` VARCHAR(10) NOT NULL DEFAULT '', "
+				+" `strSGType` VARCHAR(50) NOT NULL DEFAULT '', "
+				+" `strOperationType` VARCHAR(10) NOT NULL, "
+				+" `strModuleType` VARCHAR(10) NOT NULL, "
+				+" PRIMARY KEY (`strMasterCode`, `strClientCode`, `strPropertyCode`, `strOperationType`, `strModuleType`) "
+				+" ) "
+				+" COLLATE='latin1_swedish_ci' "
+				+" ENGINE=InnoDB ;" ;
+			funExecuteQuery(sql);
+		}
+
+		
+		sql = " ALTER TABLE `tblproductmaster` " + " ADD COLUMN `strComesaItem` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strManufacturerCode`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbltaxhd` " + " ADD COLUMN `strNotApplicableForComesa` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strPartyIndicator`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpartymaster` " + " ADD COLUMN `strComesaRegion` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `dblRejectionPercentage`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpartymaster` ADD COLUMN `dblReturnDiscount` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `strCurrency`; ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tbllinkup` "
+			+" CHANGE COLUMN `strGDes` `strGDes` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strSGCode`;" ;
+		funExecuteQuery(sql);
+
+		sql = "update tblproductmaster a  set a.dblReceiveConversion='1.00' where a.dblReceiveConversion='0.00' ;";
+		funExecuteQuery(sql);
+
+		sql = "update tblproductmaster a  set a.dblIssueConversion='1.00' where a.dblIssueConversion='0.00' ; ";
+		funExecuteQuery(sql);
+
+		sql = "update tblproductmaster a  set a.dblRecipeConversion='1.00' where a.dblRecipeConversion='0.00' ; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblcurrentstock` " + " CHANGE COLUMN `strProdName` `strProdName` VARCHAR(300) NOT NULL AFTER `strProdCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpurchaseorderhd`" + " ADD COLUMN `dblFOB` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `strPropCode`, " + " ADD COLUMN `dblFreight` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `dblFOB`, " + "	ADD COLUMN `dblInsurance` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `dblFreight`, "
+				+ " ADD COLUMN `dblOtherCharges` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `dblInsurance`," + "	ADD COLUMN `dblCIF` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `dblOtherCharges`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblcurrencymaster` CHANGE COLUMN `dblConvToBaseCurr` `dblConvToBaseCurr` DECIMAL(18,6) NOT NULL DEFAULT '0.00' AFTER `strAccountNo`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpartymaster` ADD COLUMN `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strExternalCode`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpurchaseorderhd` ADD COLUMN `dblExchangeRate` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblVATClaim`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strShowAllTaxesOnTransaction` VARCHAR(1) NOT NULL DEFAULT 'Y' AFTER `strShowAllPartyToAllLoc`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblgrnhd` "
+				+"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `dblRoundOff`, "
+				+"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`, "
+				+"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`, "
+				+"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`, "
+				+"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4` ";
+		funExecuteQuery(sql);
+		
+		sql = "	ALTER TABLE `tblpurchaseorderhd` "
+				+"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `dblExchangeRate`, "
+				+"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`, "
+				+"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`, "
+				+"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`, "
+				+ "	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4` ";
+		funExecuteQuery(sql);
+		
+		sql = "		ALTER TABLE `tblbillpasshd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `intLevel`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "			ALTER TABLE `tblreqhd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strSessionCode`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "				ALTER TABLE `tblmaterialreturnhd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `intLevel`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "					ALTER TABLE `tblmishd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `dblTotalAmt`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "					ALTER TABLE `tblinitialinventory`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strConversionUOM`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "						ALTER TABLE `tblstockpostinghd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strPhyStkFrom`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "							ALTER TABLE `tblproductionhd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `intLevel`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "								ALTER TABLE `tblproductionorderhd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `intLevel`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "									ALTER TABLE `tblpurchasereturnhd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strPRNo`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;\r\n" + 
+				"	";
+		funExecuteQuery(sql);
+		
+		sql = "										ALTER TABLE `tblpurchaseindendhd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strDocCode`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "										ALTER TABLE `tblrateconthd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strClientCode`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "											ALTER TABLE `tblstockadjustmenthd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strConversionUOM`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "												ALTER TABLE `tblstocktransferhd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `dblTotalAmt`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql = "													ALTER TABLE `tblworkorderhd`\r\n" + 
+				"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strToLocCode`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,\r\n" + 
+				"	ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblattachdocument` CHANGE COLUMN `strContentType` `strContentType` VARCHAR(200) NOT NULL AFTER `binContent`";
+		funExecuteQuery(sql);
+
+		sql="ALTER TABLE `tblattachdocument` CHANGE COLUMN `strActualFileName` `strActualFileName` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strCode`";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblattachdocument` CHANGE COLUMN `strChangedFileName` `strChangedFileName` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strActualFileName`";
+		funExecuteQuery(sql);
+		
+		
+		sql=" ALTER TABLE `tblstockadjustmentdtl` "
+			+" ADD COLUMN `dblParentQty` DECIMAL(10,4) NOT NULL DEFAULT '0.0' AFTER `strWSLinkedProdCode`; ";
+		funExecuteQuery(sql);
+		
+	    sql="ALTER TABLE `tblpossalesdtl` "
+		+" ADD COLUMN `strCostCenterCode` VARCHAR(50) NOT NULL DEFAULT '' AFTER `intId`, "
+		+" ADD COLUMN `strCostCenterName` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strCostCenterCode`, "
+		+" ADD COLUMN `strLocationCode` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCostCenterName`, "
+		+" ADD COLUMN `dblAmount` DECIMAL(10,2) NOT NULL DEFAULT '0.00' AFTER `strLocationCode`, "
+		+" ADD COLUMN `dblPercent` DECIMAL(10,2) NOT NULL DEFAULT '0.00' AFTER `dblAmount`, "
+		+" ADD COLUMN `dblPercentAmt` DECIMAL(10,2) NOT NULL DEFAULT '0.00' AFTER `dblPercent`; ";
+	
+	    funExecuteQuery(sql);
+	
+	
+		sql="ALTER TABLE `tblgrnhd`"
+			+ "ADD COLUMN `dblFOB` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strAuthLevel5`,"
+			+ "ADD COLUMN `dblFreight` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblFOB`,"
+			+ "ADD COLUMN `dblInsurance` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblFreight`,"
+			+ "ADD COLUMN `dblOtherCharges` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblInsurance`";
+		funExecuteQuery(sql);
+	
+		sql="ALTER TABLE `tbllinkup` "
+				   +" ADD COLUMN `strWebBookAccCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strModuleType`, "
+				   +" ADD COLUMN `strWebBookAccName` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strWebBookAccCode`;";
+		funExecuteQuery(sql);
+	
+	
+		sql="ALTER TABLE `tbllinkup` "
+				+" CHANGE COLUMN `strOperationType` `strOperationType` VARCHAR(20) NOT NULL AFTER `strSGType`;" ;
+		funExecuteQuery(sql);
+
+		sql="ALTER TABLE `tbllinkup` "
+			+" CHANGE COLUMN `strMasterDesc` `strMasterDesc` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strMasterCode`;" ;	
+		
+		funExecuteQuery(sql);
+		
+		sql = " DROP TABLE IF EXISTS `tbltreemast`; ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tbluserhd` "
+			+" ADD COLUMN `strReorderLevel` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strShowDashBoard`;" ;
+		funExecuteQuery(sql);
+				
+		sql="ALTER TABLE `tbllinkup` "
+			+" CHANGE COLUMN `strWebBookAccCode` `strWebBookAccCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strModuleType`;" ;
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tbltaxhd` ADD COLUMN `strTaxReversal` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strNotApplicableForComesa`;";
+		funExecuteQuery(sql);
+
+		sql="ALTER TABLE `tblgrnhd` ADD COLUMN `dblVATClaim` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblOtherCharges`, "
+			+ "ADD COLUMN `dblClearingCharges` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblVATClaim`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpropertysetup` "
+		   +" ADD COLUMN `strSOKOTPrint` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strShowAllTaxesOnTransaction`" ;
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpossalesdtl` "
+				+"ADD COLUMN `strItemType` VARCHAR(20) NOT NULL DEFAULT '' AFTER `dblPercentAmt` ";
+			funExecuteQuery(sql);
+			
+		sql="ALTER TABLE `tblcompanymaster` ADD COLUMN `strYear` VARCHAR(1) NOT NULL DEFAULT 'A' AFTER `strWebBookAPGLModule`; ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpurchaseorderhd`  CHANGE COLUMN `dblConversion` `dblConversion` DECIMAL(18,4) NOT NULL DEFAULT '1.0' AFTER `dtPayDate`; ";
+		funExecuteQuery(sql);
+		
+		sql=" update tblpurchaseorderhd set dblConversion='1.0' where dblConversion=0.0000 ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblgrnhd` CHANGE COLUMN `dblConversion` `dblConversion` DECIMAL(18,4) NOT NULL DEFAULT '1.0' AFTER `strConsignedCountry`; ";
+		funExecuteQuery(sql);
+		
+		sql=" update tblgrnhd set dblConversion='1.0' where dblConversion=0.0000 ";
+		funExecuteQuery(sql);
+		
+		sql = " ALTER TABLE `tblpurchasereturnhd` ADD COLUMN `dblConversion` DECIMAL(18,2) NOT NULL DEFAULT '1.00' AFTER `strAuthLevel5`; ";
+		funExecuteQuery(sql);
+		
+		sql = " ALTER TABLE `tblpurchasereturnhd` ADD COLUMN `strCurrency` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dblConversion`; ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblgrnhd` ADD COLUMN `strJVNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dblClearingCharges` ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpurchasereturnhd` ADD COLUMN `strJVNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCurrency` ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpurchasereturnhd` ADD COLUMN `strJVNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCurrency` ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblinvoicehd` ADD COLUMN `strJVNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dblExtraCharges` ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblsalesreturnhd` ADD COLUMN `strJVNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCurrency` ";
+		funExecuteQuery(sql);
+		
+
+		sql=" ALTER TABLE `tblstocktransferhd` ADD COLUMN `strReqCode` VARCHAR(255) NOT NULL DEFAULT ' ' AFTER `strAuthLevel5`;";
+		funExecuteQuery(sql);
+		
+		try{
+			String propCode=req.getSession().getAttribute("propertyCode").toString();
+			sql=" update tblpartymaster set strCurrency=(select strCurrencyCode from tblpropertysetup) where strCurrency='' or LEFT(strCurrency,3)!='CU0' "
+			  + " and strPropCode='"+propCode+"' ";
+			funExecuteQuery(sql);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+		
+		sql="ALTER TABLE `tbltaxhd` ADD COLUMN `strChargesPayable` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strTaxReversal`;";
+		funExecuteQuery(sql);
+		
+		sql = " CREATE TABLE IF NOT EXISTS `tbltreemast` (  " + "  `strFormName` varchar(50) NOT NULL,  " + "  `strFormDesc` varchar(200) NOT NULL,  " + "   `strRootNode` varchar(50) NOT NULL,  " + "   `intRootIndex` int(11) NOT NULL,  " + " `strType` varchar(50) NOT NULL, " + "  `intFormKey` int(11) NOT NULL, " + " `intFormNo` int(11) NOT NULL, " + " `strImgSrc` varchar(50) NOT NULL, "
+				+ " `strImgName` varchar(100) NOT NULL, " + " `strModule` varchar(15) NOT NULL, " + " `strTemp` int(11) NOT NULL, " + " `strActFile` varchar(3) NOT NULL,  " + " `strHelpFile` varchar(150) NOT NULL, " + " `strProcessForm` varchar(4) NOT NULL DEFAULT 'NA', " + " `strAutorisationForm` varchar(4) NOT NULL DEFAULT 'NA', " + " `strRequestMapping` varchar(50) DEFAULT NULL, "
+				+ " `strAdd` varchar(255) DEFAULT NULL, " + " `strAuthorise` varchar(255) DEFAULT NULL, " + " `strDelete` varchar(255) DEFAULT NULL, " + " `strDeliveryNote` varchar(255) DEFAULT NULL, " + " `strDirect` varchar(255) DEFAULT NULL, " + " `strEdit` varchar(255) DEFAULT NULL, " + " `strGRN` varchar(255) DEFAULT NULL, " + " `strGrant` varchar(255) DEFAULT NULL, "
+				+ " `strMinimumLevel` varchar(255) DEFAULT NULL, " + " `strOpeningStock` varchar(255) DEFAULT NULL, " + " `strPrint` varchar(255) DEFAULT NULL, " + " `strProductionOrder` varchar(255) DEFAULT NULL, " + " `strProject` varchar(255) DEFAULT NULL, " + " `strPurchaseIndent` varchar(255) DEFAULT NULL, " + " `strPurchaseOrder` varchar(255) DEFAULT NULL, "
+				+ " `strPurchaseReturn` varchar(255) DEFAULT NULL, " + " `strRateContractor` varchar(255) DEFAULT NULL, " + " `strRequisition` varchar(255) DEFAULT NULL, " + " `strSalesOrder` varchar(255) DEFAULT NULL, " + " `strSalesProjection` varchar(255) DEFAULT NULL, " + " `strSalesReturn` varchar(255) DEFAULT NULL, " + " `strServiceOrder` varchar(255) DEFAULT NULL, "
+				+ " `strSubContractorGRN` varchar(255) DEFAULT NULL, " + " `strView` varchar(255) DEFAULT NULL, " + " `strWorkOrder` varchar(255) DEFAULT NULL, " + " `strAuditForm` varchar(255) DEFAULT NULL, " + " `strMIS` varchar(255) DEFAULT NULL, " + " PRIMARY KEY (`strFormName`, `strModule`) " + " ) ENGINE=InnoDB DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tbltreemast` ADD COLUMN `strInvoice` VARCHAR(255) NULL DEFAULT NULL AFTER `strMIS` ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tbltreemast` " + "		ADD COLUMN `strDeliverySchedule` VARCHAR(255) NULL DEFAULT NULL AFTER `strInvoice`; ";
+		funExecuteQuery(sql);
+				
+		sql=" ALTER TABLE `tbltreemast` "
+				  + " ADD COLUMN `strFormAccessYN` VARCHAR(1) NOT NULL DEFAULT 'Y' AFTER `strDeliverySchedule`; " ;
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tbluserhd` "
+				+ " ADD COLUMN `strEmail` VARCHAR(300) NOT NULL DEFAULT '' AFTER `strReorderLevel` ";
+			funExecuteQuery(sql);
+			
+
+		sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strWeightedAvgCal` VARCHAR(30) NOT NULL DEFAULT '' AFTER `strSRSlipFormat`;";
+			funExecuteQuery(sql);
+		try{
+			sql="update tblpropertysetup a set a.strWeightedAvgCal='Company Wise' where "
+					+" a.strClientCode='"+clientCode+"' and (a.strWeightedAvgCal='' or a.strWeightedAvgCal=null)";
+			funExecuteQuery(sql);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+			
+		sql="ALTER TABLE `tblpropertysetup` "
+			+" ADD COLUMN `strGRNRateEditable` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strWeightedAvgCal`;" ;
+		funExecuteQuery(sql);
+		try{
+			sql="update tblpropertysetup a set a.strGRNRateEditable='Yes' where "
+					+" a.strClientCode='"+clientCode+"' and (a.strGRNRateEditable='' or a.strGRNRateEditable=null)";
+			funExecuteQuery(sql);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpropertysetup` "
+			+" ADD COLUMN `strInvoiceRateEditable` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strGRNRateEditable`, "
+			+" ADD COLUMN `strSORateEditable` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strInvoiceRateEditable`;" ;
+		
+		funExecuteQuery(sql);
+		
+		try{
+			sql="update tblpropertysetup a set a.strInvoiceRateEditable='Yes' where "
+					+" a.strClientCode='"+clientCode+"' and (a.strInvoiceRateEditable='' or a.strInvoiceRateEditable=null)";
+			funExecuteQuery(sql);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		try{
+			sql="update tblpropertysetup a set a.strSORateEditable='Yes' where "
+					+" a.strClientCode='"+clientCode+"' and (a.strSORateEditable='' or a.strSORateEditable=null)";
+			funExecuteQuery(sql);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		sql="ALTER TABLE `tblproductmaster` ADD COLUMN `strHSNCode` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strComesaItem`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpropertysetup` "
+			+" ADD COLUMN `strSettlementWiseInvSer` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strSORateEditable`;";
+		funExecuteQuery(sql);
+
+		sql = " DELETE FROM `tbltreemast`; ";
+		funExecuteQuery(sql);
+		
+		sql=" ALTER TABLE `tblprodsuppmaster` "
+		  +" ADD COLUMN `dblAMCAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `dblStandingOrder`, "
+		  +" ADD COLUMN `dteInstallation` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' AFTER `dblAMCAmt`, "
+		  +" ADD COLUMN `intWarrantyDays` INT NOT NULL DEFAULT '0' AFTER `dteInstallation`; ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpropertysetup` "
+				+" ADD COLUMN `strGRNProdPOWise` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strSettlementWiseInvSer`;" ;
+		funExecuteQuery(sql);
+		
+		
+		sql = "ALTER TABLE `tblpropertysetup`"
+				+" ADD COLUMN `strPORateEditable` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strGRNProdPOWise`;";
+
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertysetup` " 
+				+" ADD COLUMN `strCurrentDateForTransaction` VARCHAR(10) NOT NULL DEFAULT 'No' AFTER `strPORateEditable`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strRoundOffFinalAmtOnTransaction` VARCHAR(1) NOT NULL DEFAULT 'Y' AFTER `strCurrentDateForTransaction`";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblbillpasshd` ADD COLUMN `strSettlementType` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel5` ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strPOSTRoundOffAmtToWebBooks` VARCHAR(1) NOT NULL DEFAULT 'Y' AFTER `strRoundOffFinalAmtOnTransaction`";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblstockadjustmentdtl` ADD COLUMN `strJVNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dblParentQty`; ";
+		funExecuteQuery(sql);
+		
+
+		sql="ALTER TABLE `tbltaxsettlement` COLLATE='latin1_swedish_ci', DROP PRIMARY KEY, ADD PRIMARY KEY (`strClientCode`, `strTaxCode`, `strSettlementCode`);";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tbltaxsettlement` ALTER `strTaxCode` DROP DEFAULT, ALTER `strClientCode` DROP DEFAULT;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tbltaxsettlement` "
+			+" CHANGE COLUMN `strSettlementCode` `strSettlementCode` VARCHAR(10) NOT NULL DEFAULT '' FIRST, "
+			+" CHANGE COLUMN `strTaxCode` `strTaxCode` VARCHAR(10) NOT NULL AFTER `strSettlementCode`, "
+			+" CHANGE COLUMN `strApplicable` `strApplicable` VARCHAR(10) NOT NULL DEFAULT 'No' AFTER `strTaxCode`, "
+			+" CHANGE COLUMN `strClientCode` `strClientCode` VARCHAR(10) NOT NULL AFTER `strApplicable`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblcompanymaster` CHANGE COLUMN `strWebPOSModule` `strWebBanquetModule` VARCHAR(3) NULL DEFAULT 'No' AFTER `strWebPMSModule`;";
+		funExecuteQuery(sql);
+		
+
+		sql=" ALTER TABLE `tblpropertysetup` ADD COLUMN `strRecipeListPrice` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strPOSTRoundOffAmtToWebBooks`;";
+		funExecuteQuery(sql);
+		
+		sql= "ALTER TABLE `tblcurrentstock` ADD COLUMN `dblFreeQty` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strLastISDate_Qty`";
+		funExecuteQuery(sql);
+		 
+		sql= "ALTER TABLE `tbltempitemstock` ADD COLUMN `dblFreeQty`  DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `intId`";
+		funExecuteQuery(sql);
+		
+		
+		sql = "ALTER TABLE `tblpropertysetup`"
+				+ " ADD COLUMN `strCheckPOSSales` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strFifo`;";
+			funExecuteQuery(sql);
+			
+			
+	    sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strShowAllProducts` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strCheckPOSSales`;";		
+	    funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpropertysetup`"
+				+ "ADD COLUMN `strFifo` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strIncludeTaxInWeightAvgPrice`;";
+		funExecuteQuery(sql);
+		
+		sql = "ALTER TABLE `tblgrndtl`"
+			+ " ADD COLUMN `strGroupTaxCode` VARCHAR(30) NOT NULL DEFAULT '' AFTER `dblFreeQty`;";
+		funExecuteQuery(sql);
+		
+		sql = "CREATE TABLE `tblgrouptaxdtl` ("
+				+ "`strGroupTaxCode` VARCHAR(20) NOT NULL,"
+				+ "`strGroupTaxName` VARCHAR(30) NOT NULL,"
+				+ "`strTaxCode` VARCHAR(20) NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(20) NOT NULL,"
+				+ "`dteDateCreated` DATETIME NOT NULL,"
+				+ "`dteDateEdited` DATETIME NOT NULL,"
+				+ "`strOperationalYN` VARCHAR(5) NOT NULL DEFAULT 'Y'"
+				+ ")COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB;";
+		funExecuteQuery(sql);
+		
+		
+		
+		sql = "ALTER TABLE `tblbatchhd` "
+				+ "DROP PRIMARY KEY,"
+				+ "ADD PRIMARY KEY (`strClientCode`, `strProdCode`, `strTransCode`, `strBatchCode`);";
+		funExecuteQuery(sql);
+        
+		sql="ALTER TABLE `tblsalesorderdtl` ADD COLUMN `strMessage` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dblAcceptQty`,ADD COLUMN `strShape` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strMessage`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tbldeliverychallanhd`"
+				+ " CHANGE COLUMN `dteCreatedDate` `dteCreatedDate` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' AFTER `strUserCreated`,"
+				+ " CHANGE COLUMN `dteLastModified` `dteLastModified` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' AFTER `strUserModified`;";
+
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblinvoicehd`"
+				+ " CHANGE COLUMN `dteCreatedDate` `dteCreatedDate` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' AFTER `strUserCreated`,"
+				+ " CHANGE COLUMN `dteLastModified` `dteLastModified` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' AFTER `strUserModified`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblinvsettlementdtl`"
+				+ " CHANGE COLUMN `dteInvDate` `dteInvDate` DATETIME NOT NULL AFTER `strRoomNo`;";
+		funExecuteQuery(sql);
+		
+		
+		sql="CREATE TABLE `tblgrouptaxdtl` "
+			+ "(`strGroupTaxCode` VARCHAR(20) NOT NULL,"
+			+ " `strGroupTaxName` VARCHAR(30) NOT NULL,"
+			+ " `strTaxCode` VARCHAR(20) NOT NULL,"
+			+ " `strClientCode` VARCHAR(20) NOT NULL,"
+			+ " `strUserCreated` VARCHAR(20) NOT NULL,"
+			+ " `strUserEdited` VARCHAR(20) NOT NULL,"
+			+ " `dteDateCreated` DATETIME NOT NULL,"
+			+ " `dteDateEdited` DATETIME NOT NULL,"
+			+ " `strOperationalYN` VARCHAR(5) NOT NULL DEFAULT 'Y'"
+			+ " )"
+			+ " COLLATE='latin1_swedish_ci'"
+			+ " ENGINE=InnoDB;";
+		funExecuteQuery(sql);
+		
+		
+		sql="ALTER TABLE `tblgrndtl`"
+		  + " ADD COLUMN `strGroupTaxCode` VARCHAR(30) NOT NULL DEFAULT '' AFTER `dblFreeQty`;";
+		funExecuteQuery(sql);
+		sql="ALTER TABLE `tblstockadjustmentdtl`"
+		 + " CHANGE COLUMN `dblQty` `dblQty` DECIMAL(18,5) NOT NULL DEFAULT '0.00000' AFTER `strProdCode`";
+		
+		funExecuteQuery(sql);
+		sql="ALTER TABLE `tblstockpostingdtl`"
+				+ " CHANGE COLUMN `dblCStock` `dblCStock` DECIMAL(18,5) NOT NULL DEFAULT '0.00000' AFTER `strProdCode`,"
+				+ " CHANGE COLUMN `dblPStock` `dblPStock` DECIMAL(18,5) NOT NULL DEFAULT '0.00000' AFTER `dblCStock`;";
+		funExecuteQuery(sql);
+		/*----------------WebStock Forms only---------------------------*/
+		String strIndustryType = "",strWebStockModule="";
+		List<clsCompanyMasterModel> listClsCompanyMasterModel = objSetupMasterService.funGetListCompanyMasterModel();
+		if (listClsCompanyMasterModel.size() > 0) {
+			clsCompanyMasterModel objCompanyMasterModel = listClsCompanyMasterModel.get(0);
+			strIndustryType = objCompanyMasterModel.getStrIndustryType();
+			strWebStockModule = objCompanyMasterModel.getStrWebStockModule();
+		}
+
+		
+		if("No".equalsIgnoreCase(strWebStockModule))
+		{
+			sql = " INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`) VALUES "
+					+ " ('frmGroupMaster', 'Group Master', 'Master', 8, 'M', 7, 5, '1', 'Group_Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmLocationMaster', 'Location Master', 'Master', 7, 'M', 8, 6, '1', 'Location-Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmLocationMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSupplierMaster', 'Supplier Master', 'Master', 8, 'M', 28, 14, '1', 'Supplier-Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmSupplierMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPropertyMaster', 'Property Master', 'Master', 7, 'M', 17, 8, '1', 'imgPropertySetup.png', '1', 1, '1', '1', 'NO', 'YES', 'frmPropertyMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmTaxMaster', 'Tax Master', 'Master', 8, 'M', 29, 15, '1', 'imgTaxMaster.png', '1', 1, '1', '1', 'NO', 'YES', 'frmTaxMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmProductMaster', 'Product Master', 'Master', 8, 'M', 16, 7, '1', 'Product-Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmProductMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSubGroupMaster', 'Sub Group Master', 'Master', 8, 'M', 27, 13, '1', 'Sub-Group-Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmSubGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSetup', 'Property Setup', 'Tools', 8, 'L', 24, 12, '1', 'Setup.png', '1', 1, '1', '1', 'NO', 'YES', 'frmSetup.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ";
+			funExecuteQuery(sql);
+		}
+		else
+		{
+		sql = " INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`) VALUES "
+				+ " ('Cost Center\\r\\n', 'Cost Center\\r\\n', 'Reports', 7, 'O', 1, 1, '1', 'default.png', '1', 1, '1', '1', 'NA', 'NA', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmAccountHolderMaster', 'Account Holder Master', 'Master', 2, 'M', 2, 2, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmAccountHolderMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmACGroupMaster', 'Group Master', 'Master', 4, 'M', 4, 4, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmACGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmAgeingReport', 'Ageing Rport', 'Sub Contracting Report', 3, 'R', 73, 1, '1', 'default.png', '6', 1, '1', '1', 'No', 'No', 'frmAgeingReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmAttributeMaster', 'Attribute Master', 'Master', 8, 'M', 1, 1, '12', 'Attribute-Master.png', '1', 1, '1', '1', 'NO', '1', 'frmAttributeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmAttributeValueMaster', 'Attribute Value Master', 'Master', 8, 'M', 2, 2, '3', 'Attribute-Value-Master.png', '3', 3, '3', '3', 'NO', 'YES', 'frmAttributeValueMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmAuditFlash', 'Audit Flash', 'Tools', 8, 'L', 48, 26, '1', 'audit flash.png', '1', 1, '1', '1', 'NO', 'NO', 'frmAuditFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmAuthorisationTool', 'Authorisation', 'Tools', 8, 'L', 10, 2, '1', 'Authourisation.png', '1', 1, '1', '1', 'NO', 'NO', 'frmAuthorisationTool.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBankMaster', 'Bank Master', 'Master', 3, 'M', 3, 3, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmBankMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBillPassing', 'Bill Passing', 'Accounts', 5, 'T', 3, 1, '1', 'Bill-Passing.png', '1', 1, '1', '1', 'NO', 'YES', 'frmBillPassing.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),";
+		if (strIndustryType.equalsIgnoreCase("Manufacture")) {
+			sql += " ('frmBOMMaster', 'BOM Master', 'Master', 8, 'M', 4, 3, '2', 'ReciepeMaster-BOM-Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmBOMMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), ";
+		}
+
+		else {
+			sql += " ('frmBOMMaster', 'Recipe Master', 'Master', 8, 'M', 4, 3, '2', 'ReciepeMaster-BOM-Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmBOMMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), ";
+		}
+
+			sql += " ('frmCharacteristicsMaster', 'Characteristics Master', 'Master', 8, 'M', 5, 4, '1', 'Characteristics-Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmCharMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmChargeMaster', 'Charge Master', 'Master', 5, 'M', 5, 5, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmChargeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmChargeProcessing', 'Charge Processing', 'Processing', 2, 'P', 1, 1, '1', 'default.png', '5', 1, '1', '1', 'YES', 'NO', 'frmChargeProcessing.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmCompanyMaster', 'Company Master', 'Master', 1, 'M', 1, 10, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmCompanyMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmCompanyTypeMaster', 'Company Type Master', 'Master', 1, 'M', 1, 12, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmCompanyTypeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmConsReceiptValMiscSuppReqReport', 'Consolidated Receipt Value All Supplier Required Report', 'Purchases', 7, 'R', 51, 29, '1', 'Consolidated Receipt Value Misc Suppler Required Report.png', '1', 1, '1', '1', 'NO', 'NO', 'frmConsReceiptValMiscSuppReqReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmConsReceiptValStoreWiseBreskUPReport', 'Consolidated Receipt value Store Wise BreakUP', 'Purchases', 7, 'R', 51, 30, '1', 'Consolidated Receipt value Store Wise BreakUP.png', '1', 1, '1', '1', 'NO', 'No', 'frmConsReceiptValStoreWiseBreskUPReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmCostOfIssue', 'Cost Of Issue', 'Stores', 9, 'R', 42, 20, '1', 'cost of issue.png', '1', 1, '1', '1', 'NO', 'NO', 'frmCostOfIssue.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmCustomerMaster', 'Customer Master', 'Master', 1, 'M', 52, 1, '1', 'default.png', '6', 1, '1', '1', 'NO', 'No', 'frmCustomerMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDebtorLedger', 'Debtor Ledger Tool', 'Tools', 1, 'L', 1, 1, '12', 'default.png', '5', 1, '1', '1', 'NO', '1', 'frmDebtorLedger.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDebtorReceipt', 'Debtor Receipt', 'Transaction', 1, 'T', 1, 1, '12', 'default.png', '5', 1, '1', '1', 'NO', '1', 'frmDebtorReceipt.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDeleteTransaction', 'Delete Transaction', 'Tools', 8, 'L', 46, 24, '1', 'delete trasaction.png', '1', 1, '1', '1', 'NO', 'NO', 'frmDeleteTransaction.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDeliveryChallan', 'Delivery Challan', 'Sales', 2, 'T', 56, 3, '1', 'default.png', '6', 1, '1', '1', 'NO', 'Yes', 'frmDeliveryChallan.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDeliveryChallanList', 'Delivery Challan List', 'Sub contracting Report', 3, 'R', 63, 5, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmDeliveryChallanList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDeliveryChallanSlip', 'Delivery Challan Slip', 'Sub contracting Report', 3, 'R', 62, 4, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmDeliveryChallanSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDeliveryChallanSlipInvoice', 'Delivery Challan Slip Invoice', 'Sub contracting Report', 3, 'R', 74, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmDeliveryChallanSlipInvoice.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDeliveryNote', 'Delivery Note', 'Sales', 2, 'T', 67, 8, '1', 'default.png', '6', 1, '1', '1', 'NO', 'Yes', 'frmDeliveryNote.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDeliveryNoteList', 'Delivery Note List', 'Sub contracting Report', 3, 'R', 68, 10, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmDeliveryNoteList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDeliveryNoteSlip', 'Delivery Note Slip', 'Sub contracting Report', 3, 'R', 67, 9, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmDeliveryNoteSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDocumentReconciliation', 'Document Reconciliation', 'Tools', 8, 'L', 10, 2, '1', 'Document_Reconciliation_Fla.png', '1', 1, '1', '1', 'NO', 'NO', 'frmDocumentReconciliation.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDueDateMonitoringReport', 'Due Date Monitoring Report', 'Sub Contracting Report', 3, 'R', 75, 3, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmDueDateMonitoringReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					//+ " ('frmEditOtherInfo', 'Edit Other Info', 'Master', 1, 'M', 1, 15, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmEditOtherInfo.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmEmailSending', 'Sending Email', 'Tools', 8, 'L', 51, 29, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmEmailSending.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseAbstractReport', 'Abstract Report', 'Reports', 3, 'R', 21, 3, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseAbstractReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseAuditFlash', 'Excise Audit Flash', 'Tools', 4, 'L', 14, 3, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseAuditFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseBillGenerate', 'Bill Generate', 'Transaction', 2, 'L', 19, 3, '1', 'default.png', '2', 1, '1', '1', 'YES', 'NO', 'frmExciseBillGenerate.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseBrandMaster', 'Brand Master', 'Master', 1, 'M', 3, 1, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseBrandMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseCashMemoReport', 'Cash Memo Report', 'Reports', 3, 'R', 184, 8, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseCashMemoReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseBrandWiseInquiry', 'Brand Wise Inquiry', 'Reports', 3, 'R', 186, 10, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseBrandWiseInquiry.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseCategoryMaster', 'Category Master', 'Master', 1, 'M', 13, 5, '1', 'default.png', '0', 1, '1', '1', 'NO', 'NO', 'frmExciseCategoryMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+	//				+ " ('frmExciseChallan', 'Excise Challan', 'Sales', 2, 'T', 57, 4, '1', 'default.png', '6', 1, '1', '1', 'NO', 'Yes', 'frmExciseChallan.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseChataiReport', 'Chatai Report', 'Reports', 3, 'R', 23, 5, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseChataiReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseCityMaster', 'City Master', 'Master', 1, 'M', 18, 9, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseCityMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseDeleteTransaction', 'Delete Transction', 'Transaction', 2, 'R', 20, 5, '1', 'default.png', '2', 1, '1', '1', 'YES', 'NO', 'frmExciseDeleteTransaction.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseFLR3A', 'FLR- III (3A) Report', 'Reports', 3, 'R', 2, 1, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseFLR3A.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseFLR4Report', 'FLR- 4 Report', 'Reports', 3, 'R', 22, 4, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseFLR4Report.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseFLR6', 'FLR-VI (6A) Report', 'Reports', 3, 'R', 5, 2, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseFLR6.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseLicenceMaster', 'Licence Master', 'Master', 1, 'M', 15, 7, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseLicenceMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseLocationMaster', 'Location Master', 'Master', 1, 'M', 17, 8, '1', 'Location-Master.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseLocationMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseManualSale', 'Excise Sale', 'Transaction', 2, 'T', 6, 2, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseManualSale.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseOneDayPass', 'One Day Pass', 'Transaction', 2, 'T', 24, 4, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseOneDayPass.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseOpeningStock', 'Opening Stock', 'Transaction', 2, 'T', 8, 5, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseOpeningStock.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExcisePermitMaster', 'Permit Master', 'Master', 1, 'M', 24, 9, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExcisePermitMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExcisePhysicalStkPosting', 'Excise Physical Stk Posting', 'Store', 5, 'L', 4, 1, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExcisePhysicalStkPosting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExcisePOSDataExportImport', 'Excise POS DataExport Import', 'Store', 5, 'L', 7, 2, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExcisePOSDataExportImport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExcisePOSLinkUp', 'POS Excise Link Up', 'Tools', 4, 'L', 10, 1, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExcisePOSLinkUp.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExcisePOSSale', 'Excise POS Sale', 'Tools', 4, 'L', 13, 2, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExcisePOSSale.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExcisePropertySetUp', 'Property Set Up', 'Master', 1, 'M', 14, 6, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExcisePropertySetUp.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExcisePurchaseAnylasisReport', 'Purchase Anylasis Report', 'Reports', 3, 'R', 182, 6, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExcisePurchaseAnylasisReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExcisePurchaseReport', 'Purchase Report', 'Reports', 3, 'R', 183, 7, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExcisePurchaseReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseRecipeMaster', 'Excise Recipe Master', 'Master', 1, 'M', 16, 5, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseRecipeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseSalesReport', 'Sales Report', 'Reports', 3, 'R', 185, 9, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseSalesReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseSizeMaster', 'Size Master', 'Master', 1, 'M', 11, 3, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseSizeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseStructureUpdate', 'Excise Structure Update', 'Tools', 4, 'L', 15, 4, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseStructureUpdate.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseSubCategoryMaster', 'Sub Category Master', 'Master', 1, 'M', 16, 4, '1', 'default.png', '0', 1, '1', '1', 'NO', 'NO', 'frmExciseSubCategoryMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseSupplierMaster', 'Supplier Master', 'Master', 1, 'M', 9, 4, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseSupplierMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseTransportPass', 'Transport Pass', 'Transaction', 2, 'T', 1, 1, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseTransportPass.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExpiryFlash', 'Expiry Flash', 'Tools', 8, 'L', 49, 27, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmExpiryFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmFoodCost', 'Cost Analysis', 'Stores', 9, 'R', 53, 33, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmFoodCost.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmGRN', 'GRN(Good Receiving Note)', 'Receiving', 4, 'T', 6, 1, '1', 'GRN.png', '1', 1, '1', '1', 'YES', 'YES', 'frmGRN.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL), "
+					+ " ('frmGRNRegisterReport', 'GRN Register Report', 'Receiving Reports', 9, 'R', 73, 5, '1', 'GRN Register Report.png', '1', 1, '1', '1', 'NO', 'NO', 'frmGRNRegisterReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmGrnSlip', 'Grn Slip', 'Receiving Reports', 9, 'R', 35, 4, '1', 'GRN-Slip.png', '1', 1, '1', '1', 'NO', 'NO', 'frmGrnSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmGRNSummaryReport', 'GRN Summary Report', 'Receiving Reports', 9, 'R', 85, 6, '1', 'GRN Summary Report.png', '1', 1, '1', '1', 'NO', 'NO', 'frmGRNSummaryReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmGroupConsumption', 'Group Consumption Report', 'Stores', 7, 'R', 52, 31, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmGroupConsumption.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmGroupMaster', 'Group Master', 'Master', 8, 'M', 7, 5, '1', 'Group_Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPOSItemMasterImport', 'Import POS Item', 'Tools', 8, 'L', 87, 4, '1', 'import pos item.png', '1', 1, '1', '1', 'NO', 'NO', 'frmPOSItemMasterImport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmInterfaceMaster', 'Interface Master', 'Master', 7, 'M', 7, 7, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmInterfaceMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmInvoicingPrinting', 'Invoicing Printing', 'Reports', 6, 'R', 20, 1, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmInvoicingPrinting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmInwardOutwardRegister', 'Inward Outward Register', 'Sub Contracting Report', 3, 'R', 77, 5, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmInwardOutwardRegister.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmIssueListingIndigeous', 'Issue Listing Indigeous', 'sub contracting Report', 3, 'R', 78, 6, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmIssueListingIndigeous.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmItemVariancePriceFlash', 'Item Variance Price Flash', 'Tools', 8, 'R', 55, 34, '1', 'Item Variance Price Flash.png', '1', 1, '1', '1', 'NO', 'NO', 'frmItemVariancePriceFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmJOAllocation', 'Job Order Allocation', 'Sales', 2, 'T', 65, 6, '1', 'default.png', '6', 1, '1', '1', 'NO', 'Yes', 'frmJOAllocation.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmJobOrder', 'Job Order', 'Sales', 2, 'T', 59, 5, '1', 'default.png', '6', 1, '1', '1', 'NO', 'Yes', 'frmJobOrder.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmJobOrderAllocationSlip', 'Job Order Allocation Slip', 'Sub contracting Report', 3, 'R', 66, 8, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmJobOrderAllocationSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmJobOrderList', 'Job Order List', 'Sub contracting Report', 3, 'R', 64, 6, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmJobOrderList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmJobOrderSlip', 'Job Order Slip', 'Sub contracting Report', 3, 'R', 63, 5, '1', 'defailt.png', '6', 1, '1', '1', 'NO', 'NO', 'frmJobOrderSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmJobWorkMonitoringReport', 'Job Work Monitoring Report', 'Sub Contracting Report', 3, 'R', 79, 6, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmJobWorkMonitoringReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmJobWorkRegister', 'Job Work Register', 'Sub Contracting Report', 3, 'R', 80, 7, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmJobWorkRegister.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmJV', 'JV Entry', 'Transaction', 1, 'T', 1, 1, '12', 'default.png', '5', 1, '1', '1', 'NO', '1', 'frmJV.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmJVreport', 'JV Report', 'Reports', 6, 'R', 70, 2, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmJVReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmLetterMaster', 'Letter Master', 'Master', 10, 'M', 10, 10, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmLetterMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmLetterProcessing', 'Letter Processing', 'Processing', 3, 'P', 2, 2, '1', 'default.png', '5', 1, '1', '1', 'YES', 'NO', 'frmLetterProcessing.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmLocationMaster', 'Location Master', 'Master', 7, 'M', 8, 6, '1', 'Location-Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmLocationMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmLocationWiseProductSlip', 'LocationWise Product Slip', 'Stores', 9, 'R', 41, 19, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmLocationWiseProductSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmLockerMaster', 'Locker Master', 'Master', 1, 'M', 1, 13, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmLockerMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmMaterialIssueRegisterReport', 'Material Issue Register Report', 'Stores', 9, 'R', 81, 35, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmMaterialIssueRegisterReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmMaterialIssueSlip', 'Material Issue Slip', 'Stores', 9, 'R', 34, 2, '1', 'Material-Issue-Slip.png', '1', 1, '1', '1', 'NO', 'NA', 'frmMaterialIssueSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmMaterialReq', 'Material Requisition', 'Cost Center', 1, 'T', 9, 1, '1', 'Requisition-Form.png', '1', 1, '1', '1', 'YES', 'YES', 'frmMaterialReq.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL), "
+					+ " ('frmMaterialReqSlip', 'Material Requisition Slip', 'Cost Center\\r\\n', 9, 'R', 37, 5, '1', 'Requisition-Slip.png', '1', 1, '1', '1', 'NO', 'NO', 'frmMaterialReqSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmMaterialReturn', 'Material Return', 'Cost Center', 1, 'T', 10, 2, '1', 'default.png', '1', 1, '1', '1', 'YES', 'YES', 'frmMaterialReturn.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL), "
+					+ " ('frmMaterialReturnDetail', 'Material Return Slip', 'Cost Center\\r\\n', 7, 'R', 54, 33, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmMaterialReturnDetail.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmMIS', 'Material Issue Slip', 'Store', 2, 'T', 11, 1, '1', 'Material-Issue-Slip.png', '1', 1, '1', '1', 'YES', 'YES', 'frmMIS.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL), "
+					+ " ('frmMISSummaryReport', 'MIS Summary Report', 'Stores', 9, 'R', 84, 36, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmMISSummaryReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmMonthEnd', 'Month End', 'Tools', 8, 'L', 2, 2, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmMonthEnd.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmNarrationMaster', 'Narration Master', 'Master', 1, 'M', 6, 6, '6', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmNarrationMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmNonMovingItemsReport', 'Non Moving Items Report', 'Stores', 7, 'R', 48, 26, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmNonMovingItemsReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmOpeningStock', 'Opening Stock', 'Store', 2, 'T', 12, 2, '1', 'Opening-Stocks.png', '1', 1, '1', '1', 'NO', 'YES', 'frmOpeningStock.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL), "
+					+ " ('frmOpeningStockSlip', 'Opening Stock Slip', 'Stores', 7, 'R', 50, 28, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmOpeningStockSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmParameterSetup', 'Parameter Setup', 'Setup', 3, 'S', 1, 1, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmParameterSetup.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPayment', 'Payment', 'Transaction', 1, 'T', 1, 1, '12', 'imgPayment.png', '5', 1, '1', '1', 'NO', '1', 'frmPayment.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPaymentReport', 'Payment Report', 'Reports', 6, 'R', 72, 4, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmPaymentReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPendingDocFlash', 'Pending Document Flash', 'Tools', 8, 'L', 47, 25, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmPendingDocFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPendingNonStkMIS', 'Pending NonStkable MIS', 'Tools', 8, 'L', 48, 26, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmPendingNonStkMIS.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPhysicalStkPosting', 'Physical Stk Posting', 'Store', 2, 'T', 13, 3, '1', 'Physical-Stock-Posting.png', '1', 1, '1', '1', 'NO', 'YES', 'frmPhysicalStkPosting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL), "
+					+ " ('frmPhysicalStockPostingSlip', 'Physical Stock Posting Slip', 'Stores', 9, 'R', 10, 2, '1', 'Physical-Stock-Posting.png', '1', 1, '1', '1', 'NA', 'NA', 'frmPhysicalStockPostingSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPOSLinkUp', 'POS Link Up', 'Tools', 8, 'L', 1, 1, '12', 'Attribute-Master.png', '1', 1, '1', '1', 'NO', '1', 'frmPOSLinkUp.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPOSSalesDtl', 'POS Sales', 'Tools', 8, 'L', 1, 1, '12', 'Attribute-Master.png', '1', 1, '1', '1', 'NO', '1', 'frmPOSSalesDtl.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmProcessMaster', 'Process Master', 'Master', 8, 'M', 69, 17, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmProcessMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmProduction', 'Material Production', 'Production', 6, 'T', 14, 3, '1', 'Productions.png', '1', 1, '1', '1', 'NO', 'YES', 'frmProduction.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), ";
+			if (strIndustryType.equalsIgnoreCase("Manufacture")) {
+				sql += " ('frmProductionOrder', 'Production Order', 'Production', 6, 'T', 15, 1, '1', 'Production-Order.png', '1', 1, '1', '1', 'YES', 'YES', 'frmProductionOrder.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), ";
+			}
+	
+			else {
+				sql += " ('frmProductionOrder', 'Meal Planing ', 'Production', 6, 'T', 15, 1, '1', 'Production-Order.png', '1', 1, '1', '1', 'YES', 'YES', 'frmProductionOrder.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), ";
+			}
+	
+			sql += " ('frmProductionOrderSlip', 'Meal Planing Slip', 'Production\\r\\n', 9, 'R', 38, 9, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmProductionOrderSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmProductList', 'Product List', 'Listing', 9, 'R', 43, 21, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmProductList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmProductMaster', 'Product Master', 'Master', 8, 'M', 16, 7, '1', 'Product-Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmProductMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmProductwiseSupplierwise', 'Productwise Supplierwise', 'Receiving Reports', 9, 'R', 44, 22, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmProductwiseSupplierwise.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmProdWiseSuppRateHis', 'Product Wise Supp Rate Histroy Report', 'Receiving Reports', 9, 'R', 40, 19, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmProdWiseSuppRateHis.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPropertyMaster', 'Property Master', 'Master', 7, 'M', 17, 8, '1', 'imgPropertySetup.png', '1', 1, '1', '1', 'NO', 'YES', 'frmPropertyMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPurchaseIndent', 'Purchase Indent', 'Store', 2, 'T', 19, 4, '1', 'Purchase-Indent.png', '1', 1, '1', '1', 'YES', 'YES', 'frmPurchaseIndent.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL), "
+					+ " ('frmPurchaseIndentSlip', 'Purchase Indent Slip', 'Purchases', 9, 'R', 35, 3, '1', 'Purchase-Indent-Slip.png', '1', 1, '1', '1', 'NO', 'NO', 'frmPurchaseIndentSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPurchaseOrder', 'Purchase Order', 'Purchase', 3, 'T', 20, 1, '1', 'Purchase-Order.png', '1', 1, '1', '1', 'YES', 'YES', 'frmPurchaseOrder.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL), "
+					+ " ('frmPurchaseOrderSlip', 'Purchase Order Slip', 'Purchases', 9, 'R', 36, 4, '1', 'Purchase-Order-Slip.png', '1', 1, '1', '1', 'NO', 'No', 'frmPurchaseOrderSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPurchaseReturn', 'Purchase Return', 'Purchase', 3, 'T', 21, 2, '1', 'Purchase-Return.png', '1', 1, '1', '1', 'YES', 'YES', 'frmPurchaseReturn.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL), "
+					+ " ('frmPurchaseReturnSlip', 'Purchase Return Slip', 'Purchases', 7, 'R', 53, 32, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmPurchaseReturnSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmRateContract', 'Rate Contract', 'Purchase', 3, 'T', 22, 3, '1', 'Rate-Contract.png', '1', 1, '1', '1', 'NO', 'YES', 'frmRateContract.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmReasonMaster', 'Reason Master', 'Master', 8, 'M', 22, 10, '1', 'imgReasonMaster.png', '1', 1, '1', '1', 'NO', 'YES', 'frmReasonMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmReceipt', 'Receipt', 'Transaction', 1, 'T', 1, 1, '12', 'default.png', '5', 1, '1', '1', 'NO', '1', 'frmReceipt.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmReceiptissueConsolidated', 'Receipt Issue Consolidated', 'Stores', 9, 'R', 52, 32, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmReceiptIssueConsolidated.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmReceiptRegister', 'Receipt Register Report', 'Receiving Reports', 9, 'R', 46, 24, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmReceiptRegister.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmRecipes', 'Recipes List', 'Listing', 9, 'R', 39, 10, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmRecipesList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmReciptReport', 'Recipt Report', 'Reports', 6, 'R', 71, 3, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmReciptReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmReorderLevelReport', 'Reorder Level Report', 'Stores', 7, 'R', 47, 25, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmReorderLevelReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmReorderLevelwise', 'Locationwise Productwise Reorder', 'Stores', 9, 'R', 45, 23, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmReorderLevelwise.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSalesOrder', 'Sales Order', 'Sales', 2, 'T', 51, 1, '1', 'default.png', '6', 1, '1', '1', 'YES', 'YES', 'frmSalesOrder.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSalesOrderBOM', 'Sales Order BOM', 'Sales', 2, 'T', 55, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'Yes', 'frmSalesOrderBOM.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSalesOrderList', 'Sales Order List', 'Reports', 3, 'R', 61, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmSalesOrderList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSalesOrderSlip', 'Sales Order Slip', 'Reports', 3, 'R', 60, 3, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmSalesOrderSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSalesOrderStatus', 'Sales Order Status', 'Sales', 2, 'T', 68, 9, '1', 'default.png', '6', 1, '1', '1', 'NO', 'Yes', 'frmSalesOrderStatus.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSanctionAutherityMaster', 'Sanction Autherity Master', 'Master', 8, 'M', 8, 8, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmSanctionAutherityMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmScrapGenerated', 'Scrap Generated', 'Sub Contracting Report', 3, 'R', 82, 8, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmScrapGenerated.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSecurityShell', 'Security Shell', 'Master', 7, 'M', 23, 11, '1', 'imgSecurityShell.png', '1', 1, '1', '1', 'NO', 'YES', 'frmSecurityShell.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSetup', 'Property Setup', 'Tools', 8, 'L', 24, 12, '1', 'Setup.png', '1', 1, '1', '1', 'NO', 'YES', 'frmSetup.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSlowMovingItemsReport', 'Slow Moving Items Report', 'Stores', 7, 'R', 49, 27, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmSlowMovingItemsReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmStkVarianceFlash', 'Stock Variance Flash', 'Tools', 8, 'L', 50, 28, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmStkVarianceFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmStockAdjustment', 'Stock Adjustment', 'Store', 2, 'T', 25, 5, '1', 'Stock-Adjustment.png', '1', 1, '1', '1', 'NO', 'YES', 'frmStockAdjustment.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL), "
+					+ " ('frmStockAdjustmentFlash', 'Stock Adjustment Flash', 'Tools', 8, 'L', 25, 13, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmStockAdjustmentFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmStockAdjustmentSlip', 'Stock Adjustment Slip', 'Stores', 9, 'R', 33, 1, '1', 'Stock-Adjustment-Slip.png', '1', 1, '1', '1', 'NO', 'NA', 'frmStockAdjustmentSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmStockFlash', 'Stock Flash', 'Tools', 8, 'L', 10, 10, '1', 'Stocks-Flash.png', '1', 1, '1', '1', 'NO', 'NO', 'frmStockFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmStockLedger', 'Stock Ledger', 'Tools', 8, 'L', 10, 12, '1', 'Stock-Ledger.png', '1', 1, '1', '1', 'NO', 'NO', 'frmStockLedger.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					// +" ('frmStockLedgerReportCRM', 'Stock Ledger', 'SuB Contracting Report', 3, 'R', 83, 8, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmStockLedgerReportCRM.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmStockTransfer', 'Stock Transfer', 'Cost Center', 1, 'T', 26, 3, '1', 'Stock-Transfer.png', '1', 1, '1', '1', 'NO', 'YES', 'frmStockTransfer.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL), "
+					+ " ('frmStockTransferSlip', 'Stock Transfer Slip', 'Stores', 9, 'R', 37, 6, '1', 'Stock-Transfer-Slip.png', '1', 1, '1', '1', 'NO', 'NO', 'frmStockTransferSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmStructureUpdate', 'Structure Update', 'Tools', 8, 'L', 10, 2, '1', 'imgStructureUpdate.png', '1', 1, '1', '1', 'NO', 'NO', 'frmStructureUpdate.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSubCategoryMaster', 'Sub Category Master', 'Master', 1, 'M', 1, 11, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmSubCategoryMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSubContractorGRN', 'Sub Contractor GRN', 'Sales', 2, 'T', 66, 7, '1', 'default.png', '6', 1, '1', '1', 'NO', 'Yes', 'frmSubContractorGRN.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSubContractorGRNSlip', 'Sub-Contractor GRN Slip', 'Sub contracting Report', 3, 'R', 65, 7, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmSubContractorGRNSlip.html', '(NULL)', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSubContractorMaster', 'Sub Contractor Master', 'Master', 1, 'M', 58, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmSubContractorMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSubGroupMaster', 'Sub Group Master', 'Master', 8, 'M', 27, 13, '1', 'Sub-Group-Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmSubGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSundryDebtorMaster', 'Sundry Debtor Master', 'Master', 9, 'M', 9, 9, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmSundryDebtorMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSupplierMaster', 'Supplier Master', 'Master', 8, 'M', 28, 14, '1', 'Supplier-Master.png', '1', 1, '1', '1', 'NO', 'YES', 'frmSupplierMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmTaxMaster', 'Tax Master', 'Master', 8, 'M', 29, 15, '1', 'imgTaxMaster.png', '1', 1, '1', '1', 'NO', 'YES', 'frmTaxMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmTCMaster', 'TC Master', 'Master', 8, 'M', 34, 18, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NA', 'frmTCMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmUDReportCategoryMaster', 'UD Report Category Master', 'Master', 8, 'M', 1, 1, '12', 'Attribute-Master.png', '1', 1, '1', '1', 'NO', '1', 'frmUDReportCategoryMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmUOMMaster', 'UOM Master', 'Master', 8, 'M', 35, 19, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmUOMMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmUserDefinedReport', 'User Defined Report', 'Tools', 8, 'L', 1, 1, '12', 'Attribute-Master.png', '1', 1, '1', '1', 'NO', '1', 'frmUserDefinedReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmUserDefinedReportView', 'User Defined Report View', 'Reports', 7, 'R', 25, 25, '12', 'Attribute-Master.png', '1', 1, '1', '1', 'NO', '1', 'frmUserDefinedReportView.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmUserMaster', 'User Master', 'Master', 7, 'M', 31, 17, '1', 'User-Management.png', '1', 1, '1', '1', 'NO', 'YES', 'frmUserMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWebBooksAccountMaster', 'Account Master', 'Master', 1, 'M', 1, 1, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmWebBooksAccountMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWebBooksDeleteTransaction', 'Delete Transaction', 'Transaction', 1, 'T', 1, 1, '12', 'default.png', '5', 1, '1', '1', 'NO', '1', 'frmWebBooksDeleteTransaction.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWebClubDependentMaster', 'Dependent Master', 'Master', 1, 'M', 1, 2, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmDependentMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWebClubGeneralMaster', 'General Master', 'Master', 1, 'M', 1, 9, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmGeneralMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWebClubGroupMaster', 'Group Master', 'Master', 1, 'M', 1, 7, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmWebClubGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWebClubMemberCategoryMaster', 'Member Category Master', 'Master', 1, 'M', 1, 3, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmMemberCategoryMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWebClubMemberHistory', 'Member History', 'Master', 1, 'M', 1, 4, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmMemberHistory.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWebClubMemberPreProfile', 'Member Pre-Profile', 'Master', 1, 'M', 1, 5, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmMemberPreProfile.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWebClubMemberProfile', 'Member Profile', 'Master', 1, 'M', 1, 1, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmMemberProfile.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWebClubMembershipFormGenration', 'Membership Form Genration', 'Master', 1, 'M', 1, 6, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmMembershipFormGenration.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWebClubPersonMaster', 'Person Master', 'Master', 1, 'M', 1, 8, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmWebClubPersonMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWhatIfAnalysis', 'What If Analysis Tool', 'Tools', 8, 'L', 10, 2, '1', 'What-If-Analysis-Tool.png', '1', 1, '1', '1', 'NO', 'NO', 'frmWhatIfAnalysis.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmWorkOrder', 'Work Order', 'Production', 6, 'T', 32, 2, '1', 'Work-Order.png', '1', 1, '1', '1', 'YES', 'YES', 'frmWorkOrder.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('Listing', 'Listing', 'Reports', 7, 'O', 1, 1, '1', 'default.png', '1', 1, '1', '1', 'NA', 'NA', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('Master', 'Master', 'Tools', 8, 'O', 1, 1, '1', 'default.png', '1', 1, '1', '1', 'No', 'No', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('Production\\r\\n', 'Production\\r\\n', 'Reports', 7, 'O', 1, 1, '1', 'default.png', '1', 1, '1', '1', 'NA', 'NA', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('Purchases', 'Purchases', 'Reports', 7, 'O', 1, 1, '1', 'default.png', '1', 1, '1', '1', 'NA', 'NA', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('Receiving Reports', 'Receiving Reports', 'Reports', 7, 'O', 1, 1, '1', 'default.png', '1', 1, '1', '1', 'NA', 'NA', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('Stores', 'Stores', 'Reports', 7, 'O', 1, 1, '1', 'default.png', '1', 1, '1', '1', 'NA', 'NA', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('Sub Contracting Report', 'Sub Contracting Report', 'Reports', 3, 'O', 1, 1, '1', 'default.png', '6', 1, '1', '1', 'No', 'No', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+					+ " ('frmDatabaseDataImport', 'Data Import', 'Tools', 8, 'L', 86, 1, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmDatabaseDataImport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmRecipeCostiong', 'Recipes Costing', 'Listing', 9, 'R', 87, 11, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmRecipeCosting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmLossCalculationReport', 'Loss Calculation Report', 'Listing', 9, 'R', 88, 13, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmLossCalculationReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmMasterList', 'Master List', 'Listing', 9, 'R', 44, 22, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmMasterList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseCategoryWiseSale', 'Category Wise Sale', 'Reports', 3, 'R', 187, 11, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseCategoryWiseSale.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmBrandWiseClosingReport', 'Brand WiseClosing Report', 'Reports', 3, 'R', 188, 12, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmBrandWiseClosingReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+					+ " ('frmExciseUserMaster', 'Excise User Master', 'Master', 1, 'M', 25, 10, '2', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseUserMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseSecurityShell','Excise Security Shell', 'Tools', 8, 'T', 11, 11, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseSecurityShell.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmTallyLinkUp', 'Tally Link Up', 'Tools', 8, 'L', 189, 23, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmTallyLinkUp.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDocumentListingFlashReport', 'Document Listing Flash Report', 'Tools', 8, 'L', 190, 24, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmDocumentListingFlashReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmProductPurchaseReciept', 'Product Purchase Reciept', 'Receiving Reports', 9, 'R', 191, 25, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmProductPurchaseReciept.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExciseMonthEnd', 'Excise Month End', 'Tools', 8, 'T', 12, 12, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseMonthEnd.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmExcisePropertyMaster', 'Excise Property Master', 'Master', 1, 'M', 26, 11, '1', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExcisePropertyMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+	
+					+ " ('frmCountryMaster', 'Country Master', 'Master', 8, 'M', 18, 102, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmWSCountryMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmStateMaster', 'State Master', 'Master', 8, 'M', 19, 103, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmWSStateMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmCityMaster', 'City Master', 'Master', 8, 'M', 20, 104, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmWSCityMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmVehicleMaster', 'Vehicle Master', 'Master', 8, 'M', 21, 105, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmVehicleMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmRouteMaster', 'Route Master', 'Master', 8, 'M', 22, 106, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmRouteMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmVehicleRouteMaster', 'Vehicle Route Master', 'Master', 8, 'M', 23, 105, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmVehicleRouteMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmAvgConsumptionReport', 'Avg Consumption Report', 'Stores', 9, 'R', 85, 36, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmAvgConsumptionReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+					+ " ('frmStockTransferFlash', 'Stock Transfer Flash', 'Tools', 8, 'L', 86, 86, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmStockTransferFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+					+ " ('frmTransporterMaster', 'Transporter Master', 'Master', 8, 'M', 22, 106, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmTransporterMaster.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+					+ " ('frmExportTallyFile', 'Export Tally File', 'Tools', 8, 'L', 87, 87, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmExportTallyFile.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+					+ " ('frmPurchaseRegisterReport', 'Purchase Register Report', 'Purchases', 7, 'R', 54, 33, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmPurchaseRegisterReport.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('Excise Report', 'Excise Report', 'Reports', 7, 'O', 1, 1, '1', 'default.png', '1', 1, '1', '1', 'NA', 'NA', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmRG-23A-Part-I', 'From RG-23A-Part-I', 'Excise Report', 7, 'R', 1, 108, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmRG-23A-Part-I.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmARLinkUp', 'AR Link Up', 'Tools', '8', 'L', '190', '24', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmARLinkUp.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSaleVSPurchase', 'Sale vs Purchase', 'Stores', 7, 'R', 1, 1, '1', 'default.png', '1', 1, '1', '1','NA', 'NA', 'frmSaleVSPurchase.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmStockAdjustmentMonthly', 'Stock Adjustment Monthly', 'Stores', '9', 'R', '33', '1', '1', 'Stock-Adjustment-Slip.png', '1', '1', '1', '1', 'NO', 'NO', 'frmStockAdjustmentMonthly.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmGrnAndInvoiceComparision', 'Comparision GRN and  Invoice', 'Stores', '8', 'R', '1', '1', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmGrnAndInvoiceComparision.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmBulkProductUpdate', 'Bulk Product Update', 'Master', '8', 'M', '23', '108', '1', 'Product-Master.png', '1', '1', '1', '1', 'NO', 'YES', 'frmBulkProductUpdate.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmFundFlow', 'Fund Flow Report', 'Tools', '8', 'L', '87', '88', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmFundFlowReport.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmTransactionFlash', 'Transaction Flash', 'Tools', '8', 'L', '87', '89', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmTransactionFlash.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmManufactureMaster', 'Manufacture Master', 'Master', 1, 'M', 61, 2, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmManufactureMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmProductWiseGRNReport', 'Loc.Cat. Product Wise GRN Report', 'Receiving Reports', 9, 'R', 192, 26, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmProductWiseGRNReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmMISLocationWiseCategoryWiseReport', 'MIS LocationWise CategroyWise Report', 'Stores', '9', 'R', '86', '37', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmMISLocationWiseCategoryWiseReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSupplierWiseProductGRNReport', 'Supp.Cat. Product Wise GRN Report', 'Receiving Reports', 9, 'R', 193, 27, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmSupplierWiseProductGRNReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+					+ " ('frmTransactionListing', 'Transaction Listing', 'Tools', '8', 'L', '88', '90', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmTransactionListing.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmCurrencyMaster', 'Currency Master', 'Master', '8', 'M', '23', '106', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmCurrencyMaster.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmMISLocationWiseReport', 'MIS LocationWise  Report', 'Stores', '9', 'R', '86', '37', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmMISLocationWiseReport.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					// for Excise structure update form show in excise module; //
+					// START shown those form which is needed///
+					// +" ('frmExciseStructureUpdate', 'Excise Structure Update', 'Tools', 4, 'L', 15, 4, '12', 'default.png', '2', 1, '1', '1', 'NO', 'NO', 'frmExciseStructureUpdate.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmPendingRecipe', 'Pending Recipe List', 'Listing', 9, 'R', 45, 23, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmPendingRecipe.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmStandardRequisition', 'Standard Requisition', 'Cost Center', '1', 'T', '27', '3', '1', 'default.png', '1', '1', '1', '1', 'NO', 'YES', 'frmStandardRequisition.html',  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmProfitLossWebBook', 'Profit Loss Report', 'Reports', '6', 'R', '10', '10', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmProfitLossWebBook.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+					+ " ('frmFreeOfCostReport', 'Free Of Cost(FOC)', 'Purchases', '7', 'R', '54', '33', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmFreeOfCostReport.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ";
+	
+			funExecuteQuery(sql);
+			
+			
+			sql = "UPDATE `ariasalu_dbwebmms`.`tbltreemast` SET `strFormDesc`='Receipt Report' WHERE  `strFormName`='frmReciptReport' AND `strModule`='5';";
+			funExecuteQuery(sql);
+			
+			
+			sql = " INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`, `strInvoice`, `strDeliverySchedule`, `strFormAccessYN`) VALUES "
+				 + " ('frmAgentCommision', 'Agent Commision', 'Master', 1, 'M', 13, 13, '1', 'imgAgentCommission.png', '3', 1, '1', '1', 'NO', 'NO', 'frmAgentCommision.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmAgentMaster', 'Agent Master', 'Master', 1, 'M', 12, 12, '1', 'imgAgentMaster.png', '3', 1, '1', '1', 'NO', 'NO', 'frmAgentMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmBaggageMaster', 'Baggage Master', 'Master', 1, 'M', 21, 21, '1', 'imgBaggageMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmBaggageMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmBathTypeMaster', 'BathType Master', 'Master', 1, 'M', 19, 19, '2', 'imgBathTypeMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmBathTypeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmBillDiscount', 'Bill Discount', 'Transaction', 2, 'T', 12, 12, '1', 'imgBillDiscount.png', '3', 3, '3', '3', 'NO', 'YES', 'frmBillDiscount.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmBillingInstructions', 'Billing Instructions', 'Master', 1, 'M', 14, 14, '1', 'default.png', '3', 3, '3', '3', 'NO', 'NO', 'frmBillingInstructions.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmBillPrinting', 'Bill Printing', 'Transaction', 2, 'T', 10, 10, '5', 'imgBillPrinting.png', '3', 5, '5', '5', 'NO', 'NO', 'frmBillPrinting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmBookerMaster', 'Booker Master', 'Master', 1, 'M', 16, 16, '1', 'default.png', '3', 1, '1', '1', 'NO', 'NO', 'frmBookerMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmBookingType', 'Booking Type', 'Master', 1, 'M', 5, 5, '1', 'default.png', '3', 3, '3', '3', 'NO', 'NO', 'frmBookingType.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmBusinessSource', 'BusinessSource Master', 'Master', 1, 'M', 17, 17, '8', 'default.png', '3', 3, '3', '3', 'NO', 'YES', 'frmBusinessSource.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmCancelationReport', 'Cancellation Report', 'Reports', 3, 'R', 3, 6, '6', 'imgCancellationReport.png', '3', 1, '1', '1', 'NO', 'NO', 'frmCancelationReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmChangedRoomTypeReport', 'Changed RoomType Report', 'Reports', 2, 'R', 2, 2, '1', 'imgChangeRoomTypeReport.png', '3', 1, '1', '1', 'NO', 'NO', 'frmChangedRoomTypeReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmChangeGSTNoOnBill', 'Change GST No On Bill', 'Transaction', 2, 'T', 2, 2, '1', 'imgChangeGSTONBill.png', '3', 1, '1', '1', 'NO', 'NO', 'frmChangeGSTNoOnBill.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmChangeRoom', 'Change Room', 'Transaction', 2, 'T', 2, 2, '1', 'imgChangeRoom.png', '3', 1, '1', '1', 'NO', 'NO', 'frmChangeRoom.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmChangeRoomReport', 'Change Room Report', 'Reports', 3, 'R', 11, 11, '5', 'imgChangeRoomReport.png', '3', 5, '5', '5', 'NO', 'NO', 'frmChangeRoomReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmChargePosting', 'ChargePosting Master', 'Master', 1, 'M', 18, 18, '10', 'default.png', '3', 3, '3', '3', 'NO', 'YES', 'frmChargePosting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmCheckIn', 'Check In', 'Transaction', 2, 'T', 2, 2, '1', 'imgCheckIn.png', '3', 1, '1', '1', 'NO', 'NO', 'frmCheckIn.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmCheckInList', 'Check In List', 'Reports', 3, 'R', 3, 3, '5', 'imgCheckInList.png', '3', 1, '1', '1', 'NO', 'NO', 'frmCheckInList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmCheckOut', 'Check Out', 'Transaction', 2, 'T', 3, 3, '1', 'imgCheckOut.png', '3', 2, '2', '2', 'NO', 'NO', 'frmCheckOut.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmCheckoutDiscount', 'Checkout Discount Master', 'Master', 1, 'M', 1, 1, '1', 'imgCheckOutDiscount.png', '3', 3, '3', '3', 'NO', 'NO', 'frmCheckoutDiscountMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmCheckOutList', 'Check Out List', 'Reports', 3, 'R', 4, 4, '6', 'imgCheckOutList.png', '3', 1, '1', '1', 'NO', 'NO', 'frmCheckOutList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmCorporateMaster', 'Corporate Master', 'Master', 1, 'M', 11, 11, '1', 'imgCorporateMaster.png', '3', 1, '1', '1', 'NO', 'NO', 'frmCorporateMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmDashboard', 'Dashboard', 'Reports', 3, 'R', 3, 3, '5', 'imgDashBoard.png', '3', 1, '1', '1', 'NO', 'NO', 'frmDashboard.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmDayEnd', 'Day End', 'Transaction', 2, 'T', 11, 11, '13', 'imgDayEnd.png', '3', 3, '3', '3', 'NO', 'YES', 'frmDayEnd.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmDepartmentMaster', 'Department Master', 'Master', 1, 'M', 10, 10, '1', 'imgDepartmentMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmDepartmentMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmExpectedArrivalList', 'Expected Arrival List', 'Reports', 3, 'R', 6, 6, '1', 'imgExpectdArrivalList.png', '3', 1, '1', '1', 'NA', 'NA', 'frmExpectedArrivalList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmExpectedDepartureList', 'Expected Departure List', 'Reports', 3, 'R', 5, 5, '1', 'imgExpectdDepartureList.png', '3', 1, '1', '1', 'NO', 'NO', 'frmExpectedDepartureList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmExtraBed', 'ExtraBed Master', 'Master', 1, 'M', 4, 4, '9', 'imgAddExtraBed.png', '3', 3, '3', '3', 'NO', 'YES', 'frmExtraBed.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmFloorMaster', 'Floor Master', 'Master', 1, 'M', 24, 24, '1', 'imgFloorMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmFloorMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmFolioPosting', 'Folio Posting', 'Transaction', 2, 'T', 8, 8, '1', 'imgFolioPosting.png', '3', 5, '5', '3', 'NO', 'YES', 'frmFolioPosting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmFolioPrinting', 'Folio Printing', 'Transaction', 2, 'T', 9, 9, '5', 'imgFolioPrinting.png', '3', 5, '5', '5', 'NO', 'NO', 'frmFolioPrinting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmGuestHistoryReport', 'Guest History Report', 'Reports', 3, 'R', 8, 8, '5', 'imgGuestHistoryReport.png', '3', 5, '5', '5', 'NO', 'NO', 'frmGuestHistoryReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmGuestListReport', 'Guest List Report', 'Reports', 3, 'R', 7, 7, '5', 'imgGuestListReport.png', '3', 5, '5', '5', 'NO', 'NO', 'frmGuestListReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmGuestMaster', 'Guest Master', 'Master', 1, 'M', 8, 8, '1', 'imgGuestMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmGuestMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmIncomehead', 'IncomeHead Master', 'Master', 1, 'M', 2, 2, '7', 'imgIncomeHeadMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmIncomehead.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmMarketSource', 'MarketSource Master', 'Master', 1, 'M', 23, 23, '1', 'default.png', '3', 3, '3', '3', 'NO', 'NO', 'frmMarketSource.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmModifyBillReport', 'Modify Bill Report', 'Reports', 3, 'R', 11, 11, '5', 'imgModifyBillReport.png', '3', 5, '5', '5', 'NO', 'NO', 'frmModifyBillReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmNoShowReport', 'No Show Report', 'Tools', 1, 'L', 3, 44, '1', 'imgNoShowReport.png', '3', 1, '1', '1', 'NO', 'NO', 'frmNoShowReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmPaxReport', 'Pax Report', 'Reports', 3, 'R', 9, 9, '5', 'imgPaxReport.png', '3', 5, '5', '5', 'NA', 'NA', 'frmPaxReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmPaymentDashboard', 'Payment Dashboard', 'Reports', 3, 'R', 3, 3, '5', 'imgPaymentDashboardReport.png', '3', 1, '1', '1', 'NO', 'NO', 'frmPaymentDashboard.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmPlanMaster', 'Plan Master', 'Master', 1, 'M', 22, 22, '6', 'imgPlanMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmPlanMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmPMSFlash', 'PMS Flash', 'Tools', 1, 'L', 3, 43, '1', 'imgPMSFlash.png', '3', 1, '1', '1', 'NO', 'NO', 'frmPMSFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmPMSPayment', 'Payment', 'Transaction', 2, 'T', 7, 7, '15', 'imgPayment.png', '3', 3, '3', '3', 'NO', 'YES', 'frmPMSPayment.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmPMSSecurityShell', 'Security Shell', 'Master', 1, 'M', 8, 8, '1', 'imgSecurityShell.png', '3', 3, '3', '3', 'NO', 'NO', 'frmPMSSecurityShell.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmPMSTaxMaster', 'PMS Tax Master', 'Master', 1, 'M', 6, 6, '1', 'imgTaxMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmPMSTaxMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmPostRoomTerrif', 'Post Room Terrif', 'Transaction', 2, 'T', 5, 5, '1', 'imgPostRoomTerrif.png', '3', 3, '3', '3', 'NO', 'NO', 'frmPostRoomTerrif.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmPropertySetup', 'Property Setup', 'Tools', 4, 'L', 1, 1, '12', 'imgPropertySetup.png', '3', 1, '1', '1', 'NO', 'NO', 'frmPropertySetup.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmProvisionBill', 'Provision Bill', 'Reports', 3, 'R', 6, 6, '1', 'imgBillPrinting.png', '3', 1, '1', '1', 'NA', 'NA', 'frmProvisionBill.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmReason', 'PMS Reason Master', 'Master', 1, 'M', 7, 7, '5', 'imgReasonMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmReason.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmReceiptReport', 'Receipt Report', 'Reports', 3, 'R', 19, 19, '5', 'imgReceiptReport.png', '3', 5, '5', '5', 'NO', 'NO', 'frmReceiptReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmReOpenFolio', 'ReOpen Folio', 'Transaction', 2, 'T', 2, 2, '1', 'default.png', '3', 1, '1', '1', 'NO', 'NO', 'frmReOpenFolio.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmReservation', 'Reservation', 'Transaction', 2, 'T', 1, 1, '1', 'imgReservation.png', '3', 2, '2', '2', 'NO', 'NO', 'frmReservation.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmReservationFlash', 'Reservation Flash', 'Tools', 4, 'L', 1, 3, '12', 'imgReservationFlash.png', '3', 1, '1', '1', 'NO', 'NO', 'frmReservationFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmRevenueHeadReport', 'Revenue Head Report', 'Reports', 3, 'R', 1, 1, '1', 'imgRevenueHeadReport.png', '3', 1, '1', '1', 'NO', 'NO', 'frmRevenueHeadReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmRoomCancellation', 'Room Cancellation', 'Transaction', 2, 'T', 6, 6, '1', 'imgReservationCancellation.png', '3', 3, '3', '3', 'NO', 'NO', 'frmRoomCancellation.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmRoomMaster', 'Room Master', 'Master', 1, 'M', 1, 1, '1', 'imgRoomMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmRoomMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmRoomStatusDiary', 'Room Status Diary', 'Tools', 4, 'L', 1, 2, '12', 'imgRoomStatusDairy.png', '3', 1, '1', '1', 'NO', 'NO', 'frmRoomStatusDiary.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmRoomTypeInventory', 'Room Type Inventory', 'Reports', 3, 'R', 6, 7, '1', 'default.png', '3', 1, '1', '1', 'NO', 'NO', 'frmRoomTypeInventoryReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmRoomTypeMaster', 'RoomType Master', 'Master', 1, 'M', 3, 3, '4', 'imgRoomType.png', '3', 3, '3', '3', 'NO', 'YES', 'frmRoomTypeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmSettlementMaster', 'PMS Settlement Master', 'Master', 1, 'M', 9, 9, '11', 'imgSettlementMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmSettlementMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmSplitBill', 'Split Bill', 'Transaction', 2, 'T', 3, 3, '1', 'imgSplitBill.png', '3', 2, '2', '2', 'NO', 'NO', 'frmSplitBill.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmTaxGroupMaster', 'Tax Group Master', 'Master', 1, 'M', 20, 20, '1', 'imgTaxGroup.png', '3', 3, '3', '3', 'NO', 'NO', 'frmTaxGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmTaxReport', 'Tax Summary', 'Reports', 3, 'R', 2, 2, '5', 'imgTaxSummary.png', '3', 5, '5', '5', 'NO', 'NO', 'frmTaxReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmVoidBill', 'Void Bill', 'Transaction', 2, 'T', 15, 15, '1', 'imgVoidBill.png', '3', 2, '2', '2', 'NO', 'NO', 'frmVoidBill.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmVoidBillReport', 'Void Bill Report', 'Reports', 3, 'R', 10, 10, '5', 'imgVoidBill.png', '3', 5, '5', '5', 'NA', 'NA', 'frmVoidBillReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				 + " ('frmWalkin', 'Walk In', 'Transaction', 2, 'T', 4, 4, '12', 'imgWalkIn.png', '3', 3, '3', '3', 'NO', 'YES', 'frmWalkin.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y');";
+			
+			
+			funExecuteQuery(sql);
+			
+			sql = " INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`, `strInvoice`, `strDeliverySchedule`, `strFormAccessYN`) VALUES "
+					 + " ('frmAddExtraBed', 'Add Extra Bed', 'Transaction', 2, 'T', 17, 17, '1', 'imgAddExtraBed.png', '3', 2, '2', '2', 'NO', 'NO', 'frmAddExtraBed.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 + " ('frmBlockRoomMaster', 'Block Room', 'Transaction', 2, 'T', 16, 16, '1', 'imgBlockRoom.png', '3', 2, '2', '2', 'NO', 'NO', 'frmBlockRoomMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 + " ('frmBlockRoomReport', 'Block Room Report', 'Reports', 3, 'R', 20, 20, '5', 'imgBlockRoomReport.png', '3', 5, '5', '5', 'NO', 'NO', 'frmBlockRoomReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 + " ('frmCheckInCheckOutList', 'CheckIn CheckOut List', 'Reports', 3, 'R', 4, 4, '6', 'imgCheckInCheckOutList.png', '3', 1, '1', '1', 'NO', 'NO', 'frmCheckInCheckOutList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 + " ('frmComplimentryReport', 'Complimentry Report', 'Reports', 3, 'R', 20, 20, '5', 'imgComplimentaryReport.png', '3', 5, '5', '5', 'NO', 'NO', 'frmComplimentryReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 + " ('frmHouseKeepingMaster', 'House Keeping master', 'Master', 1, 'M', 8, 8, '1', 'imgGuestMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmHouseKeepingMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 + " ('frmPMSSalesFlash', 'Sales Flash', 'Tools', 1, 'T', 5, 46, '1', 'imgSalesFlash.png', '3', 1, '1', '1', 'NO', 'NO', 'frmPMSSalesFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 + " ('frmPMSStructureUpdate', 'Structure Update', 'Tools', 1, 'L', 111, 111, '1', 'imgStructureUpdate.png', '3', 1, '1', '1', 'NO', 'NO', 'frmPMSStructureUpdate.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y') ";
+					 //+ " ('frmPostRoomTariff', 'Post Room Tariff', 'Transaction', 2, 'T', 5, 5, '1', 'imgPostRoomTerrif.png', '3', 3, '3', '3', 'NO', 'NO', 'frmPostRoomTerrif.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'); ";
+					 //+ " ('frmRoomCancellation', 'Reservation Cancellation', 'Transaction', 2, 'T', 6, 6, '1', 'imgReservationCancellation.png', '3', 3, '3', '3', 'NO', 'NO', 'frmRoomCancellation.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					// + " ('frmRoomMaster', 'Room Master', 'Master', 1, 'M', 1, 1, '1', 'imgRoomMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmRoomMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 //+ " ('frmRoomStatusDiary', 'Room Status Diary', 'Tools', 4, 'L', 1, 2, '12', 'imgRoomStatusDairy.png', '3', 1, '1', '1', 'NO', 'NO', 'frmRoomStatusDiary.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 //+ " ('frmRoomTypeInventory', 'Room Type Inventory', 'Reports', 3, 'R', 6, 7, '1', 'default.png', '3', 1, '1', '1', 'NO', 'NO', 'frmRoomTypeInventoryReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					// + " ('frmRoomTypeMaster', 'RoomType Master', 'Master', 1, 'M', 3, 3, '4', 'imgRoomType.png', '3', 3, '3', '3', 'NO', 'YES', 'frmRoomTypeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 //+ " ('frmSettlementMaster', 'PMS Settlement Master', 'Master', 1, 'M', 9, 9, '11', 'imgSettlementMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmSettlementMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 //+ " ('frmSplitBill', 'Split Bill', 'Transaction', 2, 'T', 3, 3, '1', 'imgSplitBill.png', '3', 2, '2', '2', 'NO', 'NO', 'frmSplitBill.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 //+ " ('frmTaxGroupMaster', 'Tax Group Master', 'Master', 1, 'M', 20, 20, '1', 'imgTaxGroup.png', '3', 3, '3', '3', 'NO', 'NO', 'frmTaxGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 //+ " ('frmTaxReport', 'Tax Summary', 'Reports', 3, 'R', 2, 2, '5', 'imgTaxSummary.png', '3', 5, '5', '5', 'NO', 'NO', 'frmTaxReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 //+ " ('frmVoidBill', 'Void Bill', 'Transaction', 2, 'T', 15, 15, '1', 'imgVoidBill.png', '3', 2, '2', '2', 'NO', 'NO', 'frmVoidBill.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 //+ " ('frmVoidBillReport', 'Void Bill Report', 'Reports', 3, 'R', 10, 10, '5', 'imgVoidBill.png', '3', 5, '5', '5', 'NA', 'NA', 'frmVoidBillReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+					 //+ " ('frmWalkin', 'Walk In', 'Transaction', 2, 'T', 4, 4, '12', 'imgWalkIn.png', '3', 3, '3', '3', 'NO', 'YES', 'frmWalkin.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'); ";
+	
+			
+			
+			funExecuteQuery(sql);	
+			
+			sql = " INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`, `strInvoice`, `strDeliverySchedule`) VALUES "
+					+ " ('frmInvoiceProfitReport', 'Invoice Profit', 'Reports', 3, 'R', 62, 5, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmInvoiceProfitReport.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSalesReturnSlip', 'Sales Return Slip', 'Reports', '3', 'R', '89', '7', '1', 'default.png', '6', '1', '1', '1', 'NO', 'NO', 'frmSalesReturnSlip.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmDeliverySchedule', 'Delivery Schedule', 'Purchase', 3, 'T', 23, 3, '1', 'default.png', '1', 1, '1', '1', 'NO', 'YES', 'frmDeliverySchedule.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+					+ " ('frmLinkLocToOtherPropLoc', 'Link Locations ', 'Tools', '8', 'L', '10', '2', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmLinkLocToOtherPropLoc.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmSessionMaster', 'Session Master', 'Master', '8', 'M', '24', '108', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmSessionMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+					+ " ('frmBudgetFlash', 'Budget Flash', 'Tools', '8', 'L', '89', '91', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmBudgetFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmBudgetMaster', 'Budget Master', 'Master', 8, 'M', 24, 109, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmBudgetMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+			        + " ('frmMISMonthProdWiseStkFlash', 'MIS Flash', 'Tools', '8', 'L', '90', '92', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmMISMonthProdWiseStkFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+			        + " ('frmFoodCostPerConsumption', 'Food Cost(As Per Consumption)', 'Stores', '9', 'R', '86', '37', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmFoodCostPerConsumption.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+			        + " ('frmWebStockRepostingJV', 'Reposting JV', 'Tools', '8', 'L', '91', '93', '1', 'default.png', '1', '1', '1', '1', 'NO', 'NO', 'frmWebStockRepostingJV.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+					+ " ('frmStockReq', 'Stock Requisition', 'Cost Center', 1, 'T', 9, 1, '1', 'Requisition-Form.png', '1', 1, '1', '1', 'YES', 'YES', 'frmStockReq.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL,NULL,NULL), "
+					+ " ('frmStockReqSlip', 'Stock Requisition Slip', 'Cost Center', 9, 'R', 37, 5, '1', 'Requisition-Slip.png', '1', 1, '1', '1', 'NO', 'NO', 'frmStockReqSlip.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL,NULL), "
+					+ " ('frmSupplierWisePurchaseGRNVarianceReport', 'Purchase GRN Variance Report', 'Listing', 9, 'R', 45, 23, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmSupplierWisePurchaseGRNVarianceReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL,NULL)";
+					
+			
+			funExecuteQuery(sql);
+			
+			sql="INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`, `strInvoice`, `strDeliverySchedule`, `strFormAccessYN`) VALUES "
+					+" ('frmBillPassingFlash', 'Bill Passing Flash', 'Tools', 7, 'L', 23, 108, '1', 'defailt.png', '1', 1, '1', '1', 'NO', 'NO', 'frmBillPassingFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', NULL, NULL, NULL, 'Y'),"
+					+ "('frmSettlementMaster', 'Settlement Master', 'Master', 9, 'M', 25, 110, '1', 'imgSettlementMaster.png', '1', 1, '1', '1', 'NO', 'NO', 'frmCRMSettlementMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y')";
+			funExecuteQuery(sql);
+			
+			sql="UPDATE tbltreemast SET strFormDesc='WebBooks Link Up' WHERE strFormName='frmARLinkUp' AND strModule='1' ";
+			funExecuteQuery(sql);
+			
+			sql="INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`, `strInvoice`, `strDeliverySchedule`, `strFormAccessYN`) VALUES "
+					+ " ('frmACSubGroupMaster', 'Sub Group Master', 'Master', 4, 'M', 5, 5, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmACSubGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+					+ " ('frmBulkInvoice', 'Bulk Invoice', 'Sales', 2, 'T', 95, 14, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmBulkInvoice.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+					+ " ('frmDeleteTransaction', 'Delete Transaction', 'Tools', 10, 'L', 47, 14, '1', 'delete trasaction.png', '6', 1, '1', '1', 'NO', 'NO', 'frmDeleteTransaction.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+					+ " ('frmSupplierTaxWiseGRNReport', 'Supplier Tax Wise GRN Report', 'Receiving Reports', 9, 'R', 193, 28, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmSupplierTaxWiseGRNReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y')";
+			funExecuteQuery(sql);
+			
+			sql = "delete from tbltreemast  where strFormName='frmStockReq'";
+			funExecuteQuery(sql);
+			
+			sql = "ALTER TABLE `tblinvsettlementdtl`"
+					+ " CHANGE COLUMN `strRemark` `strRemark` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCardName`,"
+					+ " CHANGE COLUMN `strCustomerCode` `strCustomerCode` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strClientCode`,"
+					+ " CHANGE COLUMN `strGiftVoucherCode` `strGiftVoucherCode` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dblRefundAmt`,"
+					+ " CHANGE COLUMN `strFolioNo` `strFolioNo` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strDataPostFlag`,"
+					+ " CHANGE COLUMN `strCardName` `strCardName` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strExpiryDate`,"
+					+ " CHANGE COLUMN `dblPaidAmt` `dblPaidAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `dblSettlementAmt`";
+	
+			funExecuteQuery(sql);	
+		}
+		funExecuteQuery(sql);
+		
+		
+		
+		// //--------------------END----------------------------/////
+
+		/*----------------WebStock Forms END---------------------------*/
+
+		/*----------------CRM Forms Only---------------------------*/
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbldeliverychallandtl` ( `strDCCode` varchar(15) NOT NULL, " + "  `strProdCode` varchar(10) NOT NULL DEFAULT '', " + "  `dblQty` decimal(18,2) NOT NULL DEFAULT '0.00', " + " `dblPrice` decimal(18,2) NOT NULL DEFAULT '0.00', " + "  `dblWeight` double NOT NULL DEFAULT '0',  " + " `strProdType` varchar(255) NOT NULL DEFAULT '', "
+				+ "  `strPktNo` varchar(50) NOT NULL DEFAULT '',  " + " `strRemarks` varchar(250) NOT NULL DEFAULT '',  " + " `intindex` bigint(20) NOT NULL DEFAULT '0',  " + " `strInvoiceable` varchar(1) NOT NULL DEFAULT 'N', " + "  `strSerialNo` varchar(200) NOT NULL, " + "  `strClientCode` varchar(20) NOT NULL, " + "  `intId` bigint(20) NOT NULL AUTO_INCREMENT, " + "   PRIMARY KEY (`intId`) )"
+				+ " ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbldeliverychallanhd` ( " + "  `strDCCode` varchar(15) NOT NULL,  `intid` bigint(20) NOT NULL, " + " `dteDCDate` date NOT NULL DEFAULT '1900-01-01',  `strAgainst` varchar(20) NOT NULL DEFAULT '', " + " `strSOCode` varchar(15) NOT NULL DEFAULT '',  `strCustCode` varchar(10) NOT NULL DEFAULT '', " + " `strPONo` varchar(50) NOT NULL DEFAULT '', "
+				+ " `strNarration` varchar(300) NOT NULL DEFAULT '',  `strPackNo` varchar(20) NOT NULL DEFAULT '', " + " `strLocCode` varchar(15) NOT NULL DEFAULT '',  `strVehNo` varchar(20) NOT NULL DEFAULT '', " + " `strMInBy` varchar(50) NOT NULL DEFAULT '',  `strTimeInOut` varchar(10) NOT NULL DEFAULT '', "
+				+ " `strUserCreated` varchar(10) NOT NULL,  `dteCreatedDate` date NOT NULL DEFAULT '1900-01-01', " + " `strUserModified` varchar(10) NOT NULL,  `dteLastModified` date NOT NULL DEFAULT '1900-01-01',  " + " `strAuthorise` varchar(2) NOT NULL DEFAULT 'N',  `strDktNo` varchar(50) NOT NULL DEFAULT '', "
+				+ "  `strSAdd1` varchar(50) NOT NULL DEFAULT '',  `strSAdd2` varchar(50) NOT NULL DEFAULT '', " + " `strSCity` varchar(50) NOT NULL DEFAULT '',  `strSState` varchar(50) NOT NULL DEFAULT '', " + " `strSCtry` varchar(50) NOT NULL DEFAULT '',  `strSPin` varchar(50) NOT NULL DEFAULT '', " + " `strDCNo` varchar(50) NOT NULL DEFAULT '',  `strReaCode` varchar(15) NOT NULL DEFAULT '', "
+				+ " `strSerialNo` varchar(50) NOT NULL DEFAULT '',  `strWarrPeriod` varchar(50) NOT NULL DEFAULT '', " + " `strWarraValidity` varchar(50) NOT NULL DEFAULT '',  `strClientCode` varchar(20) NOT NULL, " + "  PRIMARY KEY (`strDCCode`,`strClientCode`)) " + " ENGINE=InnoDB DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbldeliverynotedtl` ( " + " `intId` bigint(20) NOT NULL AUTO_INCREMENT,  `strDNCode` varchar(50) NOT NULL, " + " `strProdCode` varchar(50) NOT NULL,  `strProcessCode` varchar(50) NOT NULL DEFAULT '', " + " `dblQty` decimal(18,4) NOT NULL DEFAULT '0.0000',  `dblWeight` decimal(18,4) NOT NULL DEFAULT '0.0000', "
+				+ " `dblRate` decimal(18,4) NOT NULL DEFAULT '0.0000',  `strProdChar` varchar(100) NOT NULL DEFAULT '', " + " `strRemarks` varchar(1000) NOT NULL DEFAULT '', " + " `strClientCode` varchar(50) NOT NULL,  PRIMARY KEY (`intId`)) " + "ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbldeliverynotehd` ( " + " `strDNCode` varchar(50) NOT NULL,  `intId` bigint(20) NOT NULL DEFAULT '0', " + " `strTypeAgainst` varchar(10) NOT NULL DEFAULT '',  `strTypeCode` varchar(50) NOT NULL DEFAULT 'Enquiry', " + " `dteDNDate` date NOT NULL,  `strDNType` varchar(50) NOT NULL DEFAULT 'GRN',"
+				+ " `strGRNCode` varchar(50) NOT NULL DEFAULT '', `strJACode` varchar(50) NOT NULL, " + " `strSCCode` varchar(50) NOT NULL,  `strFrom` varchar(50) NOT NULL DEFAULT '', " + " `strLocCode` varchar(50) NOT NULL DEFAULT '',  `strSCAdd1` varchar(50) NOT NULL DEFAULT '', " + " `strSCAdd2` varchar(50) NOT NULL DEFAULT '',  `strSCCity` varchar(50) NOT NULL DEFAULT '',"
+				+ "  `strSCState` varchar(50) NOT NULL DEFAULT '',  `strSCCountry` varchar(50) NOT NULL DEFAULT '', " + " `strSCPin` varchar(20) NOT NULL DEFAULT '',  `strFAdd1` varchar(50) NOT NULL DEFAULT '', " + " `strFAdd2` varchar(50) NOT NULL DEFAULT '',  `strFCity` varchar(50) NOT NULL DEFAULT '', "
+				+ " `strFState` varchar(50) NOT NULL DEFAULT '',  `strFCountry` varchar(50) NOT NULL DEFAULT '', " + " `strFPin` varchar(20) NOT NULL DEFAULT '',  `dteExpDate` date NOT NULL, " + " `strVehNo` varchar(1000) NOT NULL DEFAULT '',  `strNarration` varchar(200) NOT NULL DEFAULT '', " + " `strMInBy` varchar(50) NOT NULL DEFAULT '',  `strTimeInOut` varchar(1000) NOT NULL DEFAULT '', "
+				+ " `dblTotal` decimal(18,4) NOT NULL DEFAULT '0.0000',  `strExpDet` varchar(5) NOT NULL DEFAULT 'No', " + " `strAuthorise` char(5) NOT NULL DEFAULT 'No',  `strUserCreated` varchar(50) NOT NULL, " + " `dteCreatedDate` datetime NOT NULL,  `strUserModified` varchar(10) NOT NULL, " + " `dteLastModified` datetime NOT NULL,  `strClientCode` varchar(50) NOT NULL DEFAULT '',"
+				+ "  PRIMARY KEY (`strDNCode`,`strClientCode`)) ENGINE=InnoDB DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblsalesorderbom` ( " + " `intId` bigint(20) NOT NULL AUTO_INCREMENT,  `strSOCode` varchar(20) NOT NULL, " + " `strProdCode` varchar(20) NOT NULL,  `strProcessCode` varchar(20) NOT NULL, " + " `strParentCode` varchar(20) NOT NULL,  `strParentProcessCode` varchar(20) NOT NULL, "
+				+ " `strChildCode` varchar(20) NOT NULL,  `dblQty` decimal(18,4) NOT NULL DEFAULT '0.0000',  " + "`dblWeight` decimal(18,4) NOT NULL DEFAULT '0.0000',  `intIndex` int(11) NOT NULL DEFAULT '0', " + " `strRemarks` varchar(250) NOT NULL DEFAULT '',  `strUserCreated` varchar(20) NOT NULL," + "  `dteDateCreated` datetime NOT NULL,  `strUserModified` varchar(20) NOT NULL, "
+				+ " `dteLastModified` datetime NOT NULL,  `strClientCode` varchar(20) NOT NULL, " + " PRIMARY KEY (`intId`)) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblsalesorderdtl` ( " + " `strSOCode` varchar(15) NOT NULL,  `strProdCode` varchar(15) NOT NULL DEFAULT '', " + " `dblQty` decimal(18,2) NOT NULL DEFAULT '0.00',  " + "`dblDiscount` decimal(18,2) NOT NULL DEFAULT '0.00',  `strTaxType` varchar(20) NOT NULL DEFAULT '', "
+				+ " `dblTaxableAmt` decimal(18,2) NOT NULL DEFAULT '0.00',  `dblTax` decimal(18,2) NOT NULL DEFAULT '0.00', " + " `dblTaxAmt` decimal(18,2) NOT NULL DEFAULT '0.00',  `dblUnitPrice` decimal(18,2) NOT NULL DEFAULT '0.00'," + "  `dblWeight` decimal(18,2) NOT NULL DEFAULT '0.00',  `strProdChar` varchar(255) NOT NULL DEFAULT '', "
+				+ " `strRemarks` varchar(255) NOT NULL DEFAULT '',  `intindex` bigint(20) NOT NULL, " + " `strClientCode` varchar(20) NOT NULL,  `intId` bigint(20) NOT NULL AUTO_INCREMENT," + "  PRIMARY KEY (`intId`)) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;";
+		funExecuteQuery(sql);
+
+		sql = "  CREATE TABLE IF NOT EXISTS `tblsalesorderhd` ( " + " `strSOCode` varchar(15) NOT NULL,  `intid` bigint(20) NOT NULL," + "  `dteSODate` date NOT NULL,  `strCustCode` varchar(10) NOT NULL DEFAULT '', " + " `strCustPONo` varchar(50) NOT NULL DEFAULT '',  `strStatus` varchar(20) NOT NULL DEFAULT '', "
+				+ " `dteFulmtDate` date NOT NULL DEFAULT '1900-01-01',  `strLocCode` varchar(15) NOT NULL DEFAULT '', " + " `strPayMode` varchar(50) NOT NULL DEFAULT '',  `strBAdd1` varchar(50) NOT NULL DEFAULT '', " + " `strBAdd2` varchar(50) NOT NULL DEFAULT '',  `strBCity` varchar(20) NOT NULL DEFAULT '', "
+				+ " `strBState` varchar(20) NOT NULL DEFAULT '',  `strBCountry` varchar(20) NOT NULL DEFAULT '', " + " `strBPin` varchar(15) NOT NULL DEFAULT '',  `strSAdd1` varchar(50) NOT NULL DEFAULT '', " + " `strSAdd2` varchar(50) NOT NULL DEFAULT '',  `strSCity` varchar(20) NOT NULL DEFAULT '',  "
+				+ " `strSState` varchar(20) NOT NULL DEFAULT '',  `strSCountry` varchar(20) NOT NULL DEFAULT '',  " + " `strSPin` varchar(15) NOT NULL DEFAULT '',  `dblSubTotal` decimal(18,2) NOT NULL DEFAULT '0.00', " + " `dblDisRate` decimal(18,2) NOT NULL DEFAULT '0.00',  `dblDisAmt` decimal(18,2) NOT NULL DEFAULT '0.00', "
+				+ " `dblTaxAmt` decimal(18,2) NOT NULL DEFAULT '0.00',  `dblExtra` decimal(18,2) NOT NULL DEFAULT '0.00', " + " `dblTotal` decimal(18,2) NOT NULL DEFAULT '0.00',  `strNarration` varchar(250) NOT NULL DEFAULT '', " + " `strUserCreated` varchar(10) NOT NULL,  `dteDateCreated` date NOT NULL, " + " `strUserModified` varchar(10) NOT NULL,  `dteLastModified` date NOT NULL, "
+				+ " `strBOMFlag` varchar(1) NOT NULL DEFAULT 'N',  `strAuthorise` varchar(1) NOT NULL DEFAULT '', " + " `strImgName` varchar(100) NOT NULL DEFAULT '',  `dteCPODate` date NOT NULL DEFAULT '1900-01-01', " + " `strSysModel` varchar(50) NOT NULL DEFAULT '',  `strCranenModel` varchar(50) NOT NULL DEFAULT '', "
+				+ " `strMaxCap` varchar(50) NOT NULL DEFAULT '',  `strWipeRopeDia` varchar(50) NOT NULL DEFAULT '', " + " `strNoFall` varchar(50) NOT NULL DEFAULT '',  `strSuppVolt` varchar(50) NOT NULL DEFAULT '', " + " `strBoomLen` varchar(50) NOT NULL DEFAULT '',  `strCurrency` varchar(10) NOT NULL DEFAULT '', "
+				+ " `strReaCode` varchar(15) NOT NULL DEFAULT '',  `strAgainst` varchar(50) NOT NULL DEFAULT '', " + " `strCode` varchar(20) NOT NULL DEFAULT '',  `strWarrPeriod` varchar(50) NOT NULL DEFAULT '', " + " `strWarraValidity` varchar(50) NOT NULL DEFAULT '',  `intwarmonth` bigint(20) NOT NULL, "
+				+ " `dblConversion` decimal(18,2) NOT NULL DEFAULT '0.00',  `strCloseSO` varchar(1) NOT NULL DEFAULT 'N', " + " `strClientCode` varchar(20) NOT NULL,  PRIMARY KEY (`strSOCode`)) ENGINE=InnoDB DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblscreturndtl` ( " + " `strSRCode` varchar(15) NOT NULL,  `intId` bigint(20) NOT NULL AUTO_INCREMENT, " + " `strProdCode` varchar(10) NOT NULL DEFAULT '',  `dblQty` decimal(18,2) NOT NULL DEFAULT '0.00', " + " `dblQtyRej` decimal(18,2) NOT NULL DEFAULT '0.00',  `dblWeight` decimal(18,2) NOT NULL DEFAULT '0.00', "
+				+ " `dblPrice` decimal(18,2) NOT NULL DEFAULT '0.00',  `strProdChar` varchar(50) NOT NULL DEFAULT '', " + " `strDNProdCode` varchar(50) NOT NULL DEFAULT '',  `strDNProdName` varchar(50) NOT NULL DEFAULT '', " + " `strDNProcess` varchar(50) NOT NULL DEFAULT '',  `dblDNQty` decimal(18,2) NOT NULL DEFAULT '0.00', "
+				+ " `dblDNWeight` decimal(18,2) NOT NULL DEFAULT '0.00',  `strDNProdChar` varchar(50) NOT NULL DEFAULT '', " + " `dblScrap` decimal(18,2) NOT NULL DEFAULT '0.00',  `strDNCode` varchar(50) NOT NULL DEFAULT '', " + " `dblDCQty` decimal(18,2) NOT NULL DEFAULT '0.00',  `dblExpQty` decimal(18,2) NOT NULL DEFAULT '0.00', "
+				+ " `intExpIndex` bigint(20) NOT NULL DEFAULT '1',  `dblDCWt` decimal(18,2) NOT NULL DEFAULT '0.00', " + " `strRemarks` varchar(50) NOT NULL DEFAULT '',  `dblQtyRbl` decimal(18,2) NOT NULL DEFAULT '0.00', " + " `dblRblWt` bigint(20) NOT NULL DEFAULT '0',  `intIndex` bigint(20) NOT NULL DEFAULT '1', " + " `strClientCode` varchar(20) NOT NULL,  PRIMARY KEY (`intId`)) "
+				+ " ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblscreturnhd` ( " + "  `strSRCode` varchar(15) NOT NULL,  `strSRNo` varchar(50) NOT NULL DEFAULT ''," + "  `intid` bigint(20) NOT NULL,  `dteSRDate` date NOT NULL,  `strSCCode` varchar(15) NOT NULL, " + " `strSCDNCode` varchar(20) NOT NULL,  `strVerRemark` varchar(50) NOT NULL DEFAULT '', "
+				+ " `strDispAction` varchar(255) NOT NULL DEFAULT '',  `strPartDel` varchar(3) NOT NULL DEFAULT '', " + " `strLocCode` varchar(15) NOT NULL DEFAULT '',  `strJWCode` varchar(15) NOT NULL DEFAULT '', " + " `strVehNo` varchar(15) NOT NULL DEFAULT '',  `strMInBy` varchar(50) NOT NULL DEFAULT '', "
+				+ " `strTimeInOut` varchar(10) NOT NULL DEFAULT '',  `strAgainst` varchar(50) NOT NULL DEFAULT '', " + " `strNo` varchar(50) NOT NULL DEFAULT '',  `strInRefNo` varchar(50) NOT NULL DEFAULT '', " + " `dblTotQty` decimal(18,2) NOT NULL DEFAULT '0.00',  `dblTotWt` decimal(18,2) NOT NULL DEFAULT '0.00', "
+				+ " `dblTotAmt` decimal(18,2) NOT NULL DEFAULT '0.00',  `dteInRefDate` date NOT NULL DEFAULT '1991-01-01', " + " `dteSCDCDate` date NOT NULL DEFAULT '1991-01-01',  `strUserCreated` varchar(15) NOT NULL, " + " `dteCreatedDate` date NOT NULL DEFAULT '1991-01-01',  `strUserModified` varchar(15) NOT NULL, "
+				+ " `dteLastModified` date NOT NULL DEFAULT '1991-01-01',  `strAuthorise` varchar(1) NOT NULL DEFAULT 'N', " + " `strClientCode` varchar(20) NOT NULL, " + " PRIMARY KEY (`strSRCode`,`strClientCode`)) ENGINE=InnoDB DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbljoborderhd` (   `strJOCode` varchar(20) NOT NULL,  " + " `intId` bigint(20) NOT NULL,  `dteJODate` date NOT NULL, " + " `strSOCode` varchar(20) NOT NULL DEFAULT '',  `strProdCode` varchar(20) NOT NULL, " + " `dblQty` decimal(18,4) NOT NULL DEFAULT '0.0000',  `strParentJOCode` varchar(20) NOT NULL, "
+				+ " `strStatus` varchar(30) NOT NULL,  `strUserCreated` varchar(20) NOT NULL,  `dteDateCreated` datetime NOT NULL, " + " `strUserModified` varchar(20) NOT NULL,  `dteLastModified` datetime NOT NULL,  `strClientCode` varchar(20) NOT NULL, " + " `strAuthorise` varchar(5) NOT NULL DEFAULT 'NA', " + " PRIMARY KEY (`strJOCode`,`strClientCode`)) "
+				+ " ENGINE=InnoDB DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbljoborderallocationdtl` (  `intId` bigint(20) NOT NULL AUTO_INCREMENT, " + " `strJACode` varchar(20) NOT NULL,  `strJOCode` varchar(20) NOT NULL,  `strProdCode` varchar(20) NOT NULL, " + " `strNatureOfProcessing` varchar(50) NOT NULL DEFAULT '',  `dblQty` decimal(18,4) NOT NULL DEFAULT '0.0000', "
+				+ " `strProdNo` varchar(50) NOT NULL DEFAULT '',  `strRemarks` varchar(250) NOT NULL DEFAULT '', " + " `dblRate` decimal(18,4) NOT NULL DEFAULT '0.0000',  `intIndex` bigint(20) unsigned NOT NULL DEFAULT '0', " + " `strClientCode` varchar(20) NOT NULL,  PRIMARY KEY (`intId`) )" + "  ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbljoborderallocationhd` (  `strJACode` varchar(20) NOT NULL, " + " `intId` bigint(20) NOT NULL,  `strJANo` varchar(50) NOT NULL,  `strSCCode` varchar(20) NOT NULL," + "  `dteJADate` date NOT NULL,  `strRef` varchar(50) NOT NULL DEFAULT '',  `dteRefDate` date NOT NULL, "
+				+ " `strDispatchMode` varchar(50) NOT NULL DEFAULT '',  `strPayment` varchar(50) NOT NULL DEFAULT '', " + " `strTaxes` varchar(50) NOT NULL DEFAULT '',  `dbltotQty` decimal(18,4) NOT NULL DEFAULT '0.0000', " + " `strUserCreated` varchar(20) NOT NULL,  `dteDateCreated` datetime NOT NULL,  `strUserModified` varchar(20) NOT NULL, "
+				+ " `dteLastModified` datetime NOT NULL,  `strClientCode` varchar(20) NOT NULL, " + " `strAuthorise` char(5) NOT NULL DEFAULT 'false',  PRIMARY KEY (`strJACode`,`strClientCode`))" + " ENGINE=InnoDB DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE  IF NOT EXISTS  `tbltranschardtl` (`strTransCode` VARCHAR(15) NOT NULL, " + " `strProdCode` VARCHAR(15) NOT NULL, " + "	`strCharCode` VARCHAR(15) NOT NULL," + "	`strSpecf` VARCHAR(15) NOT NULL," + "	`intId` BIGINT NOT NULL AUTO_INCREMENT," + "	PRIMARY KEY (`intId`))  " + " COLLATE='latin1_swedish_ci'ENGINE=InnoDB; ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE  IF NOT EXISTS  `tblinvoicehd` ( " + "	`strInvCode` VARCHAR(15) NOT NULL, " + "	`intid` BIGINT(20) NOT NULL, `dteInvDate` DATE NOT NULL DEFAULT '1900-01-01', " + "	`strAgainst` VARCHAR(20) NOT NULL DEFAULT '', " + "	`strSOCode` VARCHAR(15) NOT NULL DEFAULT '', " + "	`strCustCode` VARCHAR(10) NOT NULL DEFAULT '',  " + "	`strPONo` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ "	`strNarration` VARCHAR(300) NOT NULL DEFAULT '',  " + "	`strPackNo` VARCHAR(20) NOT NULL DEFAULT ''," + "	`strLocCode` VARCHAR(15) NOT NULL DEFAULT ''," + "	`strVehNo` VARCHAR(20) NOT NULL DEFAULT '',	" + "`strMInBy` VARCHAR(50) NOT NULL DEFAULT '',	" + "`strTimeInOut` VARCHAR(10) NOT NULL DEFAULT ''," + "	`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "	`dteCreatedDate` DATE NOT NULL DEFAULT '1900-01-01'," + "	`strUserModified` VARCHAR(10) NOT NULL,	" + "`dteLastModified` DATE NOT NULL DEFAULT '1900-01-01'," + "	`strAuthorise` VARCHAR(2) NOT NULL DEFAULT 'N'," + "	`strDktNo` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strSAdd1` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strSAdd2` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "	`strSCity` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strSState` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strSCtry` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strSPin` VARCHAR(50) NOT NULL DEFAULT '',	" + "`strInvNo` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strReaCode` VARCHAR(15) NOT NULL DEFAULT ''," + "	`strSerialNo` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "	`strWarrPeriod` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strWarraValidity` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strClientCode` VARCHAR(20) NOT NULL," + "	PRIMARY KEY (`strInvCode`, `strClientCode`) )" + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB; ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE  IF NOT EXISTS  `tblinvoicedtl` (" + "	`strInvCode` VARCHAR(15) NOT NULL," + "	`strProdCode` VARCHAR(10) NOT NULL DEFAULT '',	" + "`dblQty` DECIMAL(18,2) NOT NULL DEFAULT '0.00'," + "	`dblPrice` DECIMAL(18,2) NOT NULL DEFAULT '0.00'," + "	`dblWeight` DOUBLE NOT NULL DEFAULT '0'," + "	`strProdType` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "	`strPktNo` VARCHAR(50) NOT NULL DEFAULT '',	" + "`strRemarks` VARCHAR(250) NOT NULL DEFAULT ''," + "	`intindex` BIGINT(20) NOT NULL DEFAULT '0'," + "	`strInvoiceable` VARCHAR(1) NOT NULL DEFAULT 'N'," + "	`strSerialNo` VARCHAR(200) NOT NULL,	" + "`strClientCode` VARCHAR(20) NOT NULL," + "	`intId` BIGINT(20) NOT NULL AUTO_INCREMENT, " + "	PRIMARY KEY (`intId`) )"
+				+ " COLLATE='latin1_swedish_ci'" + " ENGINE=InnoDB ; ";
+
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE  IF NOT EXISTS  `tblinvtaxdtl` ( " + " `intId` BIGINT(20) NOT NULL AUTO_INCREMENT, " + "`strClientCode` VARCHAR(255) NULL DEFAULT NULL, " + "`strInvCode` VARCHAR(255) NOT NULL DEFAULT '', " + "`strTaxAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + "`strTaxCode` VARCHAR(255) NOT NULL DEFAULT '', " + "`strTaxDesc` VARCHAR(255) NOT NULL DEFAULT '', "
+				+ "`strTaxableAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + "PRIMARY KEY (`intId`) " + ") " + "COLLATE='latin1_swedish_ci' " + "ENGINE=InnoDB; ";
+
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblsalesreturnhd` ( " + " `strSRCode` varchar(20) NOT NULL,  " + " `dteSRDate` datetime NOT NULL, " + " `strAgainst` varchar(50) NOT NULL, " + " `strDCCode` varchar(20) NOT NULL, " + " `strCustCode` varchar(10) NOT NULL, " + " `strLocCode` varchar(10) NOT NULL, " + " `dblTotalAmt` decimal(18,2) NOT NULL, " + " `strUserCreated` varchar(10) NOT NULL, "
+				+ " `strUserEdited` varchar(10) NOT NULL, " + " `dteDateCreated` datetime NOT NULL, " + " `dteDateEdited` datetime NOT NULL, " + " `strClientCode` varchar(20) NOT NULL, " + " PRIMARY KEY (`strSRCode`,`strClientCode`) " + " ) ENGINE=InnoDB DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblsalesreturndtl` ( " + "`strSRCode` varchar(20) NOT NULL, " + "`strProdCode` varchar(10) NOT NULL, " + "`dblQty` decimal(18,2) NOT NULL, " + "`dblPrice` decimal(18,2) NOT NULL, " + "`dblWeight` decimal(18,2) NOT NULL, " + "`strRemarks` varchar(200) NOT NULL DEFAULT '', " + "`strClientCode` varchar(10) NOT NULL "
+				+ ") ENGINE=InnoDB DEFAULT CHARSET=latin1; ";
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblsalesreturntaxdtl` ( " + " `intId` BIGINT(20) NOT NULL AUTO_INCREMENT, " + " `strClientCode` VARCHAR(255) NULL DEFAULT NULL, " + " `strSRCode` VARCHAR(255) NOT NULL DEFAULT '', " + " `strTaxAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " `strTaxCode` VARCHAR(255) NOT NULL DEFAULT '', " + " `strTaxDesc` VARCHAR(255) NOT NULL DEFAULT '', "
+				+ " `strTaxableAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " PRIMARY KEY (`intId`) " + " ) " + " COLLATE='latin1_swedish_ci' " + " ENGINE=InnoDB " + " AUTO_INCREMENT=13 ; ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblsaleschar` (	" + " `strSOCode` VARCHAR(15) NOT NULL," + "  `strProdCode` VARCHAR(15) NOT NULL," + "	`strCharCode` VARCHAR(15) NOT NULL,	" + " `strCharValue` VARCHAR(255) NOT NULL,	" + " PRIMARY KEY (`strSOCode`, `strProdCode`, `strCharCode`)) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB;   ";
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblexcisemaster` ( " + " `strExciseCode` VARCHAR(10) NOT NULL, " + " `strExciseChapterNo` VARCHAR(20) NOT NULL DEFAULT '', " + " `strSGCode` VARCHAR(10) NOT NULL DEFAULT '', " + " `dblExcisePercent` DOUBLE(18,2) NOT NULL DEFAULT '0.0', " + " `strCessTax` VARCHAR(10) NOT NULL DEFAULT 'N', " + " `strRank` VARCHAR(10) NOT NULL DEFAULT '', "
+				+ " `strDesc` VARCHAR(255) NOT NULL DEFAULT '', " + " `strClientCode` VARCHAR(15) NOT NULL, " + " PRIMARY KEY (`strExciseCode`, `strClientCode`) " + " ) " + " COLLATE='latin1_swedish_ci' " + " ENGINE=InnoDB;";
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblinvprodtaxdtl` ( 	`strInvCode` VARCHAR(20) NOT NULL, " + "	`strCustCode` VARCHAR(20) NOT NULL, `strProdCode` VARCHAR(20) NOT NULL, " + "	`strDocNo` VARCHAR(20) NOT NULL, " + "	`dblValue` DECIMAL(18,2) NOT NULL, " + "	`strClientCode` VARCHAR(20) NOT NULL )" + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblinvsalesorderdtl` ( " + "	`strInvCode` VARCHAR(20) NOT NULL,	" + " `strSOCode` VARCHAR(20) NOT NULL,	" + " `dteInvDate` DATETIME NOT NULL," + " `strClientCode` VARCHAR(20) NOT NULL )" + "  COLLATE='latin1_swedish_ci' ENGINE=InnoDB; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE `tblinvtaxgst` (  	`strInvCode` VARCHAR(15) NOT NULL, " + " 	`strTaxCode` VARCHAR(15) NOT NULL DEFAULT '', " + " 	`strProdCode` VARCHAR(15) NOT NULL DEFAULT '', " + " 	`dblTaxableAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + " 	`dblCGSTPer` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',  " + "	`dblCGSTAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+				+ "	`dblSGSTPer` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + "	`dblSGSTAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + "	`dblIGSTCGSTPer` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + "	`dblIGSTCGSTAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',  " + "	`dblIGSTSGSTPer` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + "	`dblIGSTSGSTAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+				+ "	`strClientCode` VARCHAR(20) NOT NULL DEFAULT '', " + "	PRIMARY KEY (`strInvCode`,`strTaxCode`, `strProdCode`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblinvsettlementdtl` ( " + "	`strInvCode` VARCHAR(15) NOT NULL DEFAULT '',  " + "	`strSettlementCode` VARCHAR(10) NOT NULL, " + "	`dblSettlementAmt` DECIMAL(18,2) NOT NULL, " + "	`dblPaidAmt` DECIMAL(18,2) NULL DEFAULT '0.00', " + "	`strExpiryDate` VARCHAR(15) NOT NULL DEFAULT '', " + "	`strCardName` VARCHAR(50) NOT NULL DEFAULT '0', "
+				+ "	`strRemark` VARCHAR(50) NOT NULL DEFAULT '0', " + "	`strClientCode` VARCHAR(10) NOT NULL DEFAULT '0', " + "	`strCustomerCode` VARCHAR(15) NULL DEFAULT NULL, " + "	`dblActualAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00', " + "	`dblRefundAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00', " + "	`strGiftVoucherCode` VARCHAR(50) NULL DEFAULT '', "
+				+ "	`strDataPostFlag` VARCHAR(1) NOT NULL DEFAULT  'N', " + "	`strFolioNo` VARCHAR(10) NOT NULL DEFAULT '', " + "	`strRoomNo` VARCHAR(10) NOT NULL DEFAULT '', " + "	`dteInvDate` DATE NOT NULL, " + "	PRIMARY KEY (`strInvCode`, `strClientCode`, `dteInvDate`, `strSettlementCode`), " + "  INDEX `strInvCode` (`strInvCode`) ) " + " COLLATE='utf8_general_ci'  ENGINE=InnoDB  ; ";
+
+		funExecuteQuery(sql);
+		
+		sql="CREATE TABLE `tblsalesordertaxdtl` ( "
+		  +" `intId` BIGINT(20) NOT NULL AUTO_INCREMENT, "
+		  +" `strClientCode` VARCHAR(255) NULL DEFAULT NULL, "
+		  +" `strSOCode` VARCHAR(20) NOT NULL DEFAULT '', "
+		  +" `strTaxAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+		  +" `strTaxCode` VARCHAR(20) NOT NULL DEFAULT '', "
+		  +" `strTaxDesc` VARCHAR(100) NOT NULL DEFAULT '', "
+		  +" `strTaxableAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+		  +" PRIMARY KEY (`intId`) "
+		  +" ) "
+		  +" COLLATE='latin1_swedish_ci' "
+		  +" ENGINE=InnoDB "
+		  +" AUTO_INCREMENT=50; ";
+		
+		funExecuteQuery(sql);
+		
+		
+		sql="CREATE TABLE `tblpurchasereturntaxdtl` ( "
+				+ " `intId` BIGINT(20) NOT NULL AUTO_INCREMENT, "
+				+ " `strClientCode` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " `strPRCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ " `strTaxAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ " `strTaxCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ " `strTaxDesc` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ " `strTaxableAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ " PRIMARY KEY (`intId`)"
+				+ " )"
+				+ " COLLATE='latin1_swedish_ci'"
+				+ " ENGINE=InnoDB"
+				+ " AUTO_INCREMENT=57"
+				+ " ;";
+		funExecuteQuery(sql);
+		
+		// Indexing of CRM tables
+
+		sql = " ALTER TABLE `tblscreturnhd` CHANGE COLUMN `strVehNo` `strVehNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strJWCode` ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblscreturndtl` CHANGE COLUMN `strDNProdName` `strDNProdName` VARCHAR(500) NOT NULL DEFAULT '' AFTER `strDNProdCode` ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicehd`ADD COLUMN `dblTaxAmt` DOUBLE NOT NULL DEFAULT '0.0' AFTER `strClientCode`,ADD COLUMN `dblTotalAmt` DOUBLE NOT NULL DEFAULT '0.0' AFTER `dblTaxAmt`,ADD COLUMN `dblSubTotalAmt` DOUBLE NOT NULL DEFAULT '0.0' AFTER `dblTotalAmt`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicedtl`ADD COLUMN `dblUnitPrice` DOUBLE NOT NULL DEFAULT '0.0' AFTER `intId`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbldeliverychallanhd`ADD COLUMN `strCloseDC` CHAR(1) NOT NULL DEFAULT 'N' AFTER `strClientCode`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblsalesreturnhd` ADD COLUMN `dblTaxAmt` DOUBLE NOT NULL DEFAULT '0.0' AFTER `strClientCode`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblsalesreturndtl`ADD COLUMN `intId` BIGINT NOT NULL AUTO_INCREMENT AFTER `strClientCode`, ADD PRIMARY KEY (`intId`); ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductionorderhd` CHANGE COLUMN `strCode` `strCode` VARCHAR(500) NULL DEFAULT NULL AFTER `strAgainst`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblworkorderhd`	ADD COLUMN `strFromLocCode` VARCHAR(15) NOT NULL DEFAULT '' AFTER `intLevel` ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblworkorderhd`	ADD COLUMN `strToLocCode` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strFromLocCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblproductionorderhd`	CHANGE COLUMN `strStatus` `strStatus` VARCHAR(20) NULL DEFAULT 'N' AFTER `dtOPDate`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicehd` CHANGE COLUMN `dteInvDate` `dteInvDate` DATETIME NOT NULL DEFAULT '1900-01-01' AFTER `intid`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicehd` ADD COLUMN `dblDiscount` DOUBLE NOT NULL DEFAULT '0.0' AFTER `dblSubTotalAmt`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicedtl` ADD COLUMN `dblAssValue` DOUBLE NOT NULL DEFAULT '0.0' AFTER `dblUnitPrice` ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicehd` ADD COLUMN `dblDiscountAmt` DOUBLE NOT NULL DEFAULT '0.0' AFTER `dblDiscount`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicedtl` ADD COLUMN `dblBillRate` DOUBLE NOT NULL DEFAULT '0.0' AFTER `dblAssValue`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblprodsuppmaster` ADD COLUMN `dblStandingOrder` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `dblMargin`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblprodsuppmaster` ADD COLUMN `dblStandardValue` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `dblMargin`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblprodsuppmaster` CHANGE COLUMN `dblStandardValue` `dblStandingOrder` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `dblMargin`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpartymaster` ADD COLUMN `dblDiscount` DOUBLE(18,2) NOT NULL DEFAULT '0.0' AFTER `strPartyIndi`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblexcisemaster`ADD COLUMN `strUserCreated` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strClientCode`, " + " ADD COLUMN `dtCreatedDate` DATE NOT NULL AFTER `strUserCreated`, " + " ADD COLUMN `strUserModified` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dtCreatedDate`, " + " ADD COLUMN `dtLastModified` DATE NOT NULL AFTER `strUserModified`;";
+
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblsalesorderdtl` ADD COLUMN `dblAcceptQty` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `intId`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblinvtaxdtl` 	CHANGE COLUMN `strTaxAmt` `dblTaxAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' " + " AFTER `strInvCode`,  CHANGE COLUMN `strTaxableAmt` `dblTaxableAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strTaxDesc`;  ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicedtl`ADD COLUMN `strSOCode` VARCHAR(15) NOT NULL DEFAULT '' AFTER `dblBillRate`,ADD COLUMN `strCustCode` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strSOCode`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicedtl`DROP COLUMN `intId`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicehd` ADD COLUMN `strExciseable` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `dblDiscountAmt` ;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblinvoicehd` CHANGE COLUMN `strSOCode` `strSOCode` VARCHAR(500) NOT NULL DEFAULT '' AFTER `strAgainst`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblinvprodtaxdtl` ADD COLUMN `dblTaxableAmt` DECIMAL(18,2) NOT NULL AFTER `strClientCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblinvsalesorderdtl` ADD COLUMN `strDCCode` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strClientCode`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbldeliverychallanhd` CHANGE COLUMN `dteDCDate` `dteDCDate` DATETIME NOT NULL DEFAULT '1900-01-01' AFTER `intid`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblinvoicehd`	ADD COLUMN `strDulpicateFlag` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strExciseable`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblsaleschar`	DROP PRIMARY KEY; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicehd` ADD COLUMN `dblGrandTotal` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `strDulpicateFlag`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblsaleschar` ADD COLUMN `strAdvOrderNo` VARCHAR(255) NOT NULL AFTER `strCharValue`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblscreturndtl` ADD COLUMN `dblAcceptQty` DOUBLE NOT NULL DEFAULT '0.00' AFTER `strClientCode`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbldeliverychallanhd` ADD COLUMN `strSettlementCode` VARCHAR(20) NOT NULL AFTER `strCloseDC` ;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicehd` ADD COLUMN `strSettlementCode` VARCHAR(20) NOT NULL AFTER `dblGrandTotal`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblsalesorderhd` ADD COLUMN `strSettlementCode` VARCHAR(20) NOT NULL AFTER `strClientCode`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpartymaster` " + "	ADD COLUMN `strPNHindi` VARCHAR(200) NOT NULL DEFAULT ''  AFTER `strGSTNo`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpartymaster` " + "	ADD COLUMN `strLocCode` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strPNHindi`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblpartymaster` " + "	ADD COLUMN `strPropCode` VARCHAR(10) NOT NULL DEFAULT '01' AFTER `strLocCode`; ";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblinvoicedtl` " + " 	ADD COLUMN `strUOM` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strCustCode`, " + "	ADD COLUMN `dblUOMConversion` DOUBLE NOT NULL DEFAULT '1.00' AFTER `strUOM`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblsalesorderhd` ADD COLUMN `longMobileNo` BIGINT(20) NOT NULL DEFAULT '0' AFTER `strSettlementCode`;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblsalesorderhd` ADD COLUMN `strMobileNo` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strSettlementCode`;";
+		funExecuteQuery(sql);
+
+		sql = " ALTER TABLE `tblinvoicehd` " + " ADD COLUMN `strMobileNo` VARCHAR(20) NOT NULL DEFAULT '' AFTER `dblCurrencyConv`; ";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblinvoicedtl` " + " ADD COLUMN `dblProdDiscAmount` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `dblUOMConversion`;";
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblmanufacturemaster` ( " + " `strManufacturerCode` VARCHAR(10) NOT NULL, " + " `strManufacturerName` VARCHAR(100) NOT NULL, " + " `strUserCreated` VARCHAR(20) NOT NULL, " + " `dteDateCreated` DATETIME NOT NULL, " + " `strUserModified` VARCHAR(20) NOT NULL, " + " `dteLastModified` DATETIME NOT NULL, " + " `intGId` BIGINT(20) NOT NULL, "
+				+ " `strClientCode` VARCHAR(20) NOT NULL, " + " PRIMARY KEY (`strManufacturerCode`, `strClientCode`) " + " ) " + " COLLATE='latin1_swedish_ci' " + " ENGINE=InnoDB;";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tbldayend` ( " + "	`strLocCode` VARCHAR(10) NOT NULL, " + "	`strDayEnd` VARCHAR(15) NOT NULL, " + "	`dtDateCreated` VARCHAR(25) NOT NULL DEFAULT '', " + "	`dtLastModified` VARCHAR(25) NOT NULL DEFAULT '', " + "	`strClientCode` VARCHAR(25) NOT NULL DEFAULT '', " + "	`strUserCreated` VARCHAR(255) NOT NULL DEFAULT '', "
+				+ "	`strUserModified` VARCHAR(25) NOT NULL DEFAULT '', " + "	PRIMARY KEY (`strLocCode`, `strDayEnd`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+		funExecuteQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblcustomertypemaster` (" + "`strCustTypeCode` VARCHAR(10) NOT NULL, " + "`intCustTypeId` BIGINT(20) NOT NULL, " + "`strCustTypeDesc` VARCHAR(100) NOT NULL, " + "`strUserCreated` VARCHAR(10) NOT NULL, " + "`strUserEdited` VARCHAR(10) NOT NULL, " + "`dteDateCreated` DATETIME NOT NULL, " + "`dteDateEdited` DATETIME NOT NULL, "
+				+ "`strClientCode` VARCHAR(10) NOT NULL, " + "PRIMARY KEY (`strCustTypeCode`, `strClientCode`)) " + "COLLATE='latin1_swedish_ci'" + "ENGINE=InnoDB;";
+		funExecuteQuery(sql);
+		
+		sql = "ALTER TABLE `tblsalesreturnhd` ADD COLUMN `dblDiscAmt` DOUBLE NOT NULL DEFAULT '0.0' AFTER `dblTaxAmt`;";
+		funExecuteQuery(sql);
+		
+		sql = "ALTER TABLE `tblsalesreturnhd` ADD COLUMN `dblDiscPer` DOUBLE NOT NULL DEFAULT '0.0' AFTER `dblDiscAmt`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblinvoicehd` "
+			+ " ADD COLUMN `strCheckBy` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strMobileNo`,"
+			+ "	ADD COLUMN `strApprovedBy` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strCheckBy`,"
+			+ "	ADD COLUMN `strPreparedBy` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strApprovedBy`;";
+		funExecuteQuery(sql);
+
+		sql="ALTER TABLE `tblinvoicehd` "
+			+ " ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strPreparedBy`,"
+			+ " ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,"
+			+ " ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,"
+			+ " ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,"
+			+ " ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblinvoicehd` "
+			+ " CHANGE COLUMN `strCheckBy` `strCheckByNarration` VARCHAR(300) NOT NULL DEFAULT '' AFTER `strMobileNo`, "
+			+ " CHANGE COLUMN `strApprovedBy` `strApprovedByNarration` VARCHAR(300) NOT NULL DEFAULT '' AFTER `strCheckByNarration`, "
+			+ " CHANGE COLUMN `strPreparedBy` `strPreparedByNarration` VARCHAR(300) NOT NULL DEFAULT '' AFTER `strApprovedByNarration`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblinvoicehd` ADD COLUMN `intLevel` INT(8) NOT NULL DEFAULT '0' AFTER `strAuthLevel5`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblinvoicehd` CHANGE COLUMN `strAuthorise` `strAuthorise` VARCHAR(3) NOT NULL DEFAULT 'No' AFTER `dteLastModified`;";
+		funExecuteQuery(sql);
+		
+		
+		sql="ALTER TABLE `tblsalesorderhd` "
+			+" ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT ' ' AFTER `longMobileNo`, "
+			+" ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT ' ' AFTER `strAuthLevel1`, "
+			+" ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT ' ' AFTER `strAuthLevel2`, "
+			+" ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT ' ' AFTER `strAuthLevel3`, "
+			+" ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT ' ' AFTER `strAuthLevel4`, "
+			+" ADD COLUMN `intLevel` INT(8) NOT NULL DEFAULT '0' AFTER `strAuthLevel5`; ";
+		funExecuteQuery(sql);
+		
+		sql=" ALTER TABLE `tblsalesorderhd` "
+		   +" CHANGE COLUMN `strAuthorise` `strAuthorise` VARCHAR(3) NOT NULL DEFAULT '' AFTER `strBOMFlag`; ";
+		funExecuteQuery(sql);
+		
+		sql="CREATE TABLE `tblsalesperson` ( "
+				+ "`strSalesPersonCode` VARCHAR(10) NOT NULL,"
+				+ "`strSalesPersonName` VARCHAR(50) NOT NULL,"
+				+ "`intID` INT(11) NOT NULL DEFAULT '0',"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "PRIMARY KEY (`strSalesPersonCode`, `strClientCode`)"
+				+ ")"
+				+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB;";
+		funExecuteQuery(sql);
+		
+		sql=" ALTER TABLE `tblsalesreturnhd` "
+				   +" ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT ' ' AFTER `dblDiscPer`, "
+				   +" ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT ' ' AFTER `strAuthLevel1`, "
+				   +" ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT ' ' AFTER `strAuthLevel2`, "
+				   +" ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT ' ' AFTER `strAuthLevel3`, "
+				   +" ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT ' ' AFTER `strAuthLevel4`, "
+				   +" ADD COLUMN `intLevel` INT(8) NOT NULL DEFAULT ' 0' AFTER `strAuthLevel5`;" ;
+				
+		funExecuteQuery(sql);
+				
+		sql=" ALTER TABLE `tblsalesreturnhd` "
+						+" ADD COLUMN `strAuthorise` VARCHAR(3) NOT NULL DEFAULT ' ' AFTER `intLevel`;";
+				
+		funExecuteQuery(sql);
+		
+		sql=" CREATE TABLE IF NOT EXISTS `tblproformainvoicedtl` ("
+				+ "	`strInvCode` VARCHAR(15) NOT NULL, "
+					+ " `strProdCode` VARCHAR(10) NOT NULL DEFAULT '', "
+					+ " `dblQty` DECIMAL(18,2) NOT NULL DEFAULT '0.00', "
+					+ " `dblPrice` DECIMAL(18,2) NOT NULL DEFAULT '0.00', "
+					+ "	`dblWeight` DOUBLE NOT NULL DEFAULT '0', "
+					+ " `strProdType` VARCHAR(255) NOT NULL DEFAULT '', "
+					+ " `strPktNo` VARCHAR(50) NOT NULL DEFAULT '', "
+					+ " `strRemarks` VARCHAR(250) NOT NULL DEFAULT '', "
+					+ " `intindex` BIGINT(20) NOT NULL DEFAULT '0', "
+					+ " `strInvoiceable` VARCHAR(1) NOT NULL DEFAULT 'N', "
+					+ " `strSerialNo` VARCHAR(200) NOT NULL, "
+					+ " `strClientCode` VARCHAR(20) NOT NULL, "
+					+ " `dblUnitPrice` DOUBLE NOT NULL DEFAULT '0', "
+					+ " `dblAssValue` DOUBLE NOT NULL DEFAULT '0', "
+					+ " `dblBillRate` DOUBLE NOT NULL DEFAULT '0', "
+					+ " `strSOCode` VARCHAR(15) NOT NULL DEFAULT '', "
+					+ " `strCustCode` VARCHAR(15) NOT NULL DEFAULT '', "
+					+ " `strUOM` VARCHAR(15) NOT NULL DEFAULT '', "
+					+ " `dblUOMConversion` DOUBLE NOT NULL DEFAULT '1', "
+					+ " `dblProdDiscAmount` DECIMAL(18,2) NOT NULL DEFAULT '0.00' "
+				+ " ) "
+				+ " COLLATE='latin1_swedish_ci' "
+				+ " ENGINE=InnoDB ; "; 
+		funExecuteQuery(sql);
+		
+		sql=" CREATE TABLE IF NOT EXISTS  `tblproformainvoicehd` ( "
+				+ " `strInvCode` VARCHAR(15) NOT NULL, "
+				+ " `intid` BIGINT(20) NOT NULL, "
+				+ " `dteInvDate` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00', "
+				+ " `strAgainst` VARCHAR(20) NOT NULL DEFAULT '', "
+				+ " `strSOCode` VARCHAR(500) NOT NULL DEFAULT '', "
+				+ " `strCustCode` VARCHAR(10) NOT NULL DEFAULT '', "
+				+ " `strPONo` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strNarration` VARCHAR(300) NOT NULL DEFAULT '', "
+				+ " `strPackNo` VARCHAR(20) NOT NULL DEFAULT '', "
+				+ " `strLocCode` VARCHAR(15) NOT NULL DEFAULT '', "
+				+ " `strVehNo` VARCHAR(20) NOT NULL DEFAULT '', "
+				+ " `strMInBy` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strTimeInOut` VARCHAR(10) NOT NULL DEFAULT '', "
+				+ " `strUserCreated` VARCHAR(10) NOT NULL, "
+				+ " `dteCreatedDate` DATE NOT NULL DEFAULT '1900-01-01', "
+				+ " `strUserModified` VARCHAR(10) NOT NULL, "
+				+ " `dteLastModified` DATE NOT NULL DEFAULT '1900-01-01', "
+				+ " `strAuthorise` VARCHAR(3) NOT NULL DEFAULT 'No', "
+				+ " `strDktNo` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strSAdd1` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strSAdd2` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strSCity` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strSState` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strSCtry` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strSPin` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strInvNo` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strReaCode` VARCHAR(15) NOT NULL DEFAULT '', "
+				+ " `strSerialNo` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strWarrPeriod` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strWarraValidity` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ " `strClientCode` VARCHAR(20) NOT NULL, "
+				+ " `dblTaxAmt` DOUBLE NOT NULL DEFAULT '0', "
+				+ " `dblTotalAmt` DOUBLE NOT NULL DEFAULT '0', "
+				+ " `dblSubTotalAmt` DOUBLE NOT NULL DEFAULT '0', "
+				+ " `dblDiscount` DOUBLE NOT NULL DEFAULT '0', "
+				+ " `dblDiscountAmt` DOUBLE NOT NULL DEFAULT '0', "
+				+ " `strExciseable` VARCHAR(1) NOT NULL DEFAULT 'N', "
+				+ " `strDulpicateFlag` VARCHAR(1) NOT NULL DEFAULT 'N', "
+				+ " `dblGrandTotal` DECIMAL(18,2) NOT NULL DEFAULT '0.00', "
+				+ " `strSettlementCode` VARCHAR(20) NOT NULL, "
+				+ " `strCurrencyCode` VARCHAR(15) NOT NULL DEFAULT '', "
+				+ " `dblCurrencyConv` DOUBLE NOT NULL DEFAULT '1', "
+				+ " `strMobileNo` VARCHAR(20) NOT NULL DEFAULT '', "
+				+ " `strCheckByNarration` VARCHAR(300) NOT NULL DEFAULT '', "
+				+ " `strApprovedByNarration` VARCHAR(300) NOT NULL DEFAULT '', "
+				+ " `strPreparedByNarration` VARCHAR(300) NOT NULL DEFAULT '', "
+				+ " `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '', "
+				+ " `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '', "
+				+ " `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '', "
+				+ " `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '', "
+				+ " `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '', "
+				+ " `intLevel` INT(8) NOT NULL DEFAULT '0', "
+				+ " PRIMARY KEY (`strInvCode`, `strClientCode`) "
+			+ " ) "
+			+ " COLLATE='latin1_swedish_ci' "
+			+ " ENGINE=InnoDB "
+			+ " ;"; 
+		funExecuteQuery(sql);
+			
+		sql=" CREATE TABLE IF NOT EXISTS  `tblproformainvtaxdtl` ( "
+				+" `intId` BIGINT(20) NOT NULL AUTO_INCREMENT, "
+				+" 	`strClientCode` VARCHAR(255) NULL DEFAULT NULL, "
+				+" 	`strInvCode` VARCHAR(255) NOT NULL DEFAULT '', "
+				+" 	`dblTaxAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+				+" 	`strTaxCode` VARCHAR(255) NOT NULL DEFAULT '', "
+				+" 	`strTaxDesc` VARCHAR(255) NOT NULL DEFAULT '', "
+				+" 	`dblTaxableAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+				+" 	PRIMARY KEY (`intId`) "
+				+" ) "
+				+" COLLATE='latin1_swedish_ci' "
+				+" ENGINE=InnoDB "
+				+" AUTO_INCREMENT=396 "
+				+" ; ";
+		funExecuteQuery(sql);		
+		
+		sql=" CREATE TABLE IF NOT EXISTS  `tblproformainvprodtaxdtl` ( "
+				+" `strInvCode` VARCHAR(20) NOT NULL, "
+				+" 	`strCustCode` VARCHAR(20) NOT NULL, " 
+				+" 	`strProdCode` VARCHAR(20) NOT NULL, "
+				+" 	`strDocNo` VARCHAR(20) NOT NULL, "
+				+" 	`dblValue` DECIMAL(18,2) NOT NULL, "
+				+" 	`strClientCode` VARCHAR(20) NOT NULL, "
+				+" 	`dblTaxableAmt` DECIMAL(18,2) NOT NULL "
+				+" ) "
+				+" COLLATE='latin1_swedish_ci' "
+				+" ENGINE=InnoDB "
+				+" ; "
+				+" ";
+		funExecuteQuery(sql);
+		
+		sql=" CREATE TABLE IF NOT EXISTS `tblproforminvsalesorderdtl` ( "
+				+" `strInvCode` VARCHAR(20) NOT NULL, " 
+				+" 	`strSOCode` VARCHAR(20) NOT NULL, "
+				+" 	`dteInvDate` DATETIME NOT NULL, "
+				+" 	`strClientCode` VARCHAR(20) NOT NULL, "
+				+" 	`strDCCode` VARCHAR(15) NOT NULL DEFAULT '' "
+				+" ) "
+				+" COLLATE='latin1_swedish_ci' "
+				+" ENGINE=InnoDB "
+				+" ; ";
+		funExecuteQuery(sql);
+		
+		sql="CREATE TABLE `tblcategorymaster` ("
+				+ " `strCategoryCode` VARCHAR(255) NOT NULL,"
+				+ " `strCategoryDesc` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " `dtCreatedDate` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " `dtLastModified` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " `intId` BIGINT(20) NULL DEFAULT NULL,"
+				+ " `strClientCode` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " `strUserCreated` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " `strUserModified` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " PRIMARY KEY (`strCategoryCode`))"
+				+ " COLLATE='latin1_swedish_ci' ENGINE=InnoDB; ";
+		funExecuteQuery(sql);
+		
+		sql="CREATE TABLE `tblregionmaster` ("
+				+ " `strRegionCode` VARCHAR(255) NOT NULL,"
+				+ " `strRegionDesc` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " `dtCreatedDate` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " `dtLastModified` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " `intId` BIGINT(20) NULL DEFAULT NULL,"
+				+ " `strClientCode` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " `strUserCreated` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " `strUserModified` VARCHAR(255) NULL DEFAULT NULL,"
+				+ " PRIMARY KEY (`strRegionCode`))"
+				+ " COLLATE='latin1_swedish_ci' ENGINE=InnoDB; ";
+		funExecuteQuery(sql);
+		
+		sql=" CREATE TABLE `tblvoidedproductinvoicedtl` (`strInvCode` VARCHAR(15) NOT NULL,"
+				+ " `strProdCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ " `dblQty` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+				+ " `dblPrice` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+				+ " `dblWeight` DOUBLE NOT NULL DEFAULT '0',"
+				+ " `strProdType` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ " `strPktNo` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ " `strRemarks` VARCHAR(250) NOT NULL DEFAULT '',"
+				+ " `intindex` BIGINT(20) NOT NULL DEFAULT '0',"
+				+ " `strInvoiceable` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ " `strSerialNo` VARCHAR(200) NOT NULL,"
+				+ " `strClientCode` VARCHAR(20) NOT NULL,"
+				+ " `dblUnitPrice` DOUBLE NOT NULL DEFAULT '0',"
+				+ " `dblAssValue` DOUBLE NOT NULL DEFAULT '0',"
+				+ " `dblBillRate` DOUBLE NOT NULL DEFAULT '0',"
+				+ " `strSOCode` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ " `strCustCode` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ " `strUOM` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ " `dblUOMConversion` DOUBLE NOT NULL DEFAULT '1',"
+				+ " `dblProdDiscAmount` DECIMAL(18,2) NOT NULL DEFAULT '0.00'"
+				+ " )COLLATE='latin1_swedish_ci'ENGINE=InnoDB;" ;
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpartymaster` ADD COLUMN `strApplForWT` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strComesaRegion`;";
+		funExecuteQuery(sql);
+		
+		sql=" ALTER TABLE `tblinvoicehd` 	ADD COLUMN `strDeliveryNote` VARCHAR(200) NOT NULL DEFAULT '' AFTER `intLevel`\r\n" + 
+				" , 	ADD COLUMN `strSupplierRef` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strDeliveryNote`\r\n" + 
+				" , 	ADD COLUMN `strOtherRef` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strSupplierRef`\r\n" + 
+				" , 	ADD COLUMN `strBuyersOrderNo` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strOtherRef`\r\n" + 
+				" , 	ADD COLUMN `dteBuyerOrderNoDated` DATETIME NULL AFTER `strBuyersOrderNo`\r\n" + 
+				" , 	ADD COLUMN `strDispatchDocNo` VARCHAR(20) NOT NULL DEFAULT '' AFTER `dteBuyerOrderNoDated`\r\n" + 
+				" , 	ADD COLUMN `dteDispatchDocNoDated` DATETIME NULL AFTER `strDispatchDocNo`\r\n" + 
+				" , 	ADD COLUMN `strDispatchThrough` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dteDispatchDocNoDated`\r\n" + 
+				" , 	ADD COLUMN `strDestination` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strDispatchThrough`  ";				
+		funExecuteQuery(sql);
+
+		sql="ALTER TABLE `tbldeliverychallanhd`"
+			+ "ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strSettlementCode`,"
+			+ "ADD COLUMN `strAuthLevel2` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel1`,"
+			+ "ADD COLUMN `strAuthLevel3` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel2`,"
+			+ "ADD COLUMN `strAuthLevel4` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel3`,"
+			+ "ADD COLUMN `strAuthLevel5` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strAuthLevel4`,"
+			+ "ADD COLUMN `intLevel` INT(8) NOT NULL DEFAULT '0' AFTER `strAuthLevel5`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tbldeliverychallanhd` "
+			+ "CHANGE COLUMN `strAuthorise` `strAuthorise` VARCHAR(3) NOT NULL DEFAULT '' AFTER `dteLastModified`;";
+		funExecuteQuery(sql);
+
+		sql="ALTER TABLE `tblinvoicehd` ADD COLUMN `strCloseIV` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strDestination`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tbldeliverychallanhd` ADD COLUMN `strInvCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `intLevel`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpartymaster` ADD COLUMN `strRegion` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strApplForWT`; ";
+		funExecuteQuery(sql);
+		
+
+		sql="ALTER TABLE `tblinvoicehd` ADD COLUMN `dblExtraCharges` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strCloseIV`;";
+		funExecuteQuery(sql);
+		
+		sql = " ALTER TABLE `tblsalesreturnhd` ADD COLUMN `dblConversion` DECIMAL(18,2) NOT NULL DEFAULT ' 1.00' AFTER `strAuthorise`; ";
+		funExecuteQuery(sql);
+		
+		sql = " ALTER TABLE `tblsalesreturnhd` ADD COLUMN `strCurrency` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dblConversion`; ";
+		funExecuteQuery(sql);
+		
+		
+		sql="ALTER TABLE `tblsettlementmaster` "
+		   +" ADD COLUMN `strInvSeriesChar` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strUserModified`;" ;
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblsalesreturndtl` ADD COLUMN `dblUnitPrice` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `intId`" ;
+		funExecuteQuery(sql);
+				
+		sql="ALTER TABLE `tblinvprodtaxdtl` ADD COLUMN `dblWeight` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `dblTaxableAmt`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblinvoicehd`"
+		+" CHANGE COLUMN `strSAdd1` `strSAdd1` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strDktNo`,"
+		+" CHANGE COLUMN `strSAdd2` `strSAdd2` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strSAdd1`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tbldeliverychallanhd` "
+				+" CHANGE COLUMN `strSAdd1` `strSAdd1` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strDktNo`, "
+				+" CHANGE COLUMN `strSAdd2` `strSAdd2` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strSAdd1`";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblsalesorderhd` "
+				+" CHANGE COLUMN `strBAdd1` `strBAdd1` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strPayMode`, "
+				+" CHANGE COLUMN `strBAdd2` `strBAdd2` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strBAdd1`, "
+				+" CHANGE COLUMN `strSAdd1` `strSAdd1` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strBPin`, "
+				+" CHANGE COLUMN `strSAdd2` `strSAdd2` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strSAdd1`; ";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblinvoicedtl` CHANGE COLUMN `strSOCode` `strSOCode` VARCHAR(150) NOT NULL DEFAULT '' AFTER `dblBillRate`; ";
+		funExecuteQuery(sql);
+		
+
+        sql="ALTER TABLE `tblsalesreturnhd` ADD COLUMN `dblSubTotal` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `strJVNo`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strIncludeTaxInWeightAvgPrice` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strRecipeListPrice`;";
+		funExecuteQuery(sql);
+		
+		
+		
+		
+		
+		
+		sql = " INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`) VALUES "
+				+ " ('frmInovice', 'Invoice', 'Sales', 2, 'T', 69, 10, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmInovice.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ " ('frmInvoiceSlip', 'Invoice Slip', 'Reports', 3, 'R', 61, 4, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmInvoiceSlip.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ "  ('frmSalesReturn', 'Sales Return', 'Sales', 2, 'T', 70, 11, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmSalesReturn.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCategoryWiseSalesOrderReport', 'Production Compilation Report', 'Sales Order Report', 4, 'R', 80, 1, '1', 'default.png', '6', 1, '1', '1', 'NO', 'MO', 'frmCategoryWiseSalesOrderReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), " // Categorywise SO Report
+				+ " ('frmCustomerWiseCategorySalesOrderReport', 'Customer Wise Category Sales Order Report', 'Sales Order Report', 4, 'R', 80, 1, '1', 'default.png', '6', 1, '1', '1', 'NO', 'MO', 'frmCustomerWiseCategorySalesOrderReport.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmAdvanceOrderReports', 'Advance Order Reports', 'Sales Order Report', 4, 'R', 81, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmAdvanceOrderReports.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+				+ " ('frmCustomerWiseLocationWiseSOReport', 'Customer Wise Location Wise SO Report', 'Sales Order Report', 4, 'R', 81, 1, '1', 'default.png', '6', 1, '1', '1', 'NO', 'MO', 'frmCustomerWiseLocationWiseSOReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmPendingCustomerList', 'Pending Customer List', 'Sales Order Report', 4, 'R', 83, 5, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmPendingCustomerList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+				+ " ('frmProductPriceList', 'Product Price List', 'Sales Order Report', 4, 'R', 84, 6, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmProductPriceList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+				+ " ('frmExciseMaster', 'Excise Master', 'Master', 8, 'M', 23, 107, '1', 'default.png', '1', 1, '1', '1', 'NO', 'NO', 'frmExciseMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+ " ('frmInvoiceProductVariance', 'Invoice Product Variance', 'Sales', 2, 'T', 71, 12, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmInvoiceProductVariance.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmPendingCustomerSO', 'Pending Customer SO', 'Sales', 2, 'T', 85, 1, '1', 'default.png', '6', 1, '1', '1', 'YES', 'YES', 'frmPendingCustomerSO.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmLocationwiseCategorywiseSOReport', 'Locationwise Categorywise SO', 'Sales Order Report', 4, 'R', 85, 7, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmLocationwiseCategorywiseSOReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmSOCustomersList', 'Sales Order Customers List', 'Sales Order Report', 4, 'R', 83, 5, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmSOCustomersList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+				+ " ('frmShopOrderList', 'Shop Order List', 'Sales Order Report', 4, 'R', 84, 5, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmShopOrderList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+				+ " ('frmConsolidateCustomerWiseSalesOrder', 'Consolidate CustomerWise SO', 'Sales Order Report', 4, 'R', 85, 8, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmConsolidateCustomerWiseSalesOrder.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+				+ " ('frmConsolidateCustomerWiseAvgSalesOrder', 'Daily Production(Customers Avg)', 'Sales Order Report', 4, 'R', 86, 8, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmConsolidateCustomerWiseAvgSalesOrder.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+				+ " ('frmCRMSecurityShell', 'Security Shell', 'Master', 1, 'M', 59, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmCRMSecurityShell.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+				+ " ('frmInvoiceFlash', 'Invoice Flash', 'Tools', 4, 'L', 1, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmInvoiceFlash.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCRMStructureUpdate', 'Structure Update', 'Tools', 4, 'L', 2, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmCRMStructureUpdate.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmProductionAdvOrderReport', 'Production Advance Order Report', 'Sales Order Report', 4, 'R', 86, 9, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmProductionAdvOrderReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmSalesRegisterReport', 'Sales Register Report', 'Sales Order Report', 4, 'R', 90, 13, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmSalesRegisterReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmDailyProductionReportItemWise', 'Daily Production(Item Wise)', 'Sales Order Report', 4, 'R', 87, 10, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmDailyProductionReportItemWise.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmDutyPayableReport', 'Duty Payable Report', 'Sales Order Report', 4, 'R', 88, 11, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmDutyPayableReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmRG-1DailyStockAccount', 'RG-1 Daily Stock Account', 'Sales Order Report', 4, 'R', 89, 12, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmRG-1DailyStockAccount.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL), "
+				+ " ('frmCommercialTaxInnvoice', 'Commercial Tax Innvoice', 'Sales', '2', 'T', '72', '13', '1', 'default.png', '6', '1', '1', '1', 'NO', 'NO', 'frmCommercialTaxInnvoice.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL), "
+				+ " ('frmRetailBilling', 'Retail Billing', 'Sales', 2, 'T', 86, 13, '1', 'default.png', '6', 1, '1', '1', 'NO', 'Yes', 'frmRetailBilling.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCRMSettlementMaster', 'Settlement Master', 'Master', 1, 'M', 60, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmCRMSettlementMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmDataImport', 'Data Import', 'Master', '1', 'M', '61', '2', '1', 'default.png', '6', '1', '1', '1', 'NO', 'NO', 'frmDataImport.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('Master', 'Master', 'Tools', '4', 'O', '1', '1', '1', 'default.png', '6', '1', '1', '1', 'No', 'No', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('Sales Order Report', 'Sales Order Report', 'Reports', '4', 'O', '1', '1', '1', 'default.png', '6', '1', '1', '1', 'No', 'No', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBillwiseTaxFlash', 'Billwise Tax Flash', 'Tools', '4', 'L', '1', '4', '1', 'default.png', '6', '1', '1', '1', 'NO', 'NO', 'frmBillwiseTaxFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmDayEnd', 'Day End', 'Tools', '4', 'L', '1', '5', '1', 'default.png', '6', '1', '1', '1', 'NO', 'Yes', 'frmCRMDayEnd.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmPacketing', 'Packeting', 'Master', '1', 'M', '62', '2', '1', 'default.png', '6', '1', '1', '1', 'NO', 'NO', 'frmpacketing.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+ " ('frmWebBookLinkup', 'WebBooks Linkup', 'Tools', '4', 'L', '5', '7', '1', 'default.png', '6', '1', '1', '1', 'NO', 'No', 'frmCRMWebBooksLinkup.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ "	('frmCRMAuthorizationTool', 'Authorization', 'Tools', '4', 'L', '1', '1', '1', 'default.png', '6', '1', '1', '1', 'NO', 'NO', 'frmAuthorisationTool.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ " ('frmSalesPersonMaster', 'Sales Person Master', 'Master', 1, 'M', 91, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmSalesPersonMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ " ('frmSalesReturnFlash', 'Sales Return Flash', 'Tools', 4, 'L', 119, 7, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmSalesReturnFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ "	('frmProFormaInvoice', 'ProForma Invoice', 'Sales', 2, 'T', 70, 11, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmProFormaInvoice.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmMonthWiseProductWiseSale', 'Month Wise Prod Wise Sale', 'Reports', 3, 'R', 90, 8, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmMonthWiseProductWiseSale.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ " ('frmCRMCategoryMaster', 'Category Master', 'Master', 1, 'M', 63, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmCRMCategoryMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCRMRegionMaster', 'Region Master', 'Master', 1, 'M', 64, 3, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmCRMRegionMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		        + " ('frmCRMDashboard', 'Dashboard', 'Reports', 4, 'R', 65, 4, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmCRMDashboard.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) , "
+				+ " ('frmWebBookRepostingJV', 'Reposting JV', 'Tools', 4, 'L', 5, 8, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmWebBookRepostingJV.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) , "	
+				+ " ('frmProductWiseFlash', 'ProductWise Flash', 'Tools', 4, 'L', 1, 2, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmProductWiseFlash.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		        + " ('frmCustomerWiseInvoiceFlash', 'CustWise Invoice Flash', 'Tools', 4, 'L', 1, 2, '1', 'default.png', '6',1, '1', '1', 'NO', 'NO', 'frmCustomerWiseInvoiceFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "  
+				+ " ('frmSubGroupWiseItemSalesReport', 'Sub GroupWise Item Sales Report', 'Reports',3, 'R', 91, 8, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmSubGroupWiseItemSalesReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		        + " ('frmSalesAndSalesReturnSummaryReport', 'Sales And Sales Return Summary Report', 'Reports',3, 'R', 92, 8, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmSalesAndSalesReturnSummaryReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		        + " ('frmVoidInvoiceReport', 'Void Invoice Report', 'Reports', 3, 'R', 68, 4, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmVoidInvoiceReport.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)," 
+				+ " ('frmWithholdingTaxReport', 'Withholding Tax Report', 'Reports',3, 'R', 93, 8, '1', 'default.png', '6', 1, '1', '1', 'NO', 'NO', 'frmWithholdingTaxReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ " ('frmAMCFlash', 'AMC Flash', 'Tools', 4, 'L', 5, 9, '1', 'defaults.png', '6', 1, '1', '1', 'NO', 'NO', 'frmAMCFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ;";
+		
+		
+		System.out.println(sql);
+			funExecuteQuery(sql);
+
+		/*----------------CRM Forms End---------------------------*/
+
+		
+		
+		
+		
+		/*----------------Excise Forms Only---------------------------*/
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblpermitmaster`" + " (  `intId` bigint(20) NOT NULL AUTO_INCREMENT, " + "  `strPermitCode` varchar(20) NOT NULL,  " + " `strPermitName` varchar(150) NOT NULL,  " + " `strPermitNo` varchar(30) NOT NULL, " + "  `StrPermitPlace` varchar(100) NOT NULL, " + "  `dtePermitIssue` date NOT NULL, " + "  `dtePermitExp` date NOT NULL,  "
+				+ " `strPermitStatus` varchar(5) NOT NULL, " + "  `dtePermitEdited` datetime NOT NULL,  " + " `strPermitUserCode` varchar(20) NOT NULL, " + "  `strClientCode` varchar(10) NOT NULL DEFAULT '1', " + "   PRIMARY KEY (`intId`)  ) " + " ENGINE=InnoDB AUTO_INCREMENT=1608 DEFAULT CHARSET=utf8;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tblpartymaster` ADD COLUMN `strOperational` VARCHAR(1) NOT NULL DEFAULT 'Y' AFTER `dblDiscount`;";
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tbllocwiseuser` (`strUserCode` VARCHAR(10) NOT NULL" + ",`strLocCode` VARCHAR(10) NOT NULL,`strPropCode` VARCHAR(10) NOT NULL" + ",`strClientCode` VARCHAR(10) NOT NULL) " + "COLLATE='latin1_swedish_ci' ENGINE=InnoDB;";
+		funExecuteQuery(sql);
+
+		sql = "ALTER TABLE `tbltaxhd` ADD COLUMN `strTaxOnSubGroup` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strTaxOnTaxCode`;";
+		funExecuteQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tbltaxsubgroupdtl` (`strTaxCode` VARCHAR(20) NOT NULL" + ",`strSGCode` VARCHAR(20) NOT NULL,`strClientCode` VARCHAR(20) NOT NULL)" + " COLLATE='latin1_swedish_ci'ENGINE=InnoDB;";
+		funExecuteQuery(sql);
+
+		sql = " INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`) VALUES "
+				+ " ('frmExciseStockFlash', 'Excise Stock Flash', 'Tools', '4', 'T', '16', '13', '12', 'default.png', '2', '1', '1', '1', 'NO', 'NO', 'frmExciseStockFlash.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ";
+
+		funExecuteQuery(sql);
+		/*----------------Excise Forms End---------------------------*/
+
+		/*----------------WebClub Forms Only---------------------------*/
+	
+		sql="INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`, `strInvoice`, `strDeliverySchedule`, `strFormAccessYN`) VALUES "
+			+" ('frmWebClubSecurityShellMaster', 'Security Shell', 'Master', 1, 'M', 1, 10, '1', 'default.png', '4', 1, '1', '1', 'NO', 'YES', 'frmWebClubSecurityShell.html',  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+			+" ('frmWebClubBusinessSourceMaster', 'Business Source Master', 'Master', '1', 'M', '1', '1', '1', 'default.png', '4', '1', '1', '1', 'NO', 'NO', 'frmWebClubBusinessSourceMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+			+" ('frmWebClubFacilityMaster', 'Facility Master', 'Master', 1, 'M', 1, 3, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmWebClubFacilityMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+			+ "('frmWebClubPDC', 'Post Deposit Cheque(PDC)', 'Master', 1, 'M', 1, 1, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmWebClubPDC.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+			+ "('frmBankMaster', 'Bank Master', 'Master', 1, 'M', 1, 1, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmBankMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+			+ "('frmWebClubStructureUpdate', 'Structure Update', 'Tools', 1, 'L', 6, 6, '1', 'defaults.png', '4', 1, '1', '1', 'NO', 'NO', 'frmWebClubStructureUpdate.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+			+ "('frmWebClubMemberProfileSetup', 'Member Profile Setup', 'Tools', 3, 'L', 1, 1, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmWebClubMemberProfileSetup.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+			+ "('frmWebClubBankMaster', 'Bank Master', 'Master', 1, 'M', 1, 1, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmWebClubBankMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+			+ "('frmOtherFieldCreation', 'Other Info Master', 'Master', 1, 'M', 1, 1, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmOtherFieldCreation.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+			+ "('frmMemberExplorer', 'Member Explorer', 'Reports', 3, 'R', 1, 14, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmMemberExplorer.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+			+ "('frmWebClubPDCFlashMaster', 'PDC Flash', 'Reports', 3, 'R', 1, 10, '1', 'default.png', '4', 1, '1', '1', 'NO', 'YES', 'frmWebClubPDCFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y');";
+			
+		//('frmMemberPhoto', 'Member Photo', 'Master', 1, 'M', 1, 14, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmMemberPhoto.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y');
+		funExecuteQuery(sql);
+		
+		
+		
+		
+		sql = "CREATE TABLE `tblbusinesssource` ("
+				+ "`strBusinessSrcCode` VARCHAR(20) NOT NULL,"
+				+ "`strBusinessSrcName` VARCHAR(100) NOT NULL,"
+				+ "`dblPercent` DOUBLE NOT NULL,"
+				+ "`dteDateCreated` VARCHAR(50) NOT NULL,"
+				+ "`dteDateEdited` VARCHAR(50) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(50) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(50) NOT NULL,"
+				+ "`strClientCode` VARCHAR(50) NOT NULL,"
+				+ "PRIMARY KEY (`strClientCode`, `strBusinessSrcCode`)) "
+				+ "COLLATE='latin1_swedish_ci' "
+				+ "ENGINE=InnoDB ;";
+		
+		
+		funExecuteWebClubQuery(sql);
+		
+		
+		sql = "CREATE TABLE IF NOT EXISTS `tbleditotherinfo` ("
+			+ "`strMemberCode` VARCHAR(10) NOT NULL,"
+			+ "`dteAddressChangeDate` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+			+ "`strBloodGroupMember` VARCHAR(10) NOT NULL DEFAULT '',"
+			+ "`strCarSticker1` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`strCarSticker2` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`strCarSticker3` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`strCarSticker4` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`dblChidDepositeAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+			+ "`strChidDepositeCategory` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`dteChidDepositeRecepitDate` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+			+ "`strChidDepositeRecepitNo` VARCHAR(50) NOT NULL DEFAULT '',"
+			+ "`dteCorporateEndingDate` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+			+ "`dteCorporateStartingDate` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+			+ "`strElectionName` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`dteEligibilityDate` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+			+ "`dteMaturityDate` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+			+ "`strMrAndMrs` VARCHAR(10) NOT NULL DEFAULT '',"
+			+ "`dteMembershipCancelledDate` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+			+ "`strOldCategory` VARCHAR(10) NOT NULL DEFAULT '',"
+			+ "`dteReInStatementDate` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+			+ "`strSenior` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`dteSeniorDate` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+			+ "`strSeniorFlag` VARCHAR(3) NOT NULL DEFAULT '',"
+			+ "`strSenoirMember` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`strStatusCorporateNomineeMship` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`strTransferFlag` VARCHAR(3) NOT NULL DEFAULT '',"
+			+ "`strNomineeName` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`strOutStationMember` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`strSecurityDeposit` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`strSuperSenior` VARCHAR(100) NOT NULL DEFAULT '',"
+			+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+			+ "`dteCreatedDate` DATETIME NOT NULL,"
+			+ "`strUserModified` VARCHAR(20) NOT NULL,"
+			+ "`dteLastModified` DATETIME NOT NULL,"
+			+ "`strClientCode` VARCHAR(20) NOT NULL,"
+			+ "`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT '',"
+			+ "PRIMARY KEY (`strMemberCode`, `strClientCode`)" 
+			+")"+ "COLLATE='latin1_swedish_ci'"
+			+ "ENGINE=InnoDB"
+			+";";  
+
+		
+		funExecuteWebClubQuery(sql);
+		
+		sql = "ALTER TABLE `tblbusinesssource` "
+				+ "ADD COLUMN `intId` BIGINT(20) NULL AFTER `strUserEdited`;";
+
+		funExecuteWebClubQuery(sql);
+		
+		sql = "ALTER TABLE `tblmemberformgeneration` "
+				+ "ADD COLUMN `strBusinessSourceCode` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strPrint`;";
+		
+		funExecuteWebClubQuery(sql);
+			
+		
+		sql = "CREATE TABLE IF NOT EXISTS `tbleducationmaster` ("
+				+ "`strEducationCode` VARCHAR(10) NOT NULL,"
+				+ "`strEducationDesc` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL,"
+				+ "`intGId` BIGINT(20) NOT NULL,"
+				+ "PRIMARY KEY (`strEducationCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblfacilitymaster` ("
+				+ "`strClientCode` VARCHAR(255) NOT NULL,"
+				+ "`strFacilityCode` VARCHAR(255) NOT NULL,"
+				+ "`dteDateCreated` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`dteDateEdited` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`intGId` BIGINT(20) NULL DEFAULT NULL,"
+				+ "`strFacilityName` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`strOperationalNY` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`strUserCreated` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`strUserEdited` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "PRIMARY KEY (`strClientCode`, `strFacilityCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";"; 
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblgroupmaster` ("
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "`strGroupCode` VARCHAR(10) NOT NULL,"
+				+ "`dtCreatedDate` DATETIME NOT NULL,"
+				+ "`dtLastModified` DATETIME NOT NULL,"
+				+ "`intGId` BIGINT(20) NOT NULL,"
+				+ "`strCategory` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strCrDr` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strGroupName` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`strPropertyCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strShortName` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "PRIMARY KEY (`strClientCode`, `strGroupCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";"; 
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblinvitedby` ("
+				+ "`strInvCode` VARCHAR(10) NOT NULL,"
+				+ "`strInvName` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`strMecompCode` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL,"
+				+ "`intId` BIGINT(20) NOT NULL,"
+				+ "`dteLastModifiedDate` DATETIME NOT NULL,"
+				+ "PRIMARY KEY (`strInvCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblitemcategory` ("
+				+ "`strCategoryName` VARCHAR(60) NOT NULL,"
+				+ "`strAccountIn` VARCHAR(50) NOT NULL,"
+				+ "`strGLCode` VARCHAR(16) NOT NULL,"
+				+ "`strSideledgerCode` VARCHAR(9) NOT NULL,"
+				+ "`strTaxcode` VARCHAR(32) NOT NULL,"
+				+ "`strTaxtype` VARCHAR(20) NOT NULL,"
+				+ "`strAdduserId` VARCHAR(10) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`dteModifiedDate` DATETIME NOT NULL,"
+				+ "`strUserCreated` VARCHAR(50) NOT NULL,"
+				+ "`strUserModified` VARCHAR(50) NOT NULL,"
+				+ "`intRowId` INT(11) NOT NULL,"
+				+ "`strItemTypeCode` VARCHAR(50) NOT NULL,"
+				+ "`strTaxName` VARCHAR(20) NOT NULL,"
+				+ "`strCatItemType` VARCHAR(25) NOT NULL,"
+				+ "`strDisAccIn` VARCHAR(16) NOT NULL,"
+				+ "`strFreeze` VARCHAR(10) NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL,"
+				+ "`IntId` BIGINT(20) NOT NULL,"
+				+ "`strItemCategoryCode` VARCHAR(255) NOT NULL,"
+				+ "`dteLastModifiedDate` VARCHAR(255) NOT NULL,"
+				+ "`strItemCategoryName` VARCHAR(255) NOT NULL,"
+				+ "`strItemCategory` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "PRIMARY KEY (`strClientCode`, `strItemCategoryCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tbllockermaster` ("
+				+ "`strLockerCode` VARCHAR(10) NOT NULL,"
+				+ "`strLockerName` CHAR(50) NOT NULL DEFAULT '',"
+				+ "`strLockerDesc` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`intGId` BIGINT(20) NOT NULL,"
+				+ "PRIMARY KEY (`strLockerCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblmaritalstatusmaster` ("
+				+ "`strMaritalCode` VARCHAR(10) NOT NULL,"
+				+ "`strMaritalName` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL,"
+				+ "`intGId` BIGINT(20) NOT NULL,"
+				+ "PRIMARY KEY (`strMaritalCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblmemberformgeneration` ("
+				+ "`intGId` BIGINT(20) NOT NULL,"
+				+ "`intFormNo` BIGINT(20) NOT NULL,"
+				+ "`strPrint` VARCHAR(50) NOT NULL DEFAULT 'Y',"
+				+ "`strBusinessSourceCode` VARCHAR(50) NOT NULL DEFAULT 'Y',"
+				+ "`strRePrint` VARCHAR(50) NOT NULL DEFAULT 'Y',"
+				+ "`dtePrintDate` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strMemberCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(50) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(50) NOT NULL,"
+				+ "`intReprintCount` BIGINT(20) NOT NULL DEFAULT '0',"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL,"
+				+ "`strProspectName` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strCategoryCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "PRIMARY KEY (`intGId`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblmemberm` ("
+				+ "`strCustomerCode` VARCHAR(10) NOT NULL,"
+				+ "`strMemberCode` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`strPrefixCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strFirstName` VARCHAR(50) NULL DEFAULT NULL,"
+				+ "`strMiddleName` VARCHAR(45) NULL DEFAULT NULL,"
+				+ "`strLastName` VARCHAR(50) NULL DEFAULT NULL,"
+				+ "`strNameOnCard` VARCHAR(150) NULL DEFAULT NULL,"
+				+ "`strFullName` VARCHAR(150) NULL DEFAULT NULL,"
+				+ "`strResidentAddressLine1` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strResidentAddressLine2` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strResidentAddressLine3` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strResidentLandMark` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strResidentAreaCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strResidentCtCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strResidentStateCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strResidentRegionCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strResidentCountryCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strResidentPinCode` VARCHAR(50) NULL DEFAULT NULL,"
+				+ "`strResidentTelephone1` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`strResidentTelephone2` VARCHAR(20) NULL DEFAULT NULL ,"
+				+ "`strResidentFax1` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strResidentFax2` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strResidentMobileNo` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`strResidentEmailID` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strCompanyCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strCompanyName` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strHoldingCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strJobProfileCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strCompanyAddressLine1` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strCompanyAddressLine2` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strCompanyAddressLine3` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strCompanyLandMark` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strCompanyAreaCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strCompanyCtCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strCompanyStateCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strCompanyRegionCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strCompanyCountryCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strCompanyPinCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strCompanyTelePhone1` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`strCompanyTelePhone2` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`strCompanyFax1` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strCompanyFax2` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strCompanyMobileNo` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`strCompanyEmailID` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strBillingAddressLine1` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strBillingAddressLine2` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strBillingAddressLine3` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strBillingLandMark` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`strBillingAreaCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strBillingCtCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strBillingStateCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strBillingRegionCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strBillingCountryCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strBillingPinCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strBillingTelePhone1` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`strBillingTelePhone2` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`strBillingFax1` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strBillingFax2` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strBillingMobileNo` VARCHAR(25) NULL DEFAULT NULL,"
+				+ "`strBillingEmailID` VARCHAR(100) NULL DEFAULT NULL,"
+				+ "`dtDateofBirth` DATETIME NULL DEFAULT NULL,"
+				+ "`strGender` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`strMaritalStatus` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`strProfessionCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`dtAnniversaryDate` DATETIME NULL DEFAULT NULL,"
+				+ "`strCategoryCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`dtInterviewDate` DATETIME NULL DEFAULT NULL,"
+				+ "`strPanNumber` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strProposerCode` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`strSeconderCode` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`dtMembershipStartDate` DATETIME NULL DEFAULT NULL,"
+				+ "`dtMembershipEndDate` DATETIME NULL DEFAULT NULL,"
+				+ "`strBlocked` VARCHAR(1) NULL DEFAULT NULL ,"
+				+ "`strBlockedreasonCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strLiquorPermitNo` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`dtPermitExpDate` DATETIME NULL DEFAULT NULL,"
+				+ "`strQualification` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strResNonRes` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`strDesignationCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strLocker` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`strLibrary` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`strBillingFlag` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`strInstation` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`strSeniorCitizen` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`dblEntranceFee` DECIMAL(18,0) NULL DEFAULT NULL,"
+				+ "`dblSubscriptionFee` DECIMAL(18,0) NULL DEFAULT NULL,"
+				+ "`strGolfMemberShip` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`strStopCredit` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`dtProfileCreationDate` DATETIME NULL DEFAULT NULL,"
+				+ "`strSalesStaffCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strDependentYesNo` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`strAttachment` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`strRemark` VARCHAR(300) NULL DEFAULT NULL,"
+				+ "`strPhoto` VARCHAR(50) NULL DEFAULT NULL,"
+				+ "`strDebtorCode` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`strCustomerID` VARCHAR(2) NULL DEFAULT NULL,"
+				+ "`strPrimaryCustomerCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strGuestEntry` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strDepedentRelation` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strDependentMemberCode` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`dtMembershipExpiryDate` DATETIME NULL DEFAULT NULL,"
+				+ "`strFatherMemberCode` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`dblCMSBalance` DECIMAL(18,0) NULL DEFAULT NULL,"
+				+ "`strUserCreated` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`dtCreationDate` DATETIME NULL DEFAULT NULL,"
+				+ "`strUserModified` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`dtModifiedDate` DATETIME NULL DEFAULT NULL,"
+				+ "`strClientId` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`strPropertyId` VARCHAR(10) NULL DEFAULT NULL,"
+				+ "`dtMemberBlockDate` DATETIME NULL DEFAULT NULL,"
+				+ "`StrAlternateMemberCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`StrMemberStatusCode` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`StrLikes` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`StrDisLikes` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`StrSendInvThrough` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`StrSendCircularNoticeThrough` VARCHAR(1) NULL DEFAULT NULL,"
+				+ "`StrVirtualAccountCode` VARCHAR(20) NULL DEFAULT NULL"
+				+")"
+				+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			/*sql = "CREATE TABLE IF NOT EXISTS `tblmembermaster` ("
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "`strMemberCode` VARCHAR(50) NOT NULL,"
+				+ "`strCustomerCode` VARCHAR(10) NOT NULL,"
+				+ "`intGId` BIGINT(20) NOT NULL AUTO_INCREMENT,"
+				+ "`strFirstName` VARCHAR(100) NOT NULL,"
+				+ "`strFullName` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strLastName` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`strMiddleName` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`strPrefixCode` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strPropertyCode` VARCHAR(10) NOT NULL,"
+				+ "`strUserModified` VARCHAR(10) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "`strResidentAddressLine1` VARCHAR(500) NOT NULL,"
+				+ "`strResidentAddressLine2` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strResidentAddressLine3` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strResidentAreaCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strResidentAreaName` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strResidentCtCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strResidentCtName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strResidentStateCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strResidentStateName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strResidentCountryCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strResidentCountryName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strResidentRegionCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strResidentRegionName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strResidentEmailID` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strResidentFax1` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strResidentFax2` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strResidentLandMark` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strResidentMobileNo` VARCHAR(50) NOT NULL,"
+				+ "`strResidentPinCode` VARCHAR(10) NOT NULL,"
+				+ "`strResidentTelephone1` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strResidentTelephone2` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strCompanyAddressLine1` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strCompanyAddressLine2` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strCompanyAddressLine3` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strCompanyCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strCompanyAreaCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCompanyAreaName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCompanyCtCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCompanyCtName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCompanyStateCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCompanyStateName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCompanyCountryCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCompanyCountryName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCompanyRegionCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCompanyRegionName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCompanyEmailID` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strCompanyFax1` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strCompanyFax2` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strCompanyLandMark` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strCompanyMobileNo` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strCompanyName` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strCompanyPinCode` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strCompanyTelePhone1` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strCompanyTelePhone2` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strHoldingCode` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strJobProfileCode` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strBillingAddressLine1` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strBillingAddressLine2` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strBillingAddressLine3` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strBillingAreaCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strBillingAreaName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strBillingCtCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strBillingCtName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strBillingStateCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strBillingStateName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strBillingCountryCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strBillingCountryName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strBillingRegionCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strBillingRegionName` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strBillingEmailID` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strBillingFax1` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strBillingFax2` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strBillingFlag` VARCHAR(3) NOT NULL DEFAULT 'N',"
+				+ "`strBillingLandMark` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strBillingMobileNo` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strBillingPinCode` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strBillingTelePhone1` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strBillingTelePhone2` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strGender` VARCHAR(5) NOT NULL,"
+				+ "`strMaritalStatus` VARCHAR(15) NOT NULL,"
+				+ "`strProfessionCode` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`dblEntranceFee` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "`dblSubscriptionFee` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "`strAttachment` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strBlocked` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "`strBlockedreasonCode` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strDesignationCode` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strFatherMemberCode` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strCategoryCode` VARCHAR(500) NOT NULL DEFAULT '',"
+				+ "`strGolfMemberShip` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResident` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strInstation` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strLibrary` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strLocker` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strPanNumber` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strProposerCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strQualification` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResNonRes` VARCHAR(1) NOT NULL DEFAULT 'Y',"
+				+ "`strSeconderCode` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strSeniorCitizen` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strStopCredit` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`dteProfileCreationDate` DATETIME NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`strSalesStaffCode` VARCHAR(6) NOT NULL DEFAULT '',"
+				+ "`strDependentYesNo` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ "`strRemark` VARCHAR(300) NOT NULL DEFAULT '',"
+				+ "`strPhoto` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strNameOnCard` VARCHAR(255) NOT NULL,"
+				+ "`dteDateofBirth` VARCHAR(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`dteModifiedDate` DATETIME NOT NULL DEFAULT '2016-12-15 15:54:14',"
+				+ "`strDepedentRelation` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`dteMembershipExpiryDate` VARCHAR(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`dblCMSBalance` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+				+ "`dteMemberBlockDate` DATETIME NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`dteDependentDateofBirth` DATETIME NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`dteInterviewDate` DATETIME NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`strDependentReasonCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strDependentMemberCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCustomerID` VARCHAR(2) NOT NULL DEFAULT '01',"
+				+ "`strDependentFullName` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`dteMembershipEndDate` VARCHAR(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`dteMembershipStartDate` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strAuthorisedMember` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strMemberStatusCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strMemberYesNo` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strLikes` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strDisLikes` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strSendInvThrough` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "`strSendCircularNoticeThrough` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "`strAlternateMemberCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strVirtualAccountCode` VARCHAR(30) NOT NULL DEFAULT '',"
+				+ "`chkmail` BIGINT(20) NOT NULL DEFAULT '0',"
+				+ "`strSSuffixCode` VARCHAR(30) NOT NULL DEFAULT '0',"
+				+ "`strNSuffixCode` VARCHAR(30) NOT NULL DEFAULT '0',"
+				+ "`chrCircularemail` CHAR(7) NOT NULL DEFAULT '0',"
+				+ "`strGuestEntry` VARCHAR(30) NOT NULL DEFAULT 'Y',"
+				+ "`intFormNo` BIGINT(20) NOT NULL DEFAULT '0',"
+				+ "`strLiquorPermitNo` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`dtePermitExpDate` VARCHAR(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`strDebtorCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`dteAnniversaryDate` VARCHAR(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`strPrimaryCustomerCode` VARCHAR(30) NOT NULL DEFAULT '',"
+				+ "`strAadharCardNo` VARCHAR(30) NOT NULL DEFAULT '',"
+				+ "`strAccNo` VARCHAR(30) NOT NULL DEFAULT '',"
+				+ "`strBranchName` VARCHAR(30) NOT NULL DEFAULT '',"
+				+ "`strDepAadharCardNo` VARCHAR(30) NOT NULL DEFAULT '',"
+				+ "`strDepEmailID` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strDepMobileNo` VARCHAR(30) NOT NULL DEFAULT '',"
+				+ "`strBankCode` VARCHAR(30) NOT NULL DEFAULT '',"
+				+ "`strIfscCOde` VARCHAR(30) NOT NULL DEFAULT '',"
+				+ "`strPassportNo` VARCHAR(30) NOT NULL DEFAULT '',"
+				+ "`strVoterIdNo` VARCHAR(30) NOT NULL DEFAULT '',"
+				+ "PRIMARY KEY (`strClientCode`, `strCustomerCode`),"
+				+ "INDEX `intGId` (`intGId`)"
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  */
+
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblmembermaster` ("
+					  + "`strClientCode` varchar(10) NOT NULL,"
+					  + "`strMemberCode` varchar(20) NOT NULL,"
+					  + "`strCustomerCode` varchar(10) NOT NULL,"
+					  + "`intGId` bigint(20) NOT NULL AUTO_INCREMENT,"
+					  + "`strFirstName` varchar(100) NOT NULL,"
+					  + "`strFullName` varchar(255) NOT NULL DEFAULT '',"
+					  + "`strLastName` varchar(100) NOT NULL DEFAULT '',"
+					  + "`strMiddleName` varchar(100) NOT NULL DEFAULT '',"
+					  + "`strPrefixCode` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strPropertyCode` varchar(10) NOT NULL,"
+					  + "`strUserModified` varchar(10) NOT NULL,"
+					  + "`strUserCreated` varchar(10) NOT NULL,"
+					  + "`strResidentAddressLine1` varchar(500) NOT NULL,"
+					  + "`strResidentAddressLine2` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strResidentAddressLine3` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strResidentAreaCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strResidentCountryCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strResidentCtCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strResidentEmailID` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strResidentFax1` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strResidentFax2` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strResidentLandMark` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strResidentMobileNo` varchar(50) NOT NULL,"
+					  + "`strResidentPinCode` varchar(10) NOT NULL,"
+					  + "`strResidentRegionCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strResidentStateCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strResidentTelephone1` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strResidentTelephone2` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strCompanyAddressLine1` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strCompanyAddressLine2` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strCompanyAddressLine3` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strCompanyAreaCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strCompanyCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strCompanyCountryCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strCompanyCtCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strCompanyEmailID` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strCompanyFax1` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strCompanyFax2` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strCompanyLandMark` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strCompanyMobileNo` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strCompanyName` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strCompanyPinCode` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strCompanyRegionCode` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strCompanyStateCode` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strCompanyTelePhone1` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strCompanyTelePhone2` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strHoldingCode` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strJobProfileCode` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strBillingAddressLine1` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strBillingAddressLine2` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strBillingAddressLine3` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strBillingAreaCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strBillingCountryCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strBillingCtCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strBillingEmailID` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strBillingFax1` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strBillingFax2` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strBillingFlag` varchar(3) NOT NULL DEFAULT 'N',"
+					  + "`strBillingLandMark` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strBillingMobileNo` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strBillingPinCode` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strBillingRegionCode` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strBillingStateCode` varchar(15) NOT NULL DEFAULT '',"
+					  + "`strBillingTelePhone1` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strBillingTelePhone2` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strGender` varchar(5) NOT NULL,"
+					  + "`strMaritalStatus` varchar(15) NOT NULL,"
+					  + "`strProfessionCode` varchar(15) NOT NULL DEFAULT '',"
+					  + "`dblEntranceFee` decimal(18,4) NOT NULL DEFAULT '0.0000',"
+					  + "`dblSubscriptionFee` decimal(18,4) NOT NULL DEFAULT '0.0000',"
+					  + "`strAttachment` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strBlocked` varchar(1) NOT NULL DEFAULT '',"
+					  + "`strBlockedreasonCode` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strDesignationCode` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strFatherMemberCode` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strCategoryCode` varchar(500) NOT NULL DEFAULT '',"
+					  + "`strGolfMemberShip` varchar(255) NOT NULL DEFAULT '',"
+					  + "`strInstation` varchar(255) NOT NULL DEFAULT '',"
+					  + "`strLibrary` varchar(255) NOT NULL DEFAULT '',"
+					  + "`strLocker` varchar(255) NOT NULL DEFAULT '',"
+					  + "`strPanNumber` varchar(255) NOT NULL DEFAULT '',"
+					  + "`strProposerCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strQualification` varchar(255) NOT NULL DEFAULT '',"
+					  + "`strResNonRes` varchar(1) NOT NULL DEFAULT 'Y',"
+					  + "`strSeconderCode` varchar(255) NOT NULL DEFAULT '',"
+					  + "`strSeniorCitizen` varchar(255) NOT NULL DEFAULT '',"
+					  + "`strStopCredit` varchar(255) NOT NULL DEFAULT '',"
+					  + "`dteCreatedDate` datetime NOT NULL,"
+					  + "`dteProfileCreationDate` datetime NOT NULL DEFAULT '1990-01-01 00:00:00',"
+					  + "`strSalesStaffCode` varchar(6) NOT NULL DEFAULT '',"
+					  + "`strDependentYesNo` varchar(1) NOT NULL DEFAULT 'N',"
+					  + "`strRemark` varchar(300) NOT NULL DEFAULT '',"
+					  + "`strPhoto` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strNameOnCard` varchar(255) NOT NULL,"
+					  + "`dteDateofBirth` varchar(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+					  + "`dteModifiedDate` datetime NOT NULL DEFAULT '2016-12-15 15:54:14',"
+					  + "`strDepedentRelation` varchar(50) NOT NULL DEFAULT '',"
+					  + "`dteMembershipExpiryDate` varchar(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+					  + "`dblCMSBalance` decimal(18,2) NOT NULL DEFAULT '0.00',"
+					  + "`dteMemberBlockDate` datetime NOT NULL DEFAULT '1990-01-01 00:00:00',"
+					  + "`dteDependentDateofBirth` datetime NOT NULL DEFAULT '1990-01-01 00:00:00',"
+					  + "`dteInterviewDate` datetime NOT NULL DEFAULT '1990-01-01 00:00:00',"
+					  + "`strDependentReasonCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strDependentMemberCode` varchar(20) NOT NULL DEFAULT '',"
+					  + "`strCustomerID` varchar(2) NOT NULL DEFAULT '01',"
+					  + "`strDependentFullName` varchar(255) NOT NULL DEFAULT '',"
+					  + "`dteMembershipEndDate` varchar(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+					  + "`dteMembershipStartDate` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strAuthorisedMember` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strMemberStatusCode` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strMemberYesNo` varchar(10) NOT NULL DEFAULT '',"
+					  + "`strLikes` varchar(255) NOT NULL DEFAULT '',"
+					  + "`strDisLikes` varchar(255) NOT NULL DEFAULT '',"
+					  + "`strSendInvThrough` varchar(1) NOT NULL DEFAULT '',"
+					  + "`strSendCircularNoticeThrough` varchar(1) NOT NULL DEFAULT '',"
+					  + "`strAlternateMemberCode` varchar(20) NOT NULL DEFAULT '',"
+					  + "`strVirtualAccountCode` varchar(30) NOT NULL DEFAULT '',"
+					  + "`chkmail` bigint(20) NOT NULL DEFAULT '0',"
+					  + "`strSSuffixCode` varchar(30) NOT NULL DEFAULT '0',"
+					  + "`strNSuffixCode` varchar(30) NOT NULL DEFAULT '0',"
+					  + "`chrCircularemail` char(7) NOT NULL DEFAULT '0',"
+					  + "`strGuestEntry` varchar(30) NOT NULL DEFAULT 'Y',"
+					  + "`intFormNo` bigint(20) NOT NULL DEFAULT '0',"
+					  + "`strLiquorPermitNo` varchar(20) NOT NULL DEFAULT '',"
+					  + "`dtePermitExpDate` varchar(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+					  + "`strDebtorCode` varchar(20) NOT NULL DEFAULT '',"
+					  + "`dteAnniversaryDate` varchar(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+					  + "`strPrimaryCustomerCode` varchar(30) NOT NULL DEFAULT '',"
+					  + "`strAadharCardNo` varchar(30) NOT NULL DEFAULT '',"
+					  + "`strAccNo` varchar(30) NOT NULL DEFAULT '',"
+					  + "`strBranchName` varchar(30) NOT NULL DEFAULT '',"
+					  + "`strDepAadharCardNo` varchar(30) NOT NULL DEFAULT '',"
+					  + "`strDepEmailID` varchar(50) NOT NULL DEFAULT '',"
+					  + "`strDepMobileNo` varchar(30) NOT NULL DEFAULT '',"
+					  + "`strBankCode` varchar(30) NOT NULL DEFAULT '',"
+					  + "`strIfscCOde` varchar(30) NOT NULL DEFAULT '',"
+					  + "`strPassportNo` varchar(30) NOT NULL DEFAULT '',"
+					  + "`strVoterIdNo` varchar(30) NOT NULL DEFAULT '',"
+					  + "PRIMARY KEY (`strClientCode`,`strCustomerCode`),"
+					  + "KEY `intGId` (`intGId`)"
+					  + ") ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=latin1;";
+			
+			
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblmemberphoto` ("
+				+ "`strMemberCode` VARCHAR(10) NOT NULL,"
+				+ "`strMemberName` CHAR(50) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`strMemberImage` MEDIUMBLOB NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "PRIMARY KEY (`strMemberCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblmembertypemaster` ("
+				+ "`strCatCode` VARCHAR(10) NOT NULL,"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "`dblCreditAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+				+ "`dblDisAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+				+ "`dtCreatedDate` DATETIME NOT NULL,"
+				+ "`dtModifiedDate` DATETIME NOT NULL,"
+				+ "`intCreditLimit` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+				+ "`intGId` BIGINT(20) NOT NULL,"
+				+ "`strCatName` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strCorporate` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strGroupCategoryCode` VARCHAR(15) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strRemarks` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strRuleCode` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strTenure` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(15) NOT NULL,"
+				+ "`strUserModified` VARCHAR(15) NOT NULL,"
+				+ "`strVotingRights` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ "`strcatdesc` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`strFacilityCode` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "PRIMARY KEY (`strCatCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblmempropertysetup` ("
+				+ "`strFieldName` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strFlag` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strClientCode` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`dtCreatedDate` DATE NULL DEFAULT NULL,"
+				+ "`dtEditedDate` DATE NULL DEFAULT NULL,"
+				+ "`strUserCreated` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strUserEdited` VARCHAR(50) NOT NULL DEFAULT ''"
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblpdcdtl` ("
+				+ "`strMemCode` VARCHAR(20) NOT NULL,"
+				+ "`strChequeNo` VARCHAR(20) NOT NULL,"
+				+ "`strDrawnOn` VARCHAR(20) NOT NULL,"
+				+ "`strType` VARCHAR(10) NOT NULL,"
+				+ "`dblChequeAmt` DECIMAL(30,4) NOT NULL DEFAULT '0.0000',"
+				+ "`dteChequeDate` VARCHAR(50) NOT NULL DEFAULT '0000-00-00 00:00:00',"
+				+ "`dteDateCreated` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+				+ "`dteDateEdited` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strUserEdited` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "INDEX `strMemCode` (`strMemCode`)"
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblpersonmaster` ("
+				+ "`strPCode` VARCHAR(10) NOT NULL,"
+				+ "`strPName` VARCHAR(30) NOT NULL,"
+				+ "`strEmail` VARCHAR(30) NULL DEFAULT NULL,"
+				+ "`strMobileNo` VARCHAR(20) NULL DEFAULT NULL,"
+				+ "`intGId` BIGINT(20) NULL DEFAULT NULL,"
+				+ "`strUserCreated` VARCHAR(50) NULL DEFAULT NULL,"
+				+ "`strUserEdited` VARCHAR(50) NULL DEFAULT NULL,"
+				+ "`dteDateCreated` DATETIME NULL DEFAULT NULL,"
+				+ "`dteDateEdited` DATETIME NULL DEFAULT NULL,"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "PRIMARY KEY (`strPCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";"; 
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblpremembermaster` ("
+				+ "`strCustomerCode` VARCHAR(10) NOT NULL,"
+				+ "`strMemberCode` VARCHAR(20) NOT NULL,"
+				+ "`strPrefixCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strFirstName` VARCHAR(255) NOT NULL,"
+				+ "`strMiddleName` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strLastName` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strNameOnCard` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strFullName` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResidentAddressLine1` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResidentAddressLine2` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResidentAddressLine3` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResidentLandMark` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResidentAreaCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strResidentCtCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strResidentStateCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strResidentRegionCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strResidentCountryCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strResidentPinCode` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strResidentTelephone1` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResidentTelephone2` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResidentFax1` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResidentFax2` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResidentMobileNo` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strResidentEmailID` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`strCompanyCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strCompanyName` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`strHoldingCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strJobProfileCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strCompanyAddressLine1` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strCompanyAddressLine2` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strCompanyAddressLine3` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strCompanyLandMark` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strCompanyAreaCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strCompanyCtCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strCompanyStateCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strCompanyRegionCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strCompanyCountryCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strCompanyPinCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strCompanyTelePhone1` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strCompanyTelePhone2` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strCompanyFax1` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strCompanyFax2` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strCompanyMobileNo` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strCompanyEmailID` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`strBillingAddressLine1` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strBillingAddressLine2` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strBillingAddressLine3` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strBillingLandMark` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strBillingAreaCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strBillingCtCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strBillingStateCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strBillingRegionCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strBillingCountryCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strBillingPinCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strBillingTelePhone1` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strBillingTelePhone2` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strBillingFax1` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strBillingFax2` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strBillingMobileNo` VARCHAR(25) NOT NULL DEFAULT '',"
+				+ "`strBillingEmailID` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`dteDateofBirth` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strGender` VARCHAR(1) NOT NULL DEFAULT 'M',"
+				+ "`strMaritalStatus` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strProfessionCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`dteAnniversaryDate` VARCHAR(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`strCategoryCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`dteInterviewDate` DATETIME NOT NULL,"
+				+ "`strPanNumber` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strProposerCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strSeconderCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`dteMembershipStartDate` VARCHAR(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`dteMembershipEndDate` VARCHAR(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`strBlocked` VARCHAR(5) NOT NULL DEFAULT 'N',"
+				+ "`strBlockedreasonCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strLiquorPermitNo` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`dtePermitExpDate` DATETIME NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`strQualification` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strResNonRes` VARCHAR(1) NOT NULL DEFAULT 'Y',"
+				+ "`strDesignationCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strLocker` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ "`strLibrary` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ "`strBillingFlag` VARCHAR(1) NOT NULL DEFAULT 'R',"
+				+ "`strInstation` VARCHAR(1) NOT NULL DEFAULT 'Y',"
+				+ "`strSeniorCitizen` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ "`dblEntranceFee` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+				+ "`dblSubscriptionFee` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+				+ "`strGolfMemberShip` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ "`strStopCredit` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ "`dteProfileCreationDate` DATETIME NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`strSalesStaffCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strDependentYesNo` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ "`strAttachment` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ "`strRemark` VARCHAR(300) NOT NULL DEFAULT '',"
+				+ "`strPhoto` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strDebtorCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strCustomerID` VARCHAR(2) NOT NULL DEFAULT '',"
+				+ "`strPrimaryCustomerCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strGuestEntry` VARCHAR(1) NOT NULL DEFAULT 'Y',"
+				+ "`strDepedentRelation` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strDependentMemberCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`dteMembershipExpiryDate` VARCHAR(50) NOT NULL DEFAULT '1990-01-01 00:00:00',"
+				+ "`dblCMSBalance` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`dteCreationDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`dteModifiedDate` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "`strPropertyId` VARCHAR(10) NOT NULL,"
+				+ "`strMemberYesNo` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "`strAuthorisedMember` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "`strFatherMemberCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strMemberStatusCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strLikes` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "`strDisLikes` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "`strSendInvThrough` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "`strSendCircularNoticeThrough` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "`strAlternateMemberCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strVirtualAccountCode` VARCHAR(15) NOT NULL DEFAULT '',"
+				+ "`chkmail` BIGINT(20) NOT NULL DEFAULT '0',"
+				+ "`strSSuffixCode` VARCHAR(255) NOT NULL DEFAULT '0',"
+				+ "`strNSuffixCode` VARCHAR(255) NOT NULL DEFAULT '0',"
+				+ "`chrCircularemail` CHAR(7) NOT NULL DEFAULT '',"
+				+ "`intFormNo` BIGINT(10) NOT NULL,"
+				+ "`dteDependentDateofBirth` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`dteMemberBlockDate` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`intGId` BIGINT(20) NULL DEFAULT NULL,"
+				+ "`strDependentFullName` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`strDependentReasonCode` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "PRIMARY KEY (`strCustomerCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblprofessionmaster` ("
+				+ "`strProfessionCode` VARCHAR(10) NOT NULL,"
+				+ "`strProfessionName` VARCHAR(50) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`intGId` BIGINT(20) NOT NULL,"
+				+ "PRIMARY KEY (`strProfessionCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblprofilesource` ("
+				+ "`strProfileCode` VARCHAR(10) NOT NULL,"
+				+ "`strProfileDesc` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL,"
+				+ "`intId` BIGINT(20) NOT NULL,"
+				+ "`dteLastModifiedDate` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "PRIMARY KEY (`strProfileCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblreasonmaster` ("
+				+ "`strReasonCode` VARCHAR(10) NOT NULL,"
+				+ "`strReasonDesc` VARCHAR(50) NOT NULL,"
+				+ "`strExcludeInInvoicePrinting` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`intGId` BIGINT(20) NOT NULL,"
+				+ "PRIMARY KEY (`strReasonCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblregionmaster` ("
+				+ "`strRegionCode` VARCHAR(10) NOT NULL,"
+				+ "`strRegionName` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`dtCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`dtLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`intGId` BIGINT(20) NOT NULL,"
+				+ "PRIMARY KEY (`strRegionCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblrelationmaster` ("
+				+ "`strRelationCode` VARCHAR(30) NOT NULL,"
+				+ "`strRelation` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(10) NOT NULL,"
+				+ "`dteLastModifiedDate` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(10) NOT NULL,"
+				+ "`strAgeLimit` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`intId` BIGINT(20) NOT NULL,"
+				+ "PRIMARY KEY (`strRelationCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";"; 
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblsalutationmaster` ("
+				+ "`strSalutationCode` VARCHAR(10) NOT NULL,"
+				+ "`strSalutationDesc` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(10) NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(10) NOT NULL,"
+				+ "`intId` BIGINT(20) NOT NULL,"
+				+ "`dteLastModifiedDate` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "PRIMARY KEY (`strSalutationCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";"; 
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblstaffmaster` ("
+				+ "`strStaffCode` VARCHAR(30) NOT NULL,"
+				+ "`strStaffName` VARCHAR(100) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(10) NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(10) NOT NULL,"
+				+ "`intId` BIGINT(20) NOT NULL,"
+				+ "PRIMARY KEY (`strStaffCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tblstatemaster` ("
+				+ "`strStateCode` VARCHAR(10) NOT NULL,"
+				+ "`strStateName` VARCHAR(50) NOT NULL,"
+				+ "`strStateDesc` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strRegionCode` VARCHAR(10) NOT NULL,"
+				+ "`strCountryCode` VARCHAR(10) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`dtCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`dtLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`intGId` BIGINT(20) NOT NULL,"
+				+ "PRIMARY KEY (`strStateCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";"; 
+
+			
+			funExecuteWebClubQuery(sql);
+					
+			sql = "CREATE TABLE IF NOT EXISTS `tblsubcategorymaster` ("
+				+ "`strSCCode` VARCHAR(10) NOT NULL,"
+				+ "`strSCName` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "`strSCDesc` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`intGId` BIGINT(20) NOT NULL,"
+				+ "PRIMARY KEY (`strSCCode`, `strClientCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";"; 
+
+			
+			funExecuteWebClubQuery(sql);		
+			
+			sql = "CREATE TABLE IF NOT EXISTS `tbltitlemaster` ("
+				+ "`strTitleCode` VARCHAR(20) NOT NULL,"
+				+ "`titleDesc` CHAR(50) NOT NULL DEFAULT '',"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL,"
+				+ "`intId` BIGINT(20) NOT NULL,"
+				+ "`dteLastModifiedDate` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`strTitleDesc` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "PRIMARY KEY (`intId`, `strTitleCode`)" 
+				+")"+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB"
+				+";";  
+
+			
+			funExecuteWebClubQuery(sql);
+			
+			
+			
+			/*sql = " INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`) VALUES "
+					+ " ('frmWebClubSecurityShellMaster', 'Security Shell', 'Master', 1, 'M', 1, 10, '1', 'default.png', '4', 1, '1', '1', 'NO', 'YES', 'frmWebClubSecurityShell.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+					+ " ('frmWebClubBusinessSourceMaster', 'Business Source Master', 'Master', '1', 'M', '1', '1', '1', 'default.png', '4', '1', '1', '1', 'NO', 'NO', 'frmWebClubBusinessSourceMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+					+ " ('frmWebClubFacilityMaster', 'Facility Master', 'Master', 1, 'M', 1, 3, '1', 'default.png', '4', 1, '1', '1', 'NO', 'NO', 'frmWebClubFacilityMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y');";
+
+			funExecuteQuery(sql);
+			
+			sql = "CREATE TABLE `tblbusinesssource` ("
+					+ "`strBusinessSrcCode` VARCHAR(20) NOT NULL,"
+					+ "`strBusinessSrcName` VARCHAR(100) NOT NULL,"
+					+ "`dblPercent` DOUBLE NOT NULL,"
+					+ "`dteDateCreated` VARCHAR(50) NOT NULL,"
+					+ "`dteDateEdited` VARCHAR(50) NOT NULL,"
+					+ "`strUserCreated` VARCHAR(50) NOT NULL,"
+					+ "`strUserEdited` VARCHAR(50) NOT NULL,"
+					+ "`strClientCode` VARCHAR(50) NOT NULL,"
+					+ "PRIMARY KEY (`strClientCode`, `strBusinessSrcCode`)) "
+					+ "COLLATE='latin1_swedish_ci' "
+					+ "ENGINE=InnoDB ;";
+			
+			funExecuteWebClubQuery(sql);
+			
+			sql = "ALTER TABLE `tblbusinesssource` "
+					+ "ADD COLUMN `intId` BIGINT(20) NULL AFTER `strUserEdited`;";
+
+			funExecuteWebClubQuery(sql);
+			
+			sql = "ALTER TABLE `tblmemberformgeneration` "
+					+ "ADD COLUMN `strBusinessSourceCode` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strPrint`;";
+			
+			funExecuteWebClubQuery(sql);
+			
+			sql="CREATE TABLE `tblfacilitymaster` ( "
+					+" `strFacilityCode` VARCHAR(20) NOT NULL, "
+					+" `strFacilityName` VARCHAR(30) NOT NULL, "
+					+" 	`dteDateCreated` VARCHAR(20) NOT NULL, "
+					+" `dteDateEdited` VARCHAR(20) NOT NULL, "
+					+" `strUserCreated` VARCHAR(20) NOT NULL, "
+					+" `strUserEdited` VARCHAR(20) NOT NULL, "
+					+" `strClientCode` VARCHAR(20) NOT NULL, "
+					+" `strOperationalNY` VARCHAR(5) NOT NULL DEFAULT 'N', "
+					+" PRIMARY KEY (`strFacilityCode`, `strClientCode`) "
+				+" ) "
+				+" ENGINE=InnoDB;";
+			
+			funExecuteWebClubQuery(sql);
+			sql="CREATE TABLE `tblcategeorywisefacilitydtl` ( "
+					+ " `strCatCode` VARCHAR(20) NOT NULL, "
+					+ " `strFacilityCode` VARCHAR(20) NOT NULL, "
+					+ " `strFacilityName` VARCHAR(60) NOT NULL, "
+					+ " `strOperationalYN` VARCHAR(5) NOT NULL, "
+					+ " `strClientCode` VARCHAR(20) NOT NULL, "
+					+ " PRIMARY KEY (`strClientCode`, `strCatCode`, `strFacilityCode`) "
+				+ " ) "
+				+ " COLLATE='latin1_swedish_ci' "
+				+ " ENGINE=InnoDB; ";
+			
+			funExecuteWebClubQuery(sql);*/
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		sql="CREATE TABLE `tblfacilitymaster` ( "
+				+" `strFacilityCode` VARCHAR(20) NOT NULL, "
+				+" `strFacilityName` VARCHAR(30) NOT NULL, "
+				+" 	`dteDateCreated` VARCHAR(20) NOT NULL, "
+				+" `dteDateEdited` VARCHAR(20) NOT NULL, "
+				+" `strUserCreated` VARCHAR(20) NOT NULL, "
+				+" `strUserEdited` VARCHAR(20) NOT NULL, "
+				+" `strClientCode` VARCHAR(20) NOT NULL, "
+				+" `strOperationalNY` VARCHAR(5) NOT NULL DEFAULT 'N', "
+				+" PRIMARY KEY (`strFacilityCode`, `strClientCode`) "
+			+" ) "
+			+" ENGINE=InnoDB;";
+		
+		funExecuteWebClubQuery(sql);
+		sql="CREATE TABLE `tblcategeorywisefacilitydtl` ( "
+				+ " `strCatCode` VARCHAR(20) NOT NULL, "
+				+ " `strFacilityCode` VARCHAR(20) NOT NULL, "
+				+ " `strFacilityName` VARCHAR(60) NOT NULL, "
+				+ " `strOperationalYN` VARCHAR(5) NOT NULL, "
+				+ " `strClientCode` VARCHAR(20) NOT NULL, "
+				+ " PRIMARY KEY (`strClientCode`, `strCatCode`, `strFacilityCode`) "
+			+ " ) "
+			+ " COLLATE='latin1_swedish_ci' "
+			+ " ENGINE=InnoDB; ";
+		
+		funExecuteWebClubQuery(sql);
+		
+		sql = "CREATE TABLE `tblpdcdtl` ("
+				+ "`strMemCode` VARCHAR(20) NOT NULL,"
+				+ "`strChequeNo` VARCHAR(20) NOT NULL,"
+				+ "`strDrawnOn` VARCHAR(20) NOT NULL,"
+				+ "`strType` VARCHAR(10) NOT NULL,"
+				+ "`dblChequeAmt` DECIMAL(10,4) NOT NULL DEFAULT '0.0000',"
+				+ "`dteChequeDate` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+				+ "`dteDateCreated` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+				+ "`dteDateEdited` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strUserEdited` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strClientCode` VARCHAR(10) NOT NULL, INDEX `strMemCode` (`strMemCode`)"
+				+ ") COLLATE='latin1_swedish_ci' ENGINE=InnoDB;";	
+		funExecuteWebClubQuery(sql);
+		
+		
+
+		sql = "ALTER TABLE `tblmembermaster` CHANGE COLUMN `strMemberCode` `strMemberCode` VARCHAR(50) NOT NULL AFTER `strClientCode`,"
+				+ "CHANGE COLUMN `strResidentAreaCode` `strResidentAreaCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strResidentAddressLine3`,"
+				+ "ADD COLUMN `strResidentAreaName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strResidentAreaCode`,"
+				+ "ADD COLUMN `strResidentCountryName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strResidentCountryCode`,"
+				+ "CHANGE COLUMN `strResidentCtCode` `strResidentCtCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strResidentCountryName`,"
+				+ "ADD COLUMN `strResidentCtName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strResidentCtCode`,"
+				+ "CHANGE COLUMN `strResidentRegionCode` `strResidentRegionCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strResidentPinCode`,"
+				+ "ADD COLUMN `strResidentRegionName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strResidentRegionCode`,"
+				+ "CHANGE COLUMN `strResidentStateCode` `strResidentStateCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strResidentRegionName`,"
+				+ "ADD COLUMN `strResidentStateName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strResidentStateCode`,"
+				+ "CHANGE COLUMN `strCompanyAreaCode` `strCompanyAreaCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strCompanyAddressLine3`,"
+				+ "ADD COLUMN `strCompanyAreaName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strCompanyAreaCode`,"
+				+ "CHANGE COLUMN `strCompanyCountryCode` `strCompanyCountryCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strCompanyCode`,"
+				+ "ADD COLUMN `strCompanyCountryName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strCompanyCountryCode`,"
+				+ "CHANGE COLUMN `strCompanyCtCode` `strCompanyCtCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strCompanyCountryName`,"
+				+ "ADD COLUMN `strCompanyCtName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strCompanyCtCode`,"
+				+ "CHANGE COLUMN `strCompanyRegionCode` `strCompanyRegionCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strCompanyPinCode`,"
+				+ "ADD COLUMN `strCompanyRegionName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strCompanyRegionCode`;";
+						
+		funExecuteWebClubQuery(sql);		
+		
+		sql = "ALTER TABLE `tblmembermaster` CHANGE COLUMN `strBillingAreaCode` `strBillingAreaCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strBillingAddressLine3`,"
+				+ "ADD COLUMN `strBillingAreaName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strBillingAreaCode`,"
+				+ "CHANGE COLUMN `strBillingCountryCode` `strBillingCountryCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strBillingAreaName`,"
+				+ "ADD COLUMN `strBillingCountryName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strBillingCountryCode`,"
+				+ "CHANGE COLUMN `strBillingCtCode` `strBillingCtCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strBillingCountryName`,"
+				+ "ADD COLUMN `strBillingCtName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strBillingCtCode`,"
+				+ "ADD COLUMN `strBillingRegionName` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strBillingRegionCode`,"
+				+ "ADD COLUMN `strBillingStateName` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strBillingStateCode`;";
+	
+		funExecuteWebClubQuery(sql);
+		
+		sql = "ALTER TABLE `tblmembermaster` ADD COLUMN `strCompanyStateName` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strCompanyStateCode`;";
+		
+		funExecuteWebClubQuery(sql);
+		
+		sql = "ALTER TABLE `tblmembermaster` ADD COLUMN `strResident` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strGolfMemberShip`;";
+		
+		funExecuteWebClubQuery(sql);
+		
+		sql = "ALTER TABLE `tblmemberphoto` CHANGE COLUMN `strMemberCode` `strMemberCode` VARCHAR(20) NOT NULL FIRST;";
+				
+		/*----------------WebClub Forms End---------------------------*/
+		//
+		//
+		/*----------------WebBook Forms Only---------------------------*/
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblbudget` (" + "	`strAccCode` VARCHAR(10) NOT NULL," + "	`strAccName` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strMonth` VARCHAR(25) NOT NULL," + " 	`strYear` VARCHAR(10) NOT NULL," + " 	`dblBudgetAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000'," + "  	`intID` BIGINT(20) NOT NULL AUTO_INCREMENT, " + "	`strClientCode` VARCHAR(10) NOT NULL, "
+				+ "	PRIMARY KEY (`intID`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=5 ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblscbillhd`  " + " (	`strVoucherNo` VARCHAR(15) NOT NULL," + "	`strSuppCode` VARCHAR(15) NOT NULL,	" + "	`strSuppName` VARCHAR(255) NOT NULL,	" + " `strBillNo` VARCHAR(50) NOT NULL," + "	`dteBillDate` DATE NOT NULL," + "	`dteDueDate` DATE NOT NULL,	`dblTotalAmount` DOUBLE NOT NULL," + "	`strModuleType` VARCHAR(10) NOT NULL,"
+				+ "	`dteVoucherDate` DATE NOT NULL,	`strUserCreated` VARCHAR(10) NOT NULL," + "	`strUserEdited` VARCHAR(10) NOT NULL," + "	`dteDateCreated` DATETIME NOT NULL,	`dteDateEdited` DATETIME NOT NULL," + "	`strClientCode` VARCHAR(10) NOT NULL," + "	`strPropertyCode` VARCHAR(10) NOT NULL,	" + " `strNarration` VARCHAR(255) NOT NULL DEFAULT ''," + "	`intVouchNum` VARCHAR(10) NOT NULL,"
+				+ "	`intVoucherMonth` INT(2) NOT NULL, " + " `strAcCode` VARCHAR(10) NOT NULL,  " + "	`strAcName` VARCHAR(255) NOT NULL, " + "	PRIMARY KEY (`strVoucherNo`, `strClientCode`) )" + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblscbilldtl` " + " (	`strVoucherNo` VARCHAR(15) NOT NULL,	" + " `strClientCode` VARCHAR(10) NOT NULL,	" + " `strACCode` VARCHAR(15) NOT NULL,	" + " `strACName` VARCHAR(255) NOT NULL,	" + " `strCrDr` VARCHAR(2) NOT NULL,	" + " `dblCrAmt` DOUBLE(18,4) NOT NULL,	" + " `dblDrAmt` DOUBLE(18,4) NOT NULL,	"
+				+ " `strNarration` VARCHAR(255) NOT NULL DEFAULT '',	" + " `strPropertyCode` VARCHAR(10) NOT NULL)  " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblscbillgrndtl`" + " (	`strVoucherNo` VARCHAR(15) NOT NULL,	" + "`strClientCode` VARCHAR(10) NOT NULL,	" + "`strGRNCode` VARCHAR(15) NOT NULL,	" + "`dteGRNDate` DATE NOT NULL,	" + "`dblGRNAmt` DOUBLE(18,4) NOT NULL DEFAULT '0.00',	" + "`dteGRNDueDate` DATE NOT NULL,	" + "`strGRNBIllNo` VARCHAR(50) NOT NULL DEFAULT '',	"
+				+ "`strPropertyCode` VARCHAR(2) NOT NULL ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblpaymentgrndtl` ( " + "	`strClientCode` VARCHAR(255) NOT NULL, " + "	`strVouchNo` VARCHAR(255) NULL DEFAULT NULL, " + "	`dblGRNAmt` DOUBLE NOT NULL, " + "	`dteBillDate` VARCHAR(255) NULL DEFAULT NULL, " + "	`dteGRNDate` VARCHAR(255) NULL DEFAULT NULL, " + "	`dteGRNDueDate` VARCHAR(255) NULL DEFAULT NULL, "
+				+ "	`strGRNBIllNo` VARCHAR(255) NULL DEFAULT NULL, " + "	`strGRNCode` VARCHAR(255) NULL DEFAULT NULL, " + "	`strPropertyCode` VARCHAR(255) NULL DEFAULT NULL ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ;  ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblsundarycreditormaster` ( " + "	`intGId` BIGINT(20) NOT NULL AUTO_INCREMENT, " + "	`strCreditorCode` VARCHAR(20) NOT NULL, " + "	`strPrefix` VARCHAR(10) NOT NULL, " + "	`strFirstName` VARCHAR(50) NOT NULL, " + "	`strMiddleName` VARCHAR(50) NOT NULL, " + "	`strLastName` VARCHAR(50) NOT NULL, " + "	`strCategoryCode` VARCHAR(100) NOT NULL, "
+				+ "	`strAddressLine1` VARCHAR(200) NOT NULL, " + "	`strAddressLine2` VARCHAR(200) NOT NULL, " + "	`strAddressLine3` VARCHAR(200) NOT NULL, " + "	`strCity` VARCHAR(100) NOT NULL, " + "	`longZipCode` VARCHAR(50) NOT NULL, " + "	`strTelNo1` VARCHAR(50) NOT NULL, " + "	`strTelNo2` VARCHAR(50) NOT NULL, " + "	`strFax` VARCHAR(50) NOT NULL, "
+				+ "	`strArea` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strEmail` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactPerson1` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactDesignation1` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactEmail1` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactTelNo1` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ "	`strContactPerson2` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactDesignation2` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactEmail2` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactTelNo2` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strLandmark` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strCreditorFullName` VARCHAR(100) NOT NULL DEFAULT '', "
+				+ "	`strExpired` VARCHAR(5) NOT NULL DEFAULT 'No', " + "	`strExpiryReasonCode` VARCHAR(20) NOT NULL DEFAULT 'NA', " + "	`strECSYN` VARCHAR(5) NOT NULL DEFAULT 'N', " + "	`strAccountNo` VARCHAR(100) NOT NULL, " + "	`strHolderName` VARCHAR(100) NOT NULL, " + "	`strMICRNo` VARCHAR(100) NOT NULL, " + "	`dblECS` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+				+ "	`strSaveCurAccount` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strAlternateCode` VARCHAR(50) NOT NULL DEFAULT '', " + "	`dblOutstanding` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + "	`strStatus` VARCHAR(20) NOT NULL DEFAULT '', " + "	`intDays1` VARCHAR(50) NOT NULL DEFAULT '0', 	" + "`intDays2` VARCHAR(50) NOT NULL DEFAULT '0', "
+				+ "	`intDays3` VARCHAR(50) NOT NULL DEFAULT '0', " + "	`intDays4` VARCHAR(50) NOT NULL DEFAULT '0', " + "	`intDays5` VARCHAR(50) NOT NULL DEFAULT '0', " + "	`dblCrAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00',  " + "	`dblDrAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00', " + "	`dteLetterProcess` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00', "
+				+ "	`strReminder1` VARCHAR(15) NOT NULL DEFAULT '', " + "	`strReminder2` VARCHAR(15) NOT NULL DEFAULT '', " + "	`strReminder3` VARCHAR(15) NOT NULL DEFAULT '', " + "	`strReminder4` VARCHAR(15) NOT NULL DEFAULT '', " + "	`strReminder5` VARCHAR(15) NOT NULL DEFAULT '', " + "	`dblLicenseFee` VARCHAR(50) NOT NULL DEFAULT '0.0000', "
+				+ "	`dblAnnualFee` VARCHAR(50) NOT NULL DEFAULT '0.0000', " + "	`strRemarks` VARCHAR(200) NOT NULL DEFAULT 'NA', " + "	`strClientApproval` VARCHAR(5) NOT NULL DEFAULT 'No', " + "	`strAMCLink` VARCHAR(200) NOT NULL DEFAULT '', " + "	`strCurrencyType` VARCHAR(20) NOT NULL DEFAULT '', " + "	`strAccountHolderCode` VARCHAR(20) NOT NULL DEFAULT '', "
+				+ "	`strAccountHolderName` VARCHAR(100) NOT NULL DEFAULT '', " + "	`strAMCCycle` VARCHAR(20) NOT NULL DEFAULT '',  " + "	`dteStartDate` DATETIME NOT NULL, " + "	`strAMCRemarks` VARCHAR(200) NOT NULL DEFAULT 'NA', " + "	`strClientComment` VARCHAR(200) NOT NULL DEFAULT 'NA', " + "	`strBillingToCode` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ "	`dblAnnualFeeInCurrency` VARCHAR(50) NOT NULL DEFAULT '0.0000', " + "	`dblLicenseFeeInCurrency` VARCHAR(50) NOT NULL DEFAULT '0.0000', " + "	`strState` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strRegion` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strCountry` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strConsolidated` VARCHAR(5) NOT NULL DEFAULT 'No', "
+				+ "	`intCreditDays` VARCHAR(50) NOT NULL DEFAULT '0', " + "	`strCreditorStatusCode` VARCHAR(10) NOT NULL DEFAULT '', " + "	`longMobileNo` VARCHAR(50) NOT NULL, " + "	`strECSActivate` VARCHAR(3) NOT NULL DEFAULT '', " + "	`strReminderStatus1` VARCHAR(50) NOT NULL DEFAULT '', " + "	`dteRemainderDate1` VARCHAR(50) NOT NULL DEFAULT '1900-01-01', "
+				+ " 	`strReminderStatus2` VARCHAR(50) NOT NULL DEFAULT '', " + "	`dteRemainderDate2` VARCHAR(50) NOT NULL DEFAULT '1900-01-01', " + "	`strReminderStatus3` VARCHAR(50) NOT NULL DEFAULT '', " + "	`dteRemainderDate3` VARCHAR(50) NOT NULL DEFAULT '1900-01-01', " + " 	`strReminderStatus4` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ "	`dteRemainderDate4` VARCHAR(50) NOT NULL DEFAULT '1900-01-01', " + "	`strReminderStatus5` VARCHAR(50) NOT NULL DEFAULT '', " + "	`dteRemainderDate5` VARCHAR(50) NOT NULL DEFAULT '1900-01-01', " + "	`strAllInvoiceHeader` VARCHAR(500) NOT NULL DEFAULT '', " + "	`strUserCreated` VARCHAR(10) NOT NULL, " + "	`strUserEdited` VARCHAR(10) NOT NULL, "
+				+ "	`dteDateCreated` DATETIME NOT NULL, " + "	`dteDateEdited` DATETIME NOT NULL, " + "	`strClientCode` VARCHAR(20) NOT NULL, " + "	`strPropertyCode` VARCHAR(10) NOT NULL, " + "	`strBlocked` VARCHAR(255) NULL DEFAULT NULL, " + "	PRIMARY KEY (`strCreditorCode`, `strClientCode`), " + "	INDEX `intGId` (`intGId`) ) COLLATE='latin1_swedish_ci' " + " ENGINE=InnoDB AUTO_INCREMENT=13 ;  ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS   `tblledgersummary` ( " + "	`dteVochDate` VARCHAR(100) NOT NULL,  	" + "`strVoucherNo` VARCHAR(100) NOT NULL,  " + "	`strTransType` VARCHAR(50) NOT NULL,  " + "	`strChequeBillNo` VARCHAR(50) NOT NULL,  " + "	`dteBillDate` VARCHAR(100) NOT NULL,  " + "	`dblDebitAmt` DOUBLE NOT NULL DEFAULT '0.00',  " + "	`dblCreditAmt` DOUBLE NOT NULL DEFAULT '0.00',  "
+				+ "	`dblBalanceAmt` DOUBLE NOT NULL DEFAULT '0.00',  " + "	`strBalCrDr` VARCHAR(50) NOT NULL DEFAULT '',  " + "	`strNarration` VARCHAR(100) NOT NULL DEFAULT '',  " + "	`strTransTypeForOrderBy` VARCHAR(100) NOT NULL DEFAULT '',  " + "	`strUserCode` VARCHAR(100) NOT NULL,  " + "	`strPropertyCode` VARCHAR(10) NOT NULL,  " + "	`strClientCode` VARCHAR(100) NOT NULL,  "
+				+ "	PRIMARY KEY (`strVoucherNo`, `strClientCode`,`strTransType`)  ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS  `tblcurrentaccountbal` ( " + "	`strAccountCode` VARCHAR(50) NOT NULL, " + "	`strAccountName` VARCHAR(50) NOT NULL, " + "	`strDrCrCode` VARCHAR(50) NOT NULL, " + "	`dteBalDate` VARCHAR(50) NOT NULL,  " + "	`dblCrAmt` DOUBLE NOT NULL DEFAULT '0.00',  " + "	`dblDrAmt` DOUBLE NOT NULL DEFAULT '0.00',  " + "	`dblBalAmt` DOUBLE NOT NULL DEFAULT '0.00', "
+				+ "	`strTransecType` VARCHAR(50) NOT NULL DEFAULT '', " + " 	`strUserCode` VARCHAR(50) NOT NULL, " + "	`strPropertyCode` VARCHAR(50) NOT NULL, " + "	`strClientCode` VARCHAR(50) NOT NULL,  " + "	PRIMARY KEY (`strAccountCode`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS  `tblsundarycreditoropeningbalance` ( 			" + "		`strCreditorCode` VARCHAR(50) NOT NULL, 		" + "		`strAccountCode` VARCHAR(50) NOT NULL, 			" + "		`strAccountName` VARCHAR(150) NOT NULL, 		" + "			`dblOpeningbal` DOUBLE NOT NULL DEFAULT '0.00', 			" + "		`strCrDr` VARCHAR(50) NOT NULL, 		" + "			`strClientCode` VARCHAR(50) NOT NULL, 		"
+				+ "			PRIMARY KEY (`strCreditorCode`, `strClientCode`) 		" + "		) 				COLLATE='latin1_swedish_ci' 		" + "		ENGINE=InnoDB ;	 ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = "	CREATE TABLE IF NOT EXISTS  `tblsundarydebtoropeningbalance` ( 		" + "			`strDebtorCode` VARCHAR(50) NOT NULL, 		" + "			`strAccountCode` VARCHAR(50) NOT NULL, 		" + "			`strAccountName` VARCHAR(150) NOT NULL, 	" + "				`dblOpeningbal` DOUBLE NOT NULL DEFAULT '0.00', 	" + "				`strCrDr` VARCHAR(50) NOT NULL, 	" + "				`strClientCode` VARCHAR(50) NOT NULL, 		"
+				+ "			PRIMARY KEY (`strDebtorCode`, `strClientCode`) 		" + "		) 				COLLATE='latin1_swedish_ci' 		" + "		ENGINE=InnoDB ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblreceiptinvdtl` ( " + "	`strClientCode` VARCHAR(255) NOT NULL, " + "	`strVouchNo` VARCHAR(255) NOT NULL, 	" + "`dblInvAmt` DOUBLE NULL DEFAULT NULL, " + "	`dteBillDate` VARCHAR(255) NULL DEFAULT NULL, " + "	`dteInvDate` VARCHAR(255) NULL DEFAULT NULL, " + "	`dteInvDueDate` VARCHAR(255) NULL DEFAULT NULL, "
+				+ "	`strInvBIllNo` VARCHAR(255) NULL DEFAULT NULL," + " 	`strInvCode` VARCHAR(255) NULL DEFAULT NULL, " + "	`strPropertyCode` VARCHAR(255) NULL DEFAULT NULL,   " + "	`dblPayedAmt` DOUBLE NOT NULL DEFAULT '0' " + " ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblsundarycreditoropeningbalance` ( " + "	`strCreditorCode` VARCHAR(50) NOT NULL, " + "`strAccountCode` VARCHAR(50) NOT NULL, " + "	`strAccountName` VARCHAR(150) NOT NULL, " + "	`dblOpeningbal` DOUBLE NOT NULL DEFAULT '0', " + "	`strCrDr` VARCHAR(50) NOT NULL, " + "	`strClientCode` VARCHAR(50) NOT NULL, "
+				+ "	PRIMARY KEY (`strCreditorCode`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblsundarydebtoropeningbalance` ( " + "	`strDebtorCode` VARCHAR(50) NOT NULL, " + "	`strAccountCode` VARCHAR(50) NOT NULL, " + " 	`strAccountName` VARCHAR(150) NOT NULL, " + "	`dblOpeningbal` DOUBLE NOT NULL DEFAULT '0', " + "	`strCrDr` VARCHAR(50) NOT NULL, " + "	`strClientCode` VARCHAR(50) NOT NULL, "
+				+ "	PRIMARY KEY (`strDebtorCode`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ;  ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql="CREATE TABLE `tblemployeemaster` ( "
+				+ "`strEmployeeCode` VARCHAR(20) NOT NULL,"
+				+ "`strEmployeeName` VARCHAR(50) NOT NULL,"
+				+ "`intID` BIGINT(20) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(50) NOT NULL,"
+				+ "`strUserModified` VARCHAR(50) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "PRIMARY KEY (`strEmployeeCode`, `strClientCode`))"
+				+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql=" CREATE TABLE `tbluserdefinedreporthd` ("
+				+ " `strReportId` VARCHAR(15) NOT NULL,"
+				+ " `intid` BIGINT(20) NOT NULL,"
+				+ " `strReportName` VARCHAR(200) NOT NULL,"
+				+ " `dteUserDefDate` DATETIME NOT NULL,"
+				+ " `dteDateCreated` DATETIME NOT NULL,"
+				+ " `dteDateEdited` DATETIME NOT NULL,"
+				+ " `strUserCreated` VARCHAR(50) NOT NULL,"
+				+ " `strUserModified` VARCHAR(50) NOT NULL,"
+				+ " `strClientCode` VARCHAR(50) NOT NULL,"
+				+ " PRIMARY KEY (`strReportId`, `strClientCode`)"
+				+ " )COLLATE='latin1_swedish_ci'"
+				+ " ENGINE=InnoDB;";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql=" CREATE TABLE `tbluserdefinedreportdtl` ("
+				+ " `strReportId` VARCHAR(15) NOT NULL,"
+				+ " `intSrNo` INT(10) NOT NULL,"
+				+ " `strType` VARCHAR(30) NOT NULL,"
+				+ " `strColumn` VARCHAR(50) NOT NULL,"
+				+ " `strOperator` VARCHAR(50) NOT NULL,"
+				+ " `strFGroup` VARCHAR(20) NOT NULL,"
+				+ " `strTGroup` VARCHAR(20) NOT NULL,"
+				+ " `strFAccount` VARCHAR(20) NOT NULL,"
+				+ " `strTAccount` VARCHAR(20) NOT NULL,"
+				+ " `strDescription` VARCHAR(200) NOT NULL,"
+				+ " `strConstant` VARCHAR(50) NOT NULL,"
+				+ " `strFormula` VARCHAR(50) NOT NULL,"
+				+ " `strPrint` VARCHAR(1) NOT NULL,"
+				+ " `strClientCode` VARCHAR(50) NOT NULL"
+				+ " )COLLATE='latin1_swedish_ci'"
+				+ " ENGINE=InnoDB;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="CREATE TABLE `tblsundarydebtoritemdetail` ( "
+		  + " strClientCode` VARCHAR(10) NOT NULL, "
+		  + " strDebtorCode` VARCHAR(10) NOT NULL, "
+		  + " strProductCode` VARCHAR(10) NOT NULL, "
+		  + " strProductName` VARCHAR(100) NOT NULL DEFAULT '', "
+		  + " dblAMCAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.00', "
+		  + " dblLicenceAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.00', "
+		  + " strAMCType` VARCHAR(50) NOT NULL DEFAULT '', "
+		  + " dteInstallation` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00', "
+		  + " intWarrantyDays` INT NOT NULL DEFAULT '0' "
+		  + "  ) "
+		  + " COLLATE='latin1_swedish_ci' "	
+		  + " ENGINE=InnoDB; ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql = " ALTER TABLE `tblpaymentdtl` " + " ADD COLUMN `strDebtorCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strPropertyCode` ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql = " ALTER TABLE `tblpaymentgrndtl` " + "	ADD COLUMN `dblPayedAmt` DOUBLE NOT NULL DEFAULT '0.00' AFTER `strPropertyCode`; ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql = " ALTER TABLE `tblauditdtl` " + "	CHANGE COLUMN `strAccountName` " + " `strAccountName` VARCHAR(100) NOT NULL AFTER `strAccountCode`;  ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " ALTER TABLE `tblaudithd` " + "	CHANGE COLUMN `strTransType` `strTransType` " + " VARCHAR(10) NOT NULL DEFAULT '' AFTER `strMasterPOS`;  ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " ALTER TABLE `tblscbillhd` " + "	ADD COLUMN `strCreditorCode` VARCHAR(10) NOT NULL AFTER `strSuppName`;";
+		funExecuteWebBooksQuery(sql);
+
+		sql = "ALTER TABLE `tblledgersummary` "
+				+" CHANGE COLUMN `dteVochDate` `dteVochDate` DATETIME NULL DEFAULT NULL AFTER `strVoucherNo`, "
+				+" CHANGE COLUMN `dteBillDate` `dteBillDate` DATETIME NULL DEFAULT NULL AFTER `dblDebitAmt`" ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql = " ALTER TABLE `tblsundarydebtormaster` "
+			+ " ADD COLUMN `strAccountCode` VARCHAR(10) NOT NULL AFTER `strBlocked`; " ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql = "ALTER TABLE `tblsundarycreditormaster` "
+				+ " ADD COLUMN `strAccountCode` VARCHAR(10) NOT NULL AFTER `strUserEdited` ; " ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tbljvhd` ADD COLUMN `strSource` VARCHAR(20) NOT NULL DEFAULT 'User' AFTER `intVouchNum`"
+				+ ",ADD COLUMN `strSourceDocNo` VARCHAR(20) NOT NULL AFTER `strSource`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql=" ALTER TABLE `tblchargemaster` "
+		 +" ADD COLUMN `strCriteria` VARCHAR(20) NOT NULL DEFAULT '' AFTER `dtLastModified`, "
+		 +" ADD COLUMN `strCondition` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strCriteria`, "
+		 +" ADD COLUMN `dblConditionValue` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `strCondition`; ";
+		funExecuteWebBooksQuery(sql);
+	
+
+		sql="ALTER TABLE `tblacmaster`"
+				+ "ADD COLUMN `strEmployeeCode` VARCHAR(20) NOT NULL AFTER `intOpeningBal`";
+		funExecuteWebBooksQuery(sql);
+		
+		sql= "ALTER TABLE `tblacmaster` "
+			+" CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `intGId`;" ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tbljvdtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strVouchNo`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblpaymentdtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strVouchNo`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblreceiptdtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strVouchNo`;";
+		funExecuteWebBooksQuery(sql);
+
+		sql="ALTER TABLE `tbljvdebtordtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strGuest`;";
+		funExecuteWebBooksQuery(sql);
+	
+		sql="ALTER TABLE `tblpaymentdebtordtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strGuest`;";	
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblreceiptdebtordtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strGuest`;";	
+		funExecuteWebBooksQuery(sql);
+		
+		sql="CREATE TABLE `tblemployeeopeningbalance` (\r\n" + 
+				"	`strClientCode` VARCHAR(20) NOT NULL,\r\n" + 
+				"	`strEmployeeCode` VARCHAR(255) NOT NULL,\r\n" + 
+				"	`dblOpeningbal` VARCHAR(255) NULL DEFAULT NULL,\r\n" + 
+				"	`strAccountCode` VARCHAR(255) NULL DEFAULT NULL,\r\n" + 
+				"	`strAccountName` VARCHAR(255) NULL DEFAULT NULL,\r\n" + 
+				"	`strCrDr` VARCHAR(10) NULL DEFAULT NULL\r\n" + 
+				")\r\n" + 
+				"COLLATE='latin1_swedish_ci'\r\n" + 
+				"ENGINE=InnoDB\r\n" + 
+				";\r\n" + 
+				"";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql = "CREATE TABLE IF NOT EXISTS `tblexpensemaster` ("
+				+"`strExpCode` VARCHAR(20) NOT NULL,"
+				+" `intGId` BIGINT(20) NOT NULL DEFAULT '0',"
+				+"`stnExpName` VARCHAR(100) NOT NULL DEFAULT '',"
+				+"`strExpShortName` VARCHAR(50) NOT NULL DEFAULT '',"
+				+"`strGLCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+"`strUserCreated` VARCHAR(50) NOT NULL DEFAULT '',"
+				+"`dtCreatedDate` DATETIME NOT NULL,"
+				+"`strUserModified` VARCHAR(50) NOT NULL DEFAULT '',"
+				+"`dtLastModified` DATETIME NOT NULL,"
+				+"`strClientCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+"PRIMARY KEY (`strExpCode`, `strClientCode`)";
+
+		funExecuteWebBooksQuery(sql);
+		
+		sql = " CREATE TABLE   IF NOT EXISTS `tblpettycashhd` ( "
+				+" `strVouchNo` VARCHAR(20) NOT NULL, "
+				+" `intId` BIGINT(20) NOT NULL AUTO_INCREMENT, "
+				+" `strClientCode` VARCHAR(10) NOT NULL, "
+				+" `dteVouchDate` DATETIME NOT NULL, "
+				+" `strNarration` VARCHAR(200) NOT NULL DEFAULT '', "
+				+" `strUserCreated` VARCHAR(50) NOT NULL DEFAULT '', "
+				+" `strUserEdited` VARCHAR(50) NOT NULL DEFAULT '', "
+				+" `dteDateEdited` DATETIME NOT NULL, "
+				+" `dteDateCreated` DATETIME NOT NULL, "
+				+" PRIMARY KEY (`strVouchNo`, `strClientCode`),"
+				+ "INDEX `intId` (`intId`) "
+				+" ) "
+				+" ENGINE=InnoDB ";
+		funExecuteWebBooksQuery(sql);
+
+		
+		sql=" CREATE TABLE  IF NOT EXISTS `tblpettycashdtl` ( "
+		   +" `strVouchNo` VARCHAR(20) NOT NULL, "
+		   +" `strClientCode` VARCHAR(50) NOT NULL, "
+		   +" `strExpCode` VARCHAR(20) NOT NULL, "
+		   +" `strNarration` VARCHAR(200) NOT NULL DEFAULT '', "
+		   +" `dblAmount` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' "	
+		   +" ) "
+		   +" ENGINE=InnoDB " ;
+		
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblemployeemaster` ALTER `dteCreatedDate` DROP DEFAULT,ALTER `dteLastModified` DROP DEFAULT;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblemployeemaster` "
+			+ "CHANGE COLUMN `dteCreatedDate` `dteCreatedDate` DATETIME NOT NULL AFTER `strEmployeeCode`,"
+			+ "CHANGE COLUMN `dteLastModified` `dteLastModified` DATETIME NOT NULL AFTER `dteCreatedDate`,"
+			+ "ADD COLUMN `strPropertyCode` VARCHAR(10) NOT NULL AFTER `strUserModified`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblacmaster` ADD COLUMN `strCrDr` VARCHAR(5) NOT NULL DEFAULT '' AFTER `strEmployeeCode`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tbljvdtl` CHANGE COLUMN `strOneLine` `strOneLine` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strNarration` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblreceipthd` ADD COLUMN `strChequeClearence` VARCHAR(5) NOT NULL DEFAULT '' AFTER `intOnHold`; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql="ALTER TABLE `tblreceipthd` DROP COLUMN `strChequeClearence`; ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblsundarydebtormaster` ADD COLUMN `dblConversion` DOUBLE NOT NULL DEFAULT '1' AFTER `strAccountCode`;";;
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblsundarycreditormaster` ADD COLUMN `dblConversion` DOUBLE NOT NULL DEFAULT '1' AFTER `strAccountCode`;";
+		funExecuteWebBooksQuery(sql);
+
+		
+		sql="ALTER TABLE `tblpaymenthd` ADD COLUMN `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strPropertyCode` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblpaymenthd` ADD COLUMN `dblConversion` DECIMAL(18,4) NOT NULL DEFAULT '1.0' AFTER `strCurrency` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblreceipthd` ADD COLUMN `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `intOnHold` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblreceipthd` ADD COLUMN `dblConversion` DECIMAL(18,4) NOT NULL DEFAULT '1.0' AFTER `strCurrency` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tbljvhd` ADD COLUMN `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strSourceDocNo`,"
+				+ "ADD COLUMN `dblConversion` DECIMAL(18,4) NOT NULL DEFAULT '1.0' AFTER `strCurrency`";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblauditdebtordtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(15) NOT NULL AFTER `strGuest` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblauditdtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(15) NOT NULL AFTER `strTransNo` ";
+		funExecuteWebBooksQuery(sql);
+		
+
+	    sql ="update tblreceipthd set strCurrency='' where strCurrency is null ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql = "ALTER TABLE `tblreceipthd` CHANGE COLUMN `strCurrency` `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `dblConversion` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql ="update tblpaymenthd set strCurrency='' where strCurrency is null ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql = "ALTER TABLE `tblpaymenthd` CHANGE COLUMN `strCurrency` `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `dblConversion` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql ="update tbljvhd set strCurrency='' where strCurrency is null ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql = "ALTER TABLE `tbljvhd` CHANGE COLUMN `strCurrency` `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `dblConversion` ";
+		funExecuteWebBooksQuery(sql);
+
+		sql="ALTER TABLE `tblledgersummary` ADD COLUMN `strDebtorName` VARCHAR(50) NOT NULL AFTER `strUserCode`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblledgersummary` CHANGE COLUMN `strDebtorName` `strDebtorName` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strUserCode`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblsundarydebtormaster` ADD COLUMN `strOperational` VARCHAR(3) NOT NULL DEFAULT '' AFTER `dblConversion`;";;
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblsundarycreditormaster` ADD COLUMN `strOperational` VARCHAR(3) NOT NULL DEFAULT '' AFTER `dblConversion`;";;
+		funExecuteWebBooksQuery(sql);
+
+		sql="update tblsundarycreditormaster set strOperational='Yes' where strOperational=''";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="update tblsundarydebtormaster set strOperational='Yes' where strOperational=''";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblacmaster` "
+		+" CHANGE COLUMN `intOpeningBal` `intOpeningBal` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strChequeNo`;" ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblacmaster` DROP COLUMN `dblOpeningBal`";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql="update tblreceipthd a set a.dblConversion=1.0 where a.dblConversion=0.0;";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql="update tblpaymenthd a set a.dblConversion=1.0 where a.dblConversion=0.0;";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql="update tbljvhd a set a.dblConversion=1.0 where a.dblConversion=0.0;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql=" ALTER TABLE `tblledgersummary` "
+		   +" CHANGE COLUMN `strBalCrDr` `strBalCrDr` VARCHAR(255) NOT NULL DEFAULT '' AFTER `dteBillDate`, "
+		   +" DROP PRIMARY KEY, "
+		   +" ADD PRIMARY KEY (`strClientCode`, `strVoucherNo`, `strBalCrDr`);";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql=" ALTER TABLE `tblpropertysetup` "
+		  +" ADD COLUMN `strStockInHandAccCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strPropertyCode`, "
+		  +" ADD COLUMN `strStockInHandAccName` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strStockInHandAccCode`, "
+		  +" ADD COLUMN `strClosingCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strStockInHandAccName`, "
+		  +" ADD COLUMN `strClosingName` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strClosingCode`" ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql=" ALTER TABLE `tbluserdefinedreporthd` "
+				  + " CHANGE COLUMN `dteUserDefDate` `dteUserDefDate` VARCHAR(50) NOT NULL AFTER `strReportName`;";
+		funExecuteWebBooksQuery(sql);
+
+		sql=" ALTER TABLE `tblbudget` CHANGE COLUMN `strAccCode` `strAccCode` VARCHAR(20) NOT NULL FIRST;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblbudget` DROP PRIMARY KEY, ADD PRIMARY KEY (`intID`, `strClientCode`, `strAccCode`);";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql = " INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`) VALUES "
+				+ " ('frmSundryCreditorBill', 'Sundry Creditor Bill', 'Transaction', '1', 'T', '1', '1', '12', 'default.png', '5', '1', '1', '1', 'NO', '1', 'frmSundryCreditorBill.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCreditorsOutStandingReport', 'Creditors Out Standing Report', 'Reports', '6', 'R', '6', '6', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmCreditorsOutStandingReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+ " ('frmDebitorOutStandingReport', 'Debitor Out Standing Report', 'Reports', '6', 'R', '7', '7', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO',  'frmDebitorOutStandingReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+//				+ " ('frmDebtorOutStandingList', 'Debtor OutStanding List', 'Reports', '6', 'R', '8', '8', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmDebtorOutStandingList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+ " ('frmTrialBalanceReport', 'Trial Balance Report', 'Reports', '6', 'R', '8', '8', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmTrialBalanceReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCashBook', 'Cash Book', 'Reports', '6', 'R', '9', '9', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO',  'frmCashBook.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+ " ('frmTaxRegister', 'Tax Register', 'Reports', '6', 'R', '9', '9', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmTaxRegister.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmARSecurityShell', 'Security Shell', 'Master', 7, 'M', 12, 12, '1', 'Security-Shell.png', '5', 1, '1', '1', 'NO', 'YES', 'frmARSecurityShell.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCreditorLegder', 'Creditor Ledger Tool', 'Tools', 1, 'L', 2, 2, '12', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmCreditorLedger.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmSundryCreditorMaster', 'Sundry Creditor Master', 'Master', 12, 'M', 12, 12, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmSundryCreditorMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCreditorTrialBalanceReport', 'Creditor Trial Balance', 'Reports', 6, 'R', 73, 8, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmCreditorTrialBalanceReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmGeneralLedger', 'General Ledger Tool', 'Tools', 1, 'L', 2, 3, '12', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmGeneralLedger.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmDebtorTrialBalanceReport', 'Debtor Trial Balance', 'Reports', 6, 'R', 74, 9, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmDebtorTrialBalanceReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+"  ('frmEmployeeMaster', 'Employee Master', 'Master', 13, 'M', 13, 13, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmEmployeeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		        +"  ('frmJVBookReport', 'JV Book Report', 'Reports', 6, 'R', 71, 13, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmJVBookReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		        +"  ('frmIncomeStatement', 'Income Statement', 'Reports', '6', 'R', '1', '1', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmIncomeStatement.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		        +"  ('frmBalanceSheet', 'Balance Sheet', 'Reports', '6', 'R', '1', '1', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmBalanceSheet.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		        + " ('frmEmployeeLedger', 'Employee Ledger Tool', 'Tools', '1', 'L', '1', '1', '13', 'default.png', '5', '1', '1', '1', 'NO', '1', 'frmEmployeeLedger.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		        + " ('frmTaxReportDayWise', 'Tax Report Day Wise', 'Reports', 6, 'R', 75, 75, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmTaxReportDayWise.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		        + " ('frmBankBalanceReport', 'Bank Balance Report', 'Reports', '6', 'R', '14', '14', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmBankBalanceReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ " ('frmEmployeeTrailBalanceReport', 'Employee Trail Balance Report', 'Reports', 6, 'R', 76, 76, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmEmployeeTrailBalanceReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ " ('frmChartOfAccountReport', 'Chart Of Account', 'Reports', 6, 'R', 77, 77, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmChartOfAccountReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ " ('frmDebtorTrailBalanceFlash', 'Debtor Trial Balance flash', 'Tools', 1, 'L', 2, 4, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmDebtorTrailBalanceFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+"  ('frmChequeIssued', 'Cheque Issued', 'Reports', 6, 'R', 70, 2, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmChequeIssued.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+" ('frmChequeReceived', 'Cheque Received', 'Reports', 6, 'R', 70, 2, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmChequeReceived.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBankReconciliation', 'Bank Reconciliation', 'Transaction', 1, 'T', 1, 2, '13', 'default.png', '5', '1', '1', '1', 'NO', '1', 'frmBankReconciliation.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBankReconciliationReport', 'Bank Reconciliation Report', 'Reports', '6', 'R', '9', '9', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO',  'frmBankReconciliationReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+"  ('frmCreditorTrailBalanceFlash', 'Creditor Trail Balance Flash', 'Tools', 1, 'L', 3, 5, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmCreditorTrailBalanceFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+     		    + " ('frmTrailBalanceFlash', 'Trial Balance flash', 'Tools', 1, 'L', 6, 6, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmTrailBalanceFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBankBook', 'Bank Book', 'Reports', '6', 'R', '10', '10', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO',  'frmBankBook.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+                +"  ('frmUserDefineReport', 'User Defined Report', 'Master', '12', 'M', '20', '20', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO','frmUserDefineReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "	
+				+"  ('frmDebtorAgeingReport', 'Debtor Ageing Report', 'Reports', '6', 'R', '74', '74', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmDebtorAgeingReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+"  ('frmCreditorAgeingReport', 'Creditor Ageing Report', 'Reports', '6', 'R', '74', '74', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmCreditorAgeingReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+ " ('frmUserDefineReportProcessing', 'User Define Report Processing', 'Processing', 3, 'P', 3, 3, '1', 'default.png', '5', 1, '1', '1', 'YES', 'NO', 'frmUserDefineReportProcessing.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmWebBooksStructureUpdate', 'Structure Update', 'Tools', 1, 'L', 6, 6, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmWebBooksStructureUpdate.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmExpenseMaster', 'Expense Master', 'Master', '12', 'M', '21', '21', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmExpenseMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+		        + " ('frmPettyCashEntry', 'Petty Cash Entry', 'Transaction', '1', 'T', '1', '2', '13', 'default.png', '5', '1', '1', '1', 'NO', '1', 'frmPettyCashEntry.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		        + " ('frmPettyCashFlash', 'Petty Cash Flash', 'Tools', '4', 'L', '9', '9', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmPettyCashFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		        + "('frmPDCToReceipt', 'PDC To Receipt', 'Transaction', '1', 'T', '1', '2', '13', 'default.png', '5', '1', '1', '1', 'NO', '1', 'frmPDCToReceipt.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) "; 
+		funExecuteQuery(sql);
+		
+		
+		
+		
+		sql = " CREATE TABLE `tblbankmaster` ("
+				+ "`intGId` BIGINT(20) NOT NULL AUTO_INCREMENT,"
+				+ "`strBankCode` VARCHAR(20) NOT NULL,"
+				+ "`strBankName` VARCHAR(80) NOT NULL,"
+				+ "`strBranch` VARCHAR(50) NOT NULL,"
+				+ "`strMICR` VARCHAR(50) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`strUserModified` VARCHAR(20) NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "`strPropertyCode` VARCHAR(20) NOT NULL,"
+				+ "`dtCreatedDate` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`dtLastModified` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "PRIMARY KEY (`strBankCode`, `strClientCode`),"
+				+ "INDEX `intGId` (`intGId`)"
+			+ ")"
+			+ "COLLATE='latin1_swedish_ci'"
+			+ "ENGINE=InnoDB"
+			+ "AUTO_INCREMENT=6"
+			+ ";";
+
+		funExecuteQuery(sql);
+		
+		/*----------------WebBook Forms End---------------------------*/
+
+		
+		
+		
+		
+		/*----------------WebPMS Forms Start---------------------------*/
+
+		sql = " CREATE TABLE `tblBillDiscount` (  " + "	`strBillNo` VARCHAR(15) NOT NULL, " + "	`dteBillDate` VARCHAR(15) NOT NULL,  " + " `strCheckInNo` VARCHAR(15) NOT NULL, " + "	`strFolioNo` VARCHAR(15) NOT NULL, " + "	`strRoomNo` VARCHAR(10) NOT NULL, " + "	`dblDiscAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00', " + "	`dblGrandTotal` DECIMAL(18,2) NOT NULL DEFAULT '0.00',  "
+				+ "	`strUserCreated` VARCHAR(10) NOT NULL," + "  `strUserEdited` VARCHAR(10) NOT NULL," + "  `dteDateCreated` DATETIME NOT NULL, " + "	`dteDateEdited` DATETIME NOT NULL,  " + "	`strClientCode` VARCHAR(10) NOT NULL, " + "	PRIMARY KEY (`strBillNo`, `strClientCode`) ) " + "  COLLATE='utf8_general_ci' ENGINE=InnoDB ;  ";
+
+		funExecutePMSQuery(sql);
+
+		sql="CREATE TABLE IF NOT EXISTS `tblmarketsource` (  "
+			+" `strMarketSourceCode` VARCHAR(10) NOT NULL, "
+			+" `strDescription` VARCHAR(100) NOT NULL, "
+			+" `strReqSlipReqd` VARCHAR(1) NOT NULL, "
+			+" `strUserCreated` VARCHAR(10) NOT NULL, "
+			+" `strUserEdited` VARCHAR(10) NOT NULL, "
+			+" `dteDateCreated` DATETIME NOT NULL, "
+			+" `dteDateEdited` DATETIME NOT NULL, "
+			+" `strClientCode` VARCHAR(10) NOT NULL, "
+			+" PRIMARY KEY (`strMarketSourceCode`, `strClientCode`) "
+			+" ) "
+			+" COLLATE='utf8_general_ci' "
+			+" ENGINE=InnoDB "; 
+		funExecutePMSQuery(sql);
+		
+		sql = " CREATE TABLE IF NOT EXISTS `tblfloormaster` ( " 
+				+" `strFloorCode` VARCHAR(10) NOT NULL DEFAULT '', " 
+				+" `strFloorName` VARCHAR(50) NOT NULL DEFAULT '', " 
+				+" `dblFloorAmt` DECIMAL(18,2) NOT NULL, " 
+				+" `strUserCreated` VARCHAR(50) NOT NULL DEFAULT '', " 
+				+" `strUserEdited` VARCHAR(50) NOT NULL DEFAULT '', " 
+				+" `dteDateCreated` DATETIME NOT NULL, " 
+				+" `dteDateEdited` DATETIME NOT NULL, " 
+				+" `strClientCode` VARCHAR(50) NOT NULL DEFAULT '', " 
+				+" PRIMARY KEY (`strFloorCode`, `strClientCode`) " 
+				+" ) " 
+				+" COLLATE='utf8_general_ci' " 
+				+" ENGINE=InnoDB ";
+		funExecutePMSQuery(sql);
+		
+		sql="CREATE TABLE IF NOT EXISTS `tblreservationroomratedtl` ( "
+		   +" `strReservationNo` VARCHAR(15) NOT NULL, "
+		   +" `dtDate` VARCHAR(10) NOT NULL, "
+		   +" `strRoomNo` VARCHAR(10) NOT NULL, "
+		   +" `dblRoomRate` DECIMAL(18,2) NOT NULL, "
+		   +" `strClientCode` VARCHAR(10) NOT NULL "
+		   +" ) "
+		   +" COLLATE='utf8_general_ci' "
+		   +" ENGINE=InnoDB ; " ;
+		funExecutePMSQuery(sql);
+		
+		sql=" CREATE TABLE IF NOT EXISTS `tblwalkinroomratedtl` ( " 
+				+" `strWalkinNo` VARCHAR(15) NOT NULL, " 
+				+" `dtDate` VARCHAR(10) NOT NULL, " 
+				+" `strRoomNo` VARCHAR(10) NOT NULL, " 
+				+" `dblRoomRate` DECIMAL(18,2) NOT NULL, " 
+				+" `strClientCode` VARCHAR(10) NOT NULL " 
+				+" ) " 
+				+" COLLATE='utf8_general_ci' " 
+				+" ENGINE=InnoDB ; ";
+		
+		funExecutePMSQuery(sql);
+		
+		sql="CREATE TABLE `tblvoidbillhd` ( "
+			+ " `strBillNo` VARCHAR(15) NOT NULL, "
+			+ " `dteBillDate` DATETIME NOT NULL, "
+			+ " `strCheckInNo` VARCHAR(15) NOT NULL, "
+			+ " `strFolioNo` VARCHAR(15) NOT NULL, "
+			+ " `strRoomNo` VARCHAR(10) NOT NULL  DEFAULT '', "
+			+ " `strExtraBedCode` VARCHAR(10) NOT NULL  DEFAULT '', "
+			+ " `strRegistrationNo` VARCHAR(15) NOT NULL, "
+			+ " `strReservationNo` VARCHAR(15) NOT NULL  DEFAULT '', "
+			+ " `dblGrandTotal` DECIMAL(18,2) NOT NULL  DEFAULT 0, "
+			+ " `strUserCreated` VARCHAR(10) NOT NULL, "
+			+ " `strUserEdited` VARCHAR(10) NOT NULL, "
+			+ " `dteDateCreated` DATETIME NOT NULL, "
+			+ " `dteDateEdited` DATETIME NOT NULL, "
+			+ " `strClientCode` VARCHAR(10) NOT NULL, "
+			+ " `strBillSettled` VARCHAR(5) NULL DEFAULT '', "
+			+ " `strVoidType` VARCHAR(10) NULL DEFAULT '', "
+			+ " PRIMARY KEY (`strBillNo`, `strClientCode`) "
+			+ " ) "
+			+ " COLLATE='utf8_general_ci' "
+			+ " ENGINE=InnoDB; ";
+		funExecutePMSQuery(sql);
+		
+		sql="CREATE TABLE `tblvoidbilldtl` ( "
+				+ " `strBillNo` VARCHAR(15) NOT NULL, "
+				+ " `strFolioNo` VARCHAR(15) NOT NULL, "
+				+ " `dteDocDate` DATETIME NOT NULL, "
+				+ " `strDocNo` VARCHAR(10) NOT NULL  DEFAULT '', "
+				+ " `strPerticulars` VARCHAR(200) NOT NULL DEFAULT '', "
+				+ " `strRevenueType` VARCHAR(255) NOT NULL DEFAULT '', "
+				+ " `strRevenueCode` VARCHAR(15) NOT NULL DEFAULT '',  "
+				+ " `dblDebitAmt` DECIMAL(18,2) NOT NULL DEFAULT 0, "
+				+ " `dblCreditAmt` DECIMAL(18,2) NOT NULL DEFAULT 0, "
+				+ " `dblBalanceAmt` DECIMAL(18,2) NOT NULL  DEFAULT 0, "
+				+ " `strClientCode` VARCHAR(10) NOT NULL, "
+				+ " INDEX `FK3FECBEF7DA3532E0` (`strBillNo`, `strClientCode`) "
+				+ " ) "
+				+ " COLLATE='utf8_general_ci' "
+				+ " ENGINE=InnoDB  ";
+		funExecutePMSQuery(sql);
+		
+		sql="CREATE TABLE `tblvoidbilltaxdtl` (	"
+				+ "`strBillNo` VARCHAR(15) NOT NULL,	"
+				+ "`strDocNo` VARCHAR(15) NOT NULL,	"
+				+ "`strTaxCode` VARCHAR(10) NOT NULL,	"
+				+ "`dblTaxableAmt` DECIMAL(18,2) NOT NULL, "
+				+ "`dblTaxAmt` DECIMAL(18,2) NOT NULL,"
+				+ "	`strClientCode` VARCHAR(10) NOT NULL,"
+				+ " INDEX `FK19AB8F56DA3532E0` (`strBillNo`, `strClientCode`)) "
+				+ "COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB ;";
+		funExecutePMSQuery(sql);
+		
+		sql="CREATE TABLE `tblchangedroomtypedtl` ("
+				+ "`strDocNo` VARCHAR(255) NOT NULL,"
+				+ "`strType` VARCHAR(50) NOT NULL,"
+				+ "`strRoomNo` VARCHAR(50) NULL DEFAULT NULL,"
+				+ "`strRoomType` VARCHAR(50) NULL DEFAULT NULL,"
+				+ "`strGuestCode` VARCHAR(50) NOT NULL,"
+				+ "`dteFromDate` VARCHAR(200) NOT NULL DEFAULT '',"
+				+ "`dteToDate` VARCHAR(200) NOT NULL DEFAULT '',"
+				+ "`strClientCode` VARCHAR(255) NOT NULL,"
+				+ "INDEX `strRoomType` (`strRoomType`),INDEX `strClientCode` (`strClientCode`),INDEX `strDocNo` (`strDocNo`)"
+				+ ")COLLATE='utf8_general_ci'ENGINE=InnoDB;";
+		funExecutePMSQuery(sql);
+		
+		
+		sql="CREATE TABLE `tblroompackagedtl` ("
+				+ "`strWalkinNo` VARCHAR(15) NOT NULL,"
+				+ "`strReservationNo` VARCHAR(15) NOT NULL,"
+				+ " `strCheckInNo` VARCHAR(15) NOT NULL,"
+				+ "`strPackageCode` VARCHAR(15) NOT NULL,"
+				+ "`strIncomeHeadCode` VARCHAR(15) NOT NULL,"
+				+ "`dblIncomeHeadAmt` DOUBLE NOT NULL,"
+				+ "`strClientCode` VARCHAR(255) NOT NULL"
+				+ ")COLLATE='utf8_general_ci'ENGINE=InnoDB;";
+		funExecutePMSQuery(sql);
+		
+		sql=" CREATE TABLE `tblpackagemasterhd` ("
+				+ "`strPackageCode` VARCHAR(10) NOT NULL,"
+				+ "`strPackageName` VARCHAR(100) NOT NULL,"
+				+ "`dblPackageAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+				+ " `strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(10) NOT NULL,"
+				+ "`dteDateCreated` DATETIME NOT NULL,"
+				+ "`dteDateEdited` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "PRIMARY KEY (`strPackageCode`, `strClientCode`)"
+				+ ")COLLATE='utf8_general_ci'ENGINE=InnoDB ; ";
+		funExecutePMSQuery(sql);
+		
+		sql=" CREATE TABLE `tblpackagemasterdtl` ("
+				+ "`strPackageCode` VARCHAR(15) NOT NULL,"
+				+ "`strIncomeHeadCode` VARCHAR(15) NOT NULL,"
+				+ "`dblAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00',"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "INDEX `FKB780D4CDF98AA58E` (`strPackageCode`, `strClientCode`)"
+				+ ")COLLATE='utf8_general_ci'ENGINE=InnoDB; ";
+		funExecutePMSQuery(sql);
+		
+		
+		sql=" CREATE TABLE `tblchangeroom` ("
+				+ "`strRoomNo` VARCHAR(10) NOT NULL,"
+				+ "`strRoomTypeCode` VARCHAR(10) NOT NULL,"
+				+ "`strFolioNo` VARCHAR(15) NOT NULL,"
+				+ "`strGuestCode` VARCHAR(500) NOT NULL,"
+				+ "`strReason` VARCHAR(50) NOT NULL,"
+				+ "`strRemark` VARCHAR(200) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(10) NOT NULL,"
+				+ "`dteChangeDate` DATETIME NOT NULL"
+				+ ")COLLATE='utf8_general_ci'ENGINE=InnoDB; ";
+		funExecutePMSQuery(sql);
+			
+		sql = 	"CREATE TABLE `tblposdayend` ("
+				+ "`strPOSCode` VARCHAR(10) NOT NULL,"
+				+ "`strPOSName` VARCHAR(50) NOT NULL,"
+				+ "`dteDayEndDate` DATETIME NOT NULL,"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(10) NOT NULL,"
+				+ "`dteDateCreated` DATETIME NOT NULL,"
+				+ "`dteDateEdited` DATETIME NOT NULL,"
+				+ "`strStatus` VARCHAR(1) NOT NULL DEFAULT 'N',"
+				+ "`strClientCode` VARCHAR(10) NOT NULL"
+				+ ")COLLATE='utf8_general_ci' ENGINE=InnoDB; ";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblblockroom` ("
+				+ "`strRoomCode` VARCHAR(50) NOT NULL,"
+				+ "`strRoomType` VARCHAR(50) NOT NULL,"
+				+ "`dteValidFrom` DATE NOT NULL,"
+				+ "`dteValidTo` DATE NOT NULL,"
+				+ "`strReason` VARCHAR(200) NOT NULL,"
+				+ "`strRemark` VARCHAR(200) NOT NULL,"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "PRIMARY KEY (`strRoomCode`, `strClientCode`)"
+				+ ") COLLATE='utf8_general_ci' ENGINE=InnoDB;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblsettlementtax` ("
+				+ "`strTaxCode` VARCHAR(10) NOT NULL, "
+				+ "`strSettlementCode` VARCHAR(10) NOT NULL,"
+				+ "`strSettlementName` VARCHAR(100) NOT NULL,"
+				+ "`strApplicable` VARCHAR(5) NOT NULL,"
+				+ "`dteFrom` DATETIME NOT NULL,"
+				+ "`dteTo` DATETIME NOT NULL,"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(10) NOT NULL,"
+				+ "`dteDateCreated` DATETIME NOT NULL,"
+				+ "`dteDateEdited` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(11) NOT NULL DEFAULT '',"
+				+ " PRIMARY KEY (`strTaxCode`, `strSettlementCode`, `strClientCode`)"
+				+ ") "
+				+ "COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB ; ";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE IF NOT EXISTS `tblfoliobckp` ("
+				+ " `strFolioNo` varchar(15) NOT NULL,"
+				+ " `dteDocDate` datetime NOT NULL,"
+				+ " `strDocNo` varchar(15) NOT NULL,"
+				+ " `strPerticulars` varchar(200) NOT NULL,"
+				+ " `dblDebitAmt` decimal(18,2) NOT NULL,"
+				+ " `dblCreditAmt` decimal(18,2) NOT NULL,"
+				+ " `dblBalanceAmt` decimal(18,2) NOT NULL,"
+				+ " `strRevenueType` varchar(100) NOT NULL,"
+				+ " `strRevenueCode` varchar(15) NOT NULL,"
+				+ " `strClientCode` varchar(10) NOT NULL,"
+				+ " `dblQuantity` decimal(18,4) NOT NULL DEFAULT '0.0000',"
+				+ " `dteDateEdited` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',"
+				+ " `strTransactionType` varchar(50) NOT NULL DEFAULT '',"
+				+ " `strUserEdited` varchar(50) NOT NULL DEFAULT ''"
+				+ ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+		
+		funExecutePMSQuery(sql);
+		
+		
+		sql = " ALTER TABLE `tblroomcancelation` " + "	CHANGE COLUMN `strReservationNo` `strReservationNo` VARCHAR(12) NOT NULL FIRST;  ";
+
+		funExecutePMSQuery(sql);
+
+		sql="ALTER TABLE `tblreservationroomratedtl` "
+			+" CHANGE COLUMN `strRoomNo` `strRoomType` VARCHAR(10) NOT NULL AFTER `dtDate`;";
+		funExecutePMSQuery(sql);
+		
+		sql = " ALTER TABLE `tblreservationhd` " + "	ADD COLUMN `strNoRoomsBooked` VARCHAR(10) NOT NULL DEFAULT '1' AFTER `intNoOfChild`; ";
+		funExecutePMSQuery(sql);
+
+		sql = " ALTER TABLE `tblreservationdtl`" + "	ADD COLUMN `strPayee` VARCHAR(1) NOT NULL AFTER `strGuestCode`; ";
+
+		funExecutePMSQuery(sql);
+
+		sql = " ALTER TABLE `tblfoliohd` " + "	ADD COLUMN `strWalkInNo` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strGuestCode`; ";
+
+		funExecutePMSQuery(sql);
+
+		sql = "  ALTER TABLE `tblreceipthd` " + "	ADD COLUMN `strFlagOfAdvAmt` VARCHAR(3) NOT NULL DEFAULT 'N' AFTER `strClientCode`; ";
+
+		funExecutePMSQuery(sql);
+
+		sql = " ALTER TABLE `tblreservationhd` 	" + "	ADD COLUMN `strGuestcode` VARCHAR(15) NOT NULL AFTER `strNoRoomsBooked`; ";
+
+		funExecutePMSQuery(sql);
+
+		sql = " ALTER TABLE `tblbilldtl` " + "	CHANGE COLUMN `strRevenueType` `strRevenueType` VARCHAR(255) NOT NULL AFTER `strPerticulars`; ";
+
+		funExecutePMSQuery(sql);
+
+		sql = " ALTER TABLE `tblbillhd` " + "	ADD COLUMN `strBillSettled` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strClientCode`; ";
+		funExecutePMSQuery(sql);
+
+		sql = "  ALTER TABLE `tblpropertysetup` " + "	ADD COLUMN `strSMSProvider` VARCHAR(50) NOT NULL DEFAULT '' AFTER `tmeCheckOutTime`, " + "	ADD COLUMN `strSMSAPI` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strSMSProvider`, " + "	ADD COLUMN `strReservationSMSContent` VARCHAR(500) NOT NULL DEFAULT '' AFTER `strSMSAPI`, "
+				+ "	ADD COLUMN `strCheckInSMSContent` VARCHAR(500) NOT NULL DEFAULT '' AFTER `strReservationSMSContent`, " + "	ADD COLUMN `strAdvAmtSMSContent` VARCHAR(500) NOT NULL DEFAULT '' AFTER `strCheckInSMSContent`, " + "	ADD COLUMN `strCheckOutSMSContent` VARCHAR(500) NOT NULL DEFAULT '' AFTER `strAdvAmtSMSContent`; ";
+		funExecutePMSQuery(sql);
+
+		sql="ALTER TABLE `tblguestmaster` "
+				+ " ADD COLUMN `strGSTNo` VARCHAR(50) NOT NULL AFTER `strClientCode`;" ;
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblroomcancelation` "
+				+ " ADD COLUMN `strRemarks` VARCHAR(200) NOT NULL AFTER `strUserEdited`;";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblroomcancelation` ADD COLUMN `strReasonCode` VARCHAR(50) NOT NULL AFTER `strRemarks`;" ;
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblreservationhd` ADD COLUMN `strOTANo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strGuestcode`;" ;
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblreservationhd` ADD COLUMN `strMarketSourceCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strOTANo`;;" ;
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblreservationdtl` ADD COLUMN `strRemark` VARCHAR(200) NOT NULL AFTER `strPayee`; ";
+		funExecutePMSQuery(sql);
+		
+		sql=" ALTER TABLE `tblreservationdtl` ADD COLUMN `strAddress` VARCHAR(200) NOT NULL AFTER `strRemark`; ";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblwalkindtl` ADD COLUMN `strRemark` VARCHAR(100) NOT NULL AFTER `strGuestCode`; ";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblguestmaster` ADD COLUMN `strUIDNo` VARCHAR(50) NOT NULL AFTER `strGSTNo`; ";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblguestmaster` ADD COLUMN `dteAnniversaryDate` DATETIME NOT NULL AFTER `strUIDNo`; ";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strRoomLimit` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strSMSProvider`; ";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblreservationhd` ADD COLUMN `strIncomeHeadCode` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strMarketSourceCode`; ";
+		funExecutePMSQuery(sql);
+		
+		sql= " ALTER TABLE `tblwalkinhd` ADD COLUMN `strIncomeHeadCode` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strRoomNo` ; ";
+		funExecutePMSQuery(sql);
+		
+//		sql = " ALTER TABLE `tblroom` ALTER `strFloorNo` DROP DEFAULT ; ";
+//		funExecutePMSQuery(sql);
+//		
+//		sql= " ALTER TABLE `tblroom` CHANGE COLUMN `strFloorNo` `strFloorCode` VARCHAR(50) NOT NULL AFTER `strRoomTypeCode` ; ";
+//		funExecutePMSQuery(sql); 
+		
+		sql="ALTER TABLE `tblroom` "
+			+" CHANGE COLUMN `strFloorNo` `strFloorCode` VARCHAR(50) NOT NULL AFTER `strRoomTypeCode`;" ;
+		funExecutePMSQuery(sql);
+				
+		sql="ALTER TABLE `tblreservationhd` ADD COLUMN `tmeDropTime` VARCHAR(10) NOT NULL AFTER `strIncomeHeadCode`;";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblreservationhd` ADD COLUMN `tmePickUpTime` VARCHAR(10) NOT NULL AFTER `tmeDropTime`; ";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblroom`"
+				+ "ADD PRIMARY KEY (`strRoomCode`, `strClientCode`);";
+		funExecutePMSQuery(sql);
+		   
+
+		
+		sql="ALTER TABLE `tblguestmaster` "
+		+" ADD COLUMN `strDefaultAddr` VARCHAR(20) NOT NULL DEFAULT '' AFTER `dteAnniversaryDate`, "
+		+" ADD COLUMN `strAddressLocal` VARCHAR(500) NOT NULL DEFAULT '' AFTER `strDefaultAddr`, "
+		+" ADD COLUMN `strCityLocal` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strAddressLocal`, "
+		+" ADD COLUMN `strStateLocal` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCityLocal`, "
+		+" ADD COLUMN `strCountryLocal` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strStateLocal`, "
+		+" ADD COLUMN `intPinCodeLocal` INT(11) NOT NULL DEFAULT 0 AFTER `strCountryLocal`, "
+		+" ADD COLUMN `strAddrPermanent` VARCHAR(500) NOT NULL DEFAULT '' AFTER `intPinCodeLocal`, "
+		+" ADD COLUMN `strCityPermanent` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strAddrPermanent`, "
+		+" ADD COLUMN `strStatePermanent` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCityPermanent`, "
+		+" ADD COLUMN `strCountryPermanent` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strStatePermanent`, "
+		+" ADD COLUMN `intPinCodePermanent` INT(11) NOT NULL DEFAULT 0 AFTER `strCountryPermanent`, "
+		+" ADD COLUMN `strAddressOfc` VARCHAR(500) NOT NULL DEFAULT '' AFTER `intPinCodePermanent`, "
+		+" ADD COLUMN `strCityOfc` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strAddressOfc`, "
+		+" ADD COLUMN `strStateOfc` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCityOfc`, "
+		+" ADD COLUMN `strCountryOfc` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strStateOfc`, "
+		+" ADD COLUMN `intPinCodeOfc` INT(11) NOT NULL DEFAULT 0 AFTER `strCountryOfc`; ";
+		funExecutePMSQuery(sql);
+
+		sql="ALTER TABLE `tblcheckinhd` "
+	       +" ADD COLUMN `strNoPostFolio` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `intNoOfChild`; ";
+		funExecutePMSQuery(sql);
+		sql = "ALTER TABLE `tblcheckinhd`"
+				+ "ADD COLUMN `strComplimentry` VARCHAR(5) NOT NULL DEFAULT 'N' AFTER `strRemarks`";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblwalkinroomratedtl` "
+          +" CHANGE COLUMN `strRoomNo` `strRoomType` VARCHAR(10) NOT NULL AFTER `dtDate`; ";
+		funExecutePMSQuery(sql);
+		
+		sql=" ALTER TABLE `tblcheckinhd` " 
+				+" ADD COLUMN `strRemarks` VARCHAR(200) NOT NULL AFTER `strNoPostFolio`, " 
+				+" ADD COLUMN `strReasonCode ` VARCHAR(50) NOT NULL AFTER `strRemarks`; ";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblvoidbillhd` " 
+				+" CHANGE COLUMN `strVoidType` `strVoidType` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strBillSettled`, " 
+				+" ADD COLUMN `strReasonCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strVoidType`, " 
+				+" ADD COLUMN `strReasonName` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strReasonCode`, " 
+				+" ADD COLUMN `strRemark` VARCHAR(250) NOT NULL DEFAULT '' AFTER `strReasonName`; "; 		
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblbillhd` "
+			    + " ADD COLUMN `strGSTNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strBillSettled`;"; 		
+		funExecutePMSQuery(sql);
+		
+		
+		sql="ALTER TABLE `tblpropertysetup`"
+				+ "ADD COLUMN `strGSTNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strRoomLimit`";
+		funExecutePMSQuery(sql);
+		
+		sql=" ALTER TABLE `tblbillhd`"
+			+ "ADD COLUMN `strCompanyName` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strGSTNo`;" ;
+		funExecutePMSQuery(sql);
+		
+		sql=" ALTER TABLE `tblroompackagedtl`"
+				+ " ADD COLUMN `strType` VARCHAR(15) NOT NULL AFTER `dblIncomeHeadAmt`,"
+				+ " ADD COLUMN `strRoomNo` VARCHAR(15) NOT NULL AFTER `strType`; ";
+		funExecutePMSQuery(sql);
+			
+
+		sql="ALTER TABLE `tblincomehead` ADD COLUMN `dblRateAmt` DECIMAL(18,4) NOT NULL AFTER `strAccountCode` ";
+		funExecutePMSQuery(sql);
+		
+		sql =  "ALTER TABLE `tbltaxmaster`	ADD COLUMN `dblFromRate` DECIMAL(18,4) NOT NULL DEFAULT '0' AFTER `dblTaxValue`,"
+				+ "	ADD COLUMN `dblToRate` DECIMAL(18,4) NOT NULL DEFAULT '0' AFTER `dblFromRate`;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblbilldiscount` "
+			+ "	ADD COLUMN `strReasonCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strClientCode`,"
+			+ "	ADD COLUMN `strReasonName` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strReasonCode`,"
+			+ "	ADD COLUMN `strRemark` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strReasonName`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblreceiptdtl` 	ADD COLUMN `strCustomerCode` VARCHAR(10) NOT NULL AFTER `strClientCode`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup`	ADD COLUMN `strBankAcName` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strCheckOutSMSContent`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup`	ADD COLUMN `strBankAcNumber` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strBankAcName`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup`	ADD COLUMN `strBankIFSC` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strBankAcNumber`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup`	ADD COLUMN `strBranchName` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strBankIFSC`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup`	ADD COLUMN `strPanNo` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strBranchName`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup`	ADD COLUMN `strHSCCode` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strPanNo`;";
+		funExecutePMSQuery(sql);
+		
+		
+		sql = "ALTER TABLE `tblpropertysetup` "
+				+ "ADD COLUMN `strCheckInEmailContent` VARCHAR(255) NOT NULL DEFAULT 'NOT SELECTED' AFTER `strPanNo`;";
+		funExecutePMSQuery(sql);
+		
+		
+		sql = "ALTER TABLE `tblpropertysetup`"
+				+ "ADD COLUMN `strReservationEmailContent` VARCHAR(255) "
+				+ "NOT NULL DEFAULT 'NOT SELECTED' AFTER `strCheckInEmailContent`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblfoliodtl`"
+				+ "ADD COLUMN `strUserEdited` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dblQuantity`,"
+				+ "ADD COLUMN `dteDateEdited` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' AFTER `strUserEdited`,"
+				+ "ADD COLUMN `strTransactionType` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dteDateEdited`;";
+		funExecutePMSQuery(sql);
+		
+		
+		sql = "ALTER TABLE `tblbilldtl`"
+				+ "	ADD COLUMN `strUserEdited` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strClientCode`,"
+				+ "ADD COLUMN `dteDateEdited` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' AFTER `strUserEdited`,"
+				+ "ADD COLUMN `strTransactionType` VARCHAR(255) NOT NULL DEFAULT '' AFTER `dteDateEdited`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup` "
+				+ "ALTER `tmeCheckInTime` DROP DEFAULT,"
+				+ "	ALTER `tmeCheckOutTime` DROP DEFAULT;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup`"
+				+ "CHANGE COLUMN `tmeCheckInTime` `tmeCheckInTime` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strClientCode`,"
+				+ "CHANGE COLUMN `tmeCheckOutTime` `tmeCheckOutTime` VARCHAR(50) NOT NULL DEFAULT '' AFTER `tmeCheckInTime`;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblroomhousekeepdtl` ("
+				+ "`strHouseKeepCode` VARCHAR(20) NOT NULL,"
+				+ "`strRoomCode` VARCHAR(20) NOT NULL,"
+				+ "`dteDate` DATETIME NOT NULL DEFAULT '1990-10-10 00:00:00',"
+				+ "`strUser` VARCHAR(50) NOT NULL,"
+				+ "`strRemarks` VARCHAR(50) NOT NULL,"
+				+ "`strRoomCodeFlg` VARCHAR(5) NOT NULL DEFAULT 'N',"
+				+ "`strClientCode` VARCHAR(50) NOT NULL"
+				+ ") COLLATE='utf8_general_ci' ENGINE=InnoDB;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblroom` "
+				+ "ADD COLUMN `strHouseKeepingFlg` VARCHAR(5) NOT NULL DEFAULT 'Y' AFTER `strRoomTypeDesc`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblhousekeepmaster` ("
+				+ "`strClientCode` VARCHAR(255) NOT NULL,"
+				+ "`strHouseKeepCode` VARCHAR(255) NOT NULL,"
+				+ "`dteDateCreated` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`dteDateEdited` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`strHouseKeepName` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`strRemarks` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`strUserCreated` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "`strUserEdited` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "PRIMARY KEY (`strClientCode`, `strHouseKeepCode`))"
+				+ " COLLATE='utf8_general_ci' ENGINE=InnoDB ;";		
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblfoliotaxdtl`"
+				+ " CHANGE COLUMN `dblTaxableAmt` `dblTaxableAmt` DECIMAL(18,4) NOT NULL AFTER `strTaxDesc`,CHANGE COLUMN `dblTaxAmt` `dblTaxAmt` DECIMAL(18,4) NOT NULL AFTER `dblTaxableAmt`;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblguestmaster`"
+				+ " ADD COLUMN `strGuestImage` MEDIUMBLOB NULL AFTER `intPinCodeOfc`;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup`"
+				+ " ADD COLUMN `strEnableWebCam` VARCHAR(20) NOT NULL DEFAULT 'N' AFTER `strEnableHousekeeping`;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup`"
+				+ " ADD COLUMN `strBillFormat` VARCHAR(20) NOT NULL DEFAULT 'N' AFTER `strEnableWebCam`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup` ADD COLUMN `strEnableHousekeeping` VARCHAR(20) NOT NULL DEFAULT 'N' AFTER `strReservationEmailContent`;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblcheckinhd` "
+				+ "ADD COLUMN `strDontApplyTax` VARCHAR(5) NOT NULL DEFAULT 'N' AFTER `strComplimentry`;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblreservationhd` "
+				+ "ADD COLUMN `strDontApplyTax` VARCHAR(10) NOT NULL DEFAULT 'N' AFTER `tmePickUpTime`;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblroomtypemaster` "
+				+ "ADD COLUMN `dblDoubleTariff` DECIMAL(18,2) NOT NULL AFTER `strClientCode`;";		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblreservationhd` "
+				+ "ADD COLUMN `strBillToCorporate` VARCHAR(5) NOT NULL DEFAULT 'N' AFTER `strDontApplyTax`";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblincomehead` ADD COLUMN `strHsnSac` VARCHAR(30) NOT NULL AFTER `dblRateAmt`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblroomtypemaster` ADD COLUMN `strHsnSac` VARCHAR(30) NULL AFTER `dblDoubleTariff`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblroomtypemaster`"
+				+ " ADD COLUMN `dblTrippleTariff` DECIMAL(18,2) NOT NULL AFTER `dblDoubleTariff`;";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblroomtypemaster`"
+				+ "ADD COLUMN `strGuestCapcity` VARCHAR(30) NULL DEFAULT NULL AFTER `dblTrippleTariff`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblpmsstaffmaster` ( "
+				+ "`strStaffCode` VARCHAR(255) NOT NULL,"
+				+ "`strStaffName` VARCHAR(50) NOT NULL,"
+				+ "`IntSTId` BIGINT(20) NOT NULL,"
+				+ "`dtCreated` DATETIME NOT NULL,"
+				+ "`dtEdited` DATETIME NOT NULL,"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strUserEdited` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "`strClientCode` VARCHAR(255) NOT NULL,"
+				+ "PRIMARY KEY (`strClientCode`, `strStaffCode`)"
+				+ ")"
+				+ "COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB";
+		funExecutePMSQuery(sql);
+		
+		
+		sql ="CREATE TABLE `tblgroupbookinghd` ("
+				+ "`strReservationID` VARCHAR(30) NOT NULL,"
+				+ "`strGroupCode` VARCHAR(30) NOT NULL,"
+				+ "`strGroupName` VARCHAR(50) NOT NULL,"
+				+ "`strGroupLeaderCode` VARCHAR(30) NOT NULL,"
+				+ "`strAddress` VARCHAR(100) NOT NULL,"
+				+ "`strCity` VARCHAR(20) NOT NULL,"
+				+ "`strCountry` VARCHAR(20) NOT NULL,"
+				+ "`strPin` VARCHAR(20) NOT NULL,"
+				+ "`strPhone` VARCHAR(30) NOT NULL,"
+				+ "`strMobile` VARCHAR(20) NOT NULL,"
+				+ "`strFax` VARCHAR(30) NOT NULL,"
+				+ "`strEmail` VARCHAR(30) NOT NULL,"
+				+ "`dteDob` DATE NOT NULL,"
+				+ "`strNationality` VARCHAR(30) NOT NULL,"
+				+ "`strCompCode` VARCHAR(30) NOT NULL,"
+				+ "`strCompName` VARCHAR(50) NOT NULL,"
+				+ "`strDesignation` VARCHAR(30) NOT NULL,"
+				+ "`strGICity` VARCHAR(30) NOT NULL,"
+				+ "`strGIPhone` VARCHAR(30) NOT NULL,"
+				+ "`strGIFax` VARCHAR(30) NOT NULL,"
+				+ "`strGIMobile` VARCHAR(30) NOT NULL,"
+				+ "`dteTravelDate` DATE NOT NULL,"
+				+ "`tmeTravelTime` VARCHAR(50) NOT NULL,"
+				+ "`strPickupRequired` VARCHAR(50) NOT NULL,"
+				+ "`dteCheckInDate` DATE NOT NULL,"
+				+ "`dteCheckoutDate` DATE NOT NULL,"
+				+ "`strPax` VARCHAR(10) NOT NULL,"
+				+ "`strSource` VARCHAR(30) NOT NULL,"
+				+ "`strGuestType` VARCHAR(30) NOT NULL,"
+				+ "`strExtraBed` VARCHAR(30) NOT NULL,"
+				+ "`strChild` VARCHAR(30) NOT NULL,"
+				+ "`strInfant` VARCHAR(30) NOT NULL,"
+				+ "`strSalesChannel` VARCHAR(30) NOT NULL,"
+				+ "`strRoomType` VARCHAR(30) NOT NULL,"
+				+ "`strRoomTypeDesc` VARCHAR(30) NOT NULL,"
+				+ "`strRoomTaxes` VARCHAR(30) NOT NULL,"
+				+ "`strOtherTaxes` VARCHAR(30) NOT NULL,"
+				+ "`strServiceCharges` VARCHAR(30) NOT NULL,"
+				+ "`strPayments` VARCHAR(30) NOT NULL,"
+				+ "`strDiscounts` VARCHAR(30) NOT NULL,"
+				+ "`strCard` VARCHAR(30) NOT NULL,"
+				+ "`strCash` VARCHAR(30) NOT NULL,"
+				+ "`strPaymentBtGroupLeader` VARCHAR(30) NOT NULL,"
+				+ "`strGuest` VARCHAR(30) NOT NULL,"
+				+ "`strRoom` VARCHAR(30) NOT NULL,"
+				+ "`strFandB` VARCHAR(30) NOT NULL,"
+				+ "`strTelephones` VARCHAR(30) NOT NULL,"
+				+ "`strExtras` VARCHAR(30) NOT NULL,"
+				+ "`intGid` INT(11) NOT NULL,"
+				+ "`dteDateCreated` DATETIME NOT NULL,"
+				+ "`dteDateEdited` DATETIME NOT NULL,"
+				+ "`strUserCreated` VARCHAR(50) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(50) NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL, "
+				+ "PRIMARY KEY (`strGroupCode`, `strClientCode`) "
+				+ ") "
+				+ "COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB ";
+
+		funExecutePMSQuery(sql);
+		
+		sql ="CREATE TABLE `tblgroupbookingdtl` ( "
+				+ "`strGroupCode` VARCHAR(20) NOT NULL, "
+				+ "`strPayee` VARCHAR(50) NOT NULL, "
+				+ "`strRoom` VARCHAR(5) NOT NULL, "
+				+ "`strFandB` VARCHAR(5) NOT NULL, "
+				+ "`strTelephone` VARCHAR(5) NOT NULL, "
+				+ "`strExtra` VARCHAR(5) NOT NULL, "
+				+ "`strClientCode` VARCHAR(20) NOT NULL, "
+				+ "INDEX `strGroupCode` (`strGroupCode`), "
+				+ "INDEX `strClientCode` (`strClientCode`) "
+			+ ") "
+			+ "COLLATE='utf8_general_ci' "
+			+ "ENGINE=InnoDB "
+			+ "; ";
+
+		funExecutePMSQuery(sql);
+		
+		
+		sql = "ALTER TABLE `tblreservationhd` ADD COLUMN `strGroupCode` "
+				+ "VARCHAR(20) NOT NULL DEFAULT 'N' AFTER `strBillToCorporate`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblfoliohd`"
+				+ "	ADD COLUMN `strRoom` VARCHAR(30) NOT NULL DEFAULT 'Y' AFTER `strWalkInNo`,"
+				+ "ADD COLUMN `strFandB` VARCHAR(30) NOT NULL DEFAULT 'Y' AFTER `strRoom`,"
+				+ "ADD COLUMN `strTelephone` VARCHAR(30) NOT NULL DEFAULT 'Y' AFTER `strFandB`,"
+				+ "ADD COLUMN `strExtra` VARCHAR(30) NOT NULL DEFAULT 'Y' AFTER `strTelephone`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblseasonmaster` ( "
+				+ "`strSeasonCode` VARCHAR(10) NOT NULL, "
+				+ "`strSeasonDesc` VARCHAR(100) NOT NULL, "
+				+ "`strUserCreated` VARCHAR(10) NOT NULL, "
+				+ "`strUserEdited` VARCHAR(10) NOT NULL, "
+				+ "`dteDateCreated` DATETIME NOT NULL, "
+				+ "`dteDateEdited` DATETIME NOT NULL, "
+				+ "`dteFromDate` DATE NOT NULL DEFAULT '1900-01-01', "
+				+ "`dteToDate` DATE NOT NULL DEFAULT '1900-01-01', "
+				+ "`strClientCode` VARCHAR(10) NOT NULL, "
+				+ "PRIMARY KEY (`strSeasonCode`, `strClientCode`) "
+			+ ") "
+			+ "COLLATE='utf8_general_ci' "
+			+ "ENGINE=InnoDB "
+			+ "; ";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblpmsratecontractdtl` ( "
+				+ "`strRateContractID` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "	`strRoomTypeCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "	`strSeasonCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+ "	`strIncludeTax` VARCHAR(1) NOT NULL DEFAULT 'Y', "
+				+ "`intNoOfNights` INT(10) NOT NULL, "
+				+ "`dteFromDate` DATE NOT NULL DEFAULT '1900-01-01', "
+				+ "`dteToDate` DATE NOT NULL DEFAULT '1900-01-01',"
+				+ "	`strSunday` VARCHAR(1) NOT NULL DEFAULT 'Y',"
+				+ "	`strMonday` VARCHAR(1) NOT NULL DEFAULT 'Y',"
+				+ "	`strTuesday` VARCHAR(1) NOT NULL DEFAULT 'Y',"
+				+ "	`strWednesday` VARCHAR(1) NOT NULL DEFAULT 'Y',"
+				+ "	`strThursday` VARCHAR(1) NOT NULL DEFAULT 'Y',"
+				+ "	`strFriday` VARCHAR(1) NOT NULL DEFAULT 'Y',"
+				+ "	`strSaturday` VARCHAR(1) NOT NULL DEFAULT 'Y',"
+				+ "	`dblSingleTariWeekDays` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`dblDoubleTariWeekDays` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`dblTrippleTariWeekDays` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`dblExtraBedTariWeekDays` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`dblChildTariWeekDays` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`dblYouthTariWeekDays` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`dblSingleTariWeekend` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`dblDoubleTariWeekend` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`dblTrippleTariWeekend` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`dblExtraBedTariWeekend` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`dblChildTariWeekend` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`dblYouthTariWeekend` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "	`strUserCreated` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "	`strUserEdited` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "	`dteDateCreated` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00',"
+				+ "	`dteDateEdited` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00', "
+				+ "`strClientCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "	PRIMARY KEY (`strRateContractID`, `strClientCode`) "
+				+ ") COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB ;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup` "
+				+ "ADD COLUMN `strRatePickUpFrom` VARCHAR(30) NOT NULL DEFAULT '' AFTER `strBillFormat`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblstaffmasterdtl` ( "
+				+ "`strStffCode` VARCHAR(255) NOT NULL, "
+				+ "`strRoomCode` VARCHAR(255) NOT NULL, "
+				+ "`strRoomDesc` VARCHAR(255) NOT NULL, "
+				+ "`strClientCode` VARCHAR(255) NOT NULL, "
+				+ "PRIMARY KEY (`strStffCode`, `strRoomCode`, `strClientCode`) "
+				+ ") "
+				+ "COLLATE='latin1_swedish_ci' "
+				+ "ENGINE=InnoDB "
+				+ ";";
+
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblbilldtlbckp` ( "
+				+ "`strBillNo` VARCHAR(15) NOT NULL, "
+				+ "`strFolioNo` VARCHAR(15) NOT NULL, "
+				+ "`dteDocDate` DATETIME NOT NULL, "
+				+ "`strDocNo` VARCHAR(10) NOT NULL, "
+				+ "`strPerticulars` VARCHAR(200) NOT NULL, "
+				+ "`strRevenueType` VARCHAR(255) NOT NULL, "
+				+ "`strRevenueCode` VARCHAR(15) NOT NULL, "
+				+ "`dblDebitAmt` DECIMAL(18,2) NOT NULL, "
+				+ "`dblCreditAmt` DECIMAL(18,2) NOT NULL, "
+				+ "`dblBalanceAmt` DECIMAL(18,2) NOT NULL, "
+				+ "`strClientCode` VARCHAR(10) NOT NULL, "
+				+ "`dteDateEdited` VARCHAR(255) NULL DEFAULT NULL, "
+				+ "`strTransactionType` VARCHAR(255) NULL DEFAULT NULL, "
+				+ "`strUserEdited` VARCHAR(255) NULL DEFAULT NULL,"
+				+ "	INDEX `FK3FECBEF7DA3532E0` (`strBillNo`, `strClientCode`) "
+				+ ") COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB ;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblbillhdbckp` ( "
+				+ "`strBillNo` VARCHAR(15) NOT NULL, "
+				+ "`dteBillDate` DATETIME NOT NULL, "
+				+ "`strCheckInNo` VARCHAR(15) NOT NULL,"
+				+ "	`strFolioNo` VARCHAR(15) NOT NULL, "
+				+ "`strRoomNo` VARCHAR(10) NOT NULL, "
+				+ "`strExtraBedCode` VARCHAR(10) NOT NULL, "
+				+ "`strRegistrationNo` VARCHAR(15) NOT NULL, "
+				+ "`strReservationNo` VARCHAR(15) NOT NULL,"
+				+ "	`dblGrandTotal` DECIMAL(18,2) NOT NULL,"
+				+ "	`strUserCreated` VARCHAR(10) NOT NULL, "
+				+ "`strUserEdited` VARCHAR(10) NOT NULL, "
+				+ "`dteDateCreated` DATETIME NOT NULL, "
+				+ "`dteDateEdited` DATETIME NOT NULL, "
+				+ "`strClientCode` VARCHAR(10) NOT NULL, "
+				+ "`strBillSettled` VARCHAR(1) NOT NULL DEFAULT 'N', "
+				+ "`strGSTNo` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ "`strCompanyName` VARCHAR(100) NOT NULL DEFAULT '', "
+				+ "PRIMARY KEY (`strBillNo`, `strClientCode`) "
+				+ ") COLLATE='utf8_general_ci' ENGINE=InnoDB ;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblbilltaxdtlbckp` ( "
+				+ "`strBillNo` VARCHAR(15) NOT NULL, "
+				+ "`strDocNo` VARCHAR(15) NOT NULL, "
+				+ "`strTaxCode` VARCHAR(10) NOT NULL, "
+				+ "`strTaxDesc` VARCHAR(200) NOT NULL, "
+				+ "`dblTaxableAmt` DECIMAL(18,2) NOT NULL, "
+				+ "`dblTaxAmt` DECIMAL(18,2) NOT NULL, "
+				+ "`strClientCode` VARCHAR(10) NOT NULL, "
+				+ "INDEX `FK19AB8F56DA3532E0` (`strBillNo`, `strClientCode`) "
+				+ ") COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB;";
+		
+		funExecutePMSQuery(sql);
+		
+		/*sql = "ALTER TABLE `tblbillhd` "
+				+ "ALTER `strCheckInNo` DROP DEFAULT, "
+				+ "ALTER `strFolioNo` DROP DEFAULT,"
+				+ "	ALTER `strRoomNo` DROP DEFAULT,"
+				+ "	ALTER `strExtraBedCode` DROP DEFAULT, "
+				+ "ALTER `strRegistrationNo` DROP DEFAULT;";
+		
+		funExecutePMSQuery(sql);*/
+		
+		sql = "ALTER TABLE `tblbillhd` "
+				+ "ADD COLUMN `strRemark` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCompanyName`;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblbillhdbckp` "
+				+ "ADD COLUMN `strRemark` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCompanyName`;";
+		
+		funExecutePMSQuery(sql);
+		
+		
+		sql = "ALTER TABLE `tblbillhd` "
+				+ "ADD COLUMN `strMergedBillNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strRemark`;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblbillhdbckp` "
+				+ "ADD COLUMN `strMergedBillNo` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strCompanyName`;";
+		
+		funExecutePMSQuery(sql);
+		
+		
+		sql = "ALTER TABLE `tblbillhd`"
+				+ "	CHANGE COLUMN `strCheckInNo` `strCheckInNo` VARCHAR(1500) NOT NULL AFTER `dteBillDate`,"
+				+ "	CHANGE COLUMN `strFolioNo` `strFolioNo` VARCHAR(3000) NOT NULL AFTER `strCheckInNo`,"
+				+ "	CHANGE COLUMN `strRoomNo` `strRoomNo` VARCHAR(1500) NOT NULL AFTER `strFolioNo`,"
+				+ "	CHANGE COLUMN `strExtraBedCode` `strExtraBedCode` VARCHAR(1500) NOT NULL AFTER `strRoomNo`,"
+				+ "	CHANGE COLUMN `strRegistrationNo` `strRegistrationNo` VARCHAR(1500) NOT NULL AFTER `strExtraBedCode`,"
+				+ "	CHANGE COLUMN `strReservationNo` `strReservationNo` VARCHAR(1500) NOT NULL AFTER `strRegistrationNo`;";
+				
+				funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpropertysetup` "
+				+ "ADD COLUMN `strOnlineIntegration` VARCHAR(3) NOT NULL DEFAULT 'No' AFTER `strRatePickUpFrom`,"
+				+ "	ADD COLUMN `strIntegrationUrl` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strOnlineIntegration`;";
+		
+		funExecutePMSQuery(sql);
+		
+		
+		sql = "ALTER TABLE `tblpropertysetup` ADD COLUMN `strDayForHousekeeping` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strIntegrationUrl`;";
+		
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblpmsfeedbackmaster` ( "
+				+ "`strFeedbackCode` VARCHAR(10) NOT NULL, "
+				+ "`strFeedbackDesc` VARCHAR(100) NOT NULL,"
+				+ "	`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "	`strUserEdited` VARCHAR(10) NOT NULL,"
+				+ "	`dteDateCreated` DATETIME NOT NULL,"
+				+ "	`dteDateEdited` DATETIME NOT NULL,"
+				+ "	`strClientCode` VARCHAR(10) NOT NULL "
+				+ " ) "
+				+ "COLLATE='utf8_general_ci' ENGINE=InnoDB;";
+				
+		funExecutePMSQuery(sql);
+		
+		sql = "CREATE TABLE `tblguestfeedback` ( "
+				+ "`strGuestFeedbackCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "	`strGuestCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "	`strFeedbackCode` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "	`strExcellent` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "	`strGood` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "	`strFair` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "	`strPoor` VARCHAR(1) NOT NULL DEFAULT '',"
+				+ "	`strRemark` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "	`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "	`strUserEdited` VARCHAR(10) NOT NULL,"
+				+ "	`dteDateCreated` DATETIME NOT NULL,"
+				+ "	`dteDateEdited` DATETIME NOT NULL,"
+				+ "	`strClientCode` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "	Primary key(`strGuestFeedbackCode`, `strClientCode`) "
+				+ ") COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB ;";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblreceipthd`CHANGE COLUMN `strUserCreated` `strUserCreated` VARCHAR(30) "
+				+ "NOT NULL AFTER `dteDateEdited`;";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblreceipthd` CHANGE COLUMN `strUserEdited` `strUserEdited` VARCHAR(30) "
+				+ "NOT NULL AFTER `dteDateEdited`;";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblreservationhd` "
+				+ "CHANGE COLUMN `strRemarks` `strRemarks` VARCHAR(950) NOT NULL AFTER `strAgentCode`;";
+		funExecutePMSQuery(sql);
+		
+		sql="ALTER TABLE `tblreservationdtl` "
+				+ "CHANGE COLUMN `strRemarks` `strRemarks` VARCHAR(950) NOT NULL AFTER `strPayee`;";
+		funExecutePMSQuery(sql);
+		
+		
+		
+				// For PMS Form Of Tree master Start///
+		sql = " INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`) VALUES "
+				+ " ('frmAgentCommision', 'Agent Commision', 'Master', 1, 'M', 13, 13, '1', 'imgAgentCommission.png', '3', 1, '1', '1', 'NO', 'NO', 'frmAgentCommision.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmAgentMaster', 'Agent Master', 'Master', 1, 'M', 12, 12, '1', 'imgAgentMaster.png', '3', 1, '1', '1', 'NO', 'NO', 'frmAgentMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				// +" ('frmAttributeValueMaster', 'Attribute Value Master', 'Master', 1, 'M', 15, 15, '3', 'Attribute-Value-Master.png', '3', 3, '3', '3', 'NO', 'YES', 'frmAttributeValueMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBaggageMaster', 'Baggage Master', 'Master', 1, 'M', 21, 21, '1', 'imgBaggageMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmBaggageMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBathTypeMaster', 'BathType Master', 'Master', 1, 'M', 19, 19, '2', 'imgBathTypeMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmBathTypeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBillingInstructions', 'Billing Instructions', 'Master', 1, 'M', 14, 14, '1', 'default.png', '3', 3, '3', '3', 'NO', 'NO', 'frmBillingInstructions.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBillPrinting', 'Bill Printing', 'Transaction', 2, 'T', 10, 10, '5', 'imgBillPrinting.png', '3', 5, '5', '5', 'NO', 'NO', 'frmBillPrinting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBookerMaster', 'Booker Master', 'Master', 1, 'M', 16, 16, '1', 'default.png', '3', 1, '1', '1', 'NO', 'NO', 'frmBookerMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBookingType', 'Booking Type', 'Master', 1, 'M', 5, 5, '1', 'default.png', '3', 3, '3', '3', 'NO', 'NO', 'frmBookingType.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBusinessSource', 'BusinessSource Master', 'Master', 1, 'M', 17, 17, '8', 'default.png', '3', 3, '3', '3', 'NO', 'YES', 'frmBusinessSource.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmChargePosting', 'ChargePosting Master', 'Master', 1, 'M', 18, 18, '10', 'default.png', '3', 3, '3', '3', 'NO', 'YES', 'frmChargePosting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCheckIn', 'Check In', 'Transaction', 2, 'T', 2, 2, '1', 'imgCheckIn.png', '3', 1, '1', '1', 'NO', 'NO', 'frmCheckIn.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCheckInList', 'Check In List', 'Reports', 3, 'R', 3, 3, '5', 'imgCheckInList.png', '3', 1, '1', '1', 'NO', 'NO', 'frmCheckInList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCheckOut', 'Check Out', 'Transaction', 2, 'T', 3, 3, '1', 'imgCheckOut.png', '3', 2, '2', '2', 'NO', 'NO', 'frmCheckOut.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCheckOutList', 'Check Out List', 'Reports', 3, 'R', 4, 4, '6', 'imgCheckOutList.png', '3', 1, '1', '1', 'NO', 'NO', 'frmCheckOutList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCorporateMaster', 'Corporate Master', 'Master', 1, 'M', 11, 11, '1', 'imgCorporateMaster.png', '3', 1, '1', '1', 'NO', 'NO', 'frmCorporateMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmDayEnd', 'Day End', 'Transaction', 2, 'T', 11, 11, '13', 'imgDayEnd.png', '3', 3, '3', '3', 'NO', 'YES', 'frmDayEnd.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmDepartmentMaster', 'Department Master', 'Master', 1, 'M', 10, 10, '1', 'imgDepartmentMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmDepartmentMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmExpectedArrivalList', 'Expected Arrival List', 'Reports', 3, 'R', 6, 6, '1', 'imgExpectdArrivalList.png', '3', 1, '1', '1', 'NA', 'NA', 'frmExpectedArrivalList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmExpectedDepartureList', 'Expected Departure List', 'Reports', 3, 'R', 5, 5, '1', 'imgExpectdDepartureList.png', '3', 1, '1', '1', 'NO', 'NO', 'frmExpectedDepartureList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmExtraBed', 'ExtraBed Master', 'Master', 1, 'M', 4, 4, '9', 'imgAddExtraBed.png', '3', 3, '3', '3', 'NO', 'YES', 'frmExtraBed.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmFolioPosting', 'Folio Posting', 'Transaction', 2, 'T', 8, 8, '1', 'imgFolioPosting.png', '3', 5, '5', '3', 'NO', 'YES', 'frmFolioPosting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmFolioPrinting', 'Folio Printing', 'Transaction', 2, 'T', 9, 9, '5', 'imgFolioPrinting.png', '3', 5, '5', '5', 'NO', 'NO', 'frmFolioPrinting.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmGuestMaster', 'Guest Master', 'Master', 1, 'M', 8, 8, '1', 'imgGuestMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmGuestMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmIncomehead', 'IncomeHead Master', 'Master', 1, 'M', 2, 2, '7', 'imgIncomeHeadMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmIncomehead.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmPlanMaster', 'Plan Master', 'Master', 1, 'M', 22, 22, '6', 'imgPlanMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmPlanMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmPMSPayment', 'Payment', 'Transaction', 2, 'T', 7, 7, '15', 'imgPayment.png', '3', 3, '3', '3', 'NO', 'YES', 'frmPMSPayment.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmPMSTaxMaster', 'PMS Tax Master', 'Master', 1, 'M', 6, 6, '1', 'imgTaxMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmPMSTaxMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmPostRoomTerrif', 'Post Room Terrif', 'Transaction', 2, 'T', 5, 5, '1', 'imgPostRoomTerrif.png', '3', 3, '3', '3', 'NO', 'NO', 'frmPostRoomTerrif.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmPropertySetup', 'Property Setup', 'Tools', 4, 'L', 1, 1, '12', 'imgPropertySetup.png', '3', 1, '1', '1', 'NO', 'NO', 'frmPropertySetup.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmReason', 'PMS Reason Master', 'Master', 1, 'M', 7, 7, '5', 'imgReasonMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmReason.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmReservation', 'Reservation', 'Transaction', 2, 'T', 1, 1, '1', 'imgReservation.png', '3', 2, '2', '2', 'NO', 'NO', 'frmReservation.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmRevenueHeadReport', 'Revenue Head Report', 'Reports', 3, 'R', 1, 1, '1', 'imgRevenueHeadReport.png', '3', 1, '1', '1', 'NO', 'NO', 'frmRevenueHeadReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmRoomCancellation', 'Room Cancellation', 'Transaction', 2, 'T', 6, 6, '1', 'imgReservationCancellation.png', '3', 3, '3', '3', 'NO', 'NO', 'frmRoomCancellation.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmRoomMaster', 'Room Master', 'Master', 1, 'M', 1, 1, '1', 'imgRoomMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmRoomMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmRoomStatusDiary', 'Room Status Diary', 'Tools', 4, 'L', 1, 2, '12', 'imgRoomStatusDairy.png', '3', 1, '1', '1', 'NO', 'NO', 'frmRoomStatusDiary.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmRoomTypeMaster', 'RoomType Master', 'Master', 1, 'M', 3, 3, '4', 'imgRoomType.png', '3', 3, '3', '3', 'NO', 'YES', 'frmRoomTypeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmSettlementMaster', 'PMS Settlement Master', 'Master', 1, 'M', 9, 9, '11', 'imgSettlementMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmSettlementMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmTaxGroupMaster', 'Tax Group Master', 'Master', 1, 'M', 20, 20, '1', 'imgTaxGroup.png', '3', 3, '3', '3', 'NO', 'NO', 'frmTaxGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmTaxReport', 'Tax Summary', 'Reports', 3, 'R', 2, 2, '5', 'imgTaxSummary.png', '3', 5, '5', '5', 'NO', 'NO', 'frmTaxReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmWalkin', 'Walk In', 'Transaction', 2, 'T', 4, 4, '12', 'imgWalkIn.png', '3', 3, '3', '3', 'NO', 'YES', 'frmWalkin.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCancelationReport', 'Cancellation Report', 'Reports', 3, 'R', 3, 6, '6', 'imgCancellationReport.png', '3', 1, '1', '1', 'NO', 'NO', 'frmCancelationReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmPMSFlash', 'PMS Flash', 'Tools', 1, 'L', 3, 43, '1', 'imgPMSFlash.png', '3', 1, '1', '1', 'NO', 'NO', 'frmPMSFlash.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBillDiscount', 'Bill Discount', 'Transaction', '2', 'T', '12', '12', '1', 'imgBillDiscount.png', '3', '3', '3', '3', 'NO', 'YES', 'frmBillDiscount.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmSplitBill', 'Split Bill', 'Transaction', '2', 'T', '3', '3', '1', 'imgSplitBill.png', '3', '2', '2', '2', 'NO', 'NO', 'frmSplitBill.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmReservationFlash', 'Reservation Flash', 'Tools', '4', 'L', '1', '3', '12', 'imgReservationFlash.png', '3', '1', '1', '1', 'NO', 'NO', 'frmReservationFlash.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmGuestListReport', 'Guest List Report', 'Reports', '3', 'R', '7', '7', '5', 'imgGuestListReport.png', '3', '5', '5', '5', 'NO', 'NO', 'frmGuestListReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmRoomTypeInventory', 'Room Type Inventory', 'Reports', '3', 'R', '6', '7', '1', 'default.png', '3', '1', '1', '1','NO', 'NO', 'frmRoomTypeInventoryReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmDashboard', 'Dashboard', 'Reports', 3, 'R', 3, 3, '5', 'imgDashBoard.png', '3', 1, '1', '1','NO', 'NO', 'frmDashboard.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmPaymentDashboard', 'Payment Dashboard', 'Reports', 3, 'R', 3, 3, '5', 'imgPaymentDashboardReport.png', '3', 1, '1', '1','NO', 'NO', 'frmPaymentDashboard.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+                +"  ('frmMarketSource', 'MarketSource Master', 'Master', 1, 'M', 23, 23, '1', 'default.png', '3', 3, '3', '3', 'NO', 'NO', 'frmMarketSource.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), " 
+		        +"  ('frmCheckoutDiscount', 'Checkout Discount Master', 'Master', '1', 'M', '1', '1', '1', 'imgCheckOutDiscount.png', '3', '3', '3', '3', 'NO', 'NO', 'frmCheckoutDiscountMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		        +"  ('frmGuestHistoryReport', 'Guest History Report', 'Reports', 3, 'R', 8, 8, '5', 'imgGuestHistoryReport.png', '3', 5, '5', '5', 'NO', 'NO', 'frmGuestHistoryReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+		        +"  ('frmNoShowReport', 'No Show Report', 'Tools', '1', 'L', '3', '44', '1', 'imgNoShowReport.png', '3', '1', '1', '1', 'NO', 'NO', 'frmNoShowReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+		        +"  ('frmFloorMaster', 'Floor Master', 'Master', 1, 'M', 24, 24, '1', 'imgFloorMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmFloorMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) , "
+				+"  ('frmReOpenFolio', 'ReOpen Folio', 'Transaction', 2, 'T', 2, 2, '1', 'default.png', '3', 1, '1', '1', 'NO', 'NO', 'frmReOpenFolio.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+		        +"  ('frmProvisionBill', 'Provision Bill', 'Reports', 3, 'R', 6, 6, '1', 'imgBillPrinting.png', '3', 1, '1', '1', 'NA', 'NA', 'frmProvisionBill.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+		        + "  ('frmVoidBill', 'Void Bill', 'Transaction', 2, 'T', 15, 15, '1', 'imgVoidBill.png', '3', 2, '2', '2', 'NO', 'NO', 'frmVoidBill.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),  "
+		        + " ('frmChangeRoom', 'Change Room', 'Transaction', 2, 'T', 2, 2, '1', 'imgChangeRoom.png', '3', 1, '1', '1', 'NO', 'NO', 'frmChangeRoom.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+	            +" ('frmPaxReport', 'Pax Report', 'Reports', '3', 'R', '9', '9', '5', 'imgPaxReport.png', '3', '5', '5', '5','NA', 'NA', 'frmPaxReport.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), " 
+		 		+" ('frmVoidBillReport', 'Void Bill Report', 'Reports', 3, 'R', 10, 10, '5', 'imgVoidBill.png', '3', 5, '5', '5','NA', 'NA', 'frmVoidBillReport.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		 		+" ('frmChangeGSTNoOnBill', 'Change GST No On Bill', 'Transaction', 2, 'T', 2, 2, '1', 'imgChangeGSTONBill.png', '3', 1, '1', '1', 'NO', 'NO', 'frmChangeGSTNoOnBill.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		 		+ " ('frmChangedRoomTypeReport', 'Changed RoomType Report', 'Reports', 2, 'R', 2, 2, '1', 'imgChangeRoomTypeReport.png', '3', 1, '1', '1', 'NO', 'NO', 'frmChangedRoomTypeReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		 		+ " ('frmModifyBillReport', 'Modify Bill Report', 'Reports', 3, 'R', 11, 11, '5', 'imgModifyBillReport.png', '3', 5, '5', '5', 'NO', 'NO', 'frmModifyBillReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		 		+ " ('frmChangeRoomReport', 'Change Room Report', 'Reports', '3', 'R', '11', '11', '5', 'imgChangeRoomReport.png', '3', '5', '5', '5', 'NO', 'NO','frmChangeRoomReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		 		+ " ('frmPMSSecurityShell', 'Security Shell', 'Master', 1, 'M', 8, 8, '1', 'imgSecurityShell.png', '3', 3, '3', '3', 'NO', 'NO', 'frmPMSSecurityShell.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		 		+ " ('frmReceiptReport', 'Receipt Report', 'Reports', '3', 'R', '19', '19', '5', 'imgReceiptReport.png', '3', '5', '5', '5', 'NO', 'NO', 'frmReceiptReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);";
+		 		
+				
+		//System.out.println(sql);
+		funExecuteQuery(sql);
+
+		
+		sql = "INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`,`strInvoice`,`strDeliverySchedule`,`strFormAccessYN`) VALUES "
+				+ "	('frmGroupBlockMaster', 'Group Block Master', 'Master', '1', 'M', '12', '12', '1', 'imgAgentMaster.png', '3', '1', '1', '1', 'NO', 'NO', 'frmGroupBlockMaster.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "	('frmPMSGroupBooking', 'Group Booking', 'Master', 1, 'M', 1, 1, '1', 'imgCheckOutDiscount.png', '3', 3, '3', '3', 'NO', 'NO', 'frmPMSGroupBooking.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ " ('frmUpdateHouseKeepingStatus', 'Update House Keeping Status', 'Transaction', 2, 'T', 2, 2, '1', 'imgChangeRoom.png', '3', 1, '1', '1', 'NO', 'NO', 'frmUpdateHouseKeepingStatus.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ " ('frmSeasonMaster', 'Season Master', 'Master', 1, 'M', 22, 22, '2', 'imgSeasonMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmSeasonMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ " ('frmPMSRateContract', 'Rate Management', 'Master', '1', 'M', '22', '22', '2', 'imgSeasonMaster.png', '3', '3', '3', '3', 'NO', 'YES', 'frmPMSRateContract.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ " ('frmPMSStaffMaster', 'Staff Master', 'Master', 1, 'M', 1, 9, '1', 'imgRoomMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmPMSStaffMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ " ('frmPMSWeekenfMaster', 'PMS Weekend Master', 'Master', '1', 'M', '19', '19', '2', 'default.png', '3', '3', '1', '1', 'No', 'No', 'frmBanquetWeekendMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ " ('frmMergeBill', 'Bill Merge', 'Transaction', 2, 'T', 11, 11, '5', 'default.png', '3', 5, '5', '5', 'NO', 'NO', 'frmMergeBill.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmPMSFeedbackMaster', 'PMS FeedbackMaster', 'Master', 1, 'M', 22, 22, '2', 'imgSeasonMaster.png', '3', 3, '3', '3', 'NO', 'YES', 'frmPMSFeedbackMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmPMSGuestFeedback', 'Guest Feedback', 'Transaction', 2, 'T', 2, 2, '1', 'imgCheckIn.png', '3', 1, '1', '1', 'NO', 'NO', 'frmPMSGuestFeedback.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y') , "
+				+ " ('frmPMSFillMasters', 'Fill Masters ', 'Tools', 4, 'L', 1, 2, '12', 'imgPropertySetup.png', '3', 1, '1', '1', 'NO', 'NO', 'frmPMSFillMasters.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+				+ "('frmPackageMaster', 'Package Master', 'Master', 1, 'M', 25, 25, '1', 'imgPackageMaster.png', '3', 3, '3', '3', 'NO', 'NO', 'frmPackageMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmPMSTallyLinkUp', 'Tally Link Up', 'Tools', 4, 'L', 115, 115, '115', 'imgPMSTallyLinkUp.png', '3', 1, '1', '1', 'NO', 'NO', 'frmPMSTallyLinkUp.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y');";
+		
+
+		
+		funExecuteQuery(sql);
+		
+		sql = "UPDATE `tbltreemast` SET `strFormName`='frmPostRoomTariff', `strFormDesc`='Post Room Tariff' WHERE  `strFormName`='frmPostRoomTerrif' AND `strModule`='3';";
+		funExecuteQuery(sql);
+		
+		sql = "UPDATE `tbltreemast` SET `strFormDesc`='Reservation Cancellation' WHERE  `strFormName`='frmRoomCancellation' AND `strModule`='3';";
+		funExecuteQuery(sql);		
+		
+		sql = "UPDATE `tbltreemast` SET `strFormName`='frmPMSGroupReservation', `strFormDesc`='Group Reservation', `strRequestMapping`='frmPMSGroupReservation.html' WHERE  `strFormName`='frmPMSGroupBooking' AND `strModule`='3';";
+		funExecuteQuery(sql);
+		
+		sql = "ALTER TABLE `tblreservationhd` ADD COLUMN `strExternalNo` VARCHAR(20) NOT NULL AFTER `strGroupCode`; ";		
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblguestmaster`  CHANGE COLUMN `strUserCreated` `strUserCreated` VARCHAR(30) NOT NULL AFTER `strCorporate`, "
+				+ "  CHANGE COLUMN `strUserEdited` `strUserEdited` VARCHAR(30) NOT NULL AFTER `strUserCreated`; ";
+		funExecutePMSQuery(sql);
+
+		sql = "ALTER TABLE `tblreservationhd` "
+			 + "  CHANGE COLUMN `strRemarks` `strRemarks` VARCHAR(400) NOT NULL AFTER `strAgentCode`, "
+		     + "  CHANGE COLUMN `strUserCreated` `strUserCreated` VARCHAR(30) NOT NULL AFTER `strCancelReservation`, "
+		     + "  CHANGE COLUMN `strUserEdited` `strUserEdited` VARCHAR(30) NOT NULL AFTER `strUserCreated`;";
+		funExecutePMSQuery(sql);
+
+		sql = "ALTER TABLE `tblreservationdtl` "
+				+ " CHANGE COLUMN `strRemark` `strRemark` VARCHAR(400) NOT NULL AFTER `strPayee`; ";
+		funExecutePMSQuery(sql);
+
+		sql = "ALTER TABLE `tblpmsratecontractdtl` "
+				+ "ADD COLUMN `strRateContractName` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strRateContractID`; ";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblguestmaster` "
+				+ " ADD COLUMN `strExternalID` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strGuestImage`,"
+				+ " ADD COLUMN `strRemark` VARCHAR(600) NOT NULL DEFAULT '' AFTER `strExternalID`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblfoliodtl` ADD COLUMN `strRemark` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strUserEdited`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblfoliobckp` ADD COLUMN `strRemark` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strUserEdited`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblpackagemasterhd` ADD COLUMN `strPackageInclusiveRoomTerrif` VARCHAR(5) NOT NULL DEFAULT 'N' AFTER `strClientCode`;";
+		funExecutePMSQuery(sql);
+		
+	    sql="ALTER TABLE `tblguestfeedback` CHANGE COLUMN `steRemasrk` `strRemark` VARCHAR(100) NOT NULL DEFAULT '' AFTER `strPoor`;";
+	    funExecutePMSQuery(sql);
+	
+	    sql="ALTER TABLE `tblbillhd` ADD COLUMN `dblOpeningBalance` DECIMAL(18,2) NOT NULL AFTER `strMergedBillNo` ";
+        funExecutePMSQuery(sql);
+        
+        sql="ALTER TABLE `tblbillhd` ADD COLUMN `dblClosingBalance` DECIMAL(18,2) NOT NULL AFTER `dblOpeningBalance`";
+        funExecutePMSQuery(sql);
+        
+        sql="ALTER TABLE `tblreceipthd` ADD COLUMN `strType` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strFlagOfAdvAmt`";
+        funExecutePMSQuery(sql);
+        
+        sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strBillFooter` VARCHAR(225) NULL DEFAULT NULL AFTER `strDayForHousekeeping`;";
+        funExecutePMSQuery(sql);
+
+        sql="ALTER TABLE `tblreservationhd` ADD COLUMN `strPlanCode` VARCHAR(15) NOT NULL AFTER `strExternalNo`; ";
+        funExecutePMSQuery(sql);
+        
+        sql="ALTER TABLE `tblcheckinhd` ADD COLUMN `strPlanCode` VARCHAR(15) NOT NULL AFTER `strDontApplyTax`; ";
+        funExecutePMSQuery(sql);
+        
+        sql="ALTER TABLE `tblwalkinhd` ADD COLUMN `strPlanCode` VARCHAR(15) NOT NULL AFTER `strIncomeHeadCode`;";
+        funExecutePMSQuery(sql);
+        
+        sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strCheckInFooter` VARCHAR(10000) NULL DEFAULT NULL AFTER `strBillFooter`";
+        funExecutePMSQuery(sql);
+        
+        sql="ALTER TABLE `tblguestmaster` ADD COLUMN `dblClosingBalance` DECIMAL(18,2) NOT NULL AFTER `strRemark`;" ;
+        funExecutePMSQuery(sql);
+	        
+		/// END ///
+
+		/*----------------WebPMS Forms End---------------------------*/
+
+		
+		/*----------------------WebBanquetsFrom Start-----------------------*/
+
+
+		sql="CREATE TABLE `tblbqmenuhead` (`strMenuHeadCode` VARCHAR(20) NOT NULL,`strMenuHeadName` VARCHAR(50) NOT NULL,"
+				+ "`dteDateCreated` DATETIME NOT NULL,`dteDateEdited` DATETIME NOT NULL,`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(20) NOT NULL,`strOperational` VARCHAR(5) NOT NULL DEFAULT 'No',`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "PRIMARY KEY (`strMenuHeadCode`, `strClientCode`)"
+				+ ")COLLATE='latin1_swedish_ci'ENGINE=InnoDB; ";
+		funExecuteBanquetQuery(sql);
+		
+		sql = "CREATE TABLE `tblequipment` ("
+				+ "`strEquipmentCode` VARCHAR(255) NOT NULL DEFAULT '',"
+				+ "`strEquipmentName` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`dblEquipmentRate` DECIMAL(18,4) NOT NULL DEFAULT '0.0000',"
+				+ "`dteDateCreated` DATETIME NOT NULL,`dteDateEdited` DATETIME NOT NULL,`intId` BIGINT(20) NOT NULL,`strDeptCode` VARCHAR(10) NOT NULL,"
+				+ "`strOperational` VARCHAR(2) NOT NULL,"
+				+ "`strTaxIndicator` VARCHAR(255) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strUserEdited` VARCHAR(10) NOT NULL DEFAULT '',"
+				+ "`strClientCode` VARCHAR(255) NOT NULL,"
+				+ "PRIMARY KEY (`strClientCode`, `strEquipmentCode`) "
+				+ ") "
+				+ "COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB"
+				+ ";";
+		
+		
+		funExecuteBanquetQuery(sql);
+		
+		sql = "CREATE TABLE `tblcostcentermaster` ("
+				+ "`strCostCenterCode` VARCHAR(10) NOT NULL,"
+				+ "`strCostCenterName` VARCHAR(50) NOT NULL,"
+				+ "`intId` INT(5) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(10) NOT NULL,"
+				+ "`dteDateCreated` DATETIME NOT NULL,"
+				+ "`dteDateEdited` DATETIME NOT NULL,"
+				+ "`strOperational` VARCHAR(5) NOT NULL,"
+				+ "`strClientCode` VARCHAR(11) NOT NULL DEFAULT '',"
+				+ "PRIMARY KEY (`strCostCenterCode`, `strClientCode`)"
+				+ ") "
+				+ "COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB"
+				+ ";";
+		
+		funExecuteBanquetQuery(sql);
+		
+		sql="CREATE TABLE `tblfunctionmaster` ("
+				+ " `intFId` BIGINT(20) NOT NULL, "
+				+ "`strFunctionCode` VARCHAR(10) NOT NULL,"
+				+ "`strFunctionName` VARCHAR(100) NOT NULL DEFAULT '',"
+				+ "`strOperationalYN` VARCHAR(2) NOT NULL DEFAULT 'Y',"
+				+ "`strPropertyCode` VARCHAR(5) NOT NULL,"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(10) NOT NULL,"
+				+ "`strDateCreated` DATETIME NOT NULL,"
+				+ "`strDateEdited` DATETIME NOT NULL,"
+				+ "`intFId` BIGINT(20) NOT NULL DEFAULT '0',"
+				+ "PRIMARY KEY (`strFunctionCode`, `strClientCode`)"
+				+ ") "
+				+ "COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB;";
+		
+		funExecuteBanquetQuery(sql);
+		
+		sql="CREATE TABLE `tblbqitemmaster` ("
+				+ "`strItemCode` VARCHAR(10) NOT NULL,"
+				+ "	`strItemName` VARCHAR(50) NOT NULL,"
+				+ "	`strMenuHeadCode` VARCHAR(10) NOT NULL,"
+				+ "	`strSubGroupCode` VARCHAR(10) NOT NULL,"
+				+ "	`strDepartmentCode` VARCHAR(10) NOT NULL,"
+				+ "	`strUnit` VARCHAR(50) NOT NULL,"
+				+ "	`dblAmount` DECIMAL(10,0) NOT NULL,"
+				+ "	`dblPercent` DECIMAL(10,0) NOT NULL,"
+				+ "	`strOperational` VARCHAR(5) NOT NULL DEFAULT 'No',"
+				+ "	`dteDateCreated` DATETIME NOT NULL,"
+				+ "	`dteDateEdited` DATETIME NOT NULL,"
+				+ "	`strUserCreated` VARCHAR(25) NOT NULL,"
+				+ "	`strUserEdited` VARCHAR(25) NOT NULL,"
+				+ "	`strClientCode` VARCHAR(10) NOT NULL,"
+				+ " `strOperational` VARCHAR(5) NOT NULL DEFAULT 'No', "
+				+ " `strTaxIndicator` VARCHAR(20) NOT NULL DEFAULT '', "
+				+ "	PRIMARY KEY (`strItemCode`, `strClientCode`),"
+				+ "	INDEX `strMenuHeadCode` (`strMenuHeadCode`),"
+				+ "	INDEX `strSubGroupCode` (`strSubGroupCode`),"
+				+ "	INDEX `strDepartmentCode` (`strDepartmentCode`)"
+				+ ")"
+				+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB;";
+		
+		funExecuteBanquetQuery(sql);
+		
+		
+		sql="CREATE TABLE `tblfunctionservice` ("
+				+ "	`strFunctionCode` VARCHAR(10) NOT NULL, "
+				+ "	`strServiceCode` VARCHAR(10) NOT NULL, " 
+				+ "	`strServiceName` VARCHAR(10) NOT NULL, "
+				+ "	`strClientCode` VARCHAR(10) NOT NULL, "
+				+ "	`strApplicable` VARCHAR(10) NOT NULL "
+				+ "	) "
+			+ "	COLLATE='utf8_general_ci' "
+			+ "	ENGINE=InnoDB "
+			+ "	;";
+		
+		funExecuteBanquetQuery(sql);
+		
+
+		sql="CREATE TABLE `tblservicemaster` ("
+				+ "	`intSId` BIGINT(20) NOT NULL, "
+				+ "`strServiceCode` VARCHAR(10) NOT NULL,"
+				+ "`strServiceName` VARCHAR(50) NOT NULL DEFAULT '',"
+				+ "	`strDeptCode` VARCHAR(255) NULL DEFAULT NULL, "
+				+ "`intSId` BIGINT(20) NOT NULL DEFAULT '0',"
+				+ "`strPropertyCode` VARCHAR(5) NOT NULL,"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "`dblRate` DECIMAL(18,4) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(10) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(10) NOT NULL,"
+				+ "`dteDateCreated` DATETIME NOT NULL,"
+				+ "`dteDateEdited` DATETIME NOT NULL,"
+				+ "`strOperationalYN` VARCHAR(2) NOT NULL DEFAULT 'Y',"
+				+ "`strDeptCode` VARCHAR(10) NOT NULL,"
+				+ "PRIMARY KEY (`strServiceCode`, `strClientCode`)"
+				+ ") "
+				+ "COLLATE='utf8_general_ci' "
+				+ "ENGINE=InnoDB"
+				+ ";";
+
+		funExecuteBanquetQuery(sql);
+		
+		sql="CREATE TABLE `tblstaffmaster` ( "
+				+" `intSTId` BIGINT(20) NOT NULL, "
+				+" `strStaffCode` VARCHAR(10) NOT NULL, "
+				+" `strStaffName` VARCHAR(50) NOT NULL, "
+				+" `strStaffCatCode` VARCHAR(10) NOT NULL , "
+				+" `strOperationalYN` VARCHAR(10) NOT NULL, "
+				+" `strUserCreated` VARCHAR(20) NOT NULL DEFAULT '', "
+				+" `strUserEdited` VARCHAR(20) NOT NULL DEFAULT '', "
+				+" `dtCreated` DATETIME NOT NULL, "
+				+" `dtEdited` DATETIME NOT NULL, "
+				+" `strClientCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+" `strMobile` VARCHAR(50) NOT NULL DEFAULT '',"
+				+" `strEmail` VARCHAR(50) NOT NULL DEFAULT '', "
+				+" PRIMARY KEY (`strStaffCode`, `strClientCode`) "
+			+" ) "
+			+" COLLATE='utf8_general_ci' "
+			+" ENGINE=InnoDB;";
+		
+		funExecuteBanquetQuery(sql);
+		
+		sql ="CREATE TABLE `tblstaffcategeorymaster` ( "
+				+" `intSCId` BIGINT(20) NOT NULL DEFAULT '0', "
+				+" `strStaffCategeoryCode` VARCHAR(10) NOT NULL, "
+				+" `strStaffCategeoryName` VARCHAR(50) NOT NULL, "
+				+" `strDeptCode` VARCHAR(20) NOT NULL DEFAULT '', "
+				+" `strStaffCount` VARCHAR(20) NOT NULL, "
+				+" `strOperationalYN` VARCHAR(10) NOT NULL, "
+				+" `strUserCreated` VARCHAR(20) NOT NULL DEFAULT '', "
+				+" `strUserEdited` VARCHAR(20) NOT NULL DEFAULT '', "
+				+" `dteDateCreated` DATETIME NOT NULL, "
+				+" `dteDateEdited` DATETIME NOT NULL, "
+				+" `strClientCode` VARCHAR(20) NOT NULL DEFAULT '',	 "
+				+" PRIMARY KEY (`strClientCode`, `strStaffCategeoryCode`) "
+			+" ) "
+			+" COLLATE='utf8_general_ci' "
+			+" ENGINE=InnoDB;";
+		
+		funExecuteBanquetQuery(sql);
+		
+		sql="CREATE TABLE `tblbqbookingdtl` ( "
+				+" `strBookingNo` VARCHAR(25) NOT NULL, "
+				+" `strType` VARCHAR(20) NOT NULL DEFAULT ' ', "
+				+" `strDocNo` VARCHAR(20) NOT NULL DEFAULT ' ', "
+				+" `strDocName` VARCHAR(50) NOT NULL DEFAULT '', "
+				+" `strClientCode` VARCHAR(20) NOT NULL, "
+				+" `strBookingDate` DATETIME NOT NULL, "
+				+" `dblDocQty` DOUBLE(18,4) NOT NULL DEFAULT '0.0000', "
+				+" `dblDocRate` DOUBLE(18,4) NOT NULL DEFAULT '0.0000', "
+				+" `dblDocTotalAmt` DOUBLE(18,4) NOT NULL DEFAULT '0.0000', "
+				+" `dblDocDiscAmt` DOUBLE(18,4) NOT NULL DEFAULT '0.0000', "
+				+" `dblDocTaxAmt` DOUBLE(18,4) NOT NULL DEFAULT '0.0000' "
+			+" ) "
+			+" COLLATE='latin1_swedish_ci' "
+			+" ENGINE=InnoDB ; ";
+
+		funExecuteBanquetQuery(sql);
+		
+		
+		
+		sql="CREATE TABLE `tblbqbookinghd` ( "
+			+" `strBookingNo` VARCHAR(30) NOT NULL, "
+			+" `strClientCode` VARCHAR(20) NOT NULL, "
+			+" `dteBookingDate` DATETIME NOT NULL, "
+			+" `dteDateCreated` DATETIME NOT NULL, "
+			+" `dteDateEdited` DATETIME NOT NULL, "
+			+" `dteFromDate` DATETIME NOT NULL, "
+			+" `dteToDate` DATETIME NOT NULL, "
+			+" `intMaxPaxNo` BIGINT(20) NOT NULL, "
+			+" `intMinPaxNo` BIGINT(20) NOT NULL, "
+			+" `strAreaCode` VARCHAR(20) NOT NULL, "
+			+" `strBillingInstructionCode` VARCHAR(20) NOT NULL, "
+			+" `strBookingStatus` VARCHAR(20) NOT NULL, "
+			+" `strCustomerCode` VARCHAR(20) NOT NULL, "
+			+" `strEmailID` VARCHAR(50) NOT NULL, "
+			+" `strEventCoordinatorCode` VARCHAR(20) NOT NULL, "
+			+" `strFunctionCode` VARCHAR(20) NOT NULL, "
+			+" `strPropertyCode` VARCHAR(20) NOT NULL, "
+			+" `strUserCreated` VARCHAR(30) NOT NULL, "
+			+" `strUserEdited` VARCHAR(30) NOT NULL, "
+			+" `tmeFromTime` VARCHAR(15) NOT NULL, "
+			+" `tmeToTime` VARCHAR(15) NOT NULL, "
+			+" `dblSubTotal` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+			+" `dblDiscAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+			+" `dblTaxAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+			+" `dblGrandTotal` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+			+" `strBanquetCode` VARCHAR(20) NOT NULL, "
+			+" PRIMARY KEY (`strBookingNo`, `strClientCode`) "
+		+" ) "
+		+" COLLATE='utf8_general_ci' "
+		+" ENGINE=InnoDB ;" ; 
+
+		funExecuteBanquetQuery(sql);
+		
+		sql = "CREATE TABLE `tblbanquettypemaster` ("
+				+ "`strBanquetTypeCode` VARCHAR(20) NOT NULL,"
+				+ "	`strBanquetTypeName` VARCHAR(50) NOT NULL,"
+				+ "`intId` BIGINT(20) NOT NULL,"
+				+ "`dblRate` DECIMAL(18,4) NOT NULL,"
+				+ "`strTaxIndicator` VARCHAR(5) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(20) NOT NULL,"
+				+ "`dteDateCreated` DATETIME NOT NULL,"
+				+ "`dteDateEdited` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "PRIMARY KEY (`strBanquetTypeCode`, `strClientCode`)"
+				+ ") "
+				+ "COLLATE='latin1_swedish_ci' "
+				+ "ENGINE=InnoDB"
+				+ ";";
+		
+		funExecuteBanquetQuery(sql);
+		
+		sql = "CREATE TABLE `tblbanquetmaster` ("
+				+ "`strBanquetCode` VARCHAR(20) NOT NULL,"
+				+ "`strBanquetName` VARCHAR(30) NOT NULL,"
+				+ "`intId` BIGINT(20) NOT NULL,"
+				+ "`strOperational` VARCHAR(5) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(20) NOT NULL,"
+				+ "`strUserEdited` VARCHAR(20) NOT NULL,"
+				+ "`dteDateCreated` DATETIME NOT NULL,"
+				+ "`dteDateEdited` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(10) NOT NULL,"
+				+ "PRIMARY KEY (`strBanquetCode`, `strClientCode`)"
+				+ ") "
+				+ "COLLATE='latin1_swedish_ci' "
+				+ "ENGINE=InnoDB"
+				+ ";";
+		
+		funExecuteBanquetQuery(sql);
+										   
+		
+		
+		
+		
+		sql = "ALTER TABLE `tbldepartmentmaster`"
+				+ "ADD COLUMN `strMobileNo` VARCHAR(20) NOT NULL AFTER `strOperational`,"
+				+ "ADD COLUMN `strEmailId` VARCHAR(30) NOT NULL AFTER `strMobileNo`;";
+		
+		funExecuteBanquetQuery(sql);
+		
+		
+			
+		sql="ALTER TABLE `tblbanquetmaster` ADD COLUMN `strBanquetTypeCode` VARCHAR(20) NOT NULL AFTER `strUserEdited`";
+		funExecuteBanquetQuery(sql);
+		
+	
+		
+		
+		
+		sql="CREATE TABLE `tblweekendmaster` ( "
+				+" `strDayNo` VARCHAR(20) NOT NULL DEFAULT '', "
+				+" `strDay` VARCHAR(20) NOT NULL DEFAULT '', " 
+				+" `dtDteCreated` DATETIME NOT NULL, "
+				+" `dtDteEdited` DATETIME NOT NULL, "
+				+" `strUserCreated` VARCHAR(20) NOT NULL DEFAULT '', "
+				+" `strUserEdited` VARCHAR(20) NOT NULL DEFAULT '', "
+				+" `strClientCode` VARCHAR(20) NOT NULL, "
+				+" PRIMARY KEY (`strDayNo`, `strClientCode`) "
+			+" ) "
+			+" COLLATE='utf8_general_ci' "
+			+" ENGINE=InnoDB ";
+		
+		funExecuteBanquetQuery(sql);
+		
+		
+		//treeMaster Banquets All forms
+		
+		sql=" INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`,`strInvoice`,`strDeliverySchedule`,`strFormAccessYN`)"
+				+ "VALUES ('frmCustomerMaster', 'Customer Master', 'Master', 1, 'M', 52, 1, '1', 'default.png', '7', 1, '1', '1', 'NO', 'No', 'frmCustomerMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmGroupMaster', 'Group Master', 'Master', 1, 'M', 1, 1, '12', 'Group_Master.png', '7', 1, '1', '1', 'NO', '1', 'frmGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmReasonMaster', 'Reason Master', 'Master', 8, 'M', 22, 10, '1', 'Reason-Master.png', '7', 1, '1', '1', 'NO', 'YES', 'frmReasonMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmSubGroupMaster', 'Sub Group Master', 'Master', 2, 'M', 2, 2, '1', 'Sub-Group-Master.png', '7', 1, '1', '1', 'NO', 'YES', 'frmSubGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmDepartmentMaster', 'Department Master', 'Master', '1', 'M', '10', '10', '1', 'default.png', '7', '3', '3', '3', 'NO', 'YES', 'frmDepartmentMaster.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmCostCenterMaster', 'Cost Center', 'Master', '1', 'M', '1', '1', '12', 'Attribute-Master.png', '7', '1', '1', '1', 'NO', 'NO', 'frmCostCenterMaster.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmEquipment', 'Equipment Master', 'Master', '1', 'M', '1', '1', '12', 'Attribute-Master.png', '7', '1', '1', '1', 'NO', '1', 'frmEquipment.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmBillingInstructions', 'Billing Instructions', 'Master', '1', 'M', '14', '14', '1', 'default.png', '7', '3', '3', '3', 'NO', 'NO', 'frmBillingInstructions.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmWebBanquetDiary', 'Diary', 'Tools', 1, 'M', 1, 1, '12', 'default.png', '7', 1, '1', '1', 'NO', '1', 'frmWebBanquetDiary.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmMenuHeadMaster', 'Menu Head Master', 'Master', 1, 'M', 1, 1, '12', 'default.png', '7', 1, '1', '1', 'NO', 'NO', 'frmMenuHeadMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmItemMaster', 'Item Master', 'Master', 1, 'M', 1, 1, '12', 'default.png', '7', 1, '1', '1', 'NO', 'NO', 'frmItemMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmFunctionMaster', 'Function Master', 'Master', 1, 'M', 1, 2, '1', 'default.png', '7', 1, '1', '1', 'NO', 'NA', 'frmFunctionMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmServiceMaster', 'Service Master', 'Master', 1, 'M', 1, 3, '1', 'default.png', '7', 1, '1', '1', 'NO', 'NA', 'frmServiceMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmBanquetStaffMaster', 'Staff Master', 'Master', 1, 'M', 19, 19, '2', 'default.png', '7', 3, '1', '1', 'No', 'No', 'frmBanquetStaffMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmBanquetStaffCategeoryMaster', 'Staff Categeroy Master', 'Master', 1, 'M', 19, 19, '2', 'default.png', '7', 3, '1', '1', 'No', 'No', 'frmBanquetStaffCategeoryMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmFunctionProspectus', 'Function Prospectus', 'Tools', 1, 'M', 1, 1, '12', 'default.png', '7', 1, '1', '1', 'NO', '1', 'frmFunctionProspectus.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmPMSPayment', 'Payment', 'Transaction', '2', 'T', '7', '7', '15', 'imgPayment.png', '7', '3', '3', '3', 'NO', 'YES', 'frmPMSPayment.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmBanquetBooking', 'Banquet Booking', 'Transaction', 1, 'T', 1, 1, '1', 'default.png', '7', 1, '1', '1', 'No', 'No', 'frmBanquetBooking.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmRoomCancellation', 'Booking Cancellation', 'Transaction', '2', 'T', '6', '6', '1', 'imgReservationCancellation.png', '7', '3', '3', '3', 'NO', 'NO', 'frmRoomCancellation.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmProFormaInvoice', 'ProForma Invoice', 'Transaction', '2', 'T', '70', '11', '1', 'default.png', '7', '1', '1', '1', 'NO', 'NO', 'frmProFormaInvoice.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmBanquetWeekendMaster', 'Weekend Master', 'Master', 1, 'M', 19, 19, '2', 'default.png', '7', 3, '1', '1', 'No', 'No', 'frmBanquetWeekendMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmBanquetSetup', 'Banquet Setup', 'Tools', 1, 'M', 1, 1, '12', 'default.png', '7', 1, '1', '1', 'NO', 'NO', 'frmBanquetSetup.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmStructureUpdateBanquet', 'Structure Update', 'Tools', 1, 'M', 1, 1, '12', 'default.png', '7', 1, '1', '1', 'No', 'NO', 'frmStructureUpdate.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmTaxMaster', 'Tax Master', 'Master', '8', 'M', '29', '15', '1', 'imgTaxMaster.png', '7', '1', '1', '1', 'NO', 'YES', 'frmTaxMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmInovice', 'Invoice', 'Transaction', '2', 'T', '69', '10', '1', 'default.png', '7', '1', '1', '1', 'NO', 'NO', 'frmInovice.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmBanquetSettlmentMaster', 'Settlement Master', 'Master', 1, 'M', 19, 19, '2', 'default.png', '7', 3, '1', '1', 'No', 'No', 'frmSettlementMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmBanquetMaster', 'Banquet Master', 'Master', '1', 'M', '19', '19', '2', 'default.png', '7', '3', '1', '1', 'No', 'No', 'frmBanquetMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmBanquetTypeMaster', 'Banquet Type Master', 'Master', '1', 'M', '19', '19', '2', 'default.png', '7', '3', '1', '1', 'No', 'No', 'frmBanquetTypeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmAdvanceStatusReport', 'Advance Status Report', 'Report', 1, 'R', 1, 2, '1', 'default.png', '7', 1, '1', '1', 'NO', 'NA', 'frmAdvanceStatusReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+				+ "('frmBookingFlash', 'Banquet Flash', 'Report', 1, 'R', 1, 2, '1', 'default.png', '7', 1, '1', '1', 'NO', 'NA', 'frmBookingFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
+		        + "('frmRefund', 'Refund', 'Transaction', 1, 'T', 5, 5, '1', 'default.png', '3', 1, '1', '1', 'NO', 'NO', 'frmRefund.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y') ,"
+		        + "('frmUnBlockRoomMaster', 'UnBlock Room', 'Transaction', '2', 'T', '118', '118', '1', 'default.png', '3', '1', '1', '1', 'NO', 'NO', 'frmUnBlockRoomMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y') ";
+		funExecuteQuery(sql);
+		
+		/*----------------------WebBanquetsFrom End-----------------------*/
+		
+	}
+
+	@SuppressWarnings("finally")
+	@Transactional(value = "hibernateTransactionManager")
+	private int funExecuteQuery(String sql) {
+		try {
+			Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+			query.executeUpdate();
+		} catch (Exception e) {
+			//e.printStackTrace();
+		} finally {			
+			return 0;
+		}
+	}
+	
+	
+	@SuppressWarnings("finally")
+	private int funExecute(String sql) {
+		int i=0;
+		try {
+			Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+			query.list();
+		} catch (Exception e) {
+			i=1;
+		} finally {
+			return i;
+		}
+	}
+	
+	/*
+	 * orignial code
+	@SuppressWarnings("finally")
+	//@Transactional(propagation = Propagation.SUPPORTS, readOnly = false, value = "WebBooksTransactionManager")
+	@Transactional(value = "WebBooksTransactionManager")
+	private int funExecuteWebBooksQuery(String sql) {
+		try {
+			Query query = webBooksSessionFactory.getCurrentSession().createSQLQuery(sql);
+			query.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			return 0;
+		}
+	}*/
+	
+	
+	
+	@SuppressWarnings("finally")
+	private int funExecuteWebBooksQuery(String sql) {
+		try {
+			objAPGLBudgetMasterService.funExecuteWebBooksQuery(sql);
+		} catch (Exception e) {
+			//e.printStackTrace();
+		} finally {
+			return 0;
+		}
+	}
+
+	/*
+	 * orignial code
+	 * 
+	 * @SuppressWarnings("finally")
+	@Transactional(value = "WebPMSTransactionManager")
+	private int funExecutePMSQuery(String sql) {
+		try {
+			Query query = webPMSSessionFactory.getCurrentSession().createSQLQuery(sql);
+			query.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			return 0;
+		}
+	}*/
+	
+	
+	/*@SuppressWarnings("finally")
+	private int funExecutePMSQuery(String sql) {
+		try {
+			objBookerMasterService.funExecutePMSQuery(sql);
+			Query query = webPMSSessionFactory.getCurrentSession().createSQLQuery(sql);
+			query.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {			
+			return 0;
+		}
+	}*/
+	
+	@SuppressWarnings("finally")
+	private int funExecutePMSQuery(String sql) {
+		try {
+			objBookerMasterService.funExecutePMSQuery(sql);
+		} catch (Exception e) {
+			//e.printStackTrace();
+		} finally {			
+			return 0;
+		}
+	}
+	
+	
+	
+	/*original function
+	 * 
+	 *	@SuppressWarnings("finally")
+		@Transactional(value = "WebClubTransactionManager")
+		private int funExecuteWebClubQuery(String sql) {
+			try {
+				Query query = WebClubSessionFactory.getCurrentSession().createSQLQuery(sql);
+				query.executeUpdate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				return 0;
+			}
+		}
+	*/
+	@SuppressWarnings("finally")	
+	private int funExecuteWebClubQuery(String sql) {
+		try {
+			objWebClubOtherFieldCreationService.funExecuteQuery(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			return 0;
+		}
+	}
+	
+	
+	
+	/*original function
+	 * 
+	 * @SuppressWarnings("finally")
+	private int funExecuteBanquetQuery(String sql) {
+		try {
+			Query query = webPMSSessionFactory.getCurrentSession().createSQLQuery(sql);
+			query.executeUpdate();
+		} catch (Exception e) {
+		} finally {
+			return 0;
+		}
+	}
+*/
+	
+	@SuppressWarnings("finally")
+	private int funExecuteBanquetQuery(String sql) {
+		try {
+			objBookerMasterService.funExecutePMSQuery(sql);
+		} catch (Exception e) {
+		} finally {
+			return 0;
+		}
+	}
+	@Override
+	public void funClearTransaction(String clientCode, String[] str) {
+		for (int i = 0; i < str.length; i++) {
+			String sql = "";
+			switch (str[i]) {
+
+			// //////////////////////WebStock Transaction
+			// Start///////////////////////////////////////////
+
+			case "Bill Passing": {
+				sql = "truncate table tblbillpassdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblbillpasshd";
+				funExecuteQuery(sql);
+				sql = "truncate table tblbillpassingtaxdtl";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "GRN(Good Receiving Note)": {
+				sql = "truncate table tblgrndtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblgrnhd";
+				funExecuteQuery(sql);
+				sql = "truncate table tblgrntaxdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblgrnmisdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblbatchhd";
+				funExecuteQuery(sql);
+
+				break;
+			}
+
+			case "Opening Stock": {
+				sql = "truncate table tblinitialinvdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblinitialinventory";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Material Return": {
+				sql = "truncate table tblmaterialreturndtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblmaterialreturnhd";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Material Issue Slip": {
+				sql = "truncate table tblmisdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblmishd";
+				funExecuteQuery(sql);
+				sql = "truncate table tblmrpidtl";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Material Production": {
+				sql = "truncate table tblproductiondtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblproductionhd";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Meal Planing": {
+				sql = "truncate table tblproductionorderdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblproductionorderhd";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Purchase Indent": {
+				sql = "truncate table tblpurchaseindenddtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblpurchaseindendhd";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Purchase Order": {
+				sql = "truncate table tblpurchaseorderdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblpurchaseorderhd";
+				funExecuteQuery(sql);
+				sql = "truncate table tblpotaxdtl";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Purchase Return": {
+				sql = "truncate table tblpurchasereturndtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblpurchasereturnhd";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Material Requisition": {
+				sql = "truncate table tblreqdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblreqhd";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Stock Adjustment": {
+				sql = "truncate table tblstockadjustmentdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblstockadjustmenthd";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Physical Stk Posting": {
+				sql = "truncate table tblstockpostingdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblstockpostinghd";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Stock Transfer": {
+				sql = "truncate table tblstocktransferdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblstocktransferhd";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Work Order": {
+				sql = "truncate table tblworkorderdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblworkorderhd";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Rate Contract": {
+				sql = "truncate table tblratecontdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblrateconthd";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			// //////////////////////WebStock Transaction
+			// End///////////////////////////////////////////
+
+			// //////////////////////WebCRM Transaction
+			// Start///////////////////////////////////////////
+
+			case "Delivery Challan": {
+				sql = "truncate table tbldeliverychallanhd";
+				funExecuteQuery(sql);
+				sql = "truncate table tbldeliverychallandtl";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Delivery Note": {
+				sql = "truncate table tbldeliverynotehd";
+				funExecuteQuery(sql);
+				sql = "truncate table tbldeliverynotedtl";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Excise Challan": {
+
+				break;
+			}
+
+			case "Invoice": {
+				sql = "truncate table tblinvoicedtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblinvoicehd";
+				funExecuteQuery(sql);
+				sql = "truncate table tblinvprodtaxdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblinvsalesorderdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblinvtaxdtl";
+				funExecuteQuery(sql);
+
+				break;
+			}
+
+			case "Job Order Allocation": {
+				sql = "truncate table tbljoborderallocationhd";
+				funExecuteQuery(sql);
+				sql = "truncate table tbljoborderallocationdtl";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Job Order": {
+				sql = "truncate table tbljoborderhd";
+				funExecuteQuery(sql);
+
+				break;
+
+			}
+
+			case "Sales Order": {
+				sql = "truncate table tblsalesorderhd";
+				funExecuteQuery(sql);
+				sql = "truncate table tblsalesorderdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblsaleschar";
+				funExecuteQuery(sql);
+
+				break;
+
+			}
+
+			case "Sales Order BOM": {
+				sql = "truncate table tblsalesorderbom";
+				funExecuteQuery(sql);
+
+				break;
+
+			}
+
+			case "Sub Contractor GRN": {
+				sql = "truncate table tblscreturnhd";
+				funExecuteQuery(sql);
+				sql = "truncate table tblscreturndtl";
+				funExecuteQuery(sql);
+
+				break;
+
+			}
+
+			// //////////////////////WebCRM Transaction
+			// END///////////////////////////////////////////
+			
+			////PMS Transaction 
+			
+			case "Bill Discount": {
+				sql = "truncate table tblbilldiscount";
+				funExecutePMSQuery(sql);
+
+				break;
+			}
+			
+			case "Block Room": {
+				sql = "truncate table tblblockroom";
+				funExecutePMSQuery(sql);
+				
+
+				break;
+			}
+			
+			case "Change Room": {
+				sql = "truncate table tblchangedroomtypedtl";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblchangeroom";
+				funExecutePMSQuery(sql);
+
+				break;
+			}
+			
+			case "Check In": {
+				sql = "truncate table tblcheckindtl";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblcheckinhd";
+				funExecutePMSQuery(sql);
+
+				break;
+			}
+			
+			case "Day End": {
+				sql = "truncate table tbldayendprocess";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblposdayend";
+				funExecutePMSQuery(sql);
+
+				break;
+			}
+			
+			case "Folio Printing": {
+				sql = "truncate table tblfoliodtl";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblfoliohd";
+				funExecutePMSQuery(sql);
+
+				break;
+			}
+			
+			case "Payment": {
+				sql = "truncate table tblreceiptdtl";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblreceipthd";
+				funExecutePMSQuery(sql);
+
+				break;
+			}
+			
+			case "Reservation": {
+				sql = "truncate table tblreservationdtl";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblreservationhd";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblreservationroomratedtl";
+				funExecutePMSQuery(sql);
+				
+
+				break;
+			}
+			
+			case "Reservation Cancellation": {
+				sql = "truncate table tblroomcancelation";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Void Bill": {
+				sql = "truncate table tblvoidbilldtl";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblvoidbillhd";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblvoidbilltaxdtl";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Walk In": {
+				sql = "truncate table tblwalkindtl";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblwalkinhd";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblwalkinroomratedtl";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Folio Posting": {
+				sql = "truncate table tblfoliobckp";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblfoliodtl";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblfoliohd";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblfoliotaxdtl";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			
+			case "Bill Printing": {
+				sql = "truncate table tblbilldtl";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblbillhd";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblbilltaxdtl";
+				funExecutePMSQuery(sql);
+				
+			
+				break;
+			}
+			
+			case "Add Extra Bed": {
+				sql = "truncate table tblpackagemasterdtl";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblpackagemasterhd";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tblroompackagedtl";
+				funExecutePMSQuery(sql);
+				
+			
+				break;
+			}
+			
+			default: {
+				sql = "truncate table tbltempitemstock";
+				funExecuteQuery(sql);
+				sql = "truncate table tblpossalesdtl";
+				funExecuteQuery(sql);
+				sql = "update tblroom a set a.strStatus='Free' where a.strClientCode='"+clientCode+"';";
+				funExecutePMSQuery(sql);
+
+			}
+
+			}
+
+		}
+	}
+
+	@Override
+	public void funClearTransactionByProperty(String clientCode, String[] str, String propName) {
+		for (int i = 0; i < str.length; i++) {
+			String sql = "";
+			List<String> listPropertyCode = new ArrayList<>();
+			String sqlPropertyCode = "select strPropertyCode from tblpropertymaster where strPropertyName='" + propName + "' and strClientCode='" + clientCode + "' ";
+			listPropertyCode = objGlobalFunctionsService.funGetDataList(sqlPropertyCode, "sql");
+			String propCode="";
+			if(listPropertyCode!=null && listPropertyCode.size()>0)
+			{
+				propCode = listPropertyCode.get(0);
+			}
+			
+			switch (str[i]) {
+
+			// //////////////////////WebStock Transaction
+			// Start///////////////////////////////////////////
+			case "Bill Passing": {
+				sql = "DELETE FROM tblbillpassdtl where strBillPassNo LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblbillpasshd where strBillPassNo LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblbillpassingtaxdtl where strBillPassNo LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "GRN(Good Receiving Note)": {
+				sql = "DELETE FROM tblgrndtl WHERE strGRNCode LIKE '" + propCode + "%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblgrnhd WHERE strGRNCode LIKE '" + propCode + "%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblgrntaxdtl WHERE strGRNCode LIKE '" + propCode + "%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblgrnmisdtl WHERE strGRNCode LIKE '" + propCode + "%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblbatchhd WHERE strGRNCode LIKE '" + propCode + "%'";
+				funExecuteQuery(sql);
+
+				break;
+			}
+
+			case "Opening Stock": {
+				sql = "DELETE FROM tblinitialinvdtl where strOpStkCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblinitialinventory where strOpStkCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Material Return": {
+				sql = "DELETE FROM tblmaterialreturndtl where strMRetCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblmaterialreturnhd where strMRetCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Material Issue Slip": {
+				sql = "DELETE FROM tblmisdtl where strMISCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblmishd where strMISCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblmrpidtl where strMISCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Material Production": {
+				sql = "DELETE FROM tblproductiondtl where strPDCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblproductionhd where strPDCode like '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Meal Planing": {
+				sql = "DELETE FROM tblproductionorderdtl where strOPCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblproductionorderhd where strOPCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Purchase Indent": {
+				sql = "DELETE FROM tblpurchaseindenddtl where strPIcode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblpurchaseindendhd where strPIcode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Purchase Order": {
+				sql = "DELETE FROM tblpurchaseorderdtl where strPOCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblpurchaseorderhd where strPOCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblpotaxdtl where strPOCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Purchase Return": {
+				sql = "DELETE FROM tblpurchasereturndtl where strPRCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblpurchasereturnhd where strPRCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblpurchasereturntaxdtl where strPRCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Material Requisition": {
+				sql = "DELETE FROM tblreqdtl where strReqCod LIKE '%"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblreqhd where strReqCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Stock Adjustment": {
+				sql = "DELETE FROM tblstockadjustmentdtl where strSACode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblstockadjustmenthd where strSACode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Physical Stk Posting": {
+				sql = "DELETE FROM tblstockpostingdtl where strPSCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblstockpostinghd where strPSCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Stock Transfer": {
+				sql = "DELETE FROM tblstocktransferdtl where strSTCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblstocktransferhd where strSTCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Work Order": {
+				sql = "DELETE FROM tblworkorderdtl where strWOCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblworkorderhd where strWOCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Rate Contract": {
+				sql = "DELETE FROM tblratecontdtl where strRateContNo LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblrateconthd where strRateContNo LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+			default: {
+				sql = "DELETE FROM tbltempitemstock";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblpossalesdtl";
+				funExecuteQuery(sql);
+
+			}
+
+			// //////////////////////WebStock Transaction
+			// End///////////////////////////////////////////
+
+			// //////////////////////WebCRM Transaction
+			// Start///////////////////////////////////////////
+
+			case "Delivery Challan": {
+				sql = "DELETE FROM tbldeliverychallanhd where strDCCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tbldeliverychallandtl where strDCCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Delivery Note": {
+				sql = "DELETE FROM tbldeliverynotehd where strDNCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tbldeliverynotedtl where strDNCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Excise Challan": {
+
+				break;
+			}
+
+			case "Invoice": {
+				sql = "DELETE FROM tblinvoicedtl where strInvCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblinvoicehd where strInvCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblinvprodtaxdtl where strInvCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblinvsalesorderdtl where strInvCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblinvtaxdtl where strInvCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblinvtaxgst where strInvCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+
+				break;
+			}
+
+			case "Job Order Allocation": {
+				sql = "DELETE FROM tbljoborderallocationhd where strJACode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tbljoborderallocationdtl where strJACode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Job Order": {
+				sql = "DELETE FROM tbljoborderhd where strJOCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+
+				break;
+
+			}
+
+			case "Sales Order": {
+				sql = "DELETE FROM tblsalesorderhd where strSOCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblsalesorderdtl where strSOCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblsaleschar where strSOCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+
+				break;
+
+			}
+
+			case "Sales Order BOM": {
+				sql = "DELETE FROM tblsalesorderbom where strSOCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+
+				break;
+
+			}
+
+			case "Sub Contractor GRN": {
+				sql = "DELETE FROM tblscreturnhd where strSRCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+				sql = "DELETE FROM tblscreturndtl where strSRCode LIKE '"+propCode+"%'";
+				funExecuteQuery(sql);
+
+				break;
+
+			}
+
+			// //////////////////////WebCRM Transaction
+			// END///////////////////////////////////////////
+
+			}
+
+		}
+	}
+
+	@Override
+	public void funClearMaster(String clientCode, String[] str) {
+
+		for (int i = 0; i < str.length; i++) {
+			String sql = "";
+			switch (str[i]) {
+
+			// //////////////////////WebStock Master
+			// Start///////////////////////////////////////////
+			case "Attachement Master": {
+				sql = "truncate table tblattachdocument";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Attribute Master": {
+				sql = "truncate table tblattributemaster";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Attribute Value Master": {
+				sql = "truncate table tblattvaluemaster";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Reciepe Master": {
+				sql = "truncate table tblbommasterdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tblbommasterhd";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Currency Master": {
+				sql = "truncate table tblcurrencymaster";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Group Master": {
+				sql = "truncate table tblgroupmaster";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Location Master": {
+				sql = "truncate table tbllocationmaster";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Product Master": {
+
+				sql = "truncate table tblprodchar";
+				funExecuteQuery(sql);
+				sql = "truncate table tblproductmaster";
+				funExecuteQuery(sql);
+				sql = "truncate table tblprodsuppmaster";
+				funExecuteQuery(sql);
+				sql = "truncate table tblreorderlevel";
+				funExecuteQuery(sql);
+				sql = "truncate table tblprodprocess";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Supplier Master": {
+				sql = "truncate table tblpartymaster";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Property Master": {
+				sql = "truncate table tblpropertymaster";
+				funExecuteQuery(sql);
+				sql = "truncate table tblpropertysetup";
+				funExecuteQuery(sql);
+				sql = "truncate table tblworkflow";
+				funExecuteQuery(sql);
+				sql = "truncate table tblworkflowforslabbasedauth";
+				funExecuteQuery(sql);
+				sql = "truncate table tblprocessmaster";
+				funExecuteQuery(sql);
+				sql = "truncate table tblprocesssetup";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Reason Master": {
+				sql = "truncate table tblreasonmaster";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Settlement Master": {
+				sql = "truncate table tblsettlementmaster";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Sub Group Master": {
+				sql = "truncate table tblsubgroupmaster";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "Tax Master": {
+				sql = "truncate table tbltaxdtl";
+				funExecuteQuery(sql);
+				sql = "truncate table tbltaxhd";
+				funExecuteQuery(sql);
+				sql = "truncate table tbltaxsettlement";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "TC Master": {
+				sql = "truncate table tbltcmaster";
+				funExecuteQuery(sql);
+				sql = "truncate table tbltctransdtl";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "UOM Master": {
+				sql = "truncate table tbluommaster";
+				funExecuteQuery(sql);
+				break;
+			}
+			case "User Master": {
+				sql = "truncate table tbluserhd";
+				funExecuteQuery(sql);
+				sql = "truncate table tbluserdtl";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			// //////////////////////WebStock Master
+			// End///////////////////////////////////////////
+
+			// //////////////////////WebCRM Master
+			// Start///////////////////////////////////////////
+
+			case "Security Shell": {
+				sql = "truncate table tbluserdtl";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Customer Master": {
+				sql = "Delete from tblpartymaster where strPType='cust'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			case "Sub Contractor Master": {
+				sql = "Delete from tblpartymaster where strPType='subc'";
+				funExecuteQuery(sql);
+				break;
+			}
+
+			// //////////////////////WebCRM Master
+			// End///////////////////////////////////////////
+
+			
+			//PMSMaster Start
+			case "Agent Commision": {
+				sql = "truncate table tblagentcommision";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Agent Master": {
+				sql = "truncate table tblagentmaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Baggage Master": {
+				sql = "truncate table tblbaggagemaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "BathType Master": {
+				sql = "truncate table tblbathtypemaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Billing Instructions": {
+				sql = "truncate table tblbillinginstructions";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Booker Master": {
+				sql = "truncate table tblbookermaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Booking Type": {
+				sql = "truncate table tblbookingtype";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "BusinessSource Master": {
+				sql = "truncate table tblbusinesssource";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "ChargePosting Master": {
+				sql = "truncate table tblchargeposting";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Corporate Master": {
+				sql = "truncate table tblcorporatemaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Department Master": {
+				sql = "truncate table tbldepartmentmaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "ExtraBed Master": {
+				sql = "truncate table tblextrabed";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Floor Master": {
+				sql = "truncate table tblfloormaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Guest Master": {
+				sql = "truncate table tblguestmaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "IncomeHead Master": {
+				sql = "truncate table tblincomehead";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "MarketSource Master": {
+				sql = "truncate table tblmarketsource";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Plan Master": {
+				sql = "truncate table tblplanmaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			
+			
+			case "RoomType Master": {
+				sql = "truncate table tblroomtypemaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Room Master": {
+				sql = "truncate table tblroom";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "PMS Tax Master": {
+				sql = "truncate table tbltaxmaster";
+				funExecutePMSQuery(sql);
+				
+				sql = "truncate table tbltaxgroup";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "PMS Settlement Master": {
+				sql = "truncate table tblsettlementmaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "PMS Reason Master": {
+				sql = "truncate table tblreasonmaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			/*
+			
+			case "Tax Master": {
+				sql = "truncate table tbltaxmaster";
+				funExecutePMSQuery(sql);
+				break;
+			}
+			
+			case "Reason Master": {
+				sql = "truncate table tblreasonmaster";
+				funExecuteQuery(sql);
+				break;
+			}*/
+			
+			
+			}
+		}
+	}
+	
+	@Override
+	public void funClearWebBooksMaster(String clientCode, String[] str) {
+
+		for (int i = 0; i < str.length; i++) {
+			String sql = "";
+			switch (str[i]) 
+			{
+			
+			case "Account Master": {
+				sql = "truncate table tblacmaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			case "Account Holder Master": {
+				sql = "truncate table tblacholdermaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			case "Bank Master": {
+				sql = "truncate table tblbankmaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			case "Group Master": {
+				sql = "truncate table tblacgroupmaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			case "Charge Master": {
+				sql = "truncate table tblchargemaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Narration Master": {
+				sql = "truncate table tblremarkmaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Interface Master": {
+				sql = "truncate table tblposlinkupmaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Sanction Autherity Master": {
+				sql = "truncate table tblsanctionauthmaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Sundry Debtor Master": {
+				sql = "truncate table tblsundarydebtormaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Letter Master": {
+				sql = "truncate table tbllettermaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Sundry Creditor Master": {
+				sql = "truncate table tblsundarycreditormaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Employee Master": {
+				sql = "truncate table tblemployeemaster";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "User Defined Report": {
+				sql = "truncate table tbluserdefinedreporthd";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tbluserdefinedreportdtl";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			
+			
+			
+			}
+	
+		}
+		}
+	
+	@Override
+	public void funClearWebBooksTransactionByProperty(String clientCode, String[] str, String propName) {
+		for (int i = 0; i < str.length; i++) {
+			String sql = "";
+			List<String> listPropertyCode = new ArrayList<>();
+//			String sqlPropertyCode = "select strPropertyCode from "+dbName+".tblpropertymaster where strPropertyName='" + propName + "' and strClientCode='" + clientCode + "' ";
+//			listPropertyCode = objGlobalFunctionsService.funGetDataList(sqlPropertyCode, "sql");
+			String propCode = propName;
+		
+
+			switch (str[i]) {
+
+			case "JV Entry": {
+				sql = "delete from tbljvhd where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				sql = "delete from tbljvdtl where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				sql = "delete from tbljvdebtordtl where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Payment": {
+				sql = "delete from tblpaymenthd where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				sql = "delete from tblpaymentdtl where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				sql = "delete from tblpaymentdebtordtl where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				sql = "delete from tblpaymentgrndtl where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				sql = "delete from tblpaymentscbilldtl where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Receipt": {
+				sql = "delete from tblreceipthd where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				sql = "delete from tblreceiptdtl where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				sql = "delete from tblreceiptdebtordtl where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				sql = "delete from tblreceiptinvdtl where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Sundry Creditor Bill": {
+				sql = "delete from tblscbillhd where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				sql = "delete from tblscbilldtl where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				sql = "delete from tblscbillgrndtl where strPropertyCode='"+propCode+"'";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			
+			}
+		}
+	}
+	
+	public void funUpdateWebBooksStructure(String clientCode, HttpServletRequest req) {
+		String sql = "";
+	
+		/*----------------WebBook Forms Only---------------------------*/
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblbudget` (" + "	`strAccCode` VARCHAR(10) NOT NULL," + "	`strAccName` VARCHAR(50) NOT NULL DEFAULT ''," + "	`strMonth` VARCHAR(25) NOT NULL," + " 	`strYear` VARCHAR(10) NOT NULL," + " 	`dblBudgetAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000'," + "  	`intID` BIGINT(20) NOT NULL AUTO_INCREMENT, " + "	`strClientCode` VARCHAR(10) NOT NULL, "
+				+ "	PRIMARY KEY (`intID`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=5 ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblscbillhd`  " + " (	`strVoucherNo` VARCHAR(15) NOT NULL," + "	`strSuppCode` VARCHAR(15) NOT NULL,	" + "	`strSuppName` VARCHAR(255) NOT NULL,	" + " `strBillNo` VARCHAR(50) NOT NULL," + "	`dteBillDate` DATE NOT NULL," + "	`dteDueDate` DATE NOT NULL,	`dblTotalAmount` DOUBLE NOT NULL," + "	`strModuleType` VARCHAR(10) NOT NULL,"
+				+ "	`dteVoucherDate` DATE NOT NULL,	`strUserCreated` VARCHAR(10) NOT NULL," + "	`strUserEdited` VARCHAR(10) NOT NULL," + "	`dteDateCreated` DATETIME NOT NULL,	`dteDateEdited` DATETIME NOT NULL," + "	`strClientCode` VARCHAR(10) NOT NULL," + "	`strPropertyCode` VARCHAR(10) NOT NULL,	" + " `strNarration` VARCHAR(255) NOT NULL DEFAULT ''," + "	`intVouchNum` VARCHAR(10) NOT NULL,"
+				+ "	`intVoucherMonth` INT(2) NOT NULL, " + " `strAcCode` VARCHAR(10) NOT NULL,  " + "	`strAcName` VARCHAR(255) NOT NULL, " + "	PRIMARY KEY (`strVoucherNo`, `strClientCode`) )" + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblscbilldtl` " + " (	`strVoucherNo` VARCHAR(15) NOT NULL,	" + " `strClientCode` VARCHAR(10) NOT NULL,	" + " `strACCode` VARCHAR(15) NOT NULL,	" + " `strACName` VARCHAR(255) NOT NULL,	" + " `strCrDr` VARCHAR(2) NOT NULL,	" + " `dblCrAmt` DOUBLE(18,4) NOT NULL,	" + " `dblDrAmt` DOUBLE(18,4) NOT NULL,	"
+				+ " `strNarration` VARCHAR(255) NOT NULL DEFAULT '',	" + " `strPropertyCode` VARCHAR(10) NOT NULL)  " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblscbillgrndtl`" + " (	`strVoucherNo` VARCHAR(15) NOT NULL,	" + "`strClientCode` VARCHAR(10) NOT NULL,	" + "`strGRNCode` VARCHAR(15) NOT NULL,	" + "`dteGRNDate` DATE NOT NULL,	" + "`dblGRNAmt` DOUBLE(18,4) NOT NULL DEFAULT '0.00',	" + "`dteGRNDueDate` DATE NOT NULL,	" + "`strGRNBIllNo` VARCHAR(50) NOT NULL DEFAULT '',	"
+				+ "`strPropertyCode` VARCHAR(2) NOT NULL ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS `tblpaymentgrndtl` ( " + "	`strClientCode` VARCHAR(255) NOT NULL, " + "	`strVouchNo` VARCHAR(255) NULL DEFAULT NULL, " + "	`dblGRNAmt` DOUBLE NOT NULL, " + "	`dteBillDate` VARCHAR(255) NULL DEFAULT NULL, " + "	`dteGRNDate` VARCHAR(255) NULL DEFAULT NULL, " + "	`dteGRNDueDate` VARCHAR(255) NULL DEFAULT NULL, "
+				+ "	`strGRNBIllNo` VARCHAR(255) NULL DEFAULT NULL, " + "	`strGRNCode` VARCHAR(255) NULL DEFAULT NULL, " + "	`strPropertyCode` VARCHAR(255) NULL DEFAULT NULL ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ;  ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblsundarycreditormaster` ( " + "	`intGId` BIGINT(20) NOT NULL AUTO_INCREMENT, " + "	`strCreditorCode` VARCHAR(20) NOT NULL, " + "	`strPrefix` VARCHAR(10) NOT NULL, " + "	`strFirstName` VARCHAR(50) NOT NULL, " + "	`strMiddleName` VARCHAR(50) NOT NULL, " + "	`strLastName` VARCHAR(50) NOT NULL, " + "	`strCategoryCode` VARCHAR(100) NOT NULL, "
+				+ "	`strAddressLine1` VARCHAR(200) NOT NULL, " + "	`strAddressLine2` VARCHAR(200) NOT NULL, " + "	`strAddressLine3` VARCHAR(200) NOT NULL, " + "	`strCity` VARCHAR(100) NOT NULL, " + "	`longZipCode` VARCHAR(50) NOT NULL, " + "	`strTelNo1` VARCHAR(50) NOT NULL, " + "	`strTelNo2` VARCHAR(50) NOT NULL, " + "	`strFax` VARCHAR(50) NOT NULL, "
+				+ "	`strArea` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strEmail` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactPerson1` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactDesignation1` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactEmail1` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactTelNo1` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ "	`strContactPerson2` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactDesignation2` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactEmail2` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strContactTelNo2` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strLandmark` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strCreditorFullName` VARCHAR(100) NOT NULL DEFAULT '', "
+				+ "	`strExpired` VARCHAR(5) NOT NULL DEFAULT 'No', " + "	`strExpiryReasonCode` VARCHAR(20) NOT NULL DEFAULT 'NA', " + "	`strECSYN` VARCHAR(5) NOT NULL DEFAULT 'N', " + "	`strAccountNo` VARCHAR(100) NOT NULL, " + "	`strHolderName` VARCHAR(100) NOT NULL, " + "	`strMICRNo` VARCHAR(100) NOT NULL, " + "	`dblECS` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', "
+				+ "	`strSaveCurAccount` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strAlternateCode` VARCHAR(50) NOT NULL DEFAULT '', " + "	`dblOutstanding` DECIMAL(18,4) NOT NULL DEFAULT '0.0000', " + "	`strStatus` VARCHAR(20) NOT NULL DEFAULT '', " + "	`intDays1` VARCHAR(50) NOT NULL DEFAULT '0', 	" + "`intDays2` VARCHAR(50) NOT NULL DEFAULT '0', "
+				+ "	`intDays3` VARCHAR(50) NOT NULL DEFAULT '0', " + "	`intDays4` VARCHAR(50) NOT NULL DEFAULT '0', " + "	`intDays5` VARCHAR(50) NOT NULL DEFAULT '0', " + "	`dblCrAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00',  " + "	`dblDrAmt` DECIMAL(18,2) NOT NULL DEFAULT '0.00', " + "	`dteLetterProcess` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00', "
+				+ "	`strReminder1` VARCHAR(15) NOT NULL DEFAULT '', " + "	`strReminder2` VARCHAR(15) NOT NULL DEFAULT '', " + "	`strReminder3` VARCHAR(15) NOT NULL DEFAULT '', " + "	`strReminder4` VARCHAR(15) NOT NULL DEFAULT '', " + "	`strReminder5` VARCHAR(15) NOT NULL DEFAULT '', " + "	`dblLicenseFee` VARCHAR(50) NOT NULL DEFAULT '0.0000', "
+				+ "	`dblAnnualFee` VARCHAR(50) NOT NULL DEFAULT '0.0000', " + "	`strRemarks` VARCHAR(200) NOT NULL DEFAULT 'NA', " + "	`strClientApproval` VARCHAR(5) NOT NULL DEFAULT 'No', " + "	`strAMCLink` VARCHAR(200) NOT NULL DEFAULT '', " + "	`strCurrencyType` VARCHAR(20) NOT NULL DEFAULT '', " + "	`strAccountHolderCode` VARCHAR(20) NOT NULL DEFAULT '', "
+				+ "	`strAccountHolderName` VARCHAR(100) NOT NULL DEFAULT '', " + "	`strAMCCycle` VARCHAR(20) NOT NULL DEFAULT '',  " + "	`dteStartDate` DATETIME NOT NULL, " + "	`strAMCRemarks` VARCHAR(200) NOT NULL DEFAULT 'NA', " + "	`strClientComment` VARCHAR(200) NOT NULL DEFAULT 'NA', " + "	`strBillingToCode` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ "	`dblAnnualFeeInCurrency` VARCHAR(50) NOT NULL DEFAULT '0.0000', " + "	`dblLicenseFeeInCurrency` VARCHAR(50) NOT NULL DEFAULT '0.0000', " + "	`strState` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strRegion` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strCountry` VARCHAR(50) NOT NULL DEFAULT '', " + "	`strConsolidated` VARCHAR(5) NOT NULL DEFAULT 'No', "
+				+ "	`intCreditDays` VARCHAR(50) NOT NULL DEFAULT '0', " + "	`strCreditorStatusCode` VARCHAR(10) NOT NULL DEFAULT '', " + "	`longMobileNo` VARCHAR(50) NOT NULL, " + "	`strECSActivate` VARCHAR(3) NOT NULL DEFAULT '', " + "	`strReminderStatus1` VARCHAR(50) NOT NULL DEFAULT '', " + "	`dteRemainderDate1` VARCHAR(50) NOT NULL DEFAULT '1900-01-01', "
+				+ " 	`strReminderStatus2` VARCHAR(50) NOT NULL DEFAULT '', " + "	`dteRemainderDate2` VARCHAR(50) NOT NULL DEFAULT '1900-01-01', " + "	`strReminderStatus3` VARCHAR(50) NOT NULL DEFAULT '', " + "	`dteRemainderDate3` VARCHAR(50) NOT NULL DEFAULT '1900-01-01', " + " 	`strReminderStatus4` VARCHAR(50) NOT NULL DEFAULT '', "
+				+ "	`dteRemainderDate4` VARCHAR(50) NOT NULL DEFAULT '1900-01-01', " + "	`strReminderStatus5` VARCHAR(50) NOT NULL DEFAULT '', " + "	`dteRemainderDate5` VARCHAR(50) NOT NULL DEFAULT '1900-01-01', " + "	`strAllInvoiceHeader` VARCHAR(500) NOT NULL DEFAULT '', " + "	`strUserCreated` VARCHAR(10) NOT NULL, " + "	`strUserEdited` VARCHAR(10) NOT NULL, "
+				+ "	`dteDateCreated` DATETIME NOT NULL, " + "	`dteDateEdited` DATETIME NOT NULL, " + "	`strClientCode` VARCHAR(20) NOT NULL, " + "	`strPropertyCode` VARCHAR(10) NOT NULL, " + "	`strBlocked` VARCHAR(255) NULL DEFAULT NULL, " + "	PRIMARY KEY (`strCreditorCode`, `strClientCode`), " + "	INDEX `intGId` (`intGId`) ) COLLATE='latin1_swedish_ci' " + " ENGINE=InnoDB AUTO_INCREMENT=13 ;  ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS   `tblledgersummary` ( " + "	`dteVochDate` VARCHAR(100) NOT NULL,  	" + "`strVoucherNo` VARCHAR(100) NOT NULL,  " + "	`strTransType` VARCHAR(50) NOT NULL,  " + "	`strChequeBillNo` VARCHAR(50) NOT NULL,  " + "	`dteBillDate` VARCHAR(100) NOT NULL,  " + "	`dblDebitAmt` DOUBLE NOT NULL DEFAULT '0.00',  " + "	`dblCreditAmt` DOUBLE NOT NULL DEFAULT '0.00',  "
+				+ "	`dblBalanceAmt` DOUBLE NOT NULL DEFAULT '0.00',  " + "	`strBalCrDr` VARCHAR(50) NOT NULL DEFAULT '',  " + "	`strNarration` VARCHAR(100) NOT NULL DEFAULT '',  " + "	`strTransTypeForOrderBy` VARCHAR(100) NOT NULL DEFAULT '',  " + "	`strUserCode` VARCHAR(100) NOT NULL,  " + "	`strPropertyCode` VARCHAR(10) NOT NULL,  " + "	`strClientCode` VARCHAR(100) NOT NULL,  "
+				+ "	PRIMARY KEY (`strVoucherNo`, `strClientCode`,`strTransType`)  ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS  `tblcurrentaccountbal` ( " + "	`strAccountCode` VARCHAR(50) NOT NULL, " + "	`strAccountName` VARCHAR(50) NOT NULL, " + "	`strDrCrCode` VARCHAR(50) NOT NULL, " + "	`dteBalDate` VARCHAR(50) NOT NULL,  " + "	`dblCrAmt` DOUBLE NOT NULL DEFAULT '0.00',  " + "	`dblDrAmt` DOUBLE NOT NULL DEFAULT '0.00',  " + "	`dblBalAmt` DOUBLE NOT NULL DEFAULT '0.00', "
+				+ "	`strTransecType` VARCHAR(50) NOT NULL DEFAULT '', " + " 	`strUserCode` VARCHAR(50) NOT NULL, " + "	`strPropertyCode` VARCHAR(50) NOT NULL, " + "	`strClientCode` VARCHAR(50) NOT NULL,  " + "	PRIMARY KEY (`strAccountCode`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS  `tblsundarycreditoropeningbalance` ( 			" + "		`strCreditorCode` VARCHAR(50) NOT NULL, 		" + "		`strAccountCode` VARCHAR(50) NOT NULL, 			" + "		`strAccountName` VARCHAR(150) NOT NULL, 		" + "			`dblOpeningbal` DOUBLE NOT NULL DEFAULT '0.00', 			" + "		`strCrDr` VARCHAR(50) NOT NULL, 		" + "			`strClientCode` VARCHAR(50) NOT NULL, 		"
+				+ "			PRIMARY KEY (`strCreditorCode`, `strClientCode`) 		" + "		) 				COLLATE='latin1_swedish_ci' 		" + "		ENGINE=InnoDB ;	 ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = "	CREATE TABLE IF NOT EXISTS  `tblsundarydebtoropeningbalance` ( 		" + "			`strDebtorCode` VARCHAR(50) NOT NULL, 		" + "			`strAccountCode` VARCHAR(50) NOT NULL, 		" + "			`strAccountName` VARCHAR(150) NOT NULL, 	" + "				`dblOpeningbal` DOUBLE NOT NULL DEFAULT '0.00', 	" + "				`strCrDr` VARCHAR(50) NOT NULL, 	" + "				`strClientCode` VARCHAR(50) NOT NULL, 		"
+				+ "			PRIMARY KEY (`strDebtorCode`, `strClientCode`) 		" + "		) 				COLLATE='latin1_swedish_ci' 		" + "		ENGINE=InnoDB ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblreceiptinvdtl` ( " + "	`strClientCode` VARCHAR(255) NOT NULL, " + "	`strVouchNo` VARCHAR(255) NOT NULL, 	" + "`dblInvAmt` DOUBLE NULL DEFAULT NULL, " + "	`dteBillDate` VARCHAR(255) NULL DEFAULT NULL, " + "	`dteInvDate` VARCHAR(255) NULL DEFAULT NULL, " + "	`dteInvDueDate` VARCHAR(255) NULL DEFAULT NULL, "
+				+ "	`strInvBIllNo` VARCHAR(255) NULL DEFAULT NULL," + " 	`strInvCode` VARCHAR(255) NULL DEFAULT NULL, " + "	`strPropertyCode` VARCHAR(255) NULL DEFAULT NULL,   " + "	`dblPayedAmt` DOUBLE NOT NULL DEFAULT '0' " + " ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblsundarycreditoropeningbalance` ( " + "	`strCreditorCode` VARCHAR(50) NOT NULL, " + "`strAccountCode` VARCHAR(50) NOT NULL, " + "	`strAccountName` VARCHAR(150) NOT NULL, " + "	`dblOpeningbal` DOUBLE NOT NULL DEFAULT '0', " + "	`strCrDr` VARCHAR(50) NOT NULL, " + "	`strClientCode` VARCHAR(50) NOT NULL, "
+				+ "	PRIMARY KEY (`strCreditorCode`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ; ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql = " CREATE TABLE IF NOT EXISTS `tblsundarydebtoropeningbalance` ( " + "	`strDebtorCode` VARCHAR(50) NOT NULL, " + "	`strAccountCode` VARCHAR(50) NOT NULL, " + " 	`strAccountName` VARCHAR(150) NOT NULL, " + "	`dblOpeningbal` DOUBLE NOT NULL DEFAULT '0', " + "	`strCrDr` VARCHAR(50) NOT NULL, " + "	`strClientCode` VARCHAR(50) NOT NULL, "
+				+ "	PRIMARY KEY (`strDebtorCode`, `strClientCode`) ) " + " COLLATE='latin1_swedish_ci' ENGINE=InnoDB ;  ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql="CREATE TABLE `tblemployeemaster` ( "
+				+ "`strEmployeeCode` VARCHAR(20) NOT NULL,"
+				+ "`strEmployeeName` VARCHAR(50) NOT NULL,"
+				+ "`intID` BIGINT(20) NOT NULL,"
+				+ "`strUserCreated` VARCHAR(50) NOT NULL,"
+				+ "`strUserModified` VARCHAR(50) NOT NULL,"
+				+ "`dteCreatedDate` DATETIME NOT NULL,"
+				+ "`dteLastModified` DATETIME NOT NULL,"
+				+ "`strClientCode` VARCHAR(20) NOT NULL,"
+				+ "PRIMARY KEY (`strEmployeeCode`, `strClientCode`))"
+				+ "COLLATE='latin1_swedish_ci'"
+				+ "ENGINE=InnoDB;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql=" CREATE TABLE `tbluserdefinedreporthd` ("
+				+ " `strReportId` VARCHAR(15) NOT NULL,"
+				+ " `intid` BIGINT(20) NOT NULL,"
+				+ " `strReportName` VARCHAR(200) NOT NULL,"
+				+ " `dteUserDefDate` DATETIME NOT NULL,"
+				+ " `dteDateCreated` DATETIME NOT NULL,"
+				+ " `dteDateEdited` DATETIME NOT NULL,"
+				+ " `strUserCreated` VARCHAR(50) NOT NULL,"
+				+ " `strUserModified` VARCHAR(50) NOT NULL,"
+				+ " `strClientCode` VARCHAR(50) NOT NULL,"
+				+ " PRIMARY KEY (`strReportId`, `strClientCode`)"
+				+ " )COLLATE='latin1_swedish_ci'"
+				+ " ENGINE=InnoDB;";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql=" CREATE TABLE `tbluserdefinedreportdtl` ("
+				+ " `strReportId` VARCHAR(15) NOT NULL,"
+				+ " `intSrNo` INT(10) NOT NULL,"
+				+ " `strType` VARCHAR(30) NOT NULL,"
+				+ " `strColumn` VARCHAR(50) NOT NULL,"
+				+ " `strOperator` VARCHAR(50) NOT NULL,"
+				+ " `strFGroup` VARCHAR(20) NOT NULL,"
+				+ " `strTGroup` VARCHAR(20) NOT NULL,"
+				+ " `strFAccount` VARCHAR(20) NOT NULL,"
+				+ " `strTAccount` VARCHAR(20) NOT NULL,"
+				+ " `strDescription` VARCHAR(200) NOT NULL,"
+				+ " `strConstant` VARCHAR(50) NOT NULL,"
+				+ " `strFormula` VARCHAR(50) NOT NULL,"
+				+ " `strPrint` VARCHAR(1) NOT NULL,"
+				+ " `strClientCode` VARCHAR(50) NOT NULL"
+				+ " )COLLATE='latin1_swedish_ci'"
+				+ " ENGINE=InnoDB;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql = " ALTER TABLE `tblpaymentdtl` " + " ADD COLUMN `strDebtorCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strPropertyCode` ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql = " ALTER TABLE `tblpaymentgrndtl` " + "	ADD COLUMN `dblPayedAmt` DOUBLE NOT NULL DEFAULT '0.00' AFTER `strPropertyCode`; ";
+
+		funExecuteWebBooksQuery(sql);
+
+		sql = " ALTER TABLE `tblauditdtl` " + "	CHANGE COLUMN `strAccountName` " + " `strAccountName` VARCHAR(100) NOT NULL AFTER `strAccountCode`;  ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " ALTER TABLE `tblaudithd` " + "	CHANGE COLUMN `strTransType` `strTransType` " + " VARCHAR(10) NOT NULL DEFAULT '' AFTER `strMasterPOS`;  ";
+		funExecuteWebBooksQuery(sql);
+
+		sql = " ALTER TABLE `tblscbillhd` " + "	ADD COLUMN `strCreditorCode` VARCHAR(10) NOT NULL AFTER `strSuppName`;";
+		funExecuteWebBooksQuery(sql);
+
+		sql = "ALTER TABLE `tblledgersummary` "
+				+" CHANGE COLUMN `dteVochDate` `dteVochDate` DATETIME NULL DEFAULT NULL AFTER `strVoucherNo`, "
+				+" CHANGE COLUMN `dteBillDate` `dteBillDate` DATETIME NULL DEFAULT NULL AFTER `dblDebitAmt`" ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql = " ALTER TABLE `tblsundarydebtormaster` "
+			+ " ADD COLUMN `strAccountCode` VARCHAR(10) NOT NULL AFTER `strBlocked`; " ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql = "ALTER TABLE `tblsundarycreditormaster` "
+				+ " ADD COLUMN `strAccountCode` VARCHAR(10) NOT NULL AFTER `strUserEdited` ; " ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tbljvhd` ADD COLUMN `strSource` VARCHAR(20) NOT NULL DEFAULT 'User' AFTER `intVouchNum`"
+				+ ",ADD COLUMN `strSourceDocNo` VARCHAR(20) NOT NULL AFTER `strSource`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql=" ALTER TABLE `tblchargemaster` "
+		 +" ADD COLUMN `strCriteria` VARCHAR(20) NOT NULL DEFAULT '' AFTER `dtLastModified`, "
+		 +" ADD COLUMN `strCondition` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strCriteria`, "
+		 +" ADD COLUMN `dblConditionValue` DECIMAL(18,4) NOT NULL DEFAULT '0.00' AFTER `strCondition`; ";
+		funExecuteWebBooksQuery(sql);
+	
+
+		sql="ALTER TABLE `tblacmaster`"
+				+ "ADD COLUMN `strEmployeeCode` VARCHAR(20) NOT NULL AFTER `intOpeningBal`";
+		funExecuteWebBooksQuery(sql);
+		
+		sql= "ALTER TABLE `tblacmaster` "
+			+" CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `intGId`;" ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tbljvdtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strVouchNo`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblpaymentdtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strVouchNo`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblreceiptdtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strVouchNo`;";
+		funExecuteWebBooksQuery(sql);
+
+		sql="ALTER TABLE `tbljvdebtordtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strGuest`;";
+		funExecuteWebBooksQuery(sql);
+	
+		sql="ALTER TABLE `tblpaymentdebtordtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strGuest`;";	
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblreceiptdebtordtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(20) NOT NULL AFTER `strGuest`;";	
+		funExecuteWebBooksQuery(sql);
+		
+		sql="CREATE TABLE `tblemployeeopeningbalance` (\r\n" + 
+				"	`strClientCode` VARCHAR(20) NOT NULL,\r\n" + 
+				"	`strEmployeeCode` VARCHAR(255) NOT NULL,\r\n" + 
+				"	`dblOpeningbal` VARCHAR(255) NULL DEFAULT NULL,\r\n" + 
+				"	`strAccountCode` VARCHAR(255) NULL DEFAULT NULL,\r\n" + 
+				"	`strAccountName` VARCHAR(255) NULL DEFAULT NULL,\r\n" + 
+				"	`strCrDr` VARCHAR(10) NULL DEFAULT NULL\r\n" + 
+				")\r\n" + 
+				"COLLATE='latin1_swedish_ci'\r\n" + 
+				"ENGINE=InnoDB\r\n" + 
+				";\r\n" + 
+				"";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblemployeemaster` ALTER `dteCreatedDate` DROP DEFAULT,ALTER `dteLastModified` DROP DEFAULT;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblemployeemaster` "
+			+ "CHANGE COLUMN `dteCreatedDate` `dteCreatedDate` DATETIME NOT NULL AFTER `strEmployeeCode`,"
+			+ "CHANGE COLUMN `dteLastModified` `dteLastModified` DATETIME NOT NULL AFTER `dteCreatedDate`,"
+			+ "ADD COLUMN `strPropertyCode` VARCHAR(10) NOT NULL AFTER `strUserModified`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblacmaster` ADD COLUMN `strCrDr` VARCHAR(5) NOT NULL DEFAULT '' AFTER `strEmployeeCode`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tbljvdtl` CHANGE COLUMN `strOneLine` `strOneLine` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strNarration` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblreceipthd` ADD COLUMN `strChequeClearence` VARCHAR(5) NOT NULL DEFAULT '' AFTER `intOnHold`; ";
+		funExecuteWebBooksQuery(sql);
+
+		sql="ALTER TABLE `tblreceipthd` DROP COLUMN `strChequeClearence`; ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblsundarydebtormaster` ADD COLUMN `dblConversion` DOUBLE NOT NULL DEFAULT '1' AFTER `strAccountCode`;";;
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblsundarycreditormaster` ADD COLUMN `dblConversion` DOUBLE NOT NULL DEFAULT '1' AFTER `strAccountCode`;";
+		funExecuteWebBooksQuery(sql);
+
+		
+		sql="ALTER TABLE `tblpaymenthd` ADD COLUMN `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strPropertyCode` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblpaymenthd` ADD COLUMN `dblConversion` DECIMAL(18,4) NOT NULL DEFAULT '1.0' AFTER `strCurrency` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblreceipthd` ADD COLUMN `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `intOnHold` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblreceipthd` ADD COLUMN `dblConversion` DECIMAL(18,4) NOT NULL DEFAULT '1.0' AFTER `strCurrency` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tbljvhd` ADD COLUMN `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strSourceDocNo`,"
+				+ "ADD COLUMN `dblConversion` DECIMAL(18,4) NOT NULL DEFAULT '1.0' AFTER `strCurrency`";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblauditdebtordtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(15) NOT NULL AFTER `strGuest` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblauditdtl` CHANGE COLUMN `strAccountCode` `strAccountCode` VARCHAR(15) NOT NULL AFTER `strTransNo` ";
+		funExecuteWebBooksQuery(sql);
+		
+
+	    sql ="update tblreceipthd set strCurrency='' where strCurrency is null ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql = "ALTER TABLE `tblreceipthd` CHANGE COLUMN `strCurrency` `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `dblConversion` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql ="update tblpaymenthd set strCurrency='' where strCurrency is null ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql = "ALTER TABLE `tblpaymenthd` CHANGE COLUMN `strCurrency` `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `dblConversion` ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql ="update tbljvhd set strCurrency='' where strCurrency is null ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql = "ALTER TABLE `tbljvhd` CHANGE COLUMN `strCurrency` `strCurrency` VARCHAR(10) NOT NULL DEFAULT '' AFTER `dblConversion` ";
+		funExecuteWebBooksQuery(sql);
+
+		sql="ALTER TABLE `tblledgersummary` ADD COLUMN `strDebtorName` VARCHAR(50) NOT NULL AFTER `strUserCode`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblledgersummary` CHANGE COLUMN `strDebtorName` `strDebtorName` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strUserCode`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblsundarydebtormaster` ADD COLUMN `strOperational` VARCHAR(3) NOT NULL DEFAULT '' AFTER `dblConversion`;";;
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblsundarycreditormaster` ADD COLUMN `strOperational` VARCHAR(3) NOT NULL DEFAULT '' AFTER `dblConversion`;";;
+		funExecuteWebBooksQuery(sql);
+
+		sql="update tblsundarycreditormaster set strOperational='Yes' where strOperational=''";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="update tblsundarydebtormaster set strOperational='Yes' where strOperational=''";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblacmaster` "
+		+" CHANGE COLUMN `intOpeningBal` `intOpeningBal` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strChequeNo`;" ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblacmaster` DROP COLUMN `dblOpeningBal`";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql="update tblreceipthd a set a.dblConversion=1.0 where a.dblConversion=0.0;";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql="update tblpaymenthd a set a.dblConversion=1.0 where a.dblConversion=0.0;";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql="update tbljvhd a set a.dblConversion=1.0 where a.dblConversion=0.0;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql=" ALTER TABLE `tblledgersummary` "
+		   +" CHANGE COLUMN `strBalCrDr` `strBalCrDr` VARCHAR(255) NOT NULL DEFAULT '' AFTER `dteBillDate`, "
+		   +" DROP PRIMARY KEY, "
+		   +" ADD PRIMARY KEY (`strClientCode`, `strVoucherNo`, `strBalCrDr`);";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql=" ALTER TABLE `tblpropertysetup` "
+		  +" ADD COLUMN `strStockInHandAccCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strPropertyCode`, "
+		  +" ADD COLUMN `strStockInHandAccName` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strStockInHandAccCode`, "
+		  +" ADD COLUMN `strClosingCode` VARCHAR(10) NOT NULL DEFAULT '' AFTER `strStockInHandAccName`, "
+		  +" ADD COLUMN `strClosingName` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strClosingCode`" ;
+		funExecuteWebBooksQuery(sql);
+		
+		sql=" ALTER TABLE `tbluserdefinedreporthd` "
+				  + " CHANGE COLUMN `dteUserDefDate` `dteUserDefDate` VARCHAR(50) NOT NULL AFTER `strReportName`;";
+		funExecuteWebBooksQuery(sql);
+
+		sql="ALTER TABLE `tblacmaster` "
+			+" ADD COLUMN `intPrevYearBal` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strCrDr`, "
+			+" ADD COLUMN `strPrevCrDr` VARCHAR(255) NOT NULL DEFAULT '' AFTER `intPrevYearBal`; ";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblacmaster` CHANGE COLUMN `strGroupCode` `strSubGroupCode` VARCHAR(50) NOT NULL DEFAULT '' AFTER `strDebtor`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="CREATE TABLE IF NOT EXISTS  `tblsubgroupmaster` (" 
+				+"`intSGCode` BIGINT(20) NOT NULL AUTO_INCREMENT,"
+				+"`strSubGroupCode` VARCHAR(50) NOT NULL,"
+				+"`strSubGroupName` VARCHAR(50) NOT NULL,"
+				+"`strGroupCode` VARCHAR(20) NOT NULL,"
+				+"`strUnderSubGroup` VARCHAR(50) NOT NULL DEFAULT '',"
+				+"`strUserCreated` VARCHAR(20) NOT NULL DEFAULT '',"
+				+"`strUserModified` VARCHAR(20) NOT NULL DEFAULT '',"
+				+"`dteCreatedDate` DATETIME NOT NULL,"
+				+"`dteLastModified` DATETIME NOT NULL,"
+				+"`strPropertyCode` VARCHAR(20) NOT NULL DEFAULT '',"
+				+"`strClientCode` VARCHAR(10) NOT NULL,"
+				+"PRIMARY KEY (`strSubGroupCode`, `strClientCode`),"
+				+"INDEX `intSGCode` (`intSGCode`)"
+			+")"
+			+"COLLATE='latin1_swedish_ci'"
+			+"ENGINE=InnoDB"
+			+"AUTO_INCREMENT=72"
+			+";";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblcurrentaccountbal` CHANGE COLUMN `strTransecType` `strTransecType` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strPropertyCode`;";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblcurrentaccountbal` DROP PRIMARY KEY, ADD PRIMARY KEY (`strAccountCode`, `strClientCode`, `strTransecType`);";
+		funExecuteWebBooksQuery(sql);
+		
+		sql="ALTER TABLE `tblledgersummary` CHANGE COLUMN `strNarration` `strNarration` VARCHAR(500) NULL DEFAULT NULL AFTER `strChequeBillNo`;";
+		funExecuteWebBooksQuery(sql);
+		
+		
+		sql = " INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`) VALUES "
+				+ " ('frmSundryCreditorBill', 'Sundry Creditor Bill', 'Transaction', '1', 'T', '1', '1', '12', 'default.png', '5', '1', '1', '1', 'NO', '1', 'frmSundryCreditorBill.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCreditorsOutStandingReport', 'Creditors Out Standing Report', 'Reports', '6', 'R', '6', '6', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmCreditorsOutStandingReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+ " ('frmDebitorOutStandingReport', 'Debitor Out Standing Report', 'Reports', '6', 'R', '7', '7', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO',  'frmDebitorOutStandingReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+//				+ " ('frmDebtorOutStandingList', 'Debtor OutStanding List', 'Reports', '6', 'R', '8', '8', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmDebtorOutStandingList.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+ " ('frmTrialBalanceReport', 'Trial Balance Report', 'Reports', '6', 'R', '8', '8', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmTrialBalanceReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCashBook', 'Cash Book', 'Reports', '6', 'R', '9', '9', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO',  'frmCashBook.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+ " ('frmTaxRegister', 'Tax Register', 'Reports', '6', 'R', '9', '9', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmTaxRegister.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmARSecurityShell', 'Security Shell', 'Master', 7, 'M', 12, 12, '1', 'Security-Shell.png', '5', 1, '1', '1', 'NO', 'YES', 'frmARSecurityShell.html' , NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCreditorLegder', 'Creditor Ledger Tool', 'Tools', 1, 'L', 2, 2, '12', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmCreditorLedger.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmSundryCreditorMaster', 'Sundry Creditor Master', 'Master', 12, 'M', 12, 12, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmSundryCreditorMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmCreditorTrialBalanceReport', 'Creditor Trial Balance', 'Reports', 6, 'R', 73, 8, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmCreditorTrialBalanceReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmGeneralLedger', 'General Ledger Tool', 'Tools', 1, 'L', 2, 3, '12', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmGeneralLedger.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmDebtorTrialBalanceReport', 'Debtor Trial Balance', 'Reports', 6, 'R', 74, 9, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmDebtorTrialBalanceReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+"  ('frmEmployeeMaster', 'Employee Master', 'Master', 13, 'M', 13, 13, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmEmployeeMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		        +"  ('frmJVBookReport', 'JV Book Report', 'Reports', 6, 'R', 71, 13, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmJVBookReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		        +"  ('frmIncomeStatement', 'Income Statement', 'Reports', '6', 'R', '1', '1', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmIncomeStatement.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		        +"  ('frmBalanceSheet', 'Balance Sheet', 'Reports', '6', 'R', '1', '1', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmBalanceSheet.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+		        + " ('frmEmployeeLedger', 'Employee Ledger Tool', 'Tools', '1', 'L', '1', '1', '13', 'default.png', '5', '1', '1', '1', 'NO', '1', 'frmEmployeeLedger.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		        + " ('frmTaxReportDayWise', 'Tax Report Day Wise', 'Reports', 6, 'R', 75, 75, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmTaxReportDayWise.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+		        + " ('frmBankBalanceReport', 'Bank Balance Report', 'Reports', '6', 'R', '14', '14', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmBankBalanceReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ " ('frmEmployeeTrailBalanceReport', 'Employee Trail Balance Report', 'Reports', 6, 'R', 76, 76, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmEmployeeTrailBalanceReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ " ('frmChartOfAccountReport', 'Chart Of Account', 'Reports', 6, 'R', 77, 77, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmChartOfAccountReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+ " ('frmDebtorTrailBalanceFlash', 'Debtor Trial Balance flash', 'Tools', 1, 'L', 2, 4, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmDebtorTrailBalanceFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+				+"  ('frmChequeIssued', 'Cheque Issued', 'Reports', 6, 'R', 70, 2, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmChequeIssued.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+" ('frmChequeReceived', 'Cheque Received', 'Reports', 6, 'R', 70, 2, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmChequeReceived.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBankReconciliation', 'Bank Reconciliation', 'Transaction', 1, 'T', 1, 2, '13', 'default.png', '5', '1', '1', '1', 'NO', '1', 'frmBankReconciliation.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBankReconciliationReport', 'Bank Reconciliation Report', 'Reports', '6', 'R', '9', '9', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO',  'frmBankReconciliationReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+"  ('frmCreditorTrailBalanceFlash', 'Creditor Trail Balance Flash', 'Tools', 1, 'L', 3, 5, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmCreditorTrailBalanceFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+     		    + " ('frmTrailBalanceFlash', 'Trial Balance flash', 'Tools', 1, 'L', 6, 6, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmTrailBalanceFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmBankBook', 'Bank Book', 'Reports', '6', 'R', '10', '10', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO',  'frmBankBook.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+                +"  ('frmUserDefineReport', 'User Defined Report', 'Master', '12', 'M', '20', '20', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO','frmUserDefineReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "	
+				+"  ('frmDebtorAgeingReport', 'Debtor Ageing Report', 'Reports', '6', 'R', '74', '74', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmDebtorAgeingReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+"  ('frmCreditorAgeingReport', 'Creditor Ageing Report', 'Reports', '6', 'R', '74', '74', '1', 'default.png', '5', '1', '1', '1', 'NO', 'NO', 'frmCreditorAgeingReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ,"
+				+ " ('frmUserDefineReportProcessing', 'User Define Report Processing', 'Processing', 3, 'P', 3, 3, '1', 'default.png', '5', 1, '1', '1', 'YES', 'NO', 'frmUserDefineReportProcessing.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL), "
+				+ " ('frmWebBooksStructureUpdate', 'Structure Update', 'Tools', 1, 'L', 6, 6, '1', 'defaults.png', '5', 1, '1', '1', 'NO', 'NO', 'frmWebBooksStructureUpdate.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ";
+		funExecuteQuery(sql);
+		
+		sql="INSERT INTO `tbltreemast` (`strFormName`, `strFormDesc`, `strRootNode`, `intRootIndex`, `strType`, `intFormKey`, `intFormNo`, `strImgSrc`, `strImgName`, `strModule`, `strTemp`, `strActFile`, `strHelpFile`, `strProcessForm`, `strAutorisationForm`, `strRequestMapping`, `strAdd`, `strAuthorise`, `strDelete`, `strDeliveryNote`, `strDirect`, `strEdit`, `strGRN`, `strGrant`, `strMinimumLevel`, `strOpeningStock`, `strPrint`, `strProductionOrder`, `strProject`, `strPurchaseIndent`, `strPurchaseOrder`, `strPurchaseReturn`, `strRateContractor`, `strRequisition`, `strSalesOrder`, `strSalesProjection`, `strSalesReturn`, `strServiceOrder`, `strSubContractorGRN`, `strView`, `strWorkOrder`, `strAuditForm`, `strMIS`, `strInvoice`, `strDeliverySchedule`, `strFormAccessYN`) VALUES "
+				+ " ('frmACSubGroupMaster', 'Sub Group Master', 'Master', 4, 'M', 5, 5, '1', 'default.png', '5', 1, '1', '1', 'NO', 'NO', 'frmACSubGroupMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y')";
+		funExecuteQuery(sql);
+		/*----------------WebBook Forms End---------------------------*/
+
+	}
+	
+	@Override
+	public void funClearWebBooksTransaction(String clientCode, String[] str) {
+		for (int i = 0; i < str.length; i++) {
+			String sql = "";
+			switch (str[i]) {
+			case "JV Entry": {
+				sql = "truncate table tbljvhd ";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tbljvdtl ";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tbljvdebtordtl ";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Payment": {
+				sql = "truncate table tblpaymenthd ";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tblpaymentdtl ";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tblpaymentdebtordtl ";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tblpaymentgrndtl ";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tblpaymentscbilldtl ";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Receipt": {
+				sql = "truncate table tblreceipthd ";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tblreceiptdtl ";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tblreceiptdebtordtl ";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tblreceiptinvdtl ";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			case "Sundry Creditor Bill": {
+				sql = "truncate table tblscbillhd ";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tblscbilldtl ";
+				funExecuteWebBooksQuery(sql);
+				sql = "truncate table tblscbillgrndtl ";
+				funExecuteWebBooksQuery(sql);
+				break;
+			}
+			
+			}
+		}
+	}
+}

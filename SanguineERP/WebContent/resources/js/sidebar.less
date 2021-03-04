@@ -1,0 +1,72 @@
+@import "./main.less";
+
+@sidebar-width: 100px;
+
+.app-sidebar {
+  position: fixed;
+  width: @sidebar-width;
+  height: calc(100vh - @header-height);
+  box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.05);
+  background-color: @primary-background-color;
+  z-index: 1;
+  .side-menu {
+    text-align: center;
+
+    li {
+      color: @secondary-text-color;
+      font-size: @primary-font-size - 3;
+      color: @secondary-text-color;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(100, 103, 119, 0.1);
+      cursor: pointer;
+
+      .link {
+        display: block;
+        padding: 11px;
+        border-left: 4px solid transparent;
+
+      }
+      .submenu {
+        position: absolute;
+        z-index: 15;
+        background-color: @primary-background-color;
+        width: 200px;
+        box-shadow: 3px 3px 4px 0 rgba(0,0,0,0.05);
+        left: 101px;
+        top: 0;
+        display: none;
+        a {
+          display: block;
+          padding: 10px 15px;
+          font-size: @primary-font-size;
+          color: @primary-text-color;
+          text-align: left;
+          &:hover {
+            background: #ddd;
+          }
+        }
+      }
+
+      &.active-tab, &:hover {
+        color: @app-active-color;
+        .link {
+          border-left: 4px solid @app-active-color;
+        }
+        
+      }
+      &:hover {
+        .submenu {
+          display: block;
+        }
+      }
+
+      i {
+        font-size: 24px;
+        &.rotate {
+          transform: rotate(180deg);
+         display: inline-block;
+        }
+      }
+    }
+  }
+}

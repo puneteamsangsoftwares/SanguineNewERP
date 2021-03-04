@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="http://java.sun.com/xml/ns/javaee" 
+ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+  http://java.sun.com/xml/ns/javaee/web-app_3_1.xsd" 
+  metadata-complete="true" version="3.1">
+  <mime-mapping>
+    <extension>ico</extension>
+    <mime-type>image/x-icon</mime-type>
+  </mime-mapping>
+  <servlet>
+    <servlet-name>sanguineerp</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>/WEB-INF/config/sanguineerp-servlet.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>/WEB-INF/classes/resources/log4j-myapp.properties</param-value>
+  </context-param>
+  <context-param>
+    <param-name>webAppRootKey1</param-name>
+    <param-value>myWebapp-instance-root</param-value>
+  </context-param>
+  <servlet-mapping>
+    <servlet-name>sanguineerp</servlet-name>
+    <url-pattern>*.html</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+  <session-config>
+    <session-timeout>100</session-timeout>
+  </session-config>
+  
+ 
+<!--  <error-page>
+    <location>/error</location>
+</error-page> -->
+
+<error-page>
+	<error-code>404</error-code>
+	<location>/WEB-INF/jsp/frmError.jsp</location>
+  </error-page>
+
+</web-app>

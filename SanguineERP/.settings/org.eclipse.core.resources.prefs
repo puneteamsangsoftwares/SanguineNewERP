@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//WebContent/WEB-INF/jsp/webPMS/reports/rptFolioPrinting.jrxml=UTF-8
+encoding//WebContent/WEB-INF/reports/rptBillWisePurchaseRegisterReport.jrxml=UTF-8
+encoding//WebContent/WEB-INF/reports/rptPurchaseIndentSlip.jrxml=UTF-8
+encoding//WebContent/WEB-INF/reports/webpms/rptBillPrinting.jrxml=UTF-8
+encoding//WebContent/WEB-INF/reports/webpms/rptBillPrintingFormat1.jrxml=UTF-8
+encoding//WebContent/WEB-INF/reports/webpms/rptChangedRoomTypeReport.jrxml=UTF-8
+encoding//WebContent/WEB-INF/reports/webpms/rptCheckInSlip.jrxml=UTF-8
+encoding//WebContent/WEB-INF/reports/webpms/rptFolioPrinting.jrxml=UTF-8
+encoding//WebContent/WEB-INF/reports/webpms/rptRefundRecipt.jrxml=UTF-8
+encoding//WebContent/WEB-INF/reports/webpms/rptReservationPaymentRecipt.jrxml=UTF-8

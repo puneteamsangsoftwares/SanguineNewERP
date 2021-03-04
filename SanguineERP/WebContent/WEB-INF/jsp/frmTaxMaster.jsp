@@ -1,0 +1,1146 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="s"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8"/>
+	
+<style>
+input[type=number]{
+padding:0px;
+
+}
+</style>	
+<title>TAX MASTER</title>
+	
+	<script type="text/javascript">
+	$(document).ready(function(){
+		 resetForms('taxForm');
+		    $("#txtTaxDesc").focus();	
+	});
+	
+	$("#chkBill").click(function ()
+			{
+			    $(".suppCheckBoxClass").prop('checked', $(this).prop('checked'));
+			});
+	</script>
+	<script type="text/javascript">
+	
+	//Initialize tab Index or which tab is Active
+	$(document).ready(function() 
+			{		
+				$(".tab_content").hide();
+				$(".tab_content:first").show();
+		
+				$("ul.tabs li").click(function() {
+					$("ul.tabs li").removeClass("active");
+					$(this).addClass("active");
+					$(".tab_content").hide();
+					var activeTab = $(this).attr("data-state");
+					$("#" + activeTab).fadeIn();
+				});
+				
+				$(document).ajaxStart(function(){
+				    $("#wait").css("display","block");
+				});
+				$(document).ajaxComplete(function(){
+				   	$("#wait").css("display","none");
+				});
+				
+				var propCode='<%=session.getAttribute("propertyCode").toString()%>';
+				var propertyName='<%=session.getAttribute("propertyName").toString()%>';
+				
+				$( "#lblPropName" ).text(propertyName);
+				$( "#txtPropCode" ).val(propCode);
+				
+				funLoadSettlement();
+			});
+	
+	
+	
+		var fieldName;
+		var clickCount =0.0;	
+		function funCallFormAction(actionName,object) 
+			{
+				
+				if ($("#txtTaxDesc").val()=="") 
+				    {
+					 alert('Enter Tax Desc');
+					 $("#txtTaxDesc").focus();
+					 return false;  
+				   
+				}
+			if(clickCount==0){
+				clickCount=clickCount+1;
+			}
+				else
+				{
+					return false;
+				}
+				return true; 
+			}
+		$(function() 
+		{
+		 	$( "#txtDtFromDate" ).datepicker({ dateFormat: 'dd-mm-yy' });
+		 	$( "#txtDtToDate" ).datepicker({ dateFormat: 'dd-mm-yy' });
+		 				    
+			$('a#baseUrl').click(function() 
+			{
+				if($("#txtTaxCode").val().trim()=="")
+				{
+					alert("Please Select tax Code");
+					return false;
+				}
+ 
+				 window.open('attachDoc.html?transName=frmTaxMaster.jsp&formName=Tax Master&code='+$('#txtTaxCode').val(),"mywindow","directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=600,left=400px");
+              });
+			
+			$("#btnSubmit").click(function()
+			{
+				
+				if (!fun_isDate($("#txtDtFromDate").val())) {
+					alert('Invalid Date');
+					$("#txtDtFromDate").focus();
+					return false;
+				}
+				
+				if (!fun_isDate($("#txtDtToDate").val())) {
+					alert('Invalid Date');
+					$("#txtDtToDate").focus();
+					return false;
+				}
+				
+				var fromDate=$("#txtDtFromDate").val();
+				var toDate=$("#txtDtToDate").val();
+				if(funCompareDate(fromDate,toDate)==0)
+				{
+					alert("Invalid From and To Date");
+					return false;
+				}
+			});
+			
+			var message='';
+			<%if (session.getAttribute("success") != null) {
+				            if(session.getAttribute("successMessage") != null){%>
+				            message='<%=session.getAttribute("successMessage").toString()%>';
+				            <%
+				            session.removeAttribute("successMessage");
+				            }
+							boolean test = ((Boolean) session.getAttribute("success")).booleanValue();
+							session.removeAttribute("success");
+							if (test) {
+							%>	
+				alert("Data Save successfully\n\n"+message);
+			<%
+			}}%>
+	 	});
+	
+		
+	 	function funResetFields()
+		{
+			$("#txtTaxDesc").focus();
+			$("#chkTaxRounded").attr('checked', false);
+			$("#chkTaxOnTax").attr('checked', false);
+			$("#chkTaxOnST").attr('checked', false);
+			$("#chkExcisable").attr('checked',false);
+			$("#txtExternalCode").val('');
+	    }		
+	 	
+		 
+		function funHelp(transactionName)
+		{
+			fieldName=transactionName;
+	    	 window.open("searchform.html?formname="+transactionName+"&searchText=","","dialogHeight:600px;dialogWidth:600px;dialogLeft:400px;")
+	    }
+		
+		
+		function funSetTax(code)
+		{
+				$.ajax({
+						type: "GET",
+				        url: getContextPath()+"/loadTaxMasterData.html?taxCode="+code,
+				        dataType: "json",
+				        success: function(response)
+				        {
+				        	funRemRows();
+				        	if('Invalid Code' == response.strTaxCode){
+				        		alert("Invalid tax Code");
+				        		$("#txtTaxCode").val('');
+				        		$("#txtTaxCode").focus();
+				        	}else{
+				        		$("#txtTaxCode").val(response.strTaxCode);
+					        	$("#txtTaxDesc").val(response.strTaxDesc);
+					        	$("#txtTaxPer").val(response.dblPercent);
+					        	$("#txtTaxAmt").val(response.dblAmount);
+					        	$("#cmbTaxOnSP").val(response.strTaxOnSP);
+					        	$("#cmbTaxOnGD").val(response.strTaxOnGD);
+					        	$("#cmbtaxType").val(response.strTaxType);
+					        	$("#cmbTaxCalType").val(response.strTaxCalculation);
+					        	$("#cmbTaxIndicator").val(response.strTaxIndicator);
+					        	$("#cmbApplOn").val(response.strApplOn);
+					        	$("#txtPropCode").val(response.strPropertyCode);
+					        	$("#cmbPartyInd").val(response.strPartyIndicator);
+					        	$("#txtDtFromDate").val(response.dtValidFrom);
+					        	$("#txtDtToDate").val(response.dtValidTo);
+					        	$("#cmbShortName").val(response.strShortName);
+					        	$("#txtGSTNo").val(response.strGSTNo);
+					        	$("#txtExternalCode").val(response.strExternalCode);
+					        	
+					        	if(response.strTaxRounded=='Y')
+					        	{
+					        		$("#chkTaxRounded").attr('checked', true);
+					        	}
+					        	else
+					        	{
+					        		$("#chkTaxRounded").attr('unchecked', false);
+					        	}
+					        	
+					        	if(response.strTaxOnTax=='Y')
+					        	{
+					        		$("#chkTaxOnTax").attr('checked', true);
+					        	}
+					        	else
+					        	{
+					        		$("#chkTaxOnTax").attr('checked', false);
+					        	}
+					        	
+					        	if(response.strTaxOnST=='Y')
+					        	{
+					        		$("#chkTaxOnST").attr('checked', true);
+					        	}
+					        	else
+					        	{
+					        		$("#chkTaxOnST").attr('checked', false);
+					        	}
+					        	
+					        	if(response.strExcisable=='Y')
+					        	{
+					        		$("#chkExcisable").attr('checked', true);
+					        	}
+					        	else
+					        	{
+					        		$("#chkExcisable").attr('checked', false);
+					        	}
+					        	if(response.strTaxOnSubGroup=='Y')
+					        	{
+					        		$("#chkTaxOnSubGroup").attr('checked', true);
+					        	}
+					        	else
+					        	{
+					        		$("#chkTaxOnSubGroup").attr('checked', false);
+					        	}
+					        	
+					        	if(response.strCalTaxOnMRP=='Y')
+					        	{
+					        		$("#chkCalTaxOnMRP").attr('checked', true);
+					        	}
+					        	else
+					        	{
+					        		$("#chkCalTaxOnMRP").attr('checked', false);
+					        	}
+					        	
+					        	$("#txtAbatement").val(response.dblAbatement);
+					        	
+					        	if(response.strTOTOnMRPItems=='Y')
+					        	{
+					        		$("#chkTOTForMRPItems").attr('checked', true);
+					        	}
+					        	else
+					        	{
+					        		$("#chkTOTOnMRPItems").attr('checked', false);
+					        	}
+					        	
+					        	if(response.strNotApplicableForComesa=='Y')
+									document.getElementById("chkNotApplicableForComesa").checked=true;
+						    	else
+						    		document.getElementById("chkNotApplicableForComesa").checked=false;
+					        	
+					        	if(response.strTaxReversal=='Y')
+									document.getElementById("chkTaxReversal").checked=true;
+						    	else
+						    		document.getElementById("chkTaxReversal").checked=false;
+					        	
+					        	if(response.strChargesPayable=='Y')
+									document.getElementById("chkChargesPayable").checked=true;
+						    	else
+						    		document.getElementById("chkChargesPayable").checked=false;
+					        	
+					        	funLoadTaxes(response.strTaxCode,response.strTaxOnTaxCode);
+					        	funFillGrid(response.listTaxSGDtl);
+					        	funLoadSettlementForTaxes(response.strTaxCode);
+					            //funFillSettlemnt(response.strTaxCode);
+				        	}
+						},
+						error: function(jqXHR, exception) {
+				            if (jqXHR.status === 0) {
+				                alert('Not connect.n Verify Network.');
+				            } else if (jqXHR.status == 404) {
+				                alert('Requested page not found. [404]');
+				            } else if (jqXHR.status == 500) {
+				                alert('Internal Server Error [500].');
+				            } else if (exception === 'parsererror') {
+				                alert('Requested JSON parse failed.');
+				            } else if (exception === 'timeout') {
+				                alert('Time out error.');
+				            } else if (exception === 'abort') {
+				                alert('Ajax request aborted.');
+				            } else {
+				                alert('Uncaught Error.n' + jqXHR.responseText);
+				            }		            
+				        }
+			      });
+			}
+		
+		
+		function funSetData(code)
+		{
+			switch (fieldName) 
+			{
+			   	case 'taxmaster':
+			      	funSetTax(code);
+			    	break;
+			    	
+			   	case 'subgroup':
+			    	funSetSubGroup(code);
+			        break;
+			}
+		}
+		
+		
+		
+		function funSetSubGroup(code)
+		{
+			$("#txtSubgroupCode").val(code);
+			 
+			$.ajax({
+			        type: "GET",
+			        url: getContextPath()+"/loadSubGroupMasterData.html?subGroupCode="+code,
+			        dataType: "json",
+			        success: function(response)
+			        {
+			        	if(response.strSGCode=='Invalid Code')
+			        	{
+			        		alert("Invalid SubGroup Code");
+			        		$("#txtSGCode").val('');
+			        		$("#txtSGCode").focus();
+			        	}
+			        	else
+			        	{
+				        	$("#lblSGName").text(response.strSGName);
+				        	$("#txtSGCode").val(response.strSGCode);
+		        		}
+					},
+			        error: function(e)
+			        {
+			        	alert("Invalid SubGroup Code");
+		        		$("#txtSGCode").val('');
+			        }
+		      });
+		}
+		
+		
+		
+		
+		function funChangeState()
+		{
+			var message='';
+			<%if (session.getAttribute("success") != null) {
+				            if(session.getAttribute("successMessage") != null){%>
+				            message='<%=session.getAttribute("successMessage").toString()%>';
+				            <%
+				            session.removeAttribute("successMessage");
+				            }
+							boolean test = ((Boolean) session.getAttribute("success")).booleanValue();
+							session.removeAttribute("success");
+							if (test) {
+							%>	
+				alert("Data Save successfully\n\n"+message);
+			<%
+			}}%>
+			
+			if($("#cmbtaxType").val()=='Percent')
+			{
+				$("#txtTaxAmt").attr("disabled", true);
+				$("#txtTaxPer").attr("disabled", false);
+			}
+			else if($("#cmbtaxType").val()=='Fixed Amount')
+			{
+				$("#txtTaxAmt").attr("disabled", false);
+				$("#txtTaxPer").attr("disabled", true);
+			}
+			$("#txtAttName").focus();
+			$("#lblParentAttName").text("");
+			
+			
+		}
+		
+		
+		$(function() 
+		{
+			$("#txtDtFromDate").datepicker({ dateFormat: 'dd-mm-yy' });
+			$("#txtDtFromDate" ).datepicker('setDate', 'today');
+			var dt = new Date();
+			var currentDateTime=dt.getDay()+"-"+(dt.getMonth()+1)+"-"+(dt.getYear()+1901);
+			
+			$("#txtDtToDate").datepicker({ dateFormat: 'dd-mm-yy' });
+			$("#txtDtToDate" ).datepicker('setDate', currentDateTime);
+		});
+		
+		
+		function funLoadTaxes(code,strTaxOnTaxCode)
+		{
+			$.ajax({
+				type: "GET",
+		        url: getContextPath()+"/loadTaxesData.html?taxCode="+code,
+		        dataType: "json",
+		        success: function(response)
+		        {
+		        	if('Invalid Code' == response.strTaxCode){
+		        		alert("Invalid tax Code");
+		        		$("#txtTaxCode").val('');
+		        		$("#txtTaxCode").focus();
+		        	}else{
+		        		$.each(response, function(i,item)
+		                {
+		        			funfillTaxesRow(response[i][0],response[i][1],strTaxOnTaxCode);
+						});
+		        	}
+				},
+				error: function(jqXHR, exception) {
+		            if (jqXHR.status === 0) {
+		                alert('Not connect.n Verify Network.');
+		            } else if (jqXHR.status == 404) {
+		                alert('Requested page not found. [404]');
+		            } else if (jqXHR.status == 500) {
+		                alert('Internal Server Error [500].');
+		            } else if (exception === 'parsererror') {
+		                alert('Requested JSON parse failed.');
+		            } else if (exception === 'timeout') {
+		                alert('Time out error.');
+		            } else if (exception === 'abort') {
+		                alert('Ajax request aborted.');
+		            } else {
+		                alert('Uncaught Error.n' + jqXHR.responseText);
+		            }
+		        }
+	      });
+		}
+		
+		
+		function funfillTaxesRow(TaxCode,TaxDes,strTaxOnTaxCode)
+		{
+			var taxesCode = strTaxOnTaxCode.split(",");
+			$('#hidTaxesCodes').val(strTaxOnTaxCode);
+			
+			var table = document.getElementById("tblTaxes");
+		    var rowCount = table.rows.length;
+		    var row = table.insertRow(rowCount);
+		    var cnt=0;
+		    var insertRowflg='Y';
+		    row.insertCell(0).innerHTML= "<input  readonly=\"readonly\" class=\"Box\" size=\"18%\" id=\"txtTaxCode."+(rowCount)+"\" value='"+TaxCode+"' />";
+		    row.insertCell(1).innerHTML= "<input  readonly=\"readonly\" class=\"Box\" style=\"margin-left:20%;\" size=\"35%\" id=\"txtTaxDesc."+(rowCount)+"\" value='"+TaxDes+"'/>";
+		    for(cnt=0;cnt<taxesCode.length;cnt++)
+			{
+				if(TaxCode==taxesCode[cnt])
+				{
+					row.insertCell(2).innerHTML= "<input id=\"cbGSel."+(rowCount)+"\" type=\"checkbox\" class=\"GCheckBoxClass\"  name=\"WOthemes\" checked=\"checked\" value='Tick' onclick=\"funTaxesChkOnClick()\"/>";
+					insertRowflg='N';
+					break;
+				}
+		    }
+			if(insertRowflg=='Y')
+			{
+				row.insertCell(2).innerHTML= "<input id=\"cbGSel."+(rowCount)+"\" type=\"checkbox\" class=\"GCheckBoxClass\"  name=\"WOthemes\" value='Tick' onclick=\"funTaxesChkOnClick()\"/>";
+			}
+		}
+		
+		
+		function funTaxesChkOnClick()
+		{
+			var table = document.getElementById("tblTaxes");
+		    var rowCount = table.rows.length;
+		    var strTaxesCode="";
+		    for(no=0;no<rowCount;no++)
+		    {
+		        if(document.all("cbGSel."+no).checked==true)
+				{
+		        	if(strTaxesCode.length>0)
+		        	{
+		        		strTaxesCode=strTaxesCode+","+document.all("txtTaxCode."+no).value;
+		        	}
+		        	else
+		        	{
+		        		strTaxesCode=document.all("txtTaxCode."+no).value;
+		        	}
+		        }
+		    }
+		    $('#hidTaxesCodes').val(strTaxesCode);
+		}
+		
+		
+		function funRemRows() {
+			var table = document.getElementById("tblTaxes");
+			var rowCount = table.rows.length;
+
+			while(rowCount>0)
+			{
+				table.deleteRow(0);
+				rowCount--;
+			}
+		}
+
+		
+		
+		
+		
+		function funLoadSubGroupMaster()
+		{
+			$.ajax({
+				type: "GET",
+		        url: getContextPath()+"/loadSubGroupData.html",
+		        dataType: "json",
+		        success: function(response)
+		        {
+		        	if('Invalid Code' == response.strSGCode){
+		        		alert("Invalid SubGroup Code");
+		        		$("#txtTaxCode").val('');
+		        		$("#txtTaxCode").focus();
+		        	}else{
+		        		$.each(response, function(i,item)
+		                {
+		        			funFillSubGroupTab(response[i][0],response[i][1]);
+						});
+		        	}
+				},
+				error: function(jqXHR, exception) {
+		            if (jqXHR.status === 0) {
+		                alert('Not connect.n Verify Network.');
+		            } else if (jqXHR.status == 404) {
+		                alert('Requested page not found. [404]');
+		            } else if (jqXHR.status == 500) {
+		                alert('Internal Server Error [500].');
+		            } else if (exception === 'parsererror') {
+		                alert('Requested JSON parse failed.');
+		            } else if (exception === 'timeout') {
+		                alert('Time out error.');
+		            } else if (exception === 'abort') {
+		                alert('Ajax request aborted.');
+		            } else {
+		                alert('Uncaught Error.n' + jqXHR.responseText);
+		            }
+		        }
+	      	});
+		}
+		
+		
+		
+		function funFillSubGroupTab(subGroupCode ,subGroupName)
+		{
+			var table = document.getElementById("tblSubGroup");
+		    var rowCount = table.rows.length;
+		    var row = table.insertRow(rowCount);
+		    var cnt=0;
+		    var insertRowflg='Y';
+		    row.insertCell(0).innerHTML= "<input  readonly=\"readonly\" class=\"Box\" size=\"18%\" id=\"txtTaxCode."+(rowCount)+"\" value='"+TaxCode+"' />";
+		    row.insertCell(1).innerHTML= "<input  readonly=\"readonly\" class=\"Box\" style=\"margin-left:20%;\" size=\"35%\" id=\"txtTaxDesc."+(rowCount)+"\" value='"+TaxDes+"'/>";
+		    for(cnt=0;cnt<taxesCode.length;cnt++)
+			{
+				if(TaxCode==taxesCode[cnt])
+				{
+					row.insertCell(2).innerHTML= "<input id=\"cbGSel."+(rowCount)+"\" type=\"checkbox\" class=\"GCheckBoxClass\"  name=\"WOthemes\" checked=\"checked\" value='Tick' onclick=\"funTaxesChkOnClick()\"/>";
+					insertRowflg='N';
+					break;
+				}
+		    }
+			if(insertRowflg=='Y')
+			{
+				row.insertCell(2).innerHTML= "<input id=\"cbGSel."+(rowCount)+"\" type=\"checkbox\" class=\"GCheckBoxClass\"  name=\"WOthemes\" value='Tick' onclick=\"funTaxesChkOnClick()\"/>";
+			}
+		}
+		
+		
+		
+		//Delete a All record from a grid
+		function funRemoveSGRows()
+		{
+			var table = document.getElementById("tblTaxSGDtl");
+			var rowCount = table.rows.length;
+			while(rowCount>0)
+			{
+				table.deleteRow(0);
+				rowCount--;
+			}
+		}
+		
+		
+		
+		function funFillGrid(resListSGDtlBean)
+		{
+			var taxCode=$("#txtTaxCode").val();
+			funRemoveSGRows();
+			$.each(resListSGDtlBean, function(i,item)
+			{
+				$.ajax({
+			        type: "GET",
+			        url: getContextPath()+"/loadSubGroupMasterData.html?subGroupCode="+resListSGDtlBean[i].strSGCode,
+			        dataType: "json",
+			        success: function(response)
+			        {
+			        	if(response.strSGCode=='Invalid Code')
+			        	{
+			        		alert("Invalid SubGroup Code");
+			        		$("#txtSGCode").val('');
+			        		$("#txtSGCode").focus();
+			        	}
+			        	else
+			        	{
+			        		funAddDetailsRow(taxCode,resListSGDtlBean[i].strSGCode,response.strSGName);
+		        		}
+					},
+			        error: function(e)
+			        {
+			        	alert("Invalid SubGroup Code");
+		        		$("#txtSGCode").val('');
+			        }
+		      });
+			});
+		}
+		
+		
+		
+	// Get Sub Group Code and Name fields and pass them to function to add into detail grid
+		function funFillSGGrid() 
+		{
+			var taxCode=$("#txtTaxCode").val();
+			var subGroupCode=$("#txtSGCode").val().trim();
+			var subGroupName=$("#lblSGName").text().trim();
+		    funAddDetailsRow(taxCode,subGroupCode,subGroupName);
+		}
+	
+	
+	//Function to add detail grid rows	
+		function funAddDetailsRow(taxCode,subGroupCode,subGroupName) 
+		{
+		    var table = document.getElementById("tblTaxSGDtl");
+		    var rowCount = table.rows.length;
+		    var row = table.insertRow(rowCount);
+
+		    row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"23%\" id=\"strTaxCode."+(rowCount)+"\" value='"+taxCode+"' />";
+		    row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"25%\" style=\"margin-left: -46%;\" id=\"strSGName."+(rowCount)+"\" value='"+subGroupName+"' />";
+		    row.insertCell(2).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"25%\" style=\"margin-left: -30%;\" name=\"listTaxSGDtl["+(rowCount)+"].strSGCode\" id=\"strSGCode."+(rowCount)+"\" value='"+subGroupCode+"' />";
+		    
+		    funResetSubGroupFields();
+		}
+		
+	
+	// Reset Sub Group Fields
+		function funResetSubGroupFields()
+		{
+			$("#txtSGCode").val('');
+			$("#txtSGCode").text('');
+		}
+		
+	//Load all settlement
+		 function funSetAllLocationAllPrpoerty() {
+				var searchUrl = "";
+				searchUrl = getContextPath()+ "/loadAllLocationForAllProperty.html";
+				$.ajax({
+					type : "GET",
+					url : searchUrl,
+					dataType : "json",
+					beforeSend : function(){
+						 $("#wait").css("display","block");
+				    },
+				    complete: function(){
+				    	 $("#wait").css("display","none");
+				    },
+					success : function(response) {
+						if (response.strLocCode == 'Invalid Code') {
+							alert("Invalid Location Code");
+							$("#txtFromLocCode").val('');
+							$("#lblFromLocName").text("");
+							$("#txtFromLocCode").focus();
+						} else
+						{
+							$.each(response, function(i,item)
+							 		{
+								funfillToLocationGrid(response[i].strLocCode,response[i].strLocName);
+									});
+							
+						}
+					},
+					error : function(jqXHR, exception) {
+						if (jqXHR.status === 0) {
+							alert('Not connect.n Verify Network.');
+						} else if (jqXHR.status == 404) {
+							alert('Requested page not found. [404]');
+						} else if (jqXHR.status == 500) {
+							alert('Internal Server Error [500].');
+						} else if (exception === 'parsererror') {
+							alert('Requested JSON parse failed.');
+						} else if (exception === 'timeout') {
+							alert('Time out error.');
+						} else if (exception === 'abort') {
+							alert('Ajax request aborted.');
+						} else {
+							alert('Uncaught Error.n' + jqXHR.responseText);
+						}
+					}
+				});
+			}
+		
+			
+			
+			function funLoadSettlement()
+			{
+				$('#tblSettlement tbody').empty();
+				 searchUrl=getContextPath()+"/loadCRMSettlementData.html";
+				$.ajax({
+			        type: "GET",
+			        url: searchUrl,
+				    dataType: "json",
+				    success: function(response)
+				    {
+				    $.each(response, function(key, value) {
+				    	funAddSettlemntRow(key,value)
+		 					});
+		 					
+		 				
+				    },
+				error: function(jqXHR, exception) {
+			            if (jqXHR.status === 0) {
+			                alert('Not connect.n Verify Network.');
+			            } else if (jqXHR.status == 404) {
+			                alert('Requested page not found. [404]');
+			            } else if (jqXHR.status == 500) {
+			                alert('Internal Server Error [500].');
+			            } else if (exception === 'parsererror') {
+			                alert('Requested JSON parse failed.');
+			            } else if (exception === 'timeout') {
+			                alert('Time out error.');
+			            } else if (exception === 'abort') {
+			                alert('Ajax request aborted.');
+			            } else {
+			                alert('Uncaught Error.n' + jqXHR.responseText);
+			            }
+			        }
+			    });
+			}
+			//Delete a All record from a grid
+			function funRemoveSelltementRows()
+			{
+				var table = document.getElementById("tblSettlement");
+				var rowCount = table.rows.length;
+				while(rowCount>0)
+				{
+					table.deleteRow(0);
+					rowCount--;
+				}
+			}
+		function funAddSettlemntRow(settlementCode,SettlementDesc)
+		{
+		    var table = document.getElementById("tblSettlement");
+		    var rowCount = table.rows.length;
+		    var row = table.insertRow(rowCount);
+	
+		    row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"23%\" name=\"listTaxSettlement["+(rowCount)+"].strSettlementCode\"  id=\"strSettlementCode."+(rowCount)+"\" value='"+settlementCode+"' />";
+		    row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"35%\" id=\"SettlementDesc."+(rowCount)+"\" value='"+SettlementDesc+"' />";
+		    row.insertCell(2).innerHTML= "<input id=\"cbApplicable."+(rowCount)+"\" name=\"listTaxSettlement["+(rowCount)+"].strApplicable\" type=\"checkbox\" class=\"ApplicableCheckBoxClass\"  checked=\"checked\"  value='"+settlementCode+"' />";
+		    
+		}
+		
+		function btnSubmit_Onclick()
+		{
+		var strSettleCode="";
+					 var no=1;
+					 $('input[name="strApplicable"]:checked').each(function() {
+						 if(strSettleCode.length>0)
+							 {
+							
+	// 						 document.getElementById("txtTaxCode."+no).value='';
+							 strSettleCode=strSettleCode+","+this.value;
+							 }
+							 else
+							 {
+								 strSettleCode=this.value;
+							 }
+						 no=no+1;
+						 
+						});
+					 $("#hidSettlementCode").val(strSettleCode);
+			    	document.forms["taxForm"].submit();
+		    } 
+		    
+		    function funFillSettlemnt(taxcode)
+		    {
+		    	$('#tblSettlement tbody').empty();
+				 searchUrl=getContextPath()+"/loadTaxSettlementData.html?taxCode="+taxcode;
+				$.ajax({
+			        type: "GET",
+			        url: searchUrl,
+				    dataType: "json",
+				    success: function(response)
+				    {
+				     
+				     $.each(response, function(i,item)
+						 		{
+				    	 funFillTaxSettlemnt(response[i][0],response[i][1],response[i][2]);
+								});
+						
+				    },
+				error: function(jqXHR, exception) {
+			            if (jqXHR.status === 0) {
+			                alert('Not connect.n Verify Network.');
+			            } else if (jqXHR.status == 404) {
+			                alert('Requested page not found. [404]');
+			            } else if (jqXHR.status == 500) {
+			                alert('Internal Server Error [500].');
+			            } else if (exception === 'parsererror') {
+			                alert('Requested JSON parse failed.');
+			            } else if (exception === 'timeout') {
+			                alert('Time out error.');
+			            } else if (exception === 'abort') {
+			                alert('Ajax request aborted.');
+			            } else {
+			                alert('Uncaught Error.n' + jqXHR.responseText);
+			            }
+			        }
+			    });
+		    	
+		    }
+		    
+		    function funFillTaxSettlemnt(settlementCode,SettlementDesc,strApplicable)
+			{
+			    var table = document.getElementById("tblSettlement");
+			    var rowCount = table.rows.length;
+			    var row = table.insertRow(rowCount);
+		
+			    row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"23%\" name=\"listTaxSettlement["+(rowCount)+"].strSettlementCode\"  id=\"strSettlementCode."+(rowCount)+"\" value='"+settlementCode+"' />";
+			    row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"35%\" id=\"SettlementDesc."+(rowCount)+"\" value='"+SettlementDesc+"' />";
+			    if(strApplicable=='Yes')
+			    {
+			    row.insertCell(2).innerHTML= "<input id=\"cbApplicable."+(rowCount)+"\" name=\"listTaxSettlement["+(rowCount)+"].strApplicable\" type=\"checkbox\" class=\"ApplicableCheckBoxClass\"  checked=\"checked\"  value='"+settlementCode+"' />";
+			    }else{
+			    row.insertCell(2).innerHTML= "<input id=\"cbApplicable."+(rowCount)+"\" name=\"listTaxSettlement["+(rowCount)+"].strApplicable\" type=\"checkbox\" class=\"ApplicableCheckBoxClass\"   value='"+settlementCode+"' />";	
+			    }
+			}
+		    
+		    
+		    function funLoadSettlementForTaxes(taxCode)
+			{
+			  
+				$.ajax({
+					type: "GET",
+			        url: getContextPath()+"/loadSettlementForTaxesData.html?taxCode="+taxCode,
+			        dataType: "json",
+			        success: function(response)
+			        {
+			        	    $('#tblSettlement tbody').empty();
+			        		$.each(response, function(i,item)
+			                {   
+			        			funFillTaxSettlemnt(response[i][0],response[i][1],response[i][2]);
+							});
+			        	
+					},
+					error: function(jqXHR, exception) {
+			            if (jqXHR.status === 0) {
+			                alert('Not connect.n Verify Network.');
+			            } else if (jqXHR.status == 404) {
+			                alert('Requested page not found. [404]');
+			            } else if (jqXHR.status == 500) {
+			                alert('Internal Server Error [500].');
+			            } else if (exception === 'parsererror') {
+			                alert('Requested JSON parse failed.');
+			            } else if (exception === 'timeout') {
+			                alert('Time out error.');
+			            } else if (exception === 'abort') {
+			                alert('Ajax request aborted.');
+			            } else {
+			                alert('Uncaught Error.n' + jqXHR.responseText);
+			            }
+			        }
+		    });
+			}
+			
+		    
+	</script>
+</head>
+
+<body onload="funChangeState();">
+	<div class="container">
+		<label id="formHeading">Tax Master</label>
+		<s:form name="taxForm" method="POST" action="saveTaxMaster.html?saddr=${urlHits}">
+		
+		<div id="tab_container" class="masterTable">
+			<ul class="tabs">
+				<li data-state="tab1" class="active">General</li>
+				<li data-state="tab2">Tax On Tax</li>
+				<li data-state="tab3">Tax On Subgroup</li>
+				<li data-state="tab4">Settlement</li>
+				<!-- <li data-state="tab4" style="width: 10%; padding-left: 55px">Settlement Wise Tax</li> -->
+			</ul>
+		
+			<div id="tab1" class="tab_content" style="margin-top: 45px;">
+				<div class="row masterTable">
+					<div class="col-md-2">
+						<label>TaxCode</label>
+				        <s:input id="txtTaxCode" name="txtTaxCode" path="strTaxCode" value=""  ondblclick="funHelp('taxmaster')" cssClass="searchTextBox" readOnly="true"/>
+				   </div>
+				   <div class="col-md-2">
+				   		<label>Description</label>
+				        <s:input type="text" id="txtTaxDesc" name="txtTaxDesc" cssStyle="text-transform: uppercase;" path="strTaxDesc" required="true" cssClass="BoxW124px" />
+				        <s:errors path="strTaxDesc"></s:errors>
+				    </div>
+				    <div class="col-md-2">   
+				       <label>Short Name</label>
+				       <s:select id="cmbShortName" name="cmbShortName" cssStyle="text-transform: uppercase; width:70%;" path="strShortName"> 
+				        	<option selected="selected" value=" "></option>
+					        <option value="CGST">CGST</option>
+					        <option value="SGST">SGST</option>
+					        <option value="IGST">IGST</option>
+					    </s:select>
+				        <s:errors path="strShortName"></s:errors>
+				     </div>
+				     <div class="col-md-2">
+				   			<label>Tax On S/P</label>
+					   		<s:select id="cmbTaxOnSP" path="strTaxOnSP" cssClass="BoxW124px" style="width:70%;">
+					    		<s:options items="${taxOnSPList}"/>
+					    	</s:select>
+					 </div>
+					  <div class="col-md-4"></div>
+					 <div class="col-md-2">
+					     <label>GST No</label>
+					   	 <s:input type="text" id="txtGSTNo" name="txtGSTNo" cssStyle="text-transform: uppercase;" path="strGSTNo"  cssClass="BoxW124px" />
+				        <s:errors path="strGSTNo"></s:errors>
+				     </div>
+				     <div class="col-md-2">
+					 	<label>Tax Type</label>
+					    <s:select id="cmbtaxType" path="strTaxType"  onchange="funChangeState();" style="width:80%;">
+						    <option selected="selected" value="Percent">Percent</option>
+					           <option value="Fixed Amount">Fixed Amount</option>
+				        </s:select>
+					 </div>
+					 <div class="col-md-2">
+					    <label>External Code</label>
+						<s:input id="txtExternalCode" name="txtExternalCode" path="strExternalCode"  autocomplete="off" cssClass="BoxW116px"/>
+						<s:errors path="strExternalCode"></s:errors>
+					</div>	  
+					<div class="col-md-2"> 	
+						<label>Percent</label>
+				      	<s:input type="number" max="100" step="0.01" id="txtTaxPer" name="txtTaxPer" path="dblPercent" required="true" style="width:70%;"/>
+				        <s:errors path="dblPercent"></s:errors>
+				    </div>
+				    <div class="col-md-4"></div>
+				   	<div class="col-md-2">				
+				   		<label>Amount</label>
+				       	<s:input type="number" step="0.01" id="txtTaxAmt" name="txtTaxAmt" path="dblAmount" style="width:80%;"/>
+				        <s:errors path="dblAmount"></s:errors>
+				    </div>
+				    <div class="col-md-2">
+				   		<label>Tax On G/D</label>
+					   	<s:select id="cmbTaxOnGD" path="strTaxOnGD" items="${taxOnGDList}" style="width:80%;"/>
+					</div>
+					 
+					<div class="col-md-2">
+						<label>Date Valid From</label>
+					    <s:input id="txtDtFromDate" name="txtDtFromDate" path="dtValidFrom" cssClass="calenderTextBox" style="width:80%;"/>
+					</div>
+					<div class="col-md-2">
+					  	<label>Date Valid To</label>
+					    <s:input id="txtDtToDate" name="txtDtToDate" path="dtValidTo"  cssClass="calenderTextBox" style="width:80%;"/>
+					</div>
+					<div class="col-md-4"></div>
+					<div class="col-md-2">
+						<label>Tax Indicator</label>
+					   <s:select id="cmbTaxIndicator" path="strTaxIndicator" items="${taxIndicatorList}" style="width:80%;" />
+					</div>
+					<div class="col-md-2">
+						<label>Party Indicator</label>
+					    <s:select id="cmbPartyInd" path="strPartyIndicator" items="${partyIndicatorList}"  style="width:80%;"/>
+					</div>
+					
+					<div class="col-md-2">   
+				      	<label>Not Applicable For Comesa Region</label>
+						<s:checkbox id="chkNotApplicableForComesa" path="strNotApplicableForComesa" value="Y"></s:checkbox>
+					</div>
+					<div class="col-md-2">
+						<label>Tax Rounded</label><br>
+			    		<s:checkbox element="li" id="chkTaxRounded" path="strTaxRounded" value="Yes" />
+					</div>
+						<div class="col-md-4"></div>
+					<div class="col-md-2">
+						<label>Property Code</label>
+					   <s:input id="txtPropCode" name="txtPropCode" path="strPropertyCode" cssClass="BoxW116px"/>
+					</div>
+					<div class="col-md-2">
+					    <label id="lblPropName" style="background-color:#dcdada94; width: 100%; height: 51%; margin-top: 26px; text-align: center;"></label>
+					</div>
+					<div class="col-md-2">
+						<label>Tax On SubTotal</label><br>
+					    <s:checkbox element="li" id="chkTaxOnST" path="strTaxOnST" value=""/>
+					</div>
+					<div class="col-md-2">
+						<label>Tax On Tax</label><br>
+					    <s:checkbox element="li" id="chkTaxOnTax" path="strTaxOnTax" value=""/>
+					</div>
+					<div class="col-md-4"></div>
+					<div class="col-md-2">
+						<label>Applicable On</label>
+					    <s:select id="cmbApplOn" path="strApplOn" items="${applicableOnList}" style="width:80%;"/>
+					</div>
+					<div class="col-md-2">
+						<label>Tax Calculation</label>
+					    <s:select id="cmbTaxCalType" path="strTaxCalculation" items="${taxCalList}"  style="width:80%;"/>
+					</div>
+					<div class="col-md-2">
+						<label>Excisable</label><br>
+					    <s:checkbox element="li" id="chkExcisable" path="strExcisable" value=""/>
+					</div>
+					<div class="col-md-2">
+						<label>Tax On Subgroup</label><br>
+					    <s:checkbox element="li" id="chkTaxOnSubGroup" path="strTaxOnSubGroup" value=""/>
+					</div>
+					<div class="col-md-4"></div>
+					<div class="col-md-2">
+						<label>Abatement %</label>
+				      	<s:input type="number" id="txtAbatement" name="txtAbatement" cssStyle="text-transform: uppercase; width:80%;" path="dblAbatement" required="true" />
+				        <s:errors path="dblAbatement"></s:errors>
+				    </div>
+				    <div class="col-md-2">
+						<label>Calculate Tax On MRP</label><br>
+					    <s:checkbox element="li" id="chkCalTaxOnMRP" path="strCalTaxOnMRP" value=""/>
+					</div>
+				    <div class="col-md-2">
+				    	<label>Calculate TOT for MRP Items</label><br>
+					    <s:checkbox element="li" id="chkTOTForMRPItems" path="strTOTOnMRPItems" value=""/>
+					</div>
+					<div class="col-md-2">
+						<label>Tax Reversal</label><br>
+					   	<s:checkbox element="li" id="chkTaxReversal" path="strTaxReversal" value="Y"/>
+					</div>
+						<div class="col-md-4"></div>
+					<div class="col-md-2">
+					    <label>Charges Payable</label><br>
+					    <s:checkbox element="li" id="chkChargesPayable" path="strChargesPayable" value="Y"/>
+					</div>
+				</div>
+			</div> 
+		
+		<div id="tab2" class="tab_content" style="margin-top: 45px;width:70%;">
+		<br>
+			<table class="masterTable" style="width:70%; background-color: #c0c0c0; ">
+				<tr>
+					<th style="width:35%;"><label>Tax Code</label></th>
+					<th style="width:48%;"><label >Tax Desc</label></th>
+					<th><label>Select</label></th>
+				</tr>
+			</table>
+				
+			<div style="background-color: #fbfafa; height: 250px; overflow-x: hidden; overflow-y: scroll; width: 70%;">
+				<table id="tblTaxes" style="width: 100%; border: #0F0; table-layout: fixed; overflow: scroll" class="transTablex col5-center">
+					<tbody>
+						<col style="width: 5%"><!-- col1   -->
+						<col style="width: 25%"><!-- col2   -->
+						<col style="width: 5%"><!-- col3   -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<div id="tab3" class="tab_content">
+			<div class="row transTable" style="overflow:hidden;">
+				<div class="col-md-2">
+					<label>Sub Group</label>
+					<input id="txtSGCode" ondblclick="funHelp('subgroup');" class="searchTextBox" />
+				</div>
+				<div class="col-md-2">
+					<label id="lblSGName"style="background-color:#dcdada94; width: 100%; height: 51%; margin-top: 26px; text-align: center;"></label>
+				</div>
+				<div class="col-md-2">
+					<input type="Button" value="Add" onclick="return funFillSGGrid()"  class="btn btn-primary center-block" style="color:#000; margin-top:20px;"/>
+				</div>
+			</div>
+				
+			<div class="dynamicTableContainer" style="height: 300px;width:600px;">
+				<table style="height: 28px; border: #0F0; width: 100%; font-size: 11px; font-weight: bold;">
+					<tr bgcolor="#c0c0c0">
+						<td style="width:20%;padding-left: 40px;">Tax</td>
+						<td style="width:20%;padding-left: 40px;">Sub Group Name</td>
+						<td style="width:20%;padding-left: 40px;">Sub Group Code</td>
+						<td style="width:5%;"></td>
+					</tr>
+				</table>
+			
+				<div style="background-color: #fbfafa; border: 1px solid #ccc; display: block; height: 250px; overflow-x: hidden; overflow-y: scroll; width:100%;">
+					<table id="tblTaxSGDtl"
+						style="width: 100%; border: #0F0; table-layout: fixed; overflow: scroll"
+						class="transTablex col8-center">
+						<tbody>
+							<col style="width: 210px;">
+							<col style="width: 140px;">
+							<col style="width: 140px;">
+							<col style="display:none;">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+			<div id="tab4" class="tab_content">
+			<br><br><br>
+				<div style="background-color: #fbfafa; border: 1px solid #ccc; display: block; height: 250px; width:60%; overflow-x: hidden; overflow-y: scroll; width: 60%;">
+					<table id="tblSettlement" style="width: 100%; border: #0F0; table-layout: fixed; overflow: scroll"
+						class="transTablex col8-center">
+						<tbody>
+							<col style="width:10%"/>
+							<col style="width:16%">					
+							<col style="width:5%">
+						</tbody>
+					</table>
+				</div>
+		  </div>
+		
+<!-- 			<div id="tab4" class="tab_content" style="height: 520px"> -->
+<!-- 			<br/> -->
+<!-- 			<br/> -->
+<!-- 							<table id="" class="masterTable" -->
+<!-- 								style="width: 100%; border-collapse: separate;"> -->
+<!-- 								<tbody> -->
+<!-- 									<tr bgcolor="#72BEFC"> -->
+<!-- 										<td width="15%"><input type="checkbox" checked="checked"  -->
+<!-- 										id="chkSettlement"/>Select</td> -->
+<!-- 										<td width="25%">Settlement Code</td> -->
+<!-- 										<td width="65%">Settlement Name</td> -->
+
+<!-- 									</tr> -->
+<!-- 								</tbody> -->
+<!-- 							</table> -->
+<!-- 							<table id="tblSettlement" class="masterTable" -->
+<!-- 								style="width: 100%; border-collapse: separate;"> -->
+
+<!-- 								<tr bgcolor="#72BEFC"> -->
+									
+
+<!-- 								</tr> -->
+<!-- 							</table> -->
+<!-- 				</div> -->
+			
+	
+		</div>
+		<div class="center" style="margin-right:45%;">
+				<a href="#"><button class="btn btn-primary center-block" id="btnSubmit" value="Submit" onclick="return funCallFormAction('submit',this);" 
+				>Submit</button></a>&nbsp;
+				<a href="#"><button class="btn btn-primary center-block"  value="reset" onclick="funResetFields()"
+				>Reset</button></a>
+		</div>
+		<s:input type="hidden" id="hidTaxesCodes" path="strTaxOnTaxCode"></s:input>
+		<s:input type="hidden" id="hidSettlementCode" path="strSettlementCode"></s:input>
+		
+		<br><br>
+	</s:form>
+</div>
+</body>
+</html>

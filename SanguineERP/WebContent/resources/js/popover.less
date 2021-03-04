@@ -1,0 +1,223 @@
+@import "./variables.less";
+
+.popup-details {
+  display: none;
+  position: fixed;
+  left: 100px;
+  top: 56px;
+  right: 0;
+  min-height: 100%;
+  z-index: 15;
+
+  .popup-backdrop {
+    background: rgba(0, 0, 0, 0.2);
+    height: 100%;
+    width: 100%;
+    position: absolute;
+
+    .popup-data {
+      width: 40%;
+      height: ~"calc(100% - 56px)";
+      right: 0;
+      position: absolute;
+      min-width: 420px;
+      background: @primary-background-color;
+      overflow-y: auto;
+
+      .cust-info-wrap {
+        background-color: rgba(66, 131, 252, 0.03);
+
+        .cust-name-img {
+          padding: 25px;
+
+          .profile-image {
+            float: left;
+            margin-right: 15px;
+
+            img {
+              width: 68px;
+              height: 68px;
+              border-radius: 50%;
+              border: 2px solid @app-active-color;
+            }
+            .close-icon {
+              font-size: 24px;
+              position: absolute;
+              right: 15px;
+              top: 21px;
+              cursor: pointer;
+            }
+          }
+
+          .display-name {
+            float: left;
+
+            .name {
+              font-size: @tertiary-font-size + 2;
+              color: @primary-text-color;
+              font-weight: bold;
+              position: relative;
+              top: -5px;
+            }
+
+            .room {
+              font-size: @secondary-font-size ;
+              color: @app-active-color;
+              padding: 5px 15px;
+              background-color: rgba(66, 131, 252, 0.1);
+              max-width: 95px;
+            }
+          }
+        }
+
+        .info-tabs {
+          ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            border-bottom: 2px solid rgba(100, 103, 119, 0.1);
+
+            li {
+              padding: 10px;
+              margin-left: 15px;
+              border-bottom: 2px solid transparent;
+
+              &.active {
+                color: #25AF70;
+                border-bottom: 2px solid #25AF70;
+                font-weight: 600
+              }
+            }
+          }
+
+          .checkout-tab-data {
+            background: @primary-background-color;
+
+            .checkout-grid {
+              padding: 5px;
+              border-bottom: 2px solid rgba(154, 157, 175, 0.1);
+
+              .grid-row {
+                display: flex;
+
+                .grid-data {
+                  flex: 1;
+                  padding: 15px 20px;
+                  display: flex;
+
+                  .picon {
+                    font-size: 24px;
+                    color: @app-active-color;
+                  }
+
+                  .data-info {
+                    margin-left: 10px;
+
+                    .attr {
+                      color: @tertiary-text-color;
+                      font-size: @primary-font-size;
+                      margin-bottom: 5px;
+                    }
+
+                    .value {
+                      font-size: @secondary-font-size;
+                      color: @primary-text-color;
+                    }
+                  }
+                }
+              }
+            }
+
+            .billing-wrap {
+              .heading {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px 25px;
+
+                .title {
+                  font-size: @tertiary-font-size;
+                  color: @primary-text-color;
+                  font-weight: bold;
+                }
+
+                .action {
+                  color: #25AF70;
+                  font-weight: bold;
+                  font-size: @secondary-font-size;
+                }
+              }
+            }
+
+            .billing-details {
+              margin: 0 25px;
+
+              .distribution {
+                border-top: 2px solid rgba(154, 157, 175, 0.1);
+                border-bottom: 2px solid rgba(154, 157, 175, 0.1);
+
+                .bill-row {
+                  margin-bottom: 15px;
+                  display: flex;
+                  justify-content: space-between;
+
+                  &:first-of-type {
+                    padding-top: 15px;
+                  }
+
+                  .label {
+                    font-size: @tertiary-font-size;
+                    color: @tertiary-text-color;
+
+                  }
+
+                  .cost {
+                    font-size: @tertiary-font-size;
+                    color: @primary-text-color;
+
+                  }
+                }
+              }
+
+              .bill-total {
+                display: flex;
+                justify-content: space-between;
+                padding: 15px 0;
+                border-top: 2px solid rgba(154, 157, 175, 0.1);
+
+                .label {
+                  font-size: @tertiary-font-size;
+                  color: @primary-text-color;
+                  font-weight: bold;
+                }
+
+                .cost {
+                  color: #25AF70;
+                  font-weight: bold;
+                  font-size: @tertiary-font-size;
+                }
+
+              }
+
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.cnfm-action {
+  text-align: right;
+  padding: 25px 0;
+  border-top: 4 px solid rgba(154,157,175,0.1);
+  button {
+    background-color:  @app-active-color;
+    color: @primary-background-color;
+    font-size: @primary-font-size;
+    width: 180px;
+    border-radius:  2px;
+    box-shadow: 0 1px 2px 0 #DFE4EB;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+}
