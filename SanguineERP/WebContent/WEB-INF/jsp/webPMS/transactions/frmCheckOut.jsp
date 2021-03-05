@@ -40,6 +40,29 @@
 				$(document).ajaxComplete(function(){
 				   	$("#wait").css("display","none");
 				});
+				
+				var pmsDate='<%=session.getAttribute("PMSDate").toString()%>';
+				var message='';
+				<%if (session.getAttribute("successForSplitBill") != null) {
+					            if(session.getAttribute("successMessageForSplitBill") != null){%>
+					            message='<%=session.getAttribute("successMessageForSplitBill").toString()%>';
+					            <%
+					            session.removeAttribute("successMessageForSplitBill");
+					            }
+								boolean test = ((Boolean) session.getAttribute("successForSplitBill")).booleanValue();
+								session.removeAttribute("successForSplitBill");
+								if (test) {
+								%>
+					           alert("Checkout is done successfully");
+					           var strSelectBill="";
+					           var splitAllBill=message.split("#");
+					           for(var k=0;k<splitAllBill.length;k++)
+				        	   {					        			        	
+						       	   window.open(getContextPath()+"/rptBillPrinting.html?fromDate="+pmsDate+"&toDate="+pmsDate+"&billNo="+splitAllBill[k]+"&strSelectBill="+strSelectBill);
+				        	   }					           
+				<%
+				}}%>
+				
 			}); 
 	function funValidateData()
 	{
@@ -124,7 +147,7 @@
 	
 	function funFillTableRevenueDtl(dataList)
 	{
-		 
+		$('#tblRoomRevenueDtl tbody > tr').remove();
 		 for(var i=0;i<dataList.length;i++ )
 	     {
 			 var table=document.getElementById("tblRoomRevenueDtl");
@@ -132,8 +155,8 @@
 			 var row=table.insertRow();
 			 var list=dataList[i];
 		 	 row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listCheckOutRevenueDtlBeans["+(rowCount)+"].strRevenueType\" id=\"strRevenueType."+(rowCount)+"\" value='"+list.strRevenueType+"' >";
-		     row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listCheckOutRevenueDtlBeans["+(rowCount)+"].dblAmount\" id=\"RevenuedblAmount."+(rowCount)+"\"  value='"+list.dblAmount+"' >";
-			 row.insertCell(2).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listCheckOutRevenueDtlBeans["+(rowCount)+"].strBillMergeNumber\" id=\"strBillMergeNumber."+(rowCount)+"\"  value='1' >";
+		     row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 96%;text-align: end;\" name=\"listCheckOutRevenueDtlBeans["+(rowCount)+"].dblAmount\" id=\"RevenuedblAmount."+(rowCount)+"\"  value='"+list.dblAmount+"' >";
+			 row.insertCell(2).innerHTML= "<input class=\"Box \"  style=\"padding-left: 5px;width: 68%;text-align: center;\" name=\"listCheckOutRevenueDtlBeans["+(rowCount)+"].strBillMergeNumber\" id=\"strBillMergeNumber."+(rowCount)+"\"  value='1' >";
 
 	     }
 				
@@ -656,15 +679,15 @@
 			<div id="tab2" class="tab_content" style="height: 360px">
 			<br> 
 			<br>			
-				<div class="dynamicTableContainer" style="height: 200px;">
-			<table style="height: 28px; border: #0F0; width: 100%;font-size:11px; font-weight: bold;">
+				<div class="dynamicTableContainer" style="height: 200px;width: 106%;border: 0px;overflow-x: hidden;">
+			<table style="height: 28px;border: #0F0;width: 62%;font-size:11px;font-weight: bold;">
 				<tr bgcolor="#c0c0c0" style="height: 24px;">
 					<!-- col1   -->
-					<td  style="width: 65px;" >Particular</td>
+					<td style="width: 209px;">Particular</td>
 					<!-- col1   -->
 					
 					<!-- col2   -->
-					<td  style=" width:85px;" align="center">Value</td>
+					<td style="width: 29px;" align="center">Value</td>
 					<!-- col2   -->
 					
 					<!-- col3   -->
@@ -672,44 +695,23 @@
 					<!-- col3   -->
 				</tr>
 			</table>
-			<div style="background-color: #fbfafa; border: 1px solid #ccc; display: block; height: 200px; margin: auto; overflow-x: hidden; overflow-y: scroll; width: 100%;">
+			<div style="background-color: #fbfafa;border: 1px solid #ccc;display: block;height: 200px;/* margin: auto; */overflow-x: hidden;overflow-y: scroll;width: 62%;">
 				<table id="tblRoomRevenueDtl" style="width: 100%; border: #0F0; table-layout: fixed; overflow: scroll" class="transTablex col9-center">
 					<tbody>
-						<!-- col1   -->
-						<col style="width: 65px">
+						
+						
+						<col style="width: 349px;">
 						<!-- col1   -->
 						
 						<!-- col2   -->
-						<col  style="width: 85px;" >
+						<col style="width: 98px;">
 						<!-- col2   -->
 						
 						<!-- col3   -->
-						<col style="width: 65px;">
+						<col style="width: 60px;">
 						<!-- col3   -->
 						
-						<!-- col4   -->
-						<col style="width: 250px;">
-						<!-- col4   -->
 						
-						<!-- col5   -->
-						<col style="width: 60px;" >
-						<!-- col5   -->
-						
-						<!-- col6   -->
-						<col style="width: 75px;">
-						<!-- col6   -->
-						
-						<!-- col7   -->
-						<col style="width: 85px;">
-						<!-- col7   -->
-						
-						<!-- col8   -->
-						<col style="width: 70px;">
-						<!-- col8   -->
-						
-						<!-- col9   -->
-						<col style="width: 70px;">
-						<!-- col9   -->
 						
 										
 					</tbody>

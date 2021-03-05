@@ -135,7 +135,13 @@ public class clsBillPrintingController {
 			
 			String userCode = req.getSession().getAttribute("usercode").toString();
 			String propertyCode = req.getSession().getAttribute("propertyCode").toString();
-			String temp[] = strSelectBill.split(",");
+			
+			String temp[] ={};
+			if(strSelectBill.length()>0)
+			{
+				temp = strSelectBill.split(",");
+			}
+			
 			String billNames = "";
 			String pSupportVoucher="";
 			String pSupportVoucherTextFielf="";
@@ -399,11 +405,12 @@ public class clsBillPrintingController {
 				if(!(billNames.length()>0))
 				{
 					sqlBillDtl = "SELECT DATE(b.dteDocDate),b.strDocNo,"
-							+ "IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),b.dblDebitAmt,b.dblCreditAmt,"
-							+ "b.dblBalanceAmt FROM tblbillhd a INNER JOIN tblbilldtl b "
+							+ "IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),"
+							+ " b.dblDebitAmt,b.dblCreditAmt,"
+							+ "b.dblBalanceAmt,ifnull(a.strReservationNo,'') ,b.strPerticulars FROM tblbillhd a INNER JOIN tblbilldtl b "
 							+ "ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo "
 							+ "WHERE a.strBillNo='"+billNo+"'"
-									+ "group by b.strPerticulars";
+							+ "group by b.strPerticulars";
 				}
 				else
 				{
@@ -2882,13 +2889,21 @@ public class clsBillPrintingController {
 			String clientCode = req.getSession().getAttribute("clientCode").toString();
 			String userCode = req.getSession().getAttribute("usercode").toString();
 			String propertyCode = req.getSession().getAttribute("propertyCode").toString();
-			String temp[] = strSelectBill.split(",");
-			String billNames = "";
+		
+			
 			String pSupportVoucher="";
 			String pSupportVoucherTextFielf="";
 			double pRoomTariff=0.0;
 			double dblTotalRoomTarrif = 0.0;
 			int count=0;
+			String billNames = "";
+			
+			String temp[] ={};
+			if(strSelectBill.length()>0)
+			{
+				temp = strSelectBill.split(",");
+			}
+			
 			for (int i = 0; i < temp.length; i++) {
 				if (billNames.length()>=0) {
 					billNames+="'"+temp[i]+"',";
@@ -3128,20 +3143,20 @@ public class clsBillPrintingController {
 				String sqlBillDtl="";
 				if(!(billNames.length()>0))
 				{
-					sqlBillDtl = "SELECT DATE(b.dteDocDate),b.strDocNo,"
-							+ "IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),b.dblDebitAmt,b.dblCreditAmt,"
-							+ "b.dblBalanceAmt FROM tblbillhd a INNER JOIN tblbilldtl b "
-							+ "ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo "
-							+ "WHERE a.strBillNo='"+billNo+"'"
-									+ "group by b.strPerticulars";
+					sqlBillDtl = " SELECT DATE(b.dteDocDate),b.strDocNo,"
+							+ " IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),b.dblDebitAmt,b.dblCreditAmt,"
+							+ " b.dblBalanceAmt ,ifnull(a.strReservationNo,'') ,b.strPerticulars FROM tblbillhd a INNER JOIN tblbilldtl b "
+							+ " ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo "
+							+ " WHERE a.strBillNo='"+billNo+"'"
+							+ " order by b.dteDocDate ";
 				}
 				else
 				{
-					sqlBillDtl = "SELECT DATE(b.dteDocDate),b.strDocNo,"
-							+ "IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),b.dblDebitAmt,b.dblCreditAmt,"
-							+ "b.dblBalanceAmt ,ifnull(a.strReservationNo,'') ,b.strPerticulars FROM tblbillhd a INNER JOIN tblbilldtl b "
-							+ "ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo AND b.strPerticulars IN("+billNames.substring(0, billNames.length()-1)+") "
-							+ "WHERE a.strBillNo='"+billNo+"' AND a.strClientCode='"+clientCode+"' order by b.dblCreditAmt ,b.dteDocDate";
+					sqlBillDtl = " SELECT DATE(b.dteDocDate),b.strDocNo,"
+							+ " IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),b.dblDebitAmt,b.dblCreditAmt,"
+							+ " b.dblBalanceAmt ,ifnull(a.strReservationNo,'') ,b.strPerticulars FROM tblbillhd a INNER JOIN tblbilldtl b "
+							+ " ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo AND b.strPerticulars IN("+billNames.substring(0, billNames.length()-1)+") "
+							+ " WHERE a.strBillNo='"+billNo+"' AND a.strClientCode='"+clientCode+"' order by b.dblCreditAmt ,b.dteDocDate";
 				}
 				
 				// + " and DATE(b.dteDocDate) BETWEEN '" + fromDate + "' AND '"

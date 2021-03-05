@@ -92,11 +92,24 @@ public class clsCheckOutDaoImpl implements clsCheckOutDao {
 	/*@Transactional(value = "WebPMSTransactionManager", rollbackFor = { Exception.class })*/
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "WebPMSTransactionManager")
 	public void funSaveCheckOut(clsFolioHdModel objFolioHdModel, clsBillHdModel objBillHdModel) {
-		webPMSSessionFactory.getCurrentSession().delete(objFolioHdModel);
+		
+		//webPMSSessionFactory.getCurrentSession().delete(objFolioHdModel);
 		webPMSSessionFactory.getCurrentSession().saveOrUpdate(objBillHdModel);
 		
 		
 	}
+	
+	@Override
+	/*@Transactional(value = "WebPMSTransactionManager", rollbackFor = { Exception.class })*/
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "WebPMSTransactionManager")
+	public void funDeleteFolioHdModel (clsFolioHdModel objFolioHdModel) {
+		
+		webPMSSessionFactory.getCurrentSession().delete(objFolioHdModel);
+			
+	}
+	
+	
+	
 
 	@Override
 	@Transactional(value = "WebPMSTransactionManager", rollbackFor = { Exception.class })

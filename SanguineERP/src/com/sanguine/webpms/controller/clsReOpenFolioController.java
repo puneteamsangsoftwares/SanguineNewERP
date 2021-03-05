@@ -119,7 +119,7 @@ public class clsReOpenFolioController
 				
 				String clientCode = req.getSession().getAttribute("clientCode").toString();
 				String sql = "select a.strFolioNo, e.strRoomCode,a.strCheckInNo,a.strRegistrationNo,a.strReservationNo,b.strWalkInNo, "
-						+ " b.dteArrivalDate,b.dteDepartureDate,b.tmeArrivalTime,b.tmeDepartureTime,b.strExtraBedCode,d.strGuestCode,,a.strBillNo   "
+						+ " b.dteArrivalDate,b.dteDepartureDate,b.tmeArrivalTime,b.tmeDepartureTime,b.strExtraBedCode,d.strGuestCode,a.strBillNo   "
 						+ " from tblbillhd a, tblcheckinhd b,tblcheckindtl c,tblguestmaster d,tblroom e "
 						+ " where a.strCheckInNo=b.strCheckInNo and b.strCheckInNo=c.strCheckInNo and  c.strGuestCode=d.strGuestCode  "
 						+ " and a.strRoomNo=e.strRoomCode "

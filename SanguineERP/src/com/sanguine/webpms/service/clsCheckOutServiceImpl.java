@@ -23,6 +23,12 @@ public class clsCheckOutServiceImpl implements clsCheckOutService {
 	public void funSaveCheckOut(clsFolioHdModel objFolioHdModel, clsBillHdModel objBillHdModel) {
 		objCheckOutDao.funSaveCheckOut(objFolioHdModel, objBillHdModel);
 	}
+	
+	@Override
+	public void funDeleteFolioHdModel (clsFolioHdModel objFolioHdModel) {
+		objCheckOutDao.funDeleteFolioHdModel(objFolioHdModel);
+	}
+
 
 	@Override
 	public clsFolioHdModel funGetFolioHdModel(String strRoomNo, String strRegistrationNo, String strReservationNo, String clientCode) {

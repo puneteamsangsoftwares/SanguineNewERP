@@ -41,7 +41,7 @@
 					 todayDate=yyyy+"-0"+mm+"-0"+dd;
 				 } 
 			 }
-			 if(dd < 10)
+		     else if (dd < 10)
 			 {
 				 todayDate=yyyy+"-"+mm+"-0"+dd;
 			 } 

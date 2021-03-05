@@ -850,9 +850,7 @@ public class clsCheckInController {
 				req.getSession().setAttribute("AdvanceAmount", objHdModel.getStrCheckInNo());
 				req.getSession().setAttribute("against", objHdModel.getStrType());
 				}
-			}
-			
-			
+			}			
 			else
 			{
 			
@@ -1143,7 +1141,7 @@ public class clsCheckInController {
 				List<clsWalkinRoomRateDtlModel> listRommRate = new ArrayList<clsWalkinRoomRateDtlModel>();
 				//listRommRate=objWalkinHdModel.getListWalkinRoomRateDtlModel();
 				if(null!=objBean.getListWalkinRoomRateDtl()){
-					for (clsWalkinRoomRateDtlModel objRommDtlBean : objWalkinHdModel.getListWalkinRoomRateDtlModel()) {
+					for (clsWalkinRoomRateDtlModel objRommDtlBean :objBean.getListWalkinRoomRateDtl()) {
 					
 						String date=objRommDtlBean.getDtDate();
 						if(date.split("-")[0].toString().length()<3)

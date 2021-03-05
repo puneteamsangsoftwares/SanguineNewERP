@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -140,6 +141,7 @@ public class clsCheckOutController {
 		List<clsCheckOutRoomDtlBean> listCheckOutRoomDtl = new ArrayList<clsCheckOutRoomDtlBean>();
 		if(request.getParameter("groupCheckIn")!=null)
 		{
+			request.getSession().setAttribute("GroupCheckIn", "Y");			
 			sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA') "
 					+ " from tblcheckinhd a left outer join tblcheckindtl b on a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
 					+ " left outer join tblreservationhd c on a.strReservationNo=c.strReservationNo AND c.strClientCode='"+clientCode+"'"
@@ -147,10 +149,10 @@ public class clsCheckOutController {
 					+ " left outer join tblguestmaster f on b.strGuestCode=f.strGuestCode AND f.strClientCode='"+clientCode+"'" 
 					+ " left outer join tblwalkinhd g on a.strWalkInNo=g.strWalkinNo AND g.strClientCode='"+clientCode+"'"
 					+ " where d.strCheckInNo='" + roomCode + "' " + " and d.strGuestCode=f.strGuestCode group by d.strFolioNo ";	
-			
+
+
 			
 			List list = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-
 			for (int i = 0; i < list.size(); i++) {
 				Object obj[] = (Object[]) list.get(i);
 				clsCheckOutRoomDtlBean objCheckOutRoomDtlBean = new clsCheckOutRoomDtlBean();
@@ -223,11 +225,10 @@ public class clsCheckOutController {
 				
 				listCheckOutRoomDtl.add(objCheckOutRoomDtlBean);
 			}
-		}
-		
-		
+		}	
 		else
 		{
+			request.getSession().setAttribute("GroupCheckIn", "N");		
 			sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA') "
 					+ " from tblcheckinhd a left outer join tblcheckindtl b on a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
 					+ " left outer join tblreservationhd c on a.strReservationNo=c.strReservationNo AND c.strClientCode='"+clientCode+"'"
@@ -346,253 +347,405 @@ public class clsCheckOutController {
 		} catch (NullPointerException e) {
  			urlHits = "1";
 		}
-		String strFolioNo="";
-		boolean checkFolioStatus=false;
-		if (!result.hasErrors()) {
-			String clientCode = req.getSession().getAttribute("clientCode").toString();
-			String userCode = req.getSession().getAttribute("usercode").toString();
-			List<clsCheckOutRoomDtlBean> listCheckOutRoomDtlBeans = objBean.getListCheckOutRoomDtlBeans();
-	   		String PMSDate = objGlobal.funGetDate("yyyy-MM-dd", req.getSession().getAttribute("PMSDate").toString());
-			String billNo = "";
- 			String RommNo = "";
-			String GSTNo="";
-			String companyName = req.getSession().getAttribute("companyName").toString();
-			String propCode = req.getSession().getAttribute("propertyCode").toString();
- 			clsPropertySetupHdModel objModel = objPropertySetupService.funGetPropertySetup(propCode, clientCode);  //pms property setup
- 			if (objModel != null) {
- 				GSTNo=objModel.getStrGSTNo();
-			} 
-			for (int i = 0; i < listCheckOutRoomDtlBeans.size(); i++) {
-            clsCheckOutRoomDtlBean objCheckOutRoomDtlBean = listCheckOutRoomDtlBeans.get(i);
-				if(objCheckOutRoomDtlBean.getStrRemoveTax()==null)
-				{
-					objCheckOutRoomDtlBean.setStrRemoveTax("N");
-				}
-				
-				clsFolioHdModel objFolioHdModel = objCheckOutService.funGetFolioHdModel(objCheckOutRoomDtlBean.getStrRoomNo(), objCheckOutRoomDtlBean.getStrRegistrationNo(), "", clientCode);
-				if(objCheckOutRoomDtlBean.getStrRemoveTax().equals("Y"))
-				{
-					String sqlDeleteTaxes = "delete from tblfoliotaxdtl where strFolioNo='"+objFolioHdModel.getStrFolioNo()+"' and strClientCode='"+clientCode+"'";
-					objWebPMSUtility.funExecuteUpdate(sqlDeleteTaxes, "sql");	
-
-				}
-				
-				if (objFolioHdModel != null) {
-					// generate billNo.
-					String transaDate = objGlobal.funGetCurrentDateTime("dd-MM-yyyy").split(" ")[0];
- 					billNo = objGlobal.funGeneratePMSDocumentCode("frmBillHd", transaDate, req);
-					RommNo = objFolioHdModel.getStrRoomNo();
-					clsBillHdModel objBillHdModel = new clsBillHdModel();
-					String sqlBillNoCheck = "select a.strBillNo,date(a.dteBillDate) from tblbillhd a where a.strFolioNo='"+objFolioHdModel.getStrFolioNo()+"' and a.strClientCode='"+clientCode+"'";
-					
-					List listBillNoCheck= objGlobalFunctionsService.funGetListModuleWise(sqlBillNoCheck, "sql");
- 					if(listBillNoCheck!=null && listBillNoCheck.size()>0)
-					{
-						Object[] arr = (Object[]) listBillNoCheck.get(0);
-						billNo = arr[0].toString();
-						PMSDate = arr[1].toString();
-					}
-
-					objBillHdModel.setStrBillNo(billNo);
-					objBillHdModel.setDteBillDate(PMSDate);
-					objBillHdModel.setStrClientCode(clientCode);
-					objBillHdModel.setStrCheckInNo(objFolioHdModel.getStrCheckInNo());
-					objBillHdModel.setStrFolioNo(objFolioHdModel.getStrFolioNo());
-					strFolioNo=objFolioHdModel.getStrFolioNo();
-					objBillHdModel.setStrRoomNo(objFolioHdModel.getStrRoomNo());
-					objBillHdModel.setStrExtraBedCode(objFolioHdModel.getStrExtraBedCode());
-					objBillHdModel.setStrRegistrationNo(objFolioHdModel.getStrRegistrationNo());
-					objBillHdModel.setStrReservationNo(objFolioHdModel.getStrReservationNo());
-					objBillHdModel.setDblGrandTotal(0.00);
-					objBillHdModel.setStrUserCreated(userCode);
-					objBillHdModel.setStrUserEdited(userCode);
-					objBillHdModel.setDteDateCreated(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
-					objBillHdModel.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
-					objBillHdModel.setStrGSTNo(GSTNo);
-					objBillHdModel.setStrCompanyName(companyName);
-
-					double grandTotal = 0;
-
-					List<clsBillDtlModel> listBillDtlModel = new ArrayList<clsBillDtlModel>();
-					// Set<clsBillDtlModel> setBillDtlModel=new
-					// TreeSet<clsBillDtlModel>();
-					List<clsFolioDtlModel> listFolioDtlModel = objFolioHdModel.getListFolioDtlModel();
-					for (clsFolioDtlModel objFolioDtlModel : listFolioDtlModel) {
-						clsBillDtlModel objBillDtlModel = new clsBillDtlModel();
-						objBillDtlModel.setStrFolioNo(objFolioHdModel.getStrFolioNo());
-						objBillDtlModel.setStrDocNo(objFolioDtlModel.getStrDocNo());
-						objBillDtlModel.setStrPerticulars(objFolioDtlModel.getStrPerticulars());
-						objBillDtlModel.setDteDocDate(objFolioDtlModel.getDteDocDate());
-						objBillDtlModel.setDblBalanceAmt(objFolioDtlModel.getDblBalanceAmt());
-						objBillDtlModel.setDblCreditAmt(objFolioDtlModel.getDblCreditAmt());
-						objBillDtlModel.setDblDebitAmt(objFolioDtlModel.getDblDebitAmt());
-						objBillDtlModel.setStrRevenueType(objFolioDtlModel.getStrRevenueType());
-						objBillDtlModel.setStrRevenueCode(objFolioDtlModel.getStrRevenueCode());
-						objBillDtlModel.setStrUserEdited(objFolioDtlModel.getStrUserEdited());
-						objBillDtlModel.setDteDateEdited(objFolioDtlModel.getDteDateEdited());
-						objBillDtlModel.setStrTransactionType(objFolioDtlModel.getStrTransactionType());
-						
-						
-						
-						grandTotal += objFolioDtlModel.getDblDebitAmt();
-						listBillDtlModel.add(objBillDtlModel);
-						// setBillDtlModel.add(objBillDtlModel);
-					}
-					if(listBillNoCheck!=null && listBillNoCheck.size()>0){
-						String sqlBillDtl = "select * from tblbilldtl a where a.strBillNo='"+billNo+"' and a.strClientCode='"+clientCode+"'";
-						List listBillDtl= objGlobalFunctionsService.funGetListModuleWise(sqlBillDtl, "sql");
-						if(listBillDtl!=null && listBillDtl.size()>0)
-						{
-							for(int g=0;i<listBillDtl.size();i++)
-							{
-								Object[] arr = (Object[]) listBillDtl.get(i);
-								clsBillDtlModel objBillDtlModel = new clsBillDtlModel();
-								objBillDtlModel.setStrFolioNo(arr[1].toString());
-								objBillDtlModel.setStrDocNo(arr[3].toString());
-								objBillDtlModel.setStrPerticulars(arr[4].toString());
-								objBillDtlModel.setDteDocDate(arr[2].toString());
-								objBillDtlModel.setDblBalanceAmt(Double.parseDouble(arr[9].toString()));
-								objBillDtlModel.setDblCreditAmt(Double.parseDouble(arr[8].toString()));
-								objBillDtlModel.setDblDebitAmt(Double.parseDouble(arr[7].toString()));
-								objBillDtlModel.setStrRevenueType(arr[5].toString());
-								objBillDtlModel.setStrRevenueCode(arr[6].toString());
-								objBillDtlModel.setStrUserEdited(arr[13].toString());
-								objBillDtlModel.setDteDateEdited(arr[11].toString());
-								objBillDtlModel.setStrTransactionType(arr[12].toString());
-								
-								
-								
-								grandTotal += Double.parseDouble(arr[7].toString());
-								listBillDtlModel.add(objBillDtlModel);
-							}
-							
-						}
-
-					}
-					DecimalFormat df = new DecimalFormat("0.00");
-					List<clsBillTaxDtlModel> listBillTaxDtlModel = new ArrayList<clsBillTaxDtlModel>();
-					// Set<clsBillTaxDtlModel> setBillTaxDtlModel=new
-					// TreeSet<clsBillTaxDtlModel>();
-					List<clsFolioTaxDtl> listFolioTaxDtlModel = objFolioHdModel.getListFolioTaxDtlModel();
-					if(objCheckOutRoomDtlBean.getStrRemoveTax().equals("Y"))
-					{
-						
-					}
-					else
-					{
-						
-					for (clsFolioTaxDtl objFolioTaxDtlModel : listFolioTaxDtlModel) {
-						clsBillTaxDtlModel objBillTaxDtlModel = new clsBillTaxDtlModel();
-						objBillTaxDtlModel.setStrDocNo(objFolioTaxDtlModel.getStrDocNo());
-						objBillTaxDtlModel.setStrTaxCode(objFolioTaxDtlModel.getStrTaxCode());
-						objBillTaxDtlModel.setStrTaxDesc(objFolioTaxDtlModel.getStrTaxDesc());
-						objBillTaxDtlModel.setDblTaxableAmt(objFolioTaxDtlModel.getDblTaxableAmt());
-						objBillTaxDtlModel.setDblTaxAmt(objFolioTaxDtlModel.getDblTaxAmt());
-						if(!clientCode.equalsIgnoreCase("383.001"))
-						{
-							grandTotal += objBillTaxDtlModel.getDblTaxAmt();
-
-						}
-						
-						
-						listBillTaxDtlModel.add(objBillTaxDtlModel);
-						// setBillTaxDtlModel.add(objBillTaxDtlModel);
-					 }
-				   }
-					objBillHdModel.setStrBillSettled("N");
-					objBillHdModel.setDblGrandTotal(Double.parseDouble(df.format(grandTotal)));
-					objBillHdModel.setListBillDtlModels(listBillDtlModel);
-					objBillHdModel.setListBillTaxDtlModels(listBillTaxDtlModel);
-					objBillHdModel.setStrRemark("");
-					objBillHdModel.setStrMergedBillNo("");
-					
-					//update guestmaster Balance
-					String sqlguest;
- 					double closingBal=Double.parseDouble(df.format(grandTotal));
-					double openingBal=0.00;
-				  
-				    
-				    String sql1="select a.dblClosingBalance from tblguestmaster a where a.strGuestCode='"+objFolioHdModel.getStrGuestCode()+"'";
-					List guestlist =  objGlobalFunctionsService.funGetListModuleWise(sql1, "sql");;
-					
-					if(guestlist!=null && guestlist.size()>0)
-					{
-				       openingBal=Double.parseDouble(guestlist.get(0).toString());
-					}
-				    
-				   objBillHdModel.setDblOpeningBalance(openingBal);
-				   closingBal=openingBal+closingBal;
-	        	   sqlguest=" update tblguestmaster a set a.dblClosingBalance='"+closingBal+"' where a.strGuestCode='"+objFolioHdModel.getStrGuestCode()+"'";
-          		   objWebPMSUtility.funExecuteUpdate(sqlguest, "sql");
-         		   objBillHdModel.setDblClosingBalance(closingBal);
-                      
-					
-                   // objBillHdModel.setSetBillDtlModels(setBillDtlModel);
-					// objBillHdModel.setSetBillTaxDtlModels(setBillTaxDtlModel);
-					
-					LocalTime localTime = LocalTime.now();
-					DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
-					
-					String strCurrentTime = localTime.format(dateTimeFormatter);
-					String sqlUpdateCheckOutTime = "update tblcheckinhd a set a.tmeDepartureTime='"+strCurrentTime+"' where a.strCheckInNo='"+objBillHdModel.getStrCheckInNo()+"'  AND a.strClientCode='"+clientCode+"'";
-					objWebPMSUtility.funExecuteUpdate(sqlUpdateCheckOutTime, "sql");
-					
-					String sqlUpdateCheckOutDate ="UPDATE tblcheckinhd a SET a.dteDepartureDate= CONCAT('"+PMSDate+"',' ','00:00:00') "
-					+ "WHERE a.strCheckInNo='"+objBillHdModel.getStrCheckInNo()+"' AND a.strClientCode='"+clientCode+"'";
-					
-					
-					objWebPMSUtility.funExecuteUpdate(sqlUpdateCheckOutDate, "sql");
-					
-					String sql = "insert into tblfoliobckp (select * from tblfoliodtl where strFolioNo='"+objFolioHdModel.getStrFolioNo()+"' AND strclientCode='"+clientCode+"')";
-					objWebPMSUtility.funExecuteUpdate(sql, "sql");
-					
-					
-					objCheckOutService.funSaveCheckOut(objFolioHdModel, objBillHdModel);
-					
-					clsPropertySetupHdModel objPropertySetupModel= objPropertySetupService.funGetPropertySetup(propCode, clientCode);
-
-					if(objPropertySetupModel.getStrEnableHousekeeping().equals("Y"))
-					{
-						String sqlRoomUpdate = "update tblroom a set a.strStatus='Dirty' " + " where a.strRoomCode='" + objBillHdModel.getStrRoomNo() + "' and a.strClientCode='" + objBillHdModel.getStrClientCode() + "'";
-						/*webPMSSessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();*/
-						objWebPMSUtility.funExecuteUpdate(sqlRoomUpdate, "sql");
-						
-					}
-					else
-					{
-						String sqlRoomUpdate = "update tblroom a set a.strStatus='Free' " + " where a.strRoomCode='" + objBillHdModel.getStrRoomNo() + "' and a.strClientCode='" + objBillHdModel.getStrClientCode() + "'";
-						/*webPMSSessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();*/
-						objWebPMSUtility.funExecuteUpdate(sqlRoomUpdate, "sql");
-						
-					}
-					
-					String sqlBillPerticulars = "select a.strPerticulars from tblbilldtl a where a.strBillNo='"+billNo+"' and a.strClientCode='"+clientCode+"'";
-					List listCheckForFullPayment= objGlobalFunctionsService.funGetListModuleWise(sqlBillPerticulars, "sql");
-					String strParticulars = "";
-					for(int j=0;j<listCheckForFullPayment.size();j++)
-					{
-						strParticulars = strParticulars+listCheckForFullPayment.get(j).toString()+",";
-					}
-					strParticulars=strParticulars.substring(0,strParticulars.length()-1);
-					
-					
-					objBillPrintingController.funGenerateBillPrintingReport(PMSDate, PMSDate, billNo, strParticulars, req, resp); 
-					
-				}
-				funSendSMSPayment(billNo, clientCode, RommNo, propCode);
-				clsPropertySetupHdModel objModel1 = objPropertySetupService.funGetPropertySetup(propCode, clientCode);
-				if(objModel.getStrOnlineIntegration().equalsIgnoreCase("Yes"))
-				{
-					funCallAPI(objModel1,clientCode,PMSDate);
-				}
-				req.getSession().setAttribute("success", true);
-				req.getSession().setAttribute("successMessage", "Room No. : ".concat(objBean.getStrSearchTextField()));
-			}
-			return new ModelAndView("redirect:/frmCheckOut.html?saddr=" + urlHits);
-		} else {
-			return new ModelAndView("redirect:/frmCheckOut.html?saddr=" + urlHits);
+		
+		if(req.getSession().getAttribute("GroupCheckIn").toString().equalsIgnoreCase("Y"))			
+		{
+			req.getSession().removeAttribute("GroupCheckIn");
+			ModelAndView model= funGetGroupCheckInBill(objBean, result,  req, resp);
+			return model;
 		}
-	}
+		else
+		{
+			String strFolioNo="";
+			boolean checkFolioStatus=false;
+			if (!result.hasErrors()) {
+				String clientCode = req.getSession().getAttribute("clientCode").toString();
+				String userCode = req.getSession().getAttribute("usercode").toString();
+				List<clsCheckOutRoomDtlBean> listCheckOutRoomDtlBeans = objBean.getListCheckOutRoomDtlBeans();
+		   		String PMSDate = objGlobal.funGetDate("yyyy-MM-dd", req.getSession().getAttribute("PMSDate").toString());
+				
+	 			String RommNo = "";
+				String GSTNo="";
+				boolean flag=false;
+				String companyName = req.getSession().getAttribute("companyName").toString();
+				String propCode = req.getSession().getAttribute("propertyCode").toString();
+				List<clsCheckOutRoomDtlBean> listRevenueDtlBeans = objBean.getListCheckOutRevenueDtlBeans();
+	 			clsPropertySetupHdModel objModel = objPropertySetupService.funGetPropertySetup(propCode, clientCode);  //pms property setup
+	 			if (objModel != null) {
+	 				GSTNo=objModel.getStrGSTNo();
+				} 
+	 			Map<String,String> mapRevenueType= new HashMap<>();
+	 			for(int j=0;j<listRevenueDtlBeans.size();j++)
+				{   
+	 				clsCheckOutRoomDtlBean objRevenueBean=listRevenueDtlBeans.get(j);
+	 				if(mapRevenueType.containsKey(objRevenueBean.getStrBillMergeNumber()))
+					{
+	 					String revenueType=mapRevenueType.get(objRevenueBean.getStrBillMergeNumber());
+	 					mapRevenueType.put( objRevenueBean.getStrBillMergeNumber(),revenueType+",'"+objRevenueBean.getStrRevenueType()+"'"); 				
+					}
+	 				else
+	 				{
+	 	 				mapRevenueType.put( objRevenueBean.getStrBillMergeNumber(),"'"+objRevenueBean.getStrRevenueType()+"'"); 				
+
+	 				}
+				}
+	 			String transaDate = objGlobal.funGetCurrentDateTime("dd-MM-yyyy").split(" ")[0];
+
+			    String strMainBillNo = objGlobal.funGeneratePMSDocumentCode("frmBillHd", transaDate, req);
+					
+	 			boolean flagForIsSplitBill=true;
+			    if(mapRevenueType.size() > 1)
+			    {
+			    	flagForIsSplitBill=false;//Bill is splited
+			    }
+			    
+			    String strAllSplitedBills="";
+			    
+	 			for (Map.Entry<String,String> entry : mapRevenueType.entrySet())  
+	 			{
+	 	           
+	 					String strRevenueType=entry.getValue(); 
+	 					
+	 					//billNo=billNo+"-"+entry.getKey();
+	 					String billNo="";
+	 					if(flagForIsSplitBill)
+	 					{
+	 						billNo=strMainBillNo;
+	 					}
+	 					else
+	 					{
+	 						billNo=strMainBillNo+"-"+entry.getKey();
+	 					}
+	 					if(strAllSplitedBills.isEmpty())
+	 					{
+	 						strAllSplitedBills=billNo;
+	 					}
+	 					else
+	 					{
+	 						strAllSplitedBills=strAllSplitedBills+"#"+billNo;
+	 					}
+	 					for (int i = 0; i < listCheckOutRoomDtlBeans.size(); i++) {
+	 			            clsCheckOutRoomDtlBean objCheckOutRoomDtlBean = listCheckOutRoomDtlBeans.get(i);
+	 						if(objCheckOutRoomDtlBean.getStrRemoveTax()==null)
+	 						{
+	 							objCheckOutRoomDtlBean.setStrRemoveTax("N");
+	 						}
+	 						
+	  						clsFolioHdModel objFolioHdModel = objCheckOutService.funGetFolioHdModel(objCheckOutRoomDtlBean.getStrRoomNo(), objCheckOutRoomDtlBean.getStrRegistrationNo(), "", clientCode); 						
+	 						if(objCheckOutRoomDtlBean.getStrRemoveTax().equals("Y"))
+	 						{
+	 							String sqlDeleteTaxes = "delete from tblfoliotaxdtl where strFolioNo='"+objFolioHdModel.getStrFolioNo()+"' and strClientCode='"+clientCode+"'";
+	 							objWebPMSUtility.funExecuteUpdate(sqlDeleteTaxes, "sql");	
+
+	 						}
+	 							
+	 							if (objFolioHdModel != null) {
+	 								// generate billNo.
+	 								
+	 								
+	 								RommNo = objFolioHdModel.getStrRoomNo();
+	 								clsBillHdModel objBillHdModel = new clsBillHdModel();
+	 								
+	 								List listBillNoCheck=new ArrayList<>();
+	 								/*String sqlBillNoCheck = "select a.strBillNo,date(a.dteBillDate) from tblbillhd a where a.strFolioNo='"+objFolioHdModel.getStrFolioNo()+"' and a.strClientCode='"+clientCode+"'";
+	 								
+	 								List listBillNoCheck= objGlobalFunctionsService.funGetListModuleWise(sqlBillNoCheck, "sql");
+	 			 					if(listBillNoCheck!=null && listBillNoCheck.size()>0)
+	 								{
+	 									Object[] arr = (Object[]) listBillNoCheck.get(0);
+	 									billNo = arr[0].toString();
+	 									PMSDate = arr[1].toString();
+	 								}*/
+
+	 								objBillHdModel.setStrBillNo(billNo);
+	 								objBillHdModel.setDteBillDate(PMSDate);
+	 								objBillHdModel.setStrClientCode(clientCode);
+	 								objBillHdModel.setStrCheckInNo(objFolioHdModel.getStrCheckInNo());
+	 								objBillHdModel.setStrFolioNo(objFolioHdModel.getStrFolioNo());
+	 								strFolioNo=objFolioHdModel.getStrFolioNo();
+	 								objBillHdModel.setStrRoomNo(objFolioHdModel.getStrRoomNo());
+	 								objBillHdModel.setStrExtraBedCode(objFolioHdModel.getStrExtraBedCode());
+	 								objBillHdModel.setStrRegistrationNo(objFolioHdModel.getStrRegistrationNo());
+	 								objBillHdModel.setStrReservationNo(objFolioHdModel.getStrReservationNo());
+	 								objBillHdModel.setDblGrandTotal(0.00);
+	 								objBillHdModel.setStrUserCreated(userCode);
+	 								objBillHdModel.setStrUserEdited(userCode);
+	 								objBillHdModel.setDteDateCreated(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+	 								objBillHdModel.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+	 								objBillHdModel.setStrGSTNo(GSTNo);
+	 								objBillHdModel.setStrCompanyName(companyName);
+
+	 								double grandTotal = 0;
+
+	 								List<clsBillDtlModel> listBillDtlModel = new ArrayList<clsBillDtlModel>();
+	 							
+	 								//List<clsFolioDtlModel> listFolioDtlModel = objFolioHdModel.getListFolioDtlModel();Commented code before below implementation
+	 								String strRevenueTypeCode="";
+	 								
+	 								String sqlFolioDtlRevenueWise=" select * from tblfoliodtl a where a.strFolioNo='"+strFolioNo+"' "
+	 										         + " and a.strRevenueType in ("+strRevenueType+");";
+	 								List listFolioDtlRevenueWise = objGlobalFunctionsService.funGetListModuleWise(sqlFolioDtlRevenueWise, "sql");
+	 			 					if(listFolioDtlRevenueWise!=null && listFolioDtlRevenueWise.size()>0)
+	 								{
+	 			 						for(int k=0;k<listFolioDtlRevenueWise.size();k++)
+	 			 						{
+	 	 									Object[] arrFolioDtlRevenueWise = (Object[]) listFolioDtlRevenueWise.get(k);
+	 	 									clsBillDtlModel objBillDtlModel = new clsBillDtlModel();
+	 	 									objBillDtlModel.setStrFolioNo(arrFolioDtlRevenueWise[0].toString());
+	 	 									objBillDtlModel.setStrDocNo(arrFolioDtlRevenueWise[2].toString());
+	 	 									objBillDtlModel.setStrPerticulars(arrFolioDtlRevenueWise[3].toString());
+	 	 									objBillDtlModel.setDteDocDate(arrFolioDtlRevenueWise[1].toString());
+	 	 									objBillDtlModel.setDblBalanceAmt(Double.parseDouble(arrFolioDtlRevenueWise[6].toString()));
+	 	 									objBillDtlModel.setDblCreditAmt(Double.parseDouble(arrFolioDtlRevenueWise[5].toString()));
+	 	 									objBillDtlModel.setDblDebitAmt(Double.parseDouble(arrFolioDtlRevenueWise[4].toString()));
+	 	 									objBillDtlModel.setStrRevenueType(arrFolioDtlRevenueWise[7].toString());
+	 	 									objBillDtlModel.setStrRevenueCode(arrFolioDtlRevenueWise[8].toString());
+	 	 									objBillDtlModel.setStrUserEdited(arrFolioDtlRevenueWise[13].toString());
+	 	 									objBillDtlModel.setDteDateEdited(arrFolioDtlRevenueWise[11].toString());
+	 	 									objBillDtlModel.setStrTransactionType(arrFolioDtlRevenueWise[12].toString());
+	 	 									
+	 	 									if(strRevenueTypeCode.isEmpty())
+											{
+												strRevenueTypeCode="'"+arrFolioDtlRevenueWise[2].toString()+"'";
+											
+											}
+											else
+											{
+												strRevenueTypeCode= strRevenueTypeCode +",'"+arrFolioDtlRevenueWise[2].toString()+"'";
+											}
+												
+												
+											grandTotal +=objBillDtlModel.getDblDebitAmt();
+	 	 									listBillDtlModel.add(objBillDtlModel);
+	 			 						}
+	 								}
+	 			 					
+	 			 					
+	 			 					
+	 								/*
+	 								 * List<clsBillDtlModel> listBillDtlModel = new ArrayList<clsBillDtlModel>();
+	 								 * for (clsFolioDtlModel objFolioDtlModel : listFolioDtlModel) {
+	 									
+	 									clsBillDtlModel objBillDtlModel = new clsBillDtlModel();
+										objBillDtlModel.setStrFolioNo(objFolioHdModel.getStrFolioNo());
+										objBillDtlModel.setStrDocNo(objFolioDtlModel.getStrDocNo());
+										objBillDtlModel.setStrPerticulars(objFolioDtlModel.getStrPerticulars());
+										objBillDtlModel.setDteDocDate(objFolioDtlModel.getDteDocDate());
+										objBillDtlModel.setDblBalanceAmt(objFolioDtlModel.getDblBalanceAmt());
+										objBillDtlModel.setDblCreditAmt(objFolioDtlModel.getDblCreditAmt());
+										objBillDtlModel.setDblDebitAmt(objFolioDtlModel.getDblDebitAmt());
+										objBillDtlModel.setStrRevenueType(objFolioDtlModel.getStrRevenueType());
+										objBillDtlModel.setStrRevenueCode(objFolioDtlModel.getStrRevenueCode());
+										objBillDtlModel.setStrUserEdited(objFolioDtlModel.getStrUserEdited());
+										objBillDtlModel.setDteDateEdited(objFolioDtlModel.getDteDateEdited());
+										objBillDtlModel.setStrTransactionType(objFolioDtlModel.getStrTransactionType());
+	 									// setBillDtlModel.add(objBillDtlModel);
+	 								}*/
+	 			 					
+	 			 					
+	 			 					
+	 								if(listBillNoCheck!=null && listBillNoCheck.size()>0){
+	 									String sqlBillDtl = "select * from tblbilldtl a where a.strBillNo='"+billNo+"' and a.strClientCode='"+clientCode+"'";
+	 									List listBillDtl= objGlobalFunctionsService.funGetListModuleWise(sqlBillDtl, "sql");
+	 									if(listBillDtl!=null && listBillDtl.size()>0)
+	 									{
+	 										for(int g=0;i<listBillDtl.size();i++)
+	 										{
+	 											Object[] arr = (Object[]) listBillDtl.get(i);
+	 											clsBillDtlModel objBillDtlModel = new clsBillDtlModel();
+	 											objBillDtlModel.setStrFolioNo(arr[1].toString());
+	 											objBillDtlModel.setStrDocNo(arr[3].toString());
+	 											objBillDtlModel.setStrPerticulars(arr[4].toString());
+	 											objBillDtlModel.setDteDocDate(arr[2].toString());
+	 											objBillDtlModel.setDblBalanceAmt(Double.parseDouble(arr[9].toString()));
+	 											objBillDtlModel.setDblCreditAmt(Double.parseDouble(arr[8].toString()));
+	 											objBillDtlModel.setDblDebitAmt(Double.parseDouble(arr[7].toString()));
+	 											objBillDtlModel.setStrRevenueType(arr[5].toString());
+	 											objBillDtlModel.setStrRevenueCode(arr[6].toString());
+	 											objBillDtlModel.setStrUserEdited(arr[13].toString());
+	 											objBillDtlModel.setDteDateEdited(arr[11].toString());
+	 											objBillDtlModel.setStrTransactionType(arr[12].toString());
+	 										
+	 											
+	 											
+	 											grandTotal += Double.parseDouble(arr[7].toString());
+	 											listBillDtlModel.add(objBillDtlModel);
+	 										}
+	 										
+	 									}
+
+	 								}
+	 								DecimalFormat df = new DecimalFormat("0.00");
+	 								List<clsBillTaxDtlModel> listBillTaxDtlModel = new ArrayList<clsBillTaxDtlModel>();
+	 								
+	 								
+	 								
+	 								List<clsFolioTaxDtl> listFolioTaxDtlModel = objFolioHdModel.getListFolioTaxDtlModel();
+	 								String sqlFolioTaxDtlRevenueWise=" select * from tblfoliotaxdtl a where a.strFolioNo='"+strFolioNo+"' "
+	 										                       + " and a.strDocNo in ("+strRevenueTypeCode+");";
+	 								if(objCheckOutRoomDtlBean.getStrRemoveTax().equals("Y"))
+	 								{
+	 									
+	 								}
+	 								else
+	 								{
+	 									List listFolioTaxDtlRevenueWise = objGlobalFunctionsService.funGetListModuleWise(sqlFolioTaxDtlRevenueWise, "sql");
+	 	 			 					if(listFolioTaxDtlRevenueWise!=null && listFolioTaxDtlRevenueWise.size()>0)
+	 	 								{
+	 	 			 						for(int m=0;m<listFolioTaxDtlRevenueWise.size();m++)
+	 	 			 						{
+	 	 	 									Object[] arrFolioTaxDtlRevenueWise = (Object[]) listFolioTaxDtlRevenueWise.get(m);
+	 	 	 									clsBillTaxDtlModel objBillTaxDtlModel = new clsBillTaxDtlModel();
+	 	 	 									objBillTaxDtlModel.setStrDocNo(arrFolioTaxDtlRevenueWise[1].toString());
+	 	 	 									objBillTaxDtlModel.setStrTaxCode(arrFolioTaxDtlRevenueWise[2].toString());
+	 	 	 									objBillTaxDtlModel.setStrTaxDesc(arrFolioTaxDtlRevenueWise[3].toString());
+	 	 	 									objBillTaxDtlModel.setDblTaxableAmt(Double.parseDouble(arrFolioTaxDtlRevenueWise[4].toString()));
+	 	 	 									objBillTaxDtlModel.setDblTaxAmt(Double.parseDouble(arrFolioTaxDtlRevenueWise[5].toString()));
+	 	 	 									if(!clientCode.equalsIgnoreCase("383.001"))
+	 	 	 									{
+	 	 	 										grandTotal += objBillTaxDtlModel.getDblTaxAmt();
+
+	 	 	 									}						
+	 	 	 									listBillTaxDtlModel.add(objBillTaxDtlModel);
+	 	 			 						}
+	 	 								}
+	 									
+	 								   /* for (clsFolioTaxDtl objFolioTaxDtlModel : listFolioTaxDtlModel) {
+	 									clsBillTaxDtlModel objBillTaxDtlModel = new clsBillTaxDtlModel();
+	 									objBillTaxDtlModel.setStrDocNo(objFolioTaxDtlModel.getStrDocNo());
+	 									objBillTaxDtlModel.setStrTaxCode(objFolioTaxDtlModel.getStrTaxCode());
+	 									objBillTaxDtlModel.setStrTaxDesc(objFolioTaxDtlModel.getStrTaxDesc());
+	 									objBillTaxDtlModel.setDblTaxableAmt(objFolioTaxDtlModel.getDblTaxableAmt());
+	 									objBillTaxDtlModel.setDblTaxAmt(objFolioTaxDtlModel.getDblTaxAmt());
+	 									if(!clientCode.equalsIgnoreCase("383.001"))
+	 									{
+	 										grandTotal += objBillTaxDtlModel.getDblTaxAmt();
+
+	 									}						
+	 									listBillTaxDtlModel.add(objBillTaxDtlModel);
+	 									 }*/
+	 									// setBillTaxDtlModel.add(objBillTaxDtlModel);
+	 								
+	 							   }
+	 							objBillHdModel.setStrBillSettled("N");
+	 							objBillHdModel.setDblGrandTotal(Double.parseDouble(df.format(grandTotal)));
+	 							objBillHdModel.setListBillDtlModels(listBillDtlModel);
+	 							objBillHdModel.setListBillTaxDtlModels(listBillTaxDtlModel);
+	 							objBillHdModel.setStrRemark("");
+	 							objBillHdModel.setStrMergedBillNo("");
+	 							
+	 							//update guestmaster Balance
+	 							String sqlguest;
+	 							double closingBal=Double.parseDouble(df.format(grandTotal));
+	 							double openingBal=0.00;
+	 						  
+	 						    
+	 						    String sql1="select a.dblClosingBalance from tblguestmaster a where a.strGuestCode='"+objFolioHdModel.getStrGuestCode()+"'";
+	 							List guestlist =  objGlobalFunctionsService.funGetListModuleWise(sql1, "sql");;
+	 							
+	 							if(guestlist!=null && guestlist.size()>0)
+	 							{
+	 						       openingBal=Double.parseDouble(guestlist.get(0).toString());
+	 							}
+	 						    
+	 						   objBillHdModel.setDblOpeningBalance(openingBal);
+	 						   closingBal=openingBal+closingBal;
+	 			        	   sqlguest=" update tblguestmaster a set a.dblClosingBalance='"+closingBal+"' where a.strGuestCode='"+objFolioHdModel.getStrGuestCode()+"'";
+	 			      		   objWebPMSUtility.funExecuteUpdate(sqlguest, "sql");
+	 			     		   objBillHdModel.setDblClosingBalance(closingBal);
+	 			                  
+	 							
+	 			               // objBillHdModel.setSetBillDtlModels(setBillDtlModel);
+	 							// objBillHdModel.setSetBillTaxDtlModels(setBillTaxDtlModel);
+	 							
+	 							LocalTime localTime = LocalTime.now();
+	 							DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+	 							
+	 							String strCurrentTime = localTime.format(dateTimeFormatter);
+	 							String sqlUpdateCheckOutTime = "update tblcheckinhd a set a.tmeDepartureTime='"+strCurrentTime+"' where a.strCheckInNo='"+objBillHdModel.getStrCheckInNo()+"'  AND a.strClientCode='"+clientCode+"'";
+	 							objWebPMSUtility.funExecuteUpdate(sqlUpdateCheckOutTime, "sql");
+	 							
+	 							String sqlUpdateCheckOutDate ="UPDATE tblcheckinhd a SET a.dteDepartureDate= CONCAT('"+PMSDate+"',' ','00:00:00') "
+	 							+ "WHERE a.strCheckInNo='"+objBillHdModel.getStrCheckInNo()+"' AND a.strClientCode='"+clientCode+"'";
+	 							
+	 							
+	 							objWebPMSUtility.funExecuteUpdate(sqlUpdateCheckOutDate, "sql");
+	 							
+	 							
+	 							
+	 							
+	 							objCheckOutService.funSaveCheckOut(objFolioHdModel, objBillHdModel);
+	 							
+	 							clsPropertySetupHdModel objPropertySetupModel= objPropertySetupService.funGetPropertySetup(propCode, clientCode);
+
+	 								if(objPropertySetupModel.getStrEnableHousekeeping().equals("Y"))
+	 								{
+	 									String sqlRoomUpdate = "update tblroom a set a.strStatus='Dirty' " + " where a.strRoomCode='" + objBillHdModel.getStrRoomNo() + "' and a.strClientCode='" + objBillHdModel.getStrClientCode() + "'";
+	 									/*webPMSSessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();*/
+	 									objWebPMSUtility.funExecuteUpdate(sqlRoomUpdate, "sql");
+	 									
+	 								}
+	 								else
+	 								{
+	 									String sqlRoomUpdate = "update tblroom a set a.strStatus='Free' " + " where a.strRoomCode='" + objBillHdModel.getStrRoomNo() + "' and a.strClientCode='" + objBillHdModel.getStrClientCode() + "'";
+	 									/*webPMSSessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();*/
+	 									objWebPMSUtility.funExecuteUpdate(sqlRoomUpdate, "sql");
+	 									
+	 								}
+	 								
+	 								String sqlBillPerticulars = "select a.strPerticulars from tblbilldtl a where a.strBillNo='"+billNo+"' and a.strClientCode='"+clientCode+"'";
+	 								List listCheckForFullPayment= objGlobalFunctionsService.funGetListModuleWise(sqlBillPerticulars, "sql");
+	 								String strParticulars = "";
+	 								for(int j=0;j<listCheckForFullPayment.size();j++)
+	 								{
+	 									strParticulars = strParticulars+listCheckForFullPayment.get(j).toString()+",";
+	 								}
+	 								strParticulars=strParticulars.substring(0,strParticulars.length()-1);
+	 								
+	 								
+	 							//Commented before new logic
+	 							//objBillPrintingController.funGenerateBillPrintingReport(PMSDate, PMSDate, billNo, strParticulars, req, resp); 
+	 	 							funSendSMSPayment(billNo, clientCode, RommNo, propCode);
+
+	 							}
+	 							clsPropertySetupHdModel objModel1 = objPropertySetupService.funGetPropertySetup(propCode, clientCode);
+	 							if(objModel.getStrOnlineIntegration().equalsIgnoreCase("Yes"))
+	 							{
+	 								funCallAPI(objModel1,clientCode,PMSDate);
+	 							}
+	 							req.getSession().setAttribute("success", true);
+	 							req.getSession().setAttribute("successMessage", "Room No. : ".concat(objBean.getStrSearchTextField()));
+	 						}
+	 					
+	 					flag=true;
+	 			} 
+	 			if(flag)
+	 			{
+	 				String sql = "insert into tblfoliobckp (select * from tblfoliodtl where strFolioNo='"+strFolioNo+"' AND strclientCode='"+clientCode+"')";
+	 			    objWebPMSUtility.funExecuteUpdate(sql, "sql");
+	 					
+	 	 			String sqlDeleteTaxes = "delete from tblfoliohd where strFolioNo='"+strFolioNo+"' and strClientCode='"+clientCode+"'";
+	 				objWebPMSUtility.funExecuteUpdate(sqlDeleteTaxes, "sql");	
+	 				
+	 				sqlDeleteTaxes = "delete from tblfoliodtl where strFolioNo='"+strFolioNo+"' and strClientCode='"+clientCode+"'";
+	 				objWebPMSUtility.funExecuteUpdate(sqlDeleteTaxes, "sql");	
+	 				
+	 				sqlDeleteTaxes = "delete from tblfoliotaxdtl where strFolioNo='"+strFolioNo+"' and strClientCode='"+clientCode+"'";
+	 				objWebPMSUtility.funExecuteUpdate(sqlDeleteTaxes, "sql");	
+	 			}
+	 			req.getSession().setAttribute("successForSplitBill", true);
+				req.getSession().setAttribute("successMessageForSplitBill",strAllSplitedBills);
+				
+	 			
+				return new ModelAndView("redirect:/frmCheckOut.html?saddr=" + urlHits);
+			} 
+			else {
+				return new ModelAndView("redirect:/frmCheckOut.html?saddr=" + urlHits);
+			}
+
+		}
+		
+}
 	
 	@RequestMapping(value = "/isCheckFolioStatus", method = RequestMethod.GET)
 	public @ResponseBody boolean funIsCheckFolioStatus(@RequestParam("folioNo") String strFolioNo,@RequestParam("checkOutDate") String checkOutDate, HttpServletRequest req)
@@ -844,6 +997,260 @@ public class clsCheckOutController {
 		
 		
 	}
+	public ModelAndView funGetGroupCheckInBill(clsCheckOutBean objBean, BindingResult result, HttpServletRequest req,HttpServletResponse resp){
+	
+		String urlHits = "1";
+		try {
+			urlHits = req.getParameter("saddr").toString();
+		} catch (NullPointerException e) {
+ 			urlHits = "1";
+		}
+	String strFolioNo="";
+	boolean checkFolioStatus=false;
+	if (!result.hasErrors()) {
+		String clientCode = req.getSession().getAttribute("clientCode").toString();
+		String userCode = req.getSession().getAttribute("usercode").toString();
+		List<clsCheckOutRoomDtlBean> listCheckOutRoomDtlBeans = objBean.getListCheckOutRoomDtlBeans();
+   		String PMSDate = objGlobal.funGetDate("yyyy-MM-dd", req.getSession().getAttribute("PMSDate").toString());
+		String billNo = "";
+			String RommNo = "";
+		String GSTNo="";
+		String companyName = req.getSession().getAttribute("companyName").toString();
+		String propCode = req.getSession().getAttribute("propertyCode").toString();
+			clsPropertySetupHdModel objModel = objPropertySetupService.funGetPropertySetup(propCode, clientCode);  //pms property setup
+			if (objModel != null) {
+				GSTNo=objModel.getStrGSTNo();
+		} 
+		for (int i = 0; i < listCheckOutRoomDtlBeans.size(); i++) {
+        clsCheckOutRoomDtlBean objCheckOutRoomDtlBean = listCheckOutRoomDtlBeans.get(i);
+			if(objCheckOutRoomDtlBean.getStrRemoveTax()==null)
+			{
+				objCheckOutRoomDtlBean.setStrRemoveTax("N");
+			}
+			
+			clsFolioHdModel objFolioHdModel = objCheckOutService.funGetFolioHdModel(objCheckOutRoomDtlBean.getStrRoomNo(), objCheckOutRoomDtlBean.getStrRegistrationNo(), "", clientCode);
+			if(objCheckOutRoomDtlBean.getStrRemoveTax().equals("Y"))
+			{
+				String sqlDeleteTaxes = "delete from tblfoliotaxdtl where strFolioNo='"+objFolioHdModel.getStrFolioNo()+"' and strClientCode='"+clientCode+"'";
+				objWebPMSUtility.funExecuteUpdate(sqlDeleteTaxes, "sql");	
 
+			}
+			
+			if (objFolioHdModel != null) {
+				// generate billNo.
+				String transaDate = objGlobal.funGetCurrentDateTime("dd-MM-yyyy").split(" ")[0];
+					billNo = objGlobal.funGeneratePMSDocumentCode("frmBillHd", transaDate, req);
+				RommNo = objFolioHdModel.getStrRoomNo();
+				clsBillHdModel objBillHdModel = new clsBillHdModel();
+				String sqlBillNoCheck = "select a.strBillNo,date(a.dteBillDate) from tblbillhd a where a.strFolioNo='"+objFolioHdModel.getStrFolioNo()+"' and a.strClientCode='"+clientCode+"'";
+				
+				List listBillNoCheck= objGlobalFunctionsService.funGetListModuleWise(sqlBillNoCheck, "sql");
+					if(listBillNoCheck!=null && listBillNoCheck.size()>0)
+				{
+					Object[] arr = (Object[]) listBillNoCheck.get(0);
+					billNo = arr[0].toString();
+					PMSDate = arr[1].toString();
+				}
 
+				objBillHdModel.setStrBillNo(billNo);
+				objBillHdModel.setDteBillDate(PMSDate);
+				objBillHdModel.setStrClientCode(clientCode);
+				objBillHdModel.setStrCheckInNo(objFolioHdModel.getStrCheckInNo());
+				objBillHdModel.setStrFolioNo(objFolioHdModel.getStrFolioNo());
+				strFolioNo=objFolioHdModel.getStrFolioNo();
+				objBillHdModel.setStrRoomNo(objFolioHdModel.getStrRoomNo());
+				objBillHdModel.setStrExtraBedCode(objFolioHdModel.getStrExtraBedCode());
+				objBillHdModel.setStrRegistrationNo(objFolioHdModel.getStrRegistrationNo());
+				objBillHdModel.setStrReservationNo(objFolioHdModel.getStrReservationNo());
+				objBillHdModel.setDblGrandTotal(0.00);
+				objBillHdModel.setStrUserCreated(userCode);
+				objBillHdModel.setStrUserEdited(userCode);
+				objBillHdModel.setDteDateCreated(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+				objBillHdModel.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+				objBillHdModel.setStrGSTNo(GSTNo);
+				objBillHdModel.setStrCompanyName(companyName);
+
+				double grandTotal = 0;
+
+				List<clsBillDtlModel> listBillDtlModel = new ArrayList<clsBillDtlModel>();
+				// Set<clsBillDtlModel> setBillDtlModel=new
+				// TreeSet<clsBillDtlModel>();
+				List<clsFolioDtlModel> listFolioDtlModel = objFolioHdModel.getListFolioDtlModel();
+				for (clsFolioDtlModel objFolioDtlModel : listFolioDtlModel) {
+					clsBillDtlModel objBillDtlModel = new clsBillDtlModel();
+					objBillDtlModel.setStrFolioNo(objFolioHdModel.getStrFolioNo());
+					objBillDtlModel.setStrDocNo(objFolioDtlModel.getStrDocNo());
+					objBillDtlModel.setStrPerticulars(objFolioDtlModel.getStrPerticulars());
+					objBillDtlModel.setDteDocDate(objFolioDtlModel.getDteDocDate());
+					objBillDtlModel.setDblBalanceAmt(objFolioDtlModel.getDblBalanceAmt());
+					objBillDtlModel.setDblCreditAmt(objFolioDtlModel.getDblCreditAmt());
+					objBillDtlModel.setDblDebitAmt(objFolioDtlModel.getDblDebitAmt());
+					objBillDtlModel.setStrRevenueType(objFolioDtlModel.getStrRevenueType());
+					objBillDtlModel.setStrRevenueCode(objFolioDtlModel.getStrRevenueCode());
+					objBillDtlModel.setStrUserEdited(objFolioDtlModel.getStrUserEdited());
+					objBillDtlModel.setDteDateEdited(objFolioDtlModel.getDteDateEdited());
+					objBillDtlModel.setStrTransactionType(objFolioDtlModel.getStrTransactionType());
+					
+					
+					
+					grandTotal += objFolioDtlModel.getDblDebitAmt();
+					listBillDtlModel.add(objBillDtlModel);
+					// setBillDtlModel.add(objBillDtlModel);
+				}
+				if(listBillNoCheck!=null && listBillNoCheck.size()>0){
+					String sqlBillDtl = "select * from tblbilldtl a where a.strBillNo='"+billNo+"' and a.strClientCode='"+clientCode+"'";
+					List listBillDtl= objGlobalFunctionsService.funGetListModuleWise(sqlBillDtl, "sql");
+					if(listBillDtl!=null && listBillDtl.size()>0)
+					{
+						for(int g=0;i<listBillDtl.size();i++)
+						{
+							Object[] arr = (Object[]) listBillDtl.get(i);
+							clsBillDtlModel objBillDtlModel = new clsBillDtlModel();
+							objBillDtlModel.setStrFolioNo(arr[1].toString());
+							objBillDtlModel.setStrDocNo(arr[3].toString());
+							objBillDtlModel.setStrPerticulars(arr[4].toString());
+							objBillDtlModel.setDteDocDate(arr[2].toString());
+							objBillDtlModel.setDblBalanceAmt(Double.parseDouble(arr[9].toString()));
+							objBillDtlModel.setDblCreditAmt(Double.parseDouble(arr[8].toString()));
+							objBillDtlModel.setDblDebitAmt(Double.parseDouble(arr[7].toString()));
+							objBillDtlModel.setStrRevenueType(arr[5].toString());
+							objBillDtlModel.setStrRevenueCode(arr[6].toString());
+							objBillDtlModel.setStrUserEdited(arr[13].toString());
+							objBillDtlModel.setDteDateEdited(arr[11].toString());
+							objBillDtlModel.setStrTransactionType(arr[12].toString());
+							
+							
+							
+							grandTotal += Double.parseDouble(arr[7].toString());
+							listBillDtlModel.add(objBillDtlModel);
+						}
+						
+					}
+
+				}
+				DecimalFormat df = new DecimalFormat("0.00");
+				List<clsBillTaxDtlModel> listBillTaxDtlModel = new ArrayList<clsBillTaxDtlModel>();
+				// Set<clsBillTaxDtlModel> setBillTaxDtlModel=new
+				// TreeSet<clsBillTaxDtlModel>();
+				List<clsFolioTaxDtl> listFolioTaxDtlModel = objFolioHdModel.getListFolioTaxDtlModel();
+				if(objCheckOutRoomDtlBean.getStrRemoveTax().equals("Y"))
+				{
+					
+				}
+				else
+				{
+					
+				for (clsFolioTaxDtl objFolioTaxDtlModel : listFolioTaxDtlModel) {
+					clsBillTaxDtlModel objBillTaxDtlModel = new clsBillTaxDtlModel();
+					objBillTaxDtlModel.setStrDocNo(objFolioTaxDtlModel.getStrDocNo());
+					objBillTaxDtlModel.setStrTaxCode(objFolioTaxDtlModel.getStrTaxCode());
+					objBillTaxDtlModel.setStrTaxDesc(objFolioTaxDtlModel.getStrTaxDesc());
+					objBillTaxDtlModel.setDblTaxableAmt(objFolioTaxDtlModel.getDblTaxableAmt());
+					objBillTaxDtlModel.setDblTaxAmt(objFolioTaxDtlModel.getDblTaxAmt());
+					if(!clientCode.equalsIgnoreCase("383.001"))
+					{
+						grandTotal += objBillTaxDtlModel.getDblTaxAmt();
+
+					}
+					
+					
+					listBillTaxDtlModel.add(objBillTaxDtlModel);
+					// setBillTaxDtlModel.add(objBillTaxDtlModel);
+				 }
+			   }
+				objBillHdModel.setStrBillSettled("N");
+				objBillHdModel.setDblGrandTotal(Double.parseDouble(df.format(grandTotal)));
+				objBillHdModel.setListBillDtlModels(listBillDtlModel);
+				objBillHdModel.setListBillTaxDtlModels(listBillTaxDtlModel);
+				objBillHdModel.setStrRemark("");
+				objBillHdModel.setStrMergedBillNo("");
+				
+				//update guestmaster Balance
+				String sqlguest;
+					double closingBal=Double.parseDouble(df.format(grandTotal));
+				double openingBal=0.00;
+			  
+			    
+			    String sql1="select a.dblClosingBalance from tblguestmaster a where a.strGuestCode='"+objFolioHdModel.getStrGuestCode()+"'";
+				List guestlist =  objGlobalFunctionsService.funGetListModuleWise(sql1, "sql");;
+				
+				if(guestlist!=null && guestlist.size()>0)
+				{
+			       openingBal=Double.parseDouble(guestlist.get(0).toString());
+				}
+			    
+			   objBillHdModel.setDblOpeningBalance(openingBal);
+			   closingBal=openingBal+closingBal;
+        	   sqlguest=" update tblguestmaster a set a.dblClosingBalance='"+closingBal+"' where a.strGuestCode='"+objFolioHdModel.getStrGuestCode()+"'";
+      		   objWebPMSUtility.funExecuteUpdate(sqlguest, "sql");
+     		   objBillHdModel.setDblClosingBalance(closingBal);
+                  
+				
+               // objBillHdModel.setSetBillDtlModels(setBillDtlModel);
+				// objBillHdModel.setSetBillTaxDtlModels(setBillTaxDtlModel);
+				
+				LocalTime localTime = LocalTime.now();
+				DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+				
+				String strCurrentTime = localTime.format(dateTimeFormatter);
+				String sqlUpdateCheckOutTime = "update tblcheckinhd a set a.tmeDepartureTime='"+strCurrentTime+"' where a.strCheckInNo='"+objBillHdModel.getStrCheckInNo()+"'  AND a.strClientCode='"+clientCode+"'";
+				objWebPMSUtility.funExecuteUpdate(sqlUpdateCheckOutTime, "sql");
+				
+				String sqlUpdateCheckOutDate ="UPDATE tblcheckinhd a SET a.dteDepartureDate= CONCAT('"+PMSDate+"',' ','00:00:00') "
+				+ "WHERE a.strCheckInNo='"+objBillHdModel.getStrCheckInNo()+"' AND a.strClientCode='"+clientCode+"'";
+				
+				
+				objWebPMSUtility.funExecuteUpdate(sqlUpdateCheckOutDate, "sql");
+				
+				String sql = "insert into tblfoliobckp (select * from tblfoliodtl where strFolioNo='"+objFolioHdModel.getStrFolioNo()+"' AND strclientCode='"+clientCode+"')";
+				objWebPMSUtility.funExecuteUpdate(sql, "sql");
+				
+				
+				objCheckOutService.funSaveCheckOut(objFolioHdModel, objBillHdModel);
+				objCheckOutService.funDeleteFolioHdModel(objFolioHdModel);
+				
+				clsPropertySetupHdModel objPropertySetupModel= objPropertySetupService.funGetPropertySetup(propCode, clientCode);
+
+				if(objPropertySetupModel.getStrEnableHousekeeping().equals("Y"))
+				{
+					String sqlRoomUpdate = "update tblroom a set a.strStatus='Dirty' " + " where a.strRoomCode='" + objBillHdModel.getStrRoomNo() + "' and a.strClientCode='" + objBillHdModel.getStrClientCode() + "'";
+					/*webPMSSessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();*/
+					objWebPMSUtility.funExecuteUpdate(sqlRoomUpdate, "sql");
+					
+				}
+				else
+				{
+					String sqlRoomUpdate = "update tblroom a set a.strStatus='Free' " + " where a.strRoomCode='" + objBillHdModel.getStrRoomNo() + "' and a.strClientCode='" + objBillHdModel.getStrClientCode() + "'";
+					/*webPMSSessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();*/
+					objWebPMSUtility.funExecuteUpdate(sqlRoomUpdate, "sql");
+					
+				}
+				
+				String sqlBillPerticulars = "select a.strPerticulars from tblbilldtl a where a.strBillNo='"+billNo+"' and a.strClientCode='"+clientCode+"'";
+				List listCheckForFullPayment= objGlobalFunctionsService.funGetListModuleWise(sqlBillPerticulars, "sql");
+				String strParticulars = "";
+				for(int j=0;j<listCheckForFullPayment.size();j++)
+				{
+					strParticulars = strParticulars+listCheckForFullPayment.get(j).toString()+",";
+				}
+				strParticulars=strParticulars.substring(0,strParticulars.length()-1);
+				
+				
+				objBillPrintingController.funGenerateBillPrintingReport(PMSDate, PMSDate, billNo, strParticulars, req, resp); 
+				
+			}
+			funSendSMSPayment(billNo, clientCode, RommNo, propCode);
+			clsPropertySetupHdModel objModel1 = objPropertySetupService.funGetPropertySetup(propCode, clientCode);
+			if(objModel.getStrOnlineIntegration().equalsIgnoreCase("Yes"))
+			{
+				funCallAPI(objModel1,clientCode,PMSDate);
+			}
+			req.getSession().setAttribute("success", true);
+			req.getSession().setAttribute("successMessage", "Room No. : ".concat(objBean.getStrSearchTextField()));
+		}
+		return new ModelAndView("redirect:/frmCheckOut.html?saddr=" + urlHits);
+	} else {
+		return new ModelAndView("redirect:/frmCheckOut.html?saddr=" + urlHits);
+	}
+}
 }

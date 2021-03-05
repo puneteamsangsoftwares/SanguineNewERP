@@ -12,6 +12,8 @@ public interface clsCheckOutService {
 	public clsFolioHdModel funGetFolioHdModel(String strRoomNo, String strRegistrationNo, String strReservationNo, String clientCode);
 
 	public void funSaveCheckOut(clsFolioHdModel objFolioHdModel, clsBillHdModel objBillHdModel);
+	
+	public void funDeleteFolioHdModel (clsFolioHdModel objFolioHdModel);
 
 	public List funGetCheckOut(String roomNo, String billNo, String clientCode);
 }
