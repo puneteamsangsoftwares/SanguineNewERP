@@ -33,6 +33,8 @@
 	<parameter name="pDaysForAccomodation" class="java.lang.Double"/>
 	<parameter name="pReservationDte" class="java.lang.String"/>
 	<parameter name="strImagePath1" class="java.lang.String"/>
+	<parameter name="pNoOfPerson" class="java.lang.String"/>
+	<parameter name="pRoomNo" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
@@ -141,7 +143,7 @@
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{strRoomNo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{pRoomNo}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="460" y="50" width="71" height="20" uuid="205d1a76-f8ec-4d11-821a-71cf05e33627"/>
@@ -192,7 +194,7 @@
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{intNoOfAdults}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{pNoOfPerson}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="8" y="30" width="95" height="20" uuid="9b801524-43b9-4fa1-8a81-d8a3a0415c4f"/>

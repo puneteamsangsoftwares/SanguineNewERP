@@ -1620,7 +1620,16 @@ public class clsCheckInController {
 				clsPropertySetupHdModel objPropertySetupModel = objPropertySetupService.funGetPropertySetup(propertyCode, clientCode);
 				HashMap reportParams = new HashMap();			
 				ArrayList datalist = new ArrayList();
-				String reportName = servletContext.getRealPath("/WEB-INF/reports/webpms/rptCheckInSlip.jrxml");			
+				String reportName;
+				if(clientCode.equalsIgnoreCase("378.001"))
+				{
+					reportName= servletContext.getRealPath("/WEB-INF/reports/webpms/rptCheckInSlip1.jrxml");			
+				}
+				else
+				{
+					reportName= servletContext.getRealPath("/WEB-INF/reports/webpms/rptCheckInSlip.jrxml");
+				}
+				
 				if(strAgainst.equalsIgnoreCase("Walk In")){
 				String sql = "SELECT a.strCheckInNo,a.strGuestCode,f.strRoomDesc,"
 						+ "ifnull(a.strExtraBedCode,''), b.strRoomTypeDesc,"
@@ -1630,7 +1639,8 @@ public class clsCheckInController {
 						+ "e.strFirstName,e.strMiddleName,e.strLastName, "
 						+ "IFNULL(e.strAddressOfc,''), IFNULL(e.strCityOfc,''), "
 						+ "IFNULL(e.strStateOfc,''), IFNULL(e.strCountryOfc,''), "
-						+ "IFNULL(e.intPinCodeOfc,''),IFNULL(e.lngMobileNo,0),d.strComplimentry,DATE_FORMAT(d.dteArrivalDate,'%d-%m-%Y'),DATE_FORMAT(d.dteDepartureDate,'%d-%m-%Y'),e.strAddressLocal "
+						+ " IFNULL(e.intPinCodeOfc,''),IFNULL(e.lngMobileNo,0),d.strComplimentry,DATE_FORMAT(d.dteArrivalDate,'%d-%m-%Y'),DATE_FORMAT(d.dteDepartureDate,'%d-%m-%Y'),e.strAddressLocal,e.strEmailId,  "
+						+ " e.strPassportNo,e.dtePassportExpiryDate,e.dtePassportIssueDate,e.strNationality "
 						+ "FROM tblroomtypemaster b,tblwalkinroomratedtl c, "
 						+ "tblcheckinhd d,tblguestmaster e,tblroom f, "
 						+ "tblcheckindtl a left outer join  tblextrabed g on "
@@ -1771,6 +1781,25 @@ public class clsCheckInController {
 				//reportParams.put("pguestCompanyAddr", guestCompanyAddr);
 				reportParams.put("pguestCompanyAddr", arrObjRoomData[24].toString());
 				reportParams.put("pstrMobileNo", strMobileNo);
+				
+				
+				if(clientCode.equalsIgnoreCase("378.001"))
+				{
+					reportParams.put("pDepartureDate", depDate);
+					reportParams.put("pDepartureTime", objPropertySetupModel.getTmeCheckOutTime());
+					reportParams.put("pCity",  arrObjRoomData[17].toString());
+					reportParams.put("pCountry", arrObjRoomData[18].toString());
+					reportParams.put("pEmail",  arrObjRoomData[26].toString());
+					
+					
+					reportParams.put("pPassportNo",  arrObjRoomData[27].toString());
+					reportParams.put("pDateOfExpiry",  arrObjRoomData[28].toString());
+					reportParams.put("pDateOfIssue",  arrObjRoomData[29].toString());
+					reportParams.put("pNationality", arrObjRoomData[30].toString());
+					reportParams.put("pPlaceOfIssue",  " ");
+					
+				}
+				
 				if(clientCode.equalsIgnoreCase("383.001"))
 				{
 					reportParams.put("strImagePath1", imagePath1);	
@@ -1863,7 +1892,8 @@ public class clsCheckInController {
 							+ "e.strFirstName,e.strMiddleName,e.strLastName, "
 							+ "IFNULL(e.strAddressOfc,''), IFNULL(e.strCityOfc,''), "
 							+ "IFNULL(e.strStateOfc,''), IFNULL(e.strCountryOfc,''), "
-							+ "IFNULL(e.intPinCodeOfc,''), IFNULL(e.lngMobileNo,0) ,d.strComplimentry,DATE_FORMAT(d.dteArrivalDate,'%d-%m-%Y'),DATE_FORMAT(d.dteDepartureDate,'%d-%m-%Y') ,h.dblRoomRate,e.strAddressLocal "
+							+ "IFNULL(e.intPinCodeOfc,''), IFNULL(e.lngMobileNo,0) ,d.strComplimentry,DATE_FORMAT(d.dteArrivalDate,'%d-%m-%Y'),DATE_FORMAT(d.dteDepartureDate,'%d-%m-%Y') ,h.dblRoomRate,e.strAddressLocal,e.strEmailId, "
+							+ " e.strPassportNo,e.dtePassportExpiryDate,e.dtePassportIssueDate,e.strNationality "
 							+ "FROM tblroomtypemaster b ,tblguestmaster e,"
 							+ "tblroom f, tblcheckindtl a "
 							+ "LEFT OUTER JOIN tblextrabed g ON g.strExtraBedTypeCode=a.strExtraBedCode "
@@ -1944,7 +1974,7 @@ public class clsCheckInController {
 				    	 for(int i=0;i<listCheckInRes.size();i++)
 				    	 {
 				    		 Object[] obj=( Object[] )listCheckInRes.get(i);
-				    		  if(Double.parseDouble(obj[24].toString())>0)
+				    		 if(Double.parseDouble(obj[24].toString())>0)
 				    		 {
 				    			  roomTarrifRoomrateChange += Double.parseDouble(obj[24].toString());
 				    		 }
@@ -2025,6 +2055,21 @@ public class clsCheckInController {
 					//reportParams.put("pguestCompanyAddr", guestCompanyAddr);
 					reportParams.put("pguestCompanyAddr", arrObjRoomData[25].toString());
 					reportParams.put("pstrMobileNo", strMobileNo);
+					
+					if(clientCode.equalsIgnoreCase("378.001"))
+					{
+						reportParams.put("pDepartureDate", depDate);
+						reportParams.put("pDepartureTime", objPropertySetupModel.getTmeCheckOutTime());
+						reportParams.put("pCity",  arrObjRoomData[17].toString());
+						reportParams.put("pCountry", arrObjRoomData[18].toString());
+						reportParams.put("pEmail",  arrObjRoomData[26].toString());
+						
+						
+						reportParams.put("pPassportNo",  arrObjRoomData[27].toString());
+						reportParams.put("pDateOfExpiry",  arrObjRoomData[28].toString());
+						reportParams.put("pDateOfIssue",  arrObjRoomData[29].toString());
+						reportParams.put("pNationality", arrObjRoomData[30].toString());
+					}
 				
 					if(clientCode.equalsIgnoreCase("378.001"))
 					{

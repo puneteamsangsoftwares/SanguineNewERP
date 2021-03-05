@@ -167,13 +167,13 @@
 				%> alert("Data Save successfully\n\n"+message);
 				var reservationNo='';
 				var AdvAmount='';
-				var isCheckOk=confirm("Do You Want to Generate Reservation Slip ?"); 
+				//var isCheckOk=confirm("Do You Want to Generate Reservation Slip ?"); 
 				var isOk=confirm("Do You Want to pay Advance Amount ?");
-				if(isCheckOk)
+				<%-- if(isCheckOk)
 				{
 					reservationNo='<%=session.getAttribute("AdvanceAmount").toString()%>';
 					window.open(getContextPath() + "/rptReservationSlip.html?reservationNo=" +reservationNo,'_blank');
-				}
+				} --%>
 				if(isOk)
  				{
 					var checkAgainst="Reservation";

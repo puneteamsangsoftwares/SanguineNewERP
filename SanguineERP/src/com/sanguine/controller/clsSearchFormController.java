@@ -3022,7 +3022,7 @@ public class clsSearchFormController {
 */
 		
 		case "guestCode": {
-			columnNames = "strGuestPrefix,strFirstName,strMiddleName,strLastName,strGender,lngMobileNo,dteDOB,strAddress,strCity";
+			columnNames = "strGuestCode,strGuestPrefix,strFirstName,strMiddleName,strLastName,strGender,lngMobileNo,dteDOB,strAddress,strCity";
 			tableName = "clsGuestMasterHdModel where strClientCode='"
 					+ clientCode + "' ";
 			listColumnNames = "Guest prefix,First Name,Middle Name,Last Name,Gender,MobileNo,DOB,Address,City";
