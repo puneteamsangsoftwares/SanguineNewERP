@@ -88,14 +88,11 @@
 			if(document.getElementById("strUnBlockRoomFlag."+no).checked == true)
 			{
 				document.getElementById("strUnBlockRoomFlag."+no).value='Y';
-					
-				
+			
 			}
 			else
 			{
-				
-			    document.getElementById("strUnBlockRoomFlag."+no).value='N';
-					
+			 document.getElementById("strUnBlockRoomFlag."+no).value='N';
 			}
 			no++;
 		});
@@ -109,51 +106,32 @@
 		location.reload(true); 
 	}
 	
-	/* function funBtnSubmit()
+	function funCheckUnBlockRooms()
 	{
-		var submitFlag=false;
-		var roomsFlag=false;
-		var houseKeepingFlag=false;
-		
-		var table=document.getElementById("tblRoom");
-		var rowCount=table.rows.length;
-		for(var i=0;i<rowCount;i++)
-		{			
-			if(document.getElementById("strUnBlockRoomFlag."+i).checked)
-				{
-					roomsFlag=true;
-				}			
-		}		
+		var table = document.getElementById("tblRoom");
+		var rowCount = table.rows.length;	
+		if ($('#chkUnBlockRoomStatus').is(":checked"))
+		{
+		 	//check all			
+			for(var i=0;i<rowCount;i++)
+			{		
+				document.getElementById("strUnBlockRoomFlag."+i).checked=1;
+				document.getElementById("strUnBlockRoomFlag."+i).value='Y';
+	    	}
+		}
+		else
+		{				
+			for(var i=0;i<rowCount;i++)
+			{		
+				document.getElementById("strUnBlockRoomFlag."+i).checked=0;
+				document.getElementById("strUnBlockRoomFlag."+i).value='N';
+	    	}
 			
-		var table=document.getElementById("tblAllTable");
-		var rowCount=table.rows.length;
-		for(var i=0;i<rowCount;i++)
-		{		
-			if(document.getElementById("strHouseKeepingFlag."+i).checked)
-			{
-				houseKeepingFlag=true;
-			}			
-		}
-		
-		if(roomsFlag==false && houseKeepingFlag==false)
-		{
-			alert("Please Select At Least One Room and House Keeping Details");
-		}
-		else if(roomsFlag==false)
-		{
-			alert("Please Select At Least One Room");
-		}
-		else if(houseKeepingFlag==false)
-		{
-			alert("Please Select At Least One House Keeping Details");
-		}
-		if(roomsFlag==true && houseKeepingFlag==true)
-		{
-			submitFlag=true;
-		}
-		
-		return submitFlag;	
-	} */
+		}	   
+	}
+
+	
+	
 	function funUnblockRoom(strRoomCode,strRoomDesc,strRoomTypeCode,strRoomTypeDesc){
 		
 		var table=document.getElementById("tblRoom");
@@ -163,8 +141,9 @@
 	   	row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 295%;margin-left: 14%;\" name=\"listOfUnblockRoom["+(rowCount)+"].strRoomDesc\"  id=\"strRoomDesc."+rowCount+"\" value='"+strRoomTypeDesc+"' >";
 	   	row.insertCell(2).innerHTML= "<input readonly=\"readonly\" type=\"hidden\"  class=\"Box payeeSel\"  style=\"padding-left: 5px;width: 100%;\" name=\"listOfUnblockRoom["+(rowCount)+"].strRoomCode\" id=\"strRoomNo."+rowCount+"\"value='"+strRoomCode+"' >";
 	    row.insertCell(3).innerHTML= "<input readonly=\"readonly\" type=\"hidden\"  class=\"Box payeeSel\"  style=\"padding-left: 5px;width: 100%;\" name=\"listOfUnblockRoom["+(rowCount)+"].strRoomType\" id=\"strRoomType."+rowCount+"\"value='"+strRoomTypeCode+"' >";
-		row.insertCell(4).innerHTML= "<input readonly=\"readonly\" type=\"checkbox\"  class=\"Box payeeSel\"  style=\"padding-left: 5px;width: 100%;\" name=\"listOfUnblockRoom["+(rowCount)+"].strUnBlockRoomFlag\" onClick=\"Javacsript:funCheckUnblockRoom("+rowCount+")\"  id=\"strUnBlockRoomFlag."+rowCount+"\" value='N' >";
-		}
+		row.insertCell(4).innerHTML= "<input readonly=\"readonly\" type=\"checkbox\"  class=\"Box payeeSel\"  style=\"padding-left: 5px;width: 100%;\" name=\"listOfUnblockRoom["+(rowCount)+"].strUnBlockRoomFlag\" onClick=\"Javacsript:funCheckUnblockRoom("+rowCount+")\"  id=\"strUnBlockRoomFlag."+rowCount+"\" value='N' >"; 
+	    
+	}
 			
 </script>
 
@@ -180,7 +159,7 @@
 					<td width="20%">Room Type</td>
 					<td width="20%" style="text-align:center">Room Number</td>
 					<td style="width:26%;padding:5px;float: right;">Select All<br>
-	    				<input type="checkbox" id="chkUnBlockRoomStatus" name="chkBoxAll1" value="Bike" style="margin-left: 10px;" onclick="funCheckUnblockRoom()">
+	    				<input type="checkbox" id="chkUnBlockRoomStatus" name="chkBoxAll1" value="Bike" style="margin-left: 10px;" onclick="funCheckUnBlockRooms()">
 					</td>
 				</tr>
 			</table>

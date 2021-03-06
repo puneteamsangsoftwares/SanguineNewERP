@@ -496,8 +496,9 @@ public class clsVoidBillController {
 					+ " left outer join tblcheckindtl c on a.strCheckInNo=c.strCheckInNo  AND c.strClientCode='"+clientCode+"'"
 					+ " left outer join tblroom d on a.strRoomNo=d.strRoomCode  AND d.strClientCode='"+clientCode+"'"
   					+ " left outer join tblguestmaster e on c.strGuestCode=e.strGuestCode  AND e.strClientCode='"+clientCode+"'" 
-  					+ " where c.strPayee='Y' AND a.strVoidType='fullVoid' or a.strVoidType='itemVoid' " 
- 					+ " AND DATE(a.dteBillDate) BETWEEN '"+fromDate+"' AND '"+toDate+"' "
+  					+ " where c.strPayee='Y' "
+  					+ " AND DATE(a.dteBillDate) BETWEEN '"+fromDate+"' AND '"+toDate+"' "
+  					+ " AND a.strVoidType='fullVoid' or a.strVoidType='itemVoid' " 
  					+ " GROUP BY a.strBillNo,b.strPerticulars " 
 					+ " ORDER BY a.dteBillDate,a.strBillNo;";
 			
@@ -580,6 +581,19 @@ public class clsVoidBillController {
 			//reportParams.put("propName", propName);
 
 			// get all parameters
+			/*String sqlVoid="SELECT a.strBillNo, DATE_FORMAT(a.dteBillDate,'%d-%m-%Y'),a.dblGrandTotal,a.strRemark, "
+					+ " a.strUserCreated,a.strUserEdited,a.strVoidType, d.strRoomDesc, "
+					+ " CONCAT(e.strGuestPrefix,\" \",e.strFirstName,\" \",e.strLastName) AS gName,a.strReasonName "
+					+ " FROM tblvoidbillhd a "
+					+ " left outer join  tblcheckindtl c on a.strCheckInNo=c.strCheckInNo  AND a.strClientCode='"+clientCode+"' AND c.strClientCode='"+clientCode+"' "
+					+ " left outer join tblroom d on a.strRoomNo=d.strRoomCode AND d.strClientCode='"+clientCode+"'"
+					+ " left outer join tblguestmaster e on c.strGuestCode=e.strGuestCode AND e.strClientCode='"+clientCode+"'"
+					+ " where c.strPayee='Y'"
+					+ " and Date(a.dteBillDate) between '"+fromDate+"' and '"+toDate+"' "
+					+ " AND a.strVoidType='itemVoid' "
+ 					+ " OR a.strVoidType='fullVoid' and c.strRoomNo=d.strRoomCode "
+					+ " order by a.strBillNo;";*/
+			
 			String sqlVoid="SELECT a.strBillNo, DATE_FORMAT(a.dteBillDate,'%d-%m-%Y'),a.dblGrandTotal,a.strRemark, "
 					+ " a.strUserCreated,a.strUserEdited,a.strVoidType, d.strRoomDesc, "
 					+ " CONCAT(e.strGuestPrefix,\" \",e.strFirstName,\" \",e.strLastName) AS gName,a.strReasonName "
@@ -587,9 +601,9 @@ public class clsVoidBillController {
 					+ " left outer join  tblcheckindtl c on a.strCheckInNo=c.strCheckInNo  AND a.strClientCode='"+clientCode+"' AND c.strClientCode='"+clientCode+"' "
 					+ " left outer join tblroom d on a.strRoomNo=d.strRoomCode AND d.strClientCode='"+clientCode+"'"
 					+ " left outer join tblguestmaster e on c.strGuestCode=e.strGuestCode AND e.strClientCode='"+clientCode+"'"
-					+ " where c.strPayee='Y' AND a.strVoidType='itemVoid' "
- 					+ " OR a.strVoidType='fullVoid' and c.strRoomNo=d.strRoomCode "
+					+ " where c.strPayee='Y'"
 					+ " and Date(a.dteBillDate) between '"+fromDate+"' and '"+toDate+"' "
+					+ " AND a.strVoidType IN ('itemVoid','fullVoid') "
 					+ " order by a.strBillNo;";
 			
 	

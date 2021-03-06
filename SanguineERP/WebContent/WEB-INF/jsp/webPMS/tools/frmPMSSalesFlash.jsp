@@ -20,13 +20,14 @@ var frmDte1="",toDte1="",maxQuantityDecimalPlaceLimit=2;
 var dblTotalSale=0.0;
 
 $(document).ready(function() 
-		{		
-		
-			$("#dteFromDate").datepicker({ dateFormat: 'dd-mm-yy' });
-			$("#dteFromDate").datepicker('setDate','today');
+		{	
+	       
+	        var pmsDate='<%=session.getAttribute("PMSDate").toString()%>';
+	        $("#dteFromDate").datepicker({ dateFormat: 'dd-mm-yy' });
+			$("#dteFromDate").datepicker('setDate',pmsDate);
 			$("dteFromDate").datepicker();
 			$("#dteToDate").datepicker({ dateFormat: 'dd-mm-yy' });
-			$("#dteToDate" ).datepicker('setDate', 'today');
+			$("#dteToDate" ).datepicker('setDate', pmsDate);
 			$("#dteToDate").datepicker();
 			
 			var oldFrmDate=$('#dteFromDate').val().split('-');

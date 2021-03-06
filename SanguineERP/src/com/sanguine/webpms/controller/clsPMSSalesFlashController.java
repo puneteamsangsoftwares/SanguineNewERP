@@ -521,12 +521,13 @@ public class clsPMSSalesFlashController {
 				+ " left outer join tblcheckindtl c on a.strCheckInNo=c.strCheckInNo AND c.strClientCode='"+strClientCode+"'"
 				+ " left outer join tblroom d on a.strRoomNo=d.strRoomCode AND d.strClientCode='"+strClientCode+"'"
 				+ " left outer join tblguestmaster e on c.strGuestCode=e.strGuestCode  AND e.strClientCode='"+strClientCode+"'"
-				+ " where c.strPayee='Y' AND a.strVoidType='fullVoid' or a.strVoidType='itemVoid' "
+				+ " where c.strPayee='Y' "
 				+ " AND DATE(a.dteBillDate) BETWEEN '"
-				+ fromDte
-				+ "' AND '"
-				+ toDte
-				+ "' "
+				+  fromDte
+				+  "' AND '"
+				+  toDte
+				+  "' "
+				+  " AND a.strVoidType='fullVoid' or a.strVoidType='itemVoid' "
 				+ " GROUP BY a.strBillNo,b.strPerticulars "
 				+ " ORDER BY a.dteBillDate,a.strBillNo;";
 		
@@ -1921,12 +1922,13 @@ public class clsPMSSalesFlashController {
 				+ " left outer join tblcheckindtl c on a.strCheckInNo=c.strCheckInNo AND c.strClientCode='"+strClientCode+"'"
 				+ " left outer join tblroom d on a.strRoomNo=d.strRoomCode AND d.strClientCode='"+strClientCode+"'"
 				+ " left outer join tblguestmaster e on c.strGuestCode=e.strGuestCode  AND e.strClientCode='"+strClientCode+"'"
-				+ " where c.strPayee='Y' AND a.strVoidType='fullVoid' or a.strVoidType='itemVoid' "
+				+ " where c.strPayee='Y' "
 				+ " AND DATE(a.dteBillDate) BETWEEN '"
 				+ fromDte
 				+ "' AND '"
 				+ toDte
 				+ "' "
+				+ " AND a.strVoidType='fullVoid' or a.strVoidType='itemVoid' "
 				+ " GROUP BY a.strBillNo,b.strPerticulars "
 				+ " ORDER BY a.dteBillDate,a.strBillNo;";
 		

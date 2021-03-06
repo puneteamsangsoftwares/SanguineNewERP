@@ -155,7 +155,7 @@
 		    }
 		   	totalAmt=parseFloat(totalAmt).toFixed(maxAmountDecimalPlaceLimit);
 		}
-		$("#dblTotalAmt").text(totalAmt);
+		$("#dblTotalAmt").val(totalAmt);
 	}
 
 	
@@ -452,13 +452,11 @@
 				</table>
 			</div>			
 		</div>	
-		<div class="dynamicTableContainer" style="height: 25px; width: 30%;overflow-x: hidden;background:#fbfafa">
-			<div class="row">
-				 <div class="col-md-3"> <label>Total</label>
-					  <label id ="dblTotalAmt">0.00</label>									
-				</div>				
-			</div>
-		</div>
+		<div class="row">
+		<div class="col-md-3 "><label>Total</label>
+             <s:input id="dblTotalAmt" path="" style="text-align:right;" readonly="true" cssClass="shortTextBox"/>
+	    </div>
+	    </div>
 		<!-- Generate Dynamic Table   -->
 		
 		<br />
