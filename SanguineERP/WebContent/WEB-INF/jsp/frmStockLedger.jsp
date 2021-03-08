@@ -168,7 +168,8 @@
 		    			}
 			$.each(response, function(i,item)
 			{
-				if(qtyWithUOM.includes("Yes")){
+				if(qtyWithUOM.includes("Yes"))
+				{
 					
 					issueConversion = parseFloat(item[7].split("!")[0]);	
 				}
@@ -205,20 +206,18 @@
 				   	row1.insertCell(7).innerHTML= "<label>"+item[6]/currValue+"</label>";
 				   	row1.insertCell(8).innerHTML= "<label>0</label>";
 				   	if(qtyWithUOM=='Yes')
-			   		{
-				   	
-				   	 //row1.insertCell(9).innerHTML= "<input type=\"hidden\" value='"+item[7]+"'/>";
-				   	 
-				   		row1.insertCell(8).innerHTML= "<label type=\"hidden\">"+item[7]+"</label>";
+			   		{				   	
+				   	    row1.insertCell(9).innerHTML= "<input type=\"hidden\" value='"+item[7]+"'/>";
+				   		//row1.insertCell(8).innerHTML= "<label type=\"hidden\">"+item[7]+"</label>";
 			   		}
 				   	if(item[7].toString().includes("!"))
-				   		{
-				   		freeQty += parseFloat(item[8]);
-				   		}
+			   		{
+			   		    freeQty += parseFloat(item[8]);
+			   		}
 				   	else
-				   		{
-				   			freeQty += parseFloat(item[7]);
-				   		}
+			   		{
+			   			freeQty += parseFloat(item[7]);
+			   		}
 				 
 				}
 			});
@@ -250,16 +249,20 @@
 				{
 					var negtveSign="";
 					if(issue.charAt(0)=="-")
-						{
-						var issueData=issue.substring(1,issue.length);
-						bal = bal + (parseFloat(rec) + parseFloat(issue));
-						
-						}else{
-						bal = bal + (parseFloat(rec) - parseFloat(issue));
-						}
-						cells1[6].innerHTML = "<label>"+bal.toFixed(maxQuantityDecimalPlaceLimit)+ "</label>";
+					{
+					   var issueData=issue.substring(1,issue.length);
+					   bal = bal + (parseFloat(rec) + parseFloat(issue));
+					
+					}
+					else
+					{
+					   bal = bal + (parseFloat(rec) - parseFloat(issue));
+					}
+					cells1[6].innerHTML = "<label>"+bal.toFixed(maxQuantityDecimalPlaceLimit)+ "</label>";
 // 						bal = negtveSign+""+bal;
-				} else {
+				} 
+				else
+				{
 					var tempRecipts = 0;
 					var tempIssue = 0;
 					var totRowBal = 0;
@@ -290,7 +293,6 @@
 							var highNLowData = rec.split(".");
 							var highNo = highNLowData[0].split(" ");
 							dblReptHigh = parseFloat(highNo[0])	* parseFloat(recipeConv.substr(28));
-
 							var lowNo = highNLowData[1].split(" ");
 							if(lowNo !="")
 							{
@@ -298,21 +300,23 @@
 								var totHighlowRecipt = dblReptHigh + dblRectlow;
 								tempRecipts = parseFloat(tempRecipts)+ totHighlowRecipt;
 							}else
-								{
-									tempRecipts = parseFloat(tempRecipts)+ dblReptHigh;
-								}
+							{
+								tempRecipts = parseFloat(tempRecipts)+ dblReptHigh;
+							}
 							
-						} else {
+						} 
+						else 
+						{
 							if(rec=="")
-								{
+							{
 								
-								}
+							}
 							else
-								{
+							{
 								dblRectlow = rec.split(" ");
 								dblRectlow = parseFloat(dblRectlow[0]);
 								tempRecipts = parseFloat(tempRecipts) + dblRectlow;
-								}
+							}
 							
 						}
 
