@@ -620,7 +620,14 @@ overflow-x: hidden;
 				    
 				    if(guestCode==cheGuestCode)
 				    {
-				    	row.insertCell(6).innerHTML= "<input id=\"cbItemCodeSel."+(rowCount)+"\" type=\"checkbox\" checked=\"checked\" style=\"margin-left: -605%;\" class=\"Box payeeSel\" name=\"listCheckInDetailsBean["+(rowCount)+"].strPayee\"  value=\"Y\" onClick=\"Javacsript:funCheckBoxRow(this)\"  />";
+				    	if(rowCount == 0)
+				    		{
+				    		row.insertCell(6).innerHTML= "<input id=\"cbItemCodeSel."+(rowCount)+"\" type=\"checkbox\" checked=\"checked\" style=\"margin-left: -605%;\" class=\"Box payeeSel\" name=\"listCheckInDetailsBean["+(rowCount)+"].strPayee\"  value=\"Y\" onClick=\"Javacsript:funCheckBoxRow(this)\"  />";
+				    		}
+				    	else
+				    		{
+				    		row.insertCell(6).innerHTML= "<input id=\"cbItemCodeSel."+(rowCount)+"\" type=\"checkbox\" style=\"margin-left: -605%;\" class=\"Box payeeSel\" name=\"listCheckInDetailsBean["+(rowCount)+"].strPayee\"  value=\"N\" onClick=\"Javacsript:funCheckBoxRow(this)\"  />";
+				    		}
 				    }
 				    else
 				    {

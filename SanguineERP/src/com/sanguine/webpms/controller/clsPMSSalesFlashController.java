@@ -307,9 +307,10 @@ public class clsPMSSalesFlashController {
 				  +" CONCAT(d.strFirstName,' ',d.strMiddleName,'',d.strLastName) "
                   +" FROM tblcheckinhd a,tblcheckindtl b,tblroom c,tblguestmaster d "
                   +" WHERE a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=c.strRoomCode AND b.strGuestCode=d.strGuestCode "
-                  + "AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' "
-                  + "AND d.strClientCode='"+strClientCode+"'"
-                  +" AND DATE(a.dteDepartureDate) BETWEEN '"+fromDte+"' AND '"+toDte+"';";
+                  +" AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' "
+                  +" AND d.strClientCode='"+strClientCode+"'"
+                  +" AND DATE(a.dteDepartureDate) BETWEEN '"+fromDte+"' AND '"+toDte+"'"
+                  +" AND a.strCheckInNo NOT IN (SELECT a.strCheckInNo FROM tblbillhd a); ";
 		
 		List listExpectedDeptDtl=objGlobalService.funGetListModuleWise(sql,"sql");
 		if(!listExpectedDeptDtl.isEmpty())
@@ -1317,7 +1318,8 @@ public class clsPMSSalesFlashController {
 				  +" CONCAT(d.strFirstName,' ',d.strMiddleName,'',d.strLastName) "
                   +" FROM tblcheckinhd a,tblcheckindtl b,tblroom c,tblguestmaster d "
                   +" WHERE a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=c.strRoomCode AND b.strGuestCode=d.strGuestCode "
-                  +" AND DATE(a.dteDepartureDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"';";
+                  +" AND DATE(a.dteDepartureDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' "
+                  +" AND a.strCheckInNo NOT IN (SELECT a.strCheckInNo FROM tblbillhd a); ";
 		List listExpectedDeptDtl=objGlobalService.funGetListModuleWise(sql,"sql");
 		if(!listExpectedDeptDtl.isEmpty())
 		{

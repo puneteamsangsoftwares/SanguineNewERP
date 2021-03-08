@@ -169,7 +169,7 @@
 		var rowCount=table.rows.length;
 		var row=table.insertRow();
 	   
- 	    row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listCheckOutRoomDtlBeans["+(rowCount)+"].strRoomNo\" id=\"strRoomNo."+(rowCount)+"\" value='"+obj.strRoomNo+"' >";
+ 	    row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listCheckOutRoomDtlBeans["+(rowCount)+"].strRoomDesc\" id=\"strRoomDesc."+(rowCount)+"\" value='"+obj.strRoomDesc+"' >";
         row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listCheckOutRoomDtlBeans["+(rowCount)+"].strRegistrationNo\" id=\"strRegistrationNo."+(rowCount)+"\"  value='"+obj.strRegistrationNo+"' >";
 		row.insertCell(2).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listCheckOutRoomDtlBeans["+(rowCount)+"].strFolioNo\" id=\"strFolioNo."+(rowCount)+"\"  value='"+obj.strFolioNo+"' >";
 		row.insertCell(3).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listCheckOutRoomDtlBeans["+(rowCount)+"].strGuestName\" id=\"strGuestName."+(rowCount)+"\"  value='"+obj.strGuestName+"' >";
@@ -179,6 +179,9 @@
 		row.insertCell(7).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listCheckOutRoomDtlBeans["+(rowCount)+"].strCorporate\" id=\"strCorporate."+(rowCount)+"\" value='"+obj.strCorporate+"' >";
 		row.insertCell(8).innerHTML= "<input readonly=\"readonly\" type=\"checkbox\"  class=\"Box payeeSel\"  style=\"padding-left: 5px;width: 100%;\" name=\"listCheckOutRoomDtlBeans["+(rowCount)+"].strRemoveTax\" id=\"strRemoveTax."+(rowCount)+"\" value='Y' >";
 		row.insertCell(9).innerHTML= "<input type=\"button\" class=\"deletebutton\" size=\"6%\" value = \"\" onClick=\"Javacsript:funDeleteRow(this)\"/>";
+		row.insertCell(10).innerHTML= "<input type=\"hidden\" class=\"Box \" name=\"listCheckOutRoomDtlBeans["+(rowCount)+"].strRoomNo\" id=\"strRoomNo."+(rowCount)+"\" value='"+obj.strRoomNo+"' >";
+
+
 	}
 	
 	
@@ -553,7 +556,7 @@
 				<!-- <th align="right" colspan="6"><a id="baseUrl"
 					href="#"> Attach Documents</a>&nbsp; &nbsp; &nbsp;
 						&nbsp;</th> -->
-		<div class="dynamicTableContainer" style="height: 200px;">
+		<div class="dynamicTableContainer" style="height:304px;">
 				<input type="checkbox" id="chkBoxAll" name="chkBoxAll1" value="Bike" style="margin-left: 1050px;" onclick="funCheckbox()">
 		<br />
 		<br />
@@ -603,39 +606,40 @@
 									
 				</tr>
 			</table>
-			<div style="background-color: #fbfafa; border: 1px solid #ccc; display: block; height: 200px; margin: auto; overflow-x: hidden; overflow-y: scroll; width: 100%;">
+			<div style="background-color: #fbfafa; border: 1px solid #ccc; display: block; height: 215px; margin: auto; overflow-x: hidden; overflow-y: scroll; width: 100%;">
 				<table id="tblRoomDtl" style="width: 100%; border: #0F0; table-layout: fixed; overflow: scroll" class="transTablex col9-center">
 					<tbody>
 						<!-- col1   -->
-						<col style="width: 65px">
+						<col style="width: 80px">
+						<!-- col1   -->
 						<!-- col1   -->
 						
 						<!-- col2   -->
-						<col  style="width: 85px;" >
+						<col style="width: 118px;">
 						<!-- col2   -->
 						
 						<!-- col3   -->
-						<col style="width: 65px;">
+						<col style="width: 85px;">
 						<!-- col3   -->
 						
 						<!-- col4   -->
-						<col style="width: 250px;">
+						<col style="width: 311px;">
 						<!-- col4   -->
 						
 						<!-- col5   -->
-						<col style="width: 60px;" >
+						<col style="width: 71px;">
 						<!-- col5   -->
 						
 						<!-- col6   -->
-						<col style="width: 75px;">
+						<col style="width: 95px;">
 						<!-- col6   -->
 						
 						<!-- col7   -->
-						<col style="width: 85px;">
+						<col style="width: 112px;">
 						<!-- col7   -->
 						
 						<!-- col8   -->
-						<col style="width: 70px;">
+						<col style="width: 93px;">
 						<!-- col8   -->
 						
 						<!-- col9   -->

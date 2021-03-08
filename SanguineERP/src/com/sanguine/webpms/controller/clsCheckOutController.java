@@ -142,13 +142,22 @@ public class clsCheckOutController {
 		if(request.getParameter("groupCheckIn")!=null)
 		{
 			request.getSession().setAttribute("GroupCheckIn", "Y");			
-			sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA') "
+			/*sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA') "
 					+ " from tblcheckinhd a left outer join tblcheckindtl b on a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
 					+ " left outer join tblreservationhd c on a.strReservationNo=c.strReservationNo AND c.strClientCode='"+clientCode+"'"
 					+ " left outer join tblfoliohd d on a.strCheckInNo=d.strCheckInNo AND d.strClientCode='"+clientCode+"'" 
 					+ " left outer join tblguestmaster f on b.strGuestCode=f.strGuestCode AND f.strClientCode='"+clientCode+"'" 
 					+ " left outer join tblwalkinhd g on a.strWalkInNo=g.strWalkinNo AND g.strClientCode='"+clientCode+"'"
 					+ " where d.strCheckInNo='" + roomCode + "' " + " and d.strGuestCode=f.strGuestCode group by d.strFolioNo ";	
+             */
+			
+			sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA')  ,h.strRoomDesc "
+					+ " from tblcheckinhd a left outer join tblcheckindtl b on a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
+					+ " left outer join tblreservationhd c on a.strReservationNo=c.strReservationNo AND c.strClientCode='"+clientCode+"'"
+					+ " left outer join tblfoliohd d on a.strCheckInNo=d.strCheckInNo AND d.strClientCode='"+clientCode+"'" 
+					+ " left outer join tblguestmaster f on b.strGuestCode=f.strGuestCode AND f.strClientCode='"+clientCode+"'" 
+					+ " left outer join tblwalkinhd g on a.strWalkInNo=g.strWalkinNo AND g.strClientCode='"+clientCode+"' ,tblroom h  "
+					+ " where d.strRoomNo=h.strRoomCode AND d.strCheckInNo='" + roomCode + "' " + " and d.strGuestCode=f.strGuestCode group by d.strFolioNo ";	
 
 
 			
@@ -165,6 +174,7 @@ public class clsCheckOutController {
 				objCheckOutRoomDtlBean.setDteCheckOutDate(obj[9].toString());
 				objCheckOutRoomDtlBean.setStrCorporate(obj[10].toString());
 				objCheckOutRoomDtlBean.setDblAmount(0);
+				objCheckOutRoomDtlBean.setStrRoomDesc(obj[11].toString());
 
 				sql = "select a.strFolioNo,sum(b.dblDebitAmt) " + " from tblfoliohd a,tblfoliodtl b " + " where a.strFolioNo=b.strFolioNo and a.strRoomNo='" + obj[5].toString() + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'  and  a.strFolioNo='"+objCheckOutRoomDtlBean.getStrFolioNo()+"' group by a.strFolioNo";
 				List listFolioAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
@@ -177,7 +187,11 @@ public class clsCheckOutController {
 				List listFolioTaxAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 				for (int cnt = 0; cnt < listFolioTaxAmt.size(); cnt++) {
 					Object[] arrObjFolio = (Object[]) listFolioTaxAmt.get(cnt);
-					objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() + Double.parseDouble(arrObjFolio[1].toString()));
+					if(!clientCode.equalsIgnoreCase("383.001"))
+					{
+						objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() + Double.parseDouble(arrObjFolio[1].toString()));
+					}
+					
 				}
 
 				sql = "select a.strReceiptNo,sum(b.dblSettlementAmt) " + " from tblreceipthd a,tblreceiptdtl b " + " where a.strReceiptNo=b.strReceiptNo and a.strRegistrationNo='" + objCheckOutRoomDtlBean.getStrRegistrationNo() + "' and a.strAgainst='Check-In' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' group by a.strReceiptNo";
@@ -229,13 +243,21 @@ public class clsCheckOutController {
 		else
 		{
 			request.getSession().setAttribute("GroupCheckIn", "N");		
-			sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA') "
+			/*sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA') "
 					+ " from tblcheckinhd a left outer join tblcheckindtl b on a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
 					+ " left outer join tblreservationhd c on a.strReservationNo=c.strReservationNo AND c.strClientCode='"+clientCode+"'"
 					+ " left outer join tblfoliohd d on a.strCheckInNo=d.strCheckInNo AND d.strClientCode='"+clientCode+"'" 
 					+ " left outer join tblguestmaster f on b.strGuestCode=f.strGuestCode AND f.strClientCode='"+clientCode+"'" 
 					+ " left outer join tblwalkinhd g on a.strWalkInNo=g.strWalkinNo AND g.strClientCode='"+clientCode+"'"
 					+ " where d.strRoomNo='" + roomCode + "' " + " group by d.strFolioNo ";		
+			*/
+			sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA'), h.strRoomDesc "
+					+ " from tblcheckinhd a left outer join tblcheckindtl b on a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
+					+ " left outer join tblreservationhd c on a.strReservationNo=c.strReservationNo AND c.strClientCode='"+clientCode+"'"
+					+ " left outer join tblfoliohd d on a.strCheckInNo=d.strCheckInNo AND d.strClientCode='"+clientCode+"'" 
+					+ " left outer join tblguestmaster f on b.strGuestCode=f.strGuestCode AND f.strClientCode='"+clientCode+"'" 
+					+ " left outer join tblwalkinhd g on a.strWalkInNo=g.strWalkinNo AND g.strClientCode='"+clientCode+"' ,tblroom h  "
+					+ " where  d.strRoomNo=h.strRoomCode AND d.strRoomNo='" + roomCode + "' " + " group by d.strFolioNo ";	
 			
 			List list = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 
@@ -252,6 +274,7 @@ public class clsCheckOutController {
 				objCheckOutRoomDtlBean.setDteCheckOutDate(obj[9].toString());
 				objCheckOutRoomDtlBean.setStrCorporate(obj[10].toString());
 				objCheckOutRoomDtlBean.setDblAmount(0);
+				objCheckOutRoomDtlBean.setStrRoomDesc(obj[11].toString());
 
 				sql = "select a.strFolioNo,sum(b.dblDebitAmt) " + " from tblfoliohd a,tblfoliodtl b " + " where a.strFolioNo=b.strFolioNo and a.strRoomNo='" + roomCode + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' group by a.strFolioNo";
 				List listFolioAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
@@ -1239,7 +1262,7 @@ public class clsCheckOutController {
 				objBillPrintingController.funGenerateBillPrintingReport(PMSDate, PMSDate, billNo, strParticulars, req, resp); 
 				
 			}
-			funSendSMSPayment(billNo, clientCode, RommNo, propCode);
+			//funSendSMSPayment(billNo, clientCode, RommNo, propCode);
 			clsPropertySetupHdModel objModel1 = objPropertySetupService.funGetPropertySetup(propCode, clientCode);
 			if(objModel.getStrOnlineIntegration().equalsIgnoreCase("Yes"))
 			{
