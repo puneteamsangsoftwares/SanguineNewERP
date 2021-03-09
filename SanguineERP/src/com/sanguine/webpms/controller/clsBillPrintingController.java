@@ -3203,7 +3203,6 @@ public class clsBillPrintingController {
 						if(particulars.equalsIgnoreCase("Room Tariff"))
 						{
 							count++;
-							
 						}
 						
 						
@@ -3686,6 +3685,25 @@ public class clsBillPrintingController {
 					}
 				}
 				
+			
+				String sqlRefund="select DATE_FORMAT(a.dteReceiptDate,'%d-%m-%Y'),a.strReceiptNo,a.dblReceiptAmt from tblreceipthd a where a.strType='Refund Amt' and a.strBillNo='"+billNo+"'";
+				List guestlist =  objGlobalFunctionsService.funGetListModuleWise(sqlRefund, "sql");;
+				for (int i = 0; i < guestlist.size(); i++) {
+					Object[]  arrRefund = (Object[]) guestlist.get(i);
+					balance = balance + Double.parseDouble(arrRefund[2].toString());
+					clsBillPrintingBean folioPrintingBean = new clsBillPrintingBean();
+					folioPrintingBean.setDteDocDate(arrRefund[0].toString());
+					folioPrintingBean.setStrDocNo(arrRefund[1].toString());
+					folioPrintingBean.setStrPerticulars("Refund Amount");
+					folioPrintingBean.setDblDebitAmt(Double.parseDouble(arrRefund[2].toString()));
+					folioPrintingBean.setDblCreditAmt(0.00);
+					folioPrintingBean.setDblBalanceAmt(balance);
+							
+					dataList.add(folioPrintingBean);
+					
+				}
+				
+				
 
 			}
 			List<clsBillPrintingBean> listtax=new ArrayList<>();
@@ -3721,6 +3739,8 @@ public class clsBillPrintingController {
 			{
 				reportParams.put("pSettlementType",settlist.get(0).toString());
 			}
+			
+			
 			
 			reportParams.put("listtax", listtax);
 			reportParams.put("pSupportVoucher", pSupportVoucher);

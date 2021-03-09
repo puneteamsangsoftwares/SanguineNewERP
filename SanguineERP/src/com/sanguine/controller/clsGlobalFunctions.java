@@ -1648,6 +1648,20 @@ public class clsGlobalFunctions {
 					+ " and MID(a.strReceiptNo,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' ";
 			break;
+			
+		case "frmRefund":
+			strDocLiteral = "REF";
+			sql = "select ifnull(max(MID(a.strReceiptNo,8,6)),'' )as strReceiptNo "
+					+ " from tblreceipthd a where MID(a.strReceiptNo,6,1) = '"
+					+ transYear
+					+ "' "
+					+ " and MID(a.strReceiptNo,7,1) = '"
+					+ transMonth
+					+ "' "
+					+ " and MID(a.strReceiptNo,1,2) = '"
+					+ propCode + "' and strClientCode='" + clientCode + "' ";
+			break;	
+			
 		}
 		List list = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 		if (list != null && !list.isEmpty() && !list.contains("")) {
