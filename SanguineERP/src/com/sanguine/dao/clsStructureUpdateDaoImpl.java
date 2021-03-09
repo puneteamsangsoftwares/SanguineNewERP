@@ -5227,6 +5227,11 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
         
         sql="ALTER TABLE `tblguestmaster` ADD COLUMN `dblClosingBalance` DECIMAL(18,2) NOT NULL AFTER `strRemark`;" ;
         funExecutePMSQuery(sql);
+        
+        sql=" ALTER TABLE `tblchangeroom`"
+          + " CHANGE COLUMN `strRoomTypeCode` `strRoomTypeCode` VARCHAR(100) NOT NULL AFTER `strRoomNo`;" ;
+        funExecutePMSQuery(sql);
+      
 	        
 		/// END ///
 
