@@ -126,8 +126,7 @@ public class clsReOpenFolioController
 						//+ " and a.strBillNo  Not IN(select b.strBillNo from tblreceipthd b) and a.strFolioNo='"+objBean.getStrFolioNo()+"' "
 						+ " and a.strFolioNo='"+objBean.getStrFolioNo()+"' "
 						+ " group by a.strFolioNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' AND c.strClientCode='"+clientCode+"' AND d.strClientCode='"+clientCode+"' AND e.strClientCode='"+clientCode+"'";
-				
-				
+			
 				boolean flag=false;
 				String strBillNo="";
 				List list = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
@@ -147,7 +146,7 @@ public class clsReOpenFolioController
 					objFolioBean.setTmeDepartureTime(arrObjData[9].toString());
 					objFolioBean.setStrExtraBedCode(arrObjData[10].toString());
 					objFolioBean.setStrGuestCode(arrObjData[11].toString());
-					strBillNo=arrObjData[12].toString();
+					
 					clsFolioHdModel objFolioHdModel = objFolioController.funPrepareFolioModel(objFolioBean, clientCode, req);
 					List<clsFolioDtlModel> listFolioDtlModels = new ArrayList<>();
 					clsFolioDtlModel objDtl=new clsFolioDtlModel();
@@ -157,6 +156,7 @@ public class clsReOpenFolioController
 					{
 						
 						Object[] arrDtlData = (Object[]) listDtl.get(i);
+						strBillNo=strBillNo+","+ "'"+arrDtlData[0].toString()+"'" ;
 						objDtl=new clsFolioDtlModel();
 						objDtl.setDteDocDate(arrDtlData[2].toString());
 						objDtl.setStrDocNo(arrDtlData[3].toString());
@@ -196,16 +196,19 @@ public class clsReOpenFolioController
 					objFolioHdModel.setListFolioTaxDtlModel(listFolioTaxDtls);
 					objFolioService.funAddUpdateFolioHd(objFolioHdModel);
 					flag=true;
+					
+					
 				}
+				strBillNo=strBillNo.substring(1);
 				if(flag)
 				{
-					String sqlDelete="delete from tblbillhd  where strBillNo='"+strBillNo+"'";
+					String sqlDelete="delete from tblbillhd  where strBillNo IN ("+strBillNo+")";
 					objWebPMSUtility.funExecuteUpdate(sqlDelete,"sql");
 					
-					sqlDelete="delete from tblbilldtl  where strBillNo='"+strBillNo+"'";
+					sqlDelete="delete from tblbilldtl  where strBillNo IN ("+strBillNo+")";
 					objWebPMSUtility.funExecuteUpdate(sqlDelete,"sql");
 					
-					sqlDelete="delete from tblbilltaxdtl  where strBillNo='"+strBillNo+"'";
+					sqlDelete="delete from tblbilltaxdtl  where strBillNo IN ("+strBillNo+") ";
 					objWebPMSUtility.funExecuteUpdate(sqlDelete,"sql");
 					
 				}

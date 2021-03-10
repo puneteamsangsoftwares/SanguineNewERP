@@ -249,6 +249,8 @@ public class clsFolioPrintingController {
 				}
 				
 				//Printing Balance
+				if(clientCode.equalsIgnoreCase("378.001"))
+				{
 				
 					clsFolioPrintingBean folioBean = new clsFolioPrintingBean();
 					double debitAmt = Double.parseDouble(arr[16].toString());
@@ -279,7 +281,7 @@ public class clsFolioPrintingController {
 					folioBean.setDblBalanceAmt(bal);
 					folioBean.setDblQuantity(0.00);
 					dataList.add(folioBean);
-				
+				}
 				
 
 				reportParams.put("pCompanyName", companyName);

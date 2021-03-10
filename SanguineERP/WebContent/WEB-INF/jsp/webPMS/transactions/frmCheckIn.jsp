@@ -2323,7 +2323,7 @@ overflow-x: hidden;
 									
 		<h3><a href="#">Tariff</a></h3>
 			<div>							
-			<div class="dynamicTableContainer" style="height: 200px; width: 100%; margin:auto;">
+			<div class="dynamicTableContainer" style="height: 235px; width: 100%; margin:auto;">
 			<table style="height: 28px; border: #0F0; width: 100%;font-size:13px; font-weight: bold;">
 				<tr bgcolor="#c0c0c0" style="height: 24px;">
 					<!-- col1   -->
