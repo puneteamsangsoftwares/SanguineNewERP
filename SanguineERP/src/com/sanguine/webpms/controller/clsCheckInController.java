@@ -424,7 +424,7 @@ public class clsCheckInController {
 								}
 								listRommRate.add(objRommDtlBean);
 							}
-							}
+						}
 						objWalkinHdModel.setListWalkinRoomRateDtlModel(listRommRate);
 						objWalkinDao.funAddUpdateWalkinHd(objWalkinHdModel);
 					}

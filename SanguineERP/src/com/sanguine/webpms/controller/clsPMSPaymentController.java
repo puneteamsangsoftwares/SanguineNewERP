@@ -646,7 +646,9 @@ public class clsPMSPaymentController {
 					    + "LEFT OUTER JOIN tblroom h ON h.strRoomCode=c.strRoomNo  "
 					    + ",tblroomtypemaster g " 
 					    + "where c.strRoomType=g.strRoomTypeCode "
-					    + "and a.strReceiptNo='" + reciptNo + "' and a.strClientCode='" + clientCode + "'  AND g.strClientCode='"+clientCode+"'";
+					    + "and a.strReceiptNo='" + reciptNo + "' and a.strClientCode='" + clientCode + "' "
+					    + "  AND g.strClientCode='"+clientCode+"'"
+					    + " group by a.strReceiptNo ";
 			
 				List listOfPayment = objGlobalFunctionsService.funGetDataList(sqlPayment, "sql");
 
@@ -819,9 +821,9 @@ public class clsPMSPaymentController {
 				}
 			}
 			else {
-				reportName = servletContext.getRealPath("/WEB-INF/reports/webpms/rptCheckInPaymentRecipt.jrxml");
+ 				reportName = servletContext.getRealPath("/WEB-INF/reports/webpms/rptCheckInPaymentRecipt.jrxml");
 
-				String sqlPayment = "SELECT a.strReceiptNo, IFNULL(c.intNoOfAdults,''), "
+ 				String sqlPayment = "SELECT a.strReceiptNo, IFNULL(c.intNoOfAdults,''), "
 						+ "IFNULL(c.intNoOfChild,''), a.strReservationNo,c.strCheckInNo, "
 						+ "IFNULL(g.strRoomTypeDesc,''),  DATE_FORMAT(c.dteArrivalDate,'%d-%m-%Y'), "
 						+ "DATE_FORMAT(c.dteDepartureDate,'%d-%m-%Y'),   IFNULL(f.strFirstName,''), "
@@ -836,7 +838,8 @@ public class clsPMSPaymentController {
 						+ "LEFT OUTER JOIN tblroom h ON e.strRoomNo=h.strRoomCode AND g.strClientCode='"+clientCode+"'"
 						+ "LEFT OUTER JOIN tblguestmaster f ON e.strGuestCode=f.strGuestCode AND h.strClientCode='"+clientCode+"'"
 						+ "LEFT OUTER JOIN tblsettlementmaster d ON b.strSettlementCode=d.strSettlementCode AND f.strClientCode='"+clientCode+"' AND d.strClientCode='"+clientCode+"'"
-						+ "WHERE a.strReceiptNo='"+reciptNo+"'";
+						+ "WHERE a.strReceiptNo='"+reciptNo+"'"
+						+ " group by a.strReceiptNo ";
 				List listOfPayment = objGlobalFunctionsService.funGetDataList(sqlPayment, "sql");
 
 				for (int i = 0; i < listOfPayment.size(); i++) {

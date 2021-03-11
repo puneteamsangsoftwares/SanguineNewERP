@@ -47,6 +47,8 @@
 	<parameter name="pBillFooter" class="java.lang.String"/>
 	<parameter name="strImagePath2" class="java.lang.String"/>
 	<parameter name="pBillFooter1" class="java.lang.String"/>
+	<parameter name="pAddress1" class="java.lang.String"/>
+	<parameter name="pAddress2" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT b.dteDocDate,b.strDocNo,b.strPerticulars,b.dblDebitAmt,b.dblCreditAmt,b.dblBalanceAmt
 FROM tblfoliohd a
