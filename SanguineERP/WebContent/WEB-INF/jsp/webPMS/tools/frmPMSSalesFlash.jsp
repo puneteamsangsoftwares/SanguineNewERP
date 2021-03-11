@@ -18,10 +18,11 @@
 <script type="text/javascript">
 var frmDte1="",toDte1="",maxQuantityDecimalPlaceLimit=2;
 var dblTotalSale=0.0;
+var clientCode="";	
 
 $(document).ready(function() 
 		{	
-	       
+	        clientCode='<%=session.getAttribute("clientCode")%>';
 	        var pmsDate='<%=session.getAttribute("PMSDate").toString()%>';
 	        $("#dteFromDate").datepicker({ dateFormat: 'dd-mm-yy' });
 			$("#dteFromDate").datepicker('setDate',pmsDate);
@@ -194,6 +195,8 @@ function funOnClckRevenueHeadWiseBtn( divId)
 		    	funRevenueHeadWiseDetail(response[0]);
 		    	$("#txtTotValue").val(parseFloat(response[1]).toFixed(maxQuantityDecimalPlaceLimit));
 		        $("#txtTaxTotValue").val(parseFloat(response[2]).toFixed(maxQuantityDecimalPlaceLimit));
+		        	
+		    	
 		    	
 		    },
 		    error: function(jqXHR, exception) {
@@ -218,6 +221,13 @@ function funOnClckRevenueHeadWiseBtn( divId)
 
 function funRevenueHeadWiseDetail(ProdDtl)
 {
+	if(clientCode == "383.001")
+  	{
+		document.all["idRevenueTaxAmt"].style.display = 'none';
+		document.all["txtTaxTotValue"].style.display = 'none';
+		
+		
+	}
 	$('#tblRevenueHeadDet tbody').empty();
 	for(var i=0;i<ProdDtl.length;i++)
 	{
@@ -230,8 +240,11 @@ function funRevenueHeadWiseDetail(ProdDtl)
    
     row.insertCell(0).innerHTML= "<input name=\"strRevenueType["+(rowCount)+"]\" readonly=\"readonly\"  class=\"Box\" size=\"25%\" id=\"strRevenueType."+(rowCount)+"\" value='"+data.strRevenueType+"'>";		    
     row.insertCell(1).innerHTML= "<input name=\"dblAmount["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" style=\"text-align: right;\" size=\"57%\" id=\"dblAmount."+(rowCount)+"\" value='"+data.dblAmount+"'>";
+    if(clientCode != "383.001")
+	{
     row.insertCell(2).innerHTML= "<input name=\"dblTaxAmountt["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\"  style=\"text-align: right;\" size=\"27%\" id=\"dblTaxAmount."+(rowCount)+"\" value='"+data.dblTaxAmount+"'>";
-     funApplyNumberValidation();
+	} 
+    funApplyNumberValidation();
 	}	
 }
 function funOnClckTaxWiseBtn( divId)
@@ -1604,7 +1617,7 @@ function funSetAvailableRooms(item)
 				<tr bgcolor="#c0c0c0">
 					<td width="7.4%">Revenue Type</td>
 					<td width="9.3%">Amount </td>
-					<td width="4.5%">Tax Amount</td>
+					<td id="idRevenueTaxAmt" width="4.5%">Tax Amount</td>
 				</tr>
 			</table>
 			<div style="background-color: #fbfafa; border: 1px solid #ccc; display: block; height: 330px; margin: auto; overflow-x: hidden; overflow-y: scroll; width: 100%;">

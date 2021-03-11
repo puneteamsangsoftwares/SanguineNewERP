@@ -196,14 +196,20 @@ public class clsPMSSalesFlashController {
 		    double amount=obj.getDblAmount();
 		    objBean.setDblAmount(amount);
 		    double taxAmount=obj.getDblTaxAmount();
+		    if(!strClientCode.equalsIgnoreCase("383.001"))
+			{
 		    objBean.setDblTaxAmount(taxAmount);
+			}
 		    listofRevenueDtl.add(objBean);
 		    
 			
 		}
 		listofRevenueHeadTotal.add(listofRevenueDtl);
 		listofRevenueHeadTotal.add(dblTotalValue);
+		if(!strClientCode.equalsIgnoreCase("383.001"))
+		{
 		listofRevenueHeadTotal.add(dblTaxTotalValue);
+		}
 		return listofRevenueHeadTotal;
 	}
 
