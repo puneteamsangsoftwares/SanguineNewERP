@@ -125,7 +125,7 @@ public class clsPMSSalesFlashController {
 		HashMap<String,clsPMSSalesFlashBean> hmRevenueType = new HashMap<String,clsPMSSalesFlashBean >();
 		
 		
-		String sql=" select * from  "
+		/*String sql=" select * from  "
                   +" (select a.strRevenueType AS strRevenueType,sum(a.Amount),sum(b.TAXAMT) from (SELECT a.strBillNo,b.strDocNo ,b.strRevenueType AS strRevenueType, sum(b.dblDebitAmt) AS Amount "
                   +" FROM tblbillhd a, tblbilldtl b "
                   +" WHERE a.strBillNo=b.strBillNo  AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
@@ -143,7 +143,20 @@ public class clsPMSSalesFlashController {
                   +" (select a.strFolioNo,b.strDocNo,sum(b.dblTaxAmt) AS TAXAMT from tblfoliodtl a ,tblfoliotaxdtl b "
                   +" where a.strFolioNo=b.strFolioNo and DATE(a.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
                   +" GROUP BY a.strFolioNo,b.strDocNo) b "
-                  +" where a.strFolioNo=b.strFolioNo and a.strDocNo=b.strDocNo group by a.strRevenueType )  d ; ";
+                  +" where a.strFolioNo=b.strFolioNo and a.strDocNo=b.strDocNo group by a.strRevenueType )  d ; ";*/
+		
+		String sql=" SELECT * FROM (SELECT a.strRevenueType AS strRevenueType, SUM(a.Amount), SUM(b.TAXAMT) "
+                    +" FROM "
+                    +" ( SELECT a.strBillNo,b.strDocNo,b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount "
+					+" FROM tblbillhd a, tblbilldtl b "
+					+" WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
+					+" GROUP BY a.strBillNo,b.strDocNo) a, "
+					+" ( SELECT a.strBillNo,b.strDocNo, SUM(b.dblTaxAmt) AS TAXAMT "
+					+" FROM tblbillhd a, tblbilltaxdtl b "
+					+" WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
+					+" GROUP BY a.strBillNo,b.strDocNo) b "
+					+" WHERE a.strBillNo=b.strBillNo AND a.strDocNo=b.strDocNo "
+					+" GROUP BY a.strRevenueType) c ; ";
 		
 		List listRevenueDtl=objGlobalService.funGetListModuleWise(sql, "sql");
 	
@@ -235,6 +248,8 @@ public class clsPMSSalesFlashController {
 				objBean.setStrTaxDesc(arr2[0].toString());
 				objBean.setDblTaxableAmt(arr2[1].toString());
 				objBean.setDblTaxAmt(arr2[2].toString());
+				
+				
 				listofTaxDtl.add(objBean);
                 dblTotalValue = new BigDecimal(Double.parseDouble(arr2[1].toString())).add(dblTotalValue);
 				dblTaxTotalValue =  new BigDecimal(arr2[2].toString()).add(dblTaxTotalValue);
@@ -243,7 +258,7 @@ public class clsPMSSalesFlashController {
 		listofTaxTotal.add(listofTaxDtl);
 		listofTaxTotal.add(dblTotalValue);
 		listofTaxTotal.add(dblTaxTotalValue);
-
+	
 		return listofTaxTotal;
 	}
 
@@ -636,9 +651,12 @@ public class clsPMSSalesFlashController {
 				List listDisc = objGlobalService.funGetListModuleWise(sqlDisc, "sql");
 				if(listDisc!=null && listDisc.size()>0)
 				{
-					double dblDiscAmt = Double.parseDouble(listDisc.get(0).toString());
-					dblDiscAmt = (dblDiscAmt*Double.parseDouble(arr2[4].toString())/100);
-					objBean.setDblDiscount(dblDiscAmt);
+					if(listDisc.get(0)!=null)
+					{
+						double dblDiscAmt = Double.parseDouble(listDisc.get(0).toString());
+						dblDiscAmt = (dblDiscAmt*Double.parseDouble(arr2[4].toString())/100);
+						objBean.setDblDiscount(dblDiscAmt);
+					}
 				}
 				
 				String sqlTaxAmt = "select ifnull(sum(a.dblTaxAmt),0.0) from tblbilltaxdtl a where a.strBillNo='"+arr2[0].toString()+"' and a.strTaxCode like 'TC%' and a.strClientCode='"+strClientCode+"'";
@@ -780,16 +798,11 @@ public class clsPMSSalesFlashController {
 		List listRoomWise = new ArrayList();
 		//Taking all rooms from tblroom
 		
-		/*String sqlData = "select WEEKDAY(date(a.dteReceiptDate)) as weekdays,sum(a.dblReceiptAmt),MONTHNAME(a.dteReceiptDate)"
-				+ " from tblreceipthd a where date(a.dteReceiptDate) BETWEEN '"+fromDte+"' and  '"+toDte+"' "
-				+ " group by weekdays "
-				+ " order by date(a.dteReceiptDate); "; */
-		
-		String sqlData ="SELECT SUM(a.dblReceiptAmt),MONTHNAME(a.dteReceiptDate) "
-						+ " FROM tblreceipthd a "
-						+ " WHERE DATE(a.dteReceiptDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' "
-						+ " GROUP BY MONTH(DATE(a.dteReceiptDate)) "
-						+ " ORDER BY DATE(a.dteReceiptDate); ";
+	    String sqlData="SELECT SUM(a.dblGrandTotal) , MONTHNAME(a.dteBillDate) "
+					  +" FROM tblbillhd a  "
+					  +" WHERE Date(a.dteBillDate)  BETWEEN '"+fromDte+"' AND '"+toDte+"' "
+					  +" GROUP BY MONTH(DATE(a.dteBillDate)) "
+					  +" ORDER BY DATE(a.dteBillDate) ";
 
 		List<clsPMSSalesFlashBean> listMain = new ArrayList<clsPMSSalesFlashBean>();
 		List listRoomNo= objGlobalService.funGetListModuleWise(sqlData, "sql");
@@ -799,7 +812,6 @@ public class clsPMSSalesFlashController {
 			clsPMSSalesFlashBean objBean2 = new clsPMSSalesFlashBean();
 			
 			objBean2.setStrMonthName(arr2[1].toString());
-			/*objBean2.setWeek(Integer.parseInt(arr2[0].toString()));*/
 			objBean2.setDblAmount(Double.parseDouble(arr2[0].toString()));
 			
 			listMain.add(objBean2);
@@ -1020,7 +1032,7 @@ public class clsPMSSalesFlashController {
 		HashMap<String,clsPMSSalesFlashBean> hmRevenueType = new HashMap<String,clsPMSSalesFlashBean >();
 		
 		
-		String sql=" select * from  "
+		/*String sql=" select * from  "
                   +" (select a.strRevenueType AS strRevenueType,sum(a.Amount),sum(b.TAXAMT) from (SELECT a.strBillNo,b.strDocNo ,b.strRevenueType AS strRevenueType, sum(b.dblDebitAmt) AS Amount "
                   +" FROM tblbillhd a, tblbilldtl b "
                   +" WHERE a.strBillNo=b.strBillNo  AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
@@ -1039,6 +1051,20 @@ public class clsPMSSalesFlashController {
                   +" where a.strFolioNo=b.strFolioNo and DATE(a.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
                   +" GROUP BY a.strFolioNo,b.strDocNo) b "
                   +" where a.strFolioNo=b.strFolioNo and a.strDocNo=b.strDocNo group by a.strRevenueType )  d ; ";
+		*/
+		
+		String sql=" SELECT * FROM (SELECT a.strRevenueType AS strRevenueType, SUM(a.Amount), SUM(b.TAXAMT) "
+                +" FROM "
+                +" ( SELECT a.strBillNo,b.strDocNo,b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount "
+				+" FROM tblbillhd a, tblbilldtl b "
+				+" WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
+				+" GROUP BY a.strBillNo,b.strDocNo) a, "
+				+" ( SELECT a.strBillNo,b.strDocNo, SUM(b.dblTaxAmt) AS TAXAMT "
+				+" FROM tblbillhd a, tblbilltaxdtl b "
+				+" WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
+				+" GROUP BY a.strBillNo,b.strDocNo) b "
+				+" WHERE a.strBillNo=b.strBillNo AND a.strDocNo=b.strDocNo "
+				+" GROUP BY a.strRevenueType) c ; ";
 		
 		List listRevenueDtl=objGlobalService.funGetListModuleWise(sql, "sql");
 	
@@ -1819,10 +1845,13 @@ public class clsPMSSalesFlashController {
 				List listDisc = objGlobalService.funGetListModuleWise(sqlDisc, "sql");
 				if(listDisc!=null && listDisc.size()>0)
 				{
+					if(listDisc.get(0)!=null)
+					{
 					double dblDiscAmt = Double.parseDouble(listDisc.get(0).toString());
 					dblDiscAmt = dblDiscAmt -(dblDiscAmt*Double.parseDouble(arr2[5].toString())/100);
 					DataList.add(dblDiscAmt);
 					dblTotalDiscoun = new BigDecimal(df.format(Double.parseDouble(listDisc.get(0).toString()))).add(dblTotalDiscoun);
+					}
 				}
 				
 				String sqlTaxAmt = "select sum(a.dblTaxAmt) from tblbilltaxdtl a where a.strBillNo='"+arr2[0].toString()+"' and a.strTaxCode like 'TC%' and a.strClientCode='"+strClientCode+"'";
@@ -1845,10 +1874,6 @@ public class clsPMSSalesFlashController {
 				{
 					DataList.add(0);
 				}
-				
-				
-				
-				
 				
 				detailList.add(DataList);
 			}
@@ -2349,7 +2374,7 @@ public class clsPMSSalesFlashController {
 		
 		String sqlData =" SELECT a.strRoomDesc,b.strRoomTypeDesc FROM tblroom a,tblroomtypemaster b "  
 				       + " WHERE a.strRoomTypeCode=b.strRoomTypeCode "  
-			           + " AND a.strStatus = 'Free'  AND a.strClientCode='"+strClientCode+"' ";
+			           + " AND a.strStatus = 'Free'  AND a.strClientCode='"+strClientCode+"' ORDER BY a.strRoomDesc ASC ";
 		List<clsPMSSalesFlashBean> listMain = new ArrayList<clsPMSSalesFlashBean>();
 		List listAvailableRooms= objGlobalService.funGetListModuleWise(sqlData, "sql");
 		for(int r = 0;r<listAvailableRooms.size();r++)
@@ -2394,7 +2419,7 @@ public class clsPMSSalesFlashController {
 		
 		String sql = " SELECT a.strRoomDesc,b.strRoomTypeDesc FROM tblroom a,tblroomtypemaster b "  
 			       + " WHERE a.strRoomTypeCode=b.strRoomTypeCode "  
-		           + " AND a.strStatus = 'Free' AND a.strClientCode='"+strClientCode+"' ";
+		           + " AND a.strStatus = 'Free' AND a.strClientCode='"+strClientCode+"' ORDER BY a.strRoomDesc ASC  ";
 
 		List listSettlementDtl = objGlobalService.funGetListModuleWise(sql,"sql");
 		if (!listSettlementDtl.isEmpty()) {

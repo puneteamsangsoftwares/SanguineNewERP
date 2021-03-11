@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f2323f3-3122-4114-a59f-df89ff1ddda0">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="pCompanyName" class="java.lang.String"/>
+	<parameter name="pAddress1" class="java.lang.String"/>
+	<parameter name="pAddress2" class="java.lang.String"/>
+	<parameter name="pContactDetails" class="java.lang.String"/>
+	<parameter name="strImagePath" class="java.lang.String"/>
+	<parameter name="strUserCode" class="java.lang.String"/>
+	<parameter name="userName" class="java.lang.String"/>
+	<parameter name="pgstno" class="java.lang.String"/>
+	<parameter name="ppanno" class="java.lang.String"/>
+	<parameter name="pguestCode" class="java.lang.String"/>
+	<parameter name="proomType" class="java.lang.String"/>
+	<parameter name="proomTarrif" class="java.lang.Double"/>
+	<parameter name="pdiscount" class="java.lang.Double"/>
+	<parameter name="pguestCompanyAddr" class="java.lang.String"/>
+	<parameter name="pGuestName" class="java.lang.String"/>
+	<parameter name="proomTarrifWithExtBed" class="java.lang.Double"/>
+	<parameter name="pstrMobileNo" class="java.lang.String"/>
+	<parameter name="pstrTaxDesc" class="java.lang.String"/>
+	<parameter name="ptaxAmt" class="java.lang.Double"/>
+	<parameter name="pdblPackgeAmt" class="java.lang.Double"/>
+	<parameter name="pNote" class="java.lang.String"/>
+	<parameter name="pCustomerGST" class="java.lang.String"/>
+	<parameter name="lblTax" class="java.lang.String"/>
+	<parameter name="strImagePath1" class="java.lang.String"/>
+	<parameter name="pNote2" class="java.lang.String"/>
+	<parameter name="pNote1" class="java.lang.String"/>
+	<parameter name="plblDaysForAccomodation" class="java.lang.String"/>
+	<parameter name="daysForAccomodation" class="java.lang.Double"/>
+	<parameter name="pDepartureDate" class="java.lang.String"/>
+	<parameter name="pDepartureTime" class="java.lang.String"/>
+	<parameter name="pCity" class="java.lang.String"/>
+	<parameter name="pCountry" class="java.lang.String"/>
+	<parameter name="pEmail" class="java.lang.String"/>
+	<parameter name="pPassportNo" class="java.lang.String"/>
+	<parameter name="pDateOfExpiry" class="java.lang.String"/>
+	<parameter name="pDateOfIssue" class="java.lang.String"/>
+	<parameter name="pNationality" class="java.lang.String"/>
+	<parameter name="pPlaceOfIssue" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[]]>
+	</queryString>
+	<field name="strCheckInNo" class="java.lang.String"/>
+	<field name="dteArrivalDate" class="java.lang.String"/>
+	<field name="strRoomNo" class="java.lang.String"/>
+	<field name="strExtraBedCode" class="java.lang.String"/>
+	<field name="intNoOfAdults" class="java.lang.Integer"/>
+	<field name="tmeArrivalTime" class="java.lang.String"/>
+	<variable name="perDayAmt" class="java.lang.Double">
+		<variableExpression><![CDATA[$P{proomTarrifWithExtBed}-$P{pdiscount}+$P{ptaxAmt} + $P{pdblPackgeAmt}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="114" splitType="Stretch">
+			<textField>
+				<reportElement x="141" y="4" width="276" height="20" uuid="2721457a-8086-462b-b990-f64b7c9148dd"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pCompanyName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="141" y="28" width="276" height="20" uuid="2721457a-8086-462b-b990-f64b7c9148dd"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pAddress1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="141" y="48" width="279" height="20" uuid="2721457a-8086-462b-b990-f64b7c9148dd"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pAddress2}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="108" width="555" height="1" uuid="e18e9f7a-d80b-4aa5-b730-5a5416101055"/>
+			</line>
+			<image>
+				<reportElement x="2" y="10" width="136" height="79" uuid="5ea12fd6-6cbd-47f0-87cd-263c311d7cfd"/>
+				<imageExpression><![CDATA[$P{strImagePath}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="141" y="68" width="276" height="21" uuid="2721457a-8086-462b-b990-f64b7c9148dd"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pContactDetails}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="183" y="89" width="157" height="20" uuid="1e307570-e77a-4e7f-ba3e-903f5a174436"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Check In Slip]]></text>
+			</staticText>
+			<image>
+				<reportElement x="417" y="0" width="136" height="79" uuid="b526994f-58a8-40d8-b993-37a6189b9b24">
+					<printWhenExpression><![CDATA[$P{strImagePath1} != null]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$P{strImagePath1}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="589" splitType="Stretch">
+			<staticText>
+				<reportElement x="330" y="76" width="70" height="20" uuid="b409a1c1-c194-442c-aba0-747fbf661c32"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Room No :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="50" width="70" height="20" uuid="1967967c-e4af-4685-a6cb-b06898270bba"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Room Type :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="425" y="75" width="71" height="20" uuid="f35b0eb8-884f-4c52-ba8f-b0bf1cfb1669"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{strRoomNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="424" y="50" width="71" height="20" uuid="205d1a76-f8ec-4d11-821a-71cf05e33627"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{proomType}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="330" y="5" width="87" height="20" uuid="17ab3bf9-8e2e-4aa3-a050-63745da0ecc7"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Check-In Time :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="420" y="5" width="71" height="20" uuid="a5fbb3d6-9757-429c-9978-4628993bca3b"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dteArrivalDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="203" y="325" width="90" height="20" uuid="3094fa51-fb05-4374-99ff-a7f5f863db5f"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Accomodation   :]]></text>
+			</staticText>
+			<textField pattern="#0">
+				<reportElement x="305" y="325" width="75" height="20" uuid="b5228cc2-1b7f-4390-aa11-582d46e6246e"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{proomTarrifWithExtBed}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="203" y="350" width="90" height="20" uuid="121929a5-ce1d-430e-acd9-ce2e5ac52730"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Discount %    :]]></text>
+			</staticText>
+			<textField pattern="#0">
+				<reportElement x="305" y="350" width="75" height="20" uuid="215d6053-35ba-43a1-b54d-6bf3cf439fdf"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pdiscount}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="172" y="427" width="208" height="1" uuid="4fef9bee-9a7a-413e-ba80-ebfaaa1100d4"/>
+			</line>
+			<staticText>
+				<reportElement x="203" y="434" width="89" height="20" uuid="06030064-6a02-4772-9db4-e066c4e6ae89"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Amount       : ]]></text>
+			</staticText>
+			<textField pattern="#0">
+				<reportElement x="305" y="434" width="75" height="20" uuid="db6a95ac-7e6a-47a1-92cf-8e8725075932"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{perDayAmt}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="50" width="87" height="20" uuid="f98cde0d-8f8b-4fda-8e51-120c21a7132b"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[No. of Person:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="106" y="51" width="71" height="20" uuid="44c46c15-c7f3-452f-838c-d540b3deba74"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{intNoOfAdults}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="497" y="5" width="55" height="20" uuid="f6f4ea79-e201-4238-aef3-746c26ffec51"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tmeArrivalTime}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="103" y="474" width="176" height="20" isRemoveLineWhenBlank="true" uuid="bd1da632-82b9-4c98-813b-1ad39facc2f8">
+					<printWhenExpression><![CDATA[$P{pgstno} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pgstno}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="110" width="93" height="20" uuid="9b801524-43b9-4fa1-8a81-d8a3a0415c4f"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Address          :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="107" y="110" width="186" height="20" uuid="19bb0a9e-b50a-4f98-b1b5-a0646b0a5b87"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pguestCompanyAddr}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="4" width="87" height="20" uuid="78ac5719-cfc4-4d73-a5df-8a9717a6a5df"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Guest Name   :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="107" y="4" width="213" height="20" uuid="a8ae9ed5-bf9a-49de-a70a-6bb601ae8571"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pGuestName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="160" width="88" height="20" uuid="8235a92b-b9f0-46de-a085-e95ac5dcdfe7"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Mobile.No  :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="106" y="160" width="71" height="20" uuid="4f1bb140-361a-4e17-b3a5-2f7dacc5fcb5"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pstrMobileNo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0">
+				<reportElement x="305" y="377" width="75" height="20" uuid="61fa9fb7-505b-4e24-bc5a-f3682c3f22a4">
+					<printWhenExpression><![CDATA[$P{ptaxAmt} !=0.00]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ptaxAmt}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0">
+				<reportElement x="307" y="401" width="73" height="20" uuid="50f47afc-8fda-4058-97dd-cbc16fda6d05"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pdblPackgeAmt}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="203" y="401" width="90" height="20" uuid="2cbfc44d-b7d6-4503-ad74-31fc5a89fe06"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Package     :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="13" y="501" width="200" height="15" isRemoveLineWhenBlank="true" uuid="21eb1d00-c459-4b05-b3c9-58a69cf8cd9c">
+					<printWhenExpression><![CDATA[$P{pNote} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pNote}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="13" y="474" width="90" height="20" isRemoveLineWhenBlank="true" uuid="582cfb3d-ea37-4871-a425-8706fed00873">
+					<printWhenExpression><![CDATA[$P{pCustomerGST} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pCustomerGST}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="203" y="377" width="90" height="20" uuid="f90716ff-8d57-42f6-adb6-39760a9f0c89">
+					<printWhenExpression><![CDATA[$P{lblTax} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{lblTax}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="13" y="525" width="536" height="21" uuid="a5374d0b-b10e-4727-8575-8cd879d9c67c">
+					<printWhenExpression><![CDATA[$P{pNote1} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pNote1}]]></textFieldExpression>
+				<patternExpression><![CDATA[$P{pNote1}]]></patternExpression>
+			</textField>
+			<textField>
+				<reportElement x="13" y="564" width="217" height="25" uuid="b7d18489-e607-41b6-b98e-f1846f214786">
+					<printWhenExpression><![CDATA[$P{pNote2} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<patternExpression><![CDATA[$P{pNote2}]]></patternExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="203" y="298" width="90" height="20" uuid="faab6f5b-8ad0-48d6-a8c7-c7c5e7013ef1">
+					<printWhenExpression><![CDATA[$P{plblDaysForAccomodation} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{plblDaysForAccomodation}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0">
+				<reportElement x="301" y="299" width="79" height="19" uuid="0ebc5ac0-af21-4267-9487-2e53b0766b99">
+					<printWhenExpression><![CDATA[$P{daysForAccomodation} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$P{daysForAccomodation}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="26" width="88" height="20" uuid="97f692c9-0fe0-413f-bfb1-8a1fac3b9374"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Departure Date :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="106" y="26" width="71" height="20" uuid="d03c4745-3e87-4567-8661-5637eb3180e6"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pstrMobileNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="330" y="27" width="88" height="20" uuid="53c70a91-baac-4020-9e3e-17dbba26021f"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Departure Time:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="422" y="28" width="71" height="20" uuid="d8abd85e-9e4a-4480-b5b2-506b0d5aadd0"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pstrMobileNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="136" width="88" height="20" uuid="807692a3-d1c8-4669-98f6-9f22de84ecaf"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[City  :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="107" y="136" width="71" height="20" uuid="f95ad66f-c8a1-4041-ab54-e6810da939d6"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pCity}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="326" y="132" width="88" height="20" uuid="5aeb42eb-8d17-4cd3-86af-aa28ad770b9d"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Country  :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="423" y="132" width="71" height="20" uuid="a6a3bb72-c891-45c8-823e-a1f2256313b0"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pCountry}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="325" y="158" width="88" height="20" uuid="f65acef4-aa42-43ef-9924-3416d52d91c4"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Email  :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="421" y="159" width="128" height="20" uuid="03582146-43c6-45e9-9f71-a4f69f82db26"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pEmail}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="106" y="203" width="186" height="20" uuid="3cd1772a-5fc7-4f3c-b855-9f060b8c8a45"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pPassportNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="203" width="93" height="20" uuid="f8c817af-dda1-4d3c-93af-ba1eaa022782"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Passport No      :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="229" width="88" height="20" uuid="dd6dc70b-bbf0-475d-b198-8c02ca772770"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Date Of Expiry:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="106" y="229" width="71" height="20" uuid="2a789329-f163-475b-9237-1c1caa7b99b5"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pDateOfExpiry}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="253" width="88" height="20" uuid="cf716f3c-6f05-45af-9962-94c095e36d1c"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Date Of Issue :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="105" y="253" width="71" height="20" uuid="002c5c76-83e6-461a-b42f-cfa5bd47d7b1"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pDateOfIssue}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="325" y="225" width="88" height="20" uuid="fa7306f2-8362-423e-a98c-732bbfcd5abc"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Place Of Issue:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="422" y="225" width="71" height="20" uuid="6826ead9-ae54-4489-8c4c-4e902105e24d"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pPlaceOfIssue}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="324" y="200" width="88" height="20" uuid="92dc4b51-84ce-462c-8144-6550b534d408"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Nationality  :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="421" y="200" width="71" height="20" uuid="1618b98d-1948-43b8-ae78-9c5038baae47"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pNationality}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-1" y="98" width="555" height="1" uuid="c3646c4d-08ff-47df-8e56-3bfa43e68e72"/>
+			</line>
+			<line>
+				<reportElement x="1" y="185" width="555" height="1" uuid="3498945a-dbd1-4424-9f47-9186db9fc2d8"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="81">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="63" y="38" width="120" height="20" uuid="a94905a6-1848-4383-be6c-05812cf6077b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="38" width="63" height="20" uuid="da9d67ec-9892-4685-bb21-a0172ab0f07c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Created On :-]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="183" y="37" width="25" height="21" uuid="da9d67ec-9892-4685-bb21-a0172ab0f07c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[By :-]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="432" y="38" width="64" height="20" uuid="979af289-9e6c-4f02-a8e7-654bba636cfb"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="497" y="38" width="55" height="20" uuid="dee2f5f4-cc78-4d99-8aa1-641612625e74"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="57" width="555" height="1" uuid="20e6c723-36c1-406d-a79b-51895cb0512f"/>
+			</line>
+			<textField>
+				<reportElement x="208" y="36" width="224" height="22" uuid="7cd5269e-7948-4690-ad7c-a10ee08ad2d0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{strUserCode}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="37" width="555" height="1" uuid="d22c560b-05ba-4010-89f2-eef4cfc39c90"/>
+			</line>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="50">
+			<staticText>
+				<reportElement x="7" y="12" width="182" height="14" uuid="f985a4eb-56cb-4a01-bbcd-3793720168f8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Guest/Member Signature]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="412" y="12" width="137" height="14" uuid="4694fcf1-2d9d-4083-b273-30b61bbe3198"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Authorized Signature]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
+</jasperReport>

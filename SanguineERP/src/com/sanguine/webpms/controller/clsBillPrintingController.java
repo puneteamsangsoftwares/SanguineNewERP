@@ -3083,10 +3083,10 @@ public class clsBillPrintingController {
 				
 				reportParams.put("strImagePath", imagePath);
 				reportParams.put("pGuestName", gPrefix + " " + gFirstName + " "+ gMiddleName + " " + gLastName);
-				reportParams.put("pFolioNo", folio);
+				//reportParams.put("pFolioNo", folio);
 				reportParams.put("pRoomNo", roomNo);
-				reportParams.put("pRegistrationNo", registrationNo);
-				reportParams.put("pReservationNo", reservationNo);
+				//reportParams.put("pRegistrationNo", registrationNo);
+				//reportParams.put("pReservationNo", reservationNo);
 				reportParams.put("pArrivalDate",objGlobal.funGetDate("dd-MM-yyyy", arrivalDate));
 				reportParams.put("pArrivalTime", arrivalTime);
 				reportParams.put("pDepartureTime", chkOutTime);
@@ -3108,7 +3108,7 @@ public class clsBillPrintingController {
 				reportParams.put("strImagePath2",imagePath1);
 				
 				reportParams.put("pChild", childs);
-				reportParams.put("pRemarks", remark);
+				//reportParams.put("pRemarks", remark);
 				
 				if(arr[21]!=null) 
 				{
