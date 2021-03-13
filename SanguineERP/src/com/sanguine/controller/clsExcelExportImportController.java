@@ -1538,37 +1538,39 @@ public class clsExcelExportImportController {
 
 				// Sets the Read data to the model class
 				RowCount = row.getRowNum();
-				prodCode = row.getCell(2).getStringCellValue();
-				Cell c = row.getCell(4);
-				if (c != null && c.getCellType() != 1) {
-					OpeningStkDtl.setStrProdCode(row.getCell(2).getStringCellValue());
-					String prodName = "";
-					if (row.getCell(3).getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-						prodName = String.valueOf(row.getCell(3).getNumericCellValue());
-					} else {
-						prodName = row.getCell(3).getRichStringCellValue().toString();
-					}
-					OpeningStkDtl.setStrProdName(prodName);
-					OpeningStkDtl.setDblQty(row.getCell(4).getNumericCellValue());
-
-					String uom = funGetProductUOM(row.getCell(2).getStringCellValue(), expUOM, request);
-					OpeningStkDtl.setStrUOM(uom); // thiS is for Independent of
-					 								// excel sheet uom
-
-					// OpeningStkDtl.setStrUOM(row.getCell(5).getStringCellValue());
-					// thiS is for according to EXcel uom
-					OpeningStkDtl.setDblCostPUnit(Double.parseDouble(row.getCell(6).getStringCellValue()));
-					
-				    OpeningStkDtl.setDblRevLvl(Double.parseDouble(row.getCell(7).getStringCellValue()));
-					
-					OpeningStkDtl.setStrLotNo(String.valueOf(row.getCell(8).getStringCellValue()));
-					
-					// Sends the model object to service layer for validation,
-					// data processing and then to persist
-					listOpeningStklist.add(OpeningStkDtl);
+				
+					prodCode = row.getCell(2).getStringCellValue();
+					Cell c = row.getCell(4);
+					if (c != null && c.getCellType() != 1) {
+						OpeningStkDtl.setStrProdCode(row.getCell(2).getStringCellValue());
+						String prodName = "";
+						if (row.getCell(3).getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+							prodName = String.valueOf(row.getCell(3).getNumericCellValue());
+						} else {
+							prodName = row.getCell(3).getRichStringCellValue().toString();
+						}
+						OpeningStkDtl.setStrProdName(prodName);
+						OpeningStkDtl.setDblQty(row.getCell(4).getNumericCellValue());
+	
+						String uom = funGetProductUOM(row.getCell(2).getStringCellValue(), expUOM, request);
+						OpeningStkDtl.setStrUOM(uom); // thiS is for Independent of
+						 								// excel sheet uom
+	
+						// OpeningStkDtl.setStrUOM(row.getCell(5).getStringCellValue());
+						// thiS is for according to EXcel uom
+						OpeningStkDtl.setDblCostPUnit(Double.parseDouble(row.getCell(6).getStringCellValue()));
+						
+					    OpeningStkDtl.setDblRevLvl(Double.parseDouble(row.getCell(7).getStringCellValue()));
+						
+						OpeningStkDtl.setStrLotNo(String.valueOf(row.getCell(8).getStringCellValue()));
+						
+						// Sends the model object to service layer for validation,
+						// data processing and then to persist
+						listOpeningStklist.add(OpeningStkDtl);
+						
+				        }
 				}
-
-			}
+			
 
 		} catch (Exception e) {
 			logger.error(e);
@@ -1612,6 +1614,8 @@ public class clsExcelExportImportController {
 					{
 						break;
 					}
+					if(row.getCell(2)!=null)
+					{
 					prodCode = row.getCell(2).getStringCellValue();
 					Cell c = row.getCell(4);
 					if (c != null && c.getCellType() != 1) {
@@ -1652,6 +1656,7 @@ public class clsExcelExportImportController {
 							// data processing and then to persist
 							listPhyStklist.add(PhyStkDtl);
 						}
+					  }
 					}
 				}
 			
