@@ -3261,8 +3261,8 @@ public class clsBillPrintingController {
 						
 						String sqlSettlementPayment = "select a.strReceiptNo from tblreceipthd a where a.strBillNo='"+billNo+"' AND a.strClientCode='"+clientCode+"'";
 						List listSettlementTaxDtl = objWebPMSUtility.funExecuteQuery(sqlSettlementPayment, "sql");
-						if(listSettlementTaxDtl !=null && listSettlementTaxDtl.size()<2)
-						{
+						//if(listSettlementTaxDtl !=null && listSettlementTaxDtl.size()<2)
+						//{
 						if(listSettlementTaxDtl !=null && listSettlementTaxDtl.size()>0)
 						{
 							String strReceiptNo = listSettlementTaxDtl.get(0).toString();
@@ -3349,7 +3349,7 @@ public class clsBillPrintingController {
 							}
 						}
 
-						}
+						//}
 						sqlBillDtl = "SELECT date(a.dteDocDate),a.strDocNo,b.strTaxDesc,b.dblTaxAmt,0 "
 								+ " FROM tblbilldtl a, tblbilltaxdtl b where a.strDocNo=b.strDocNo "
 								+ " AND a.strBillNo='"
@@ -3416,7 +3416,7 @@ public class clsBillPrintingController {
 				String sqlPaymentDtl="";
 				// get payment details
 
-				if(strSelectBill.contains("Room Tariff"))
+				if(strSelectBill.contains("Room Tariff") || strSelectBill.contains("POS") )
 				{
 					 sqlPaymentDtl = "SELECT date(c.dteReceiptDate),c.strReceiptNo,IF(c.strAgainst='Bill',e.strSettlementDesc,CONCAT('ADVANCE ',e.strSettlementDesc)),'0.00' as debitAmt "
 							+ " ,d.dblSettlementAmt as creditAmt,'0.00' as balance "
@@ -3567,8 +3567,7 @@ public class clsBillPrintingController {
 						+ billNo
 						+ "' and c.strAgainst='Bill' ";
 
-				List billReceitDtl = objFolioService
-						.funGetParametersList(sqlPaymentDtl);
+				List billReceitDtl = objFolioService.funGetParametersList(sqlPaymentDtl);
 				for (int i = 0; i < billReceitDtl.size(); i++) {
 					Object[] paymentArr = (Object[]) billReceitDtl.get(i);
 
@@ -3590,8 +3589,7 @@ public class clsBillPrintingController {
 						// String creditAmount = paymentArr[4].toString();
 						// String balance = paymentArr[5].toString();
 
-						folioPrintingBean.setDteDocDate(objGlobal.funGetDate(
-								"dd-MM-yyyy", (docDate)));
+						folioPrintingBean.setDteDocDate(objGlobal.funGetDate("dd-MM-yyyy", (docDate)));
 						folioPrintingBean.setStrDocNo(docNo);
 						folioPrintingBean.setStrPerticulars(particulars);
 						folioPrintingBean.setDblDebitAmt(debitAmount);
@@ -3600,8 +3598,7 @@ public class clsBillPrintingController {
 
 						dataList.add(folioPrintingBean);
 					}
-				}
-*/
+				}*/
 				String sqlDisc = " select date(a.dteBillDate),'','Discount','0.00',a.dblDiscAmt from  tblbilldiscount a "
 						+ " WHERE a.strBillNo='"
 						+ billNo

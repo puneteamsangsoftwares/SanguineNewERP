@@ -3025,7 +3025,7 @@ public class clsSearchFormController {
 			columnNames = "strGuestCode,strGuestPrefix,strFirstName,strMiddleName,strLastName,strGender,lngMobileNo,dteDOB,strAddress,strCity";
 			tableName = "clsGuestMasterHdModel where strClientCode='"
 					+ clientCode + "' ";
-			listColumnNames = "Guest prefix,First Name,Middle Name,Last Name,Gender,MobileNo,DOB,Address,City";
+			listColumnNames = "Guest Code,Guest prefix,First Name,Middle Name,Last Name,Gender,MobileNo,DOB,Address,City";
 			idColumnName = "strGuestCode";
 			// flgQuerySelection=true;
 			// criteria = getCriteriaQuery(columnNames,search_with,tableName);
@@ -3035,9 +3035,14 @@ public class clsSearchFormController {
 
 		case "billNo": {
 			columnNames = "a.strBillNo ,CONCAT(c.strFirstName,c.strMiddleName,c.strLastName),a.dteBillDate,a.strFolioNo,a.strReservationNo,a.dblGrandTotal,d.strRoomDesc ";
-			tableName = "from  tblbillhd a ,tblcheckindtl b,tblguestmaster c,tblroom d " 
+			/*tableName = "from  tblbillhd a ,tblcheckindtl b,tblguestmaster c,tblroom d " 
 					+ " where a.strClientCode='" + clientCode + "' and a.strCheckInNo=b.strCheckInNo   " 
 					+ " and b.strGuestCode=c.strGuestCode and b.strPayee='Y'  and b.strRoomNo=d.strRoomCode AND a.dblGrandTotal>0"
+					+ " group by a.strBillNo";*/
+			
+			tableName = "from  tblbillhd a ,tblcheckinhd g ,tblcheckindtl b,tblguestmaster c,tblroom d " 
+					+ " where  g.strCheckInNo=b.strCheckInNo AND  a.strClientCode='" + clientCode + "' and a.strCheckInNo=b.strCheckInNo   " 
+					+ " and b.strGuestCode=c.strGuestCode and b.strPayee='Y'  and b.strRoomNo=d.strRoomCode AND (a.dblGrandTotal>0 OR g.strComplimentry='Y') "
 					+ " group by a.strBillNo";
 
 			listColumnNames = "Bill No ,Guest Name,Bill Date,Folio No,Reservation No,GrandTotal,Room No ";

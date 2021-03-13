@@ -1827,7 +1827,7 @@ public class clsPMSSalesFlashController {
 		String[] arr1 = toDate.split("-");
 		String toDte = arr1[2] + "-" + arr1[1] + "-" + arr1[0];
 		
-		String sql = "select a.strBillNo,Date(a.dteBillDate),c.strRoomDesc,"
+		/*String sql = "select a.strBillNo,Date(a.dteBillDate),c.strRoomDesc,"
 				+ "Concat(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName),a.dblGrandTotal,g.dblDiscount,f.strCheckInNo "
 				+ "from tblbillhd a ,tblbilldtl b,tblroom c,tblcheckindtl d,tblguestmaster e,tblcheckinhd f,tblwalkinroomratedtl g "
 				+ "where a.strBillNo=b.strBillNo "
@@ -1835,7 +1835,16 @@ public class clsPMSSalesFlashController {
 				+ "and d.strCheckInNo=f.strCheckInNo "
 				+ "and f.strWalkInNo=g.strWalkinNo "
 				+ "and Date(a.dteBillDate) between '"+fromDte+"' and '"+toDte+"' and a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' AND e.strClientCode='"+strClientCode+"' AND f.strClientCode='"+strClientCode+"' AND g.strClientCode='"+strClientCode+"' group by a.strBillNo";
-		
+		*/
+		String sql =" SELECT a.strBillNo, DATE(a.dteBillDate),c.strRoomDesc, CONCAT(e.strFirstName,' ',e.strMiddleName,' ', "
+					+ " e.strLastName),a.dblGrandTotal,f.strCheckInNo "
+					+ " FROM tblbillhd a,tblbilldtl b,tblroom c,tblcheckindtl d,tblguestmaster e,tblcheckinhd f "
+					+ " WHERE a.strBillNo=b.strBillNo AND a.strRoomNo=c.strRoomCode AND a.strCheckInNo=d.strCheckInNo " 
+					+ " AND d.strGuestCode=e.strGuestCode AND d.strCheckInNo=f.strCheckInNo "
+					+ " AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' " 
+					+ " AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' " 
+					+ " AND e.strClientCode='"+strClientCode+"' AND f.strClientCode='"+strClientCode+"'  AND a.dblGrandTotal>0 "
+					+ " GROUP BY a.strBillNo";
 		List listVoidBill = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listVoidBill.isEmpty()) {
 			for (int i = 0; i < listVoidBill.size(); i++) {
@@ -1845,7 +1854,7 @@ public class clsPMSSalesFlashController {
 				DataList.add(arr2[1].toString());
 				DataList.add(arr2[2].toString());
 				DataList.add(arr2[3].toString());
-				DataList.add(arr2[4].toString());
+				//DataList.add(arr2[4].toString());
 				dblTotalBillValue = new BigDecimal(df.format(Double.parseDouble(arr2[4].toString()))).add(dblTotalBillValue);
 				String sqlDisc = "select sum(a.dblDebitAmt) from tblbilldtl a where a.strBillNo='"+arr2[0].toString()+"' and a.strPerticulars='Room Tariff' and a.strClientCode='"+strClientCode+"'";
 				List listDisc = objGlobalService.funGetListModuleWise(sqlDisc, "sql");
@@ -1854,13 +1863,14 @@ public class clsPMSSalesFlashController {
 					if(listDisc.get(0)!=null)
 					{
 					double dblDiscAmt = Double.parseDouble(listDisc.get(0).toString());
-					dblDiscAmt = dblDiscAmt -(dblDiscAmt*Double.parseDouble(arr2[5].toString())/100);
+					//dblDiscAmt = dblDiscAmt -(dblDiscAmt*Double.parseDouble(arr2[5].toString())/100);
+					dblDiscAmt = (dblDiscAmt*Double.parseDouble(arr2[4].toString())/100);
 					DataList.add(dblDiscAmt);
 					dblTotalDiscoun = new BigDecimal(df.format(Double.parseDouble(listDisc.get(0).toString()))).add(dblTotalDiscoun);
 					}
 				}
 				
-				String sqlTaxAmt = "select sum(a.dblTaxAmt) from tblbilltaxdtl a where a.strBillNo='"+arr2[0].toString()+"' and a.strTaxCode like 'TC%' and a.strClientCode='"+strClientCode+"'";
+				String sqlTaxAmt = "select ifnull(sum(a.dblTaxAmt),0.0) from tblbilltaxdtl a where a.strBillNo='"+arr2[0].toString()+"' and a.strTaxCode like 'TC%' and a.strClientCode='"+strClientCode+"'";
 				List listTaxAmt = objGlobalService.funGetListModuleWise(sqlTaxAmt, "sql");
 				if(listTaxAmt!=null && listTaxAmt.size()>0)
 				{
@@ -1868,7 +1878,9 @@ public class clsPMSSalesFlashController {
 					dblTotalTaxAmt = new BigDecimal(df.format(Double.parseDouble(listTaxAmt.get(0).toString()))).add(dblTotalTaxAmt);
 				}
 
-				String sqlAdvanceAmt = "select a.dblReceiptAmt from tblreceipthd a where a.strCheckInNo='"+arr2[6].toString()+"' "
+				/*String sqlAdvanceAmt = "select a.dblReceiptAmt from tblreceipthd a where a.strCheckInNo='"+arr2[6].toString()+"' "
+						+ "and a.strAgainst='Check-In' and a.strClientCode='"+strClientCode+"';";*/
+				String sqlAdvanceAmt = "select a.dblReceiptAmt from tblreceipthd a where a.strCheckInNo='"+arr2[5].toString()+"' "
 						+ "and a.strAgainst='Check-In' and a.strClientCode='"+strClientCode+"';";
 				List listAdvAmt = objGlobalService.funGetListModuleWise(sqlAdvanceAmt, "sql");
 				if(listAdvAmt!=null && listAdvAmt.size()>0)
@@ -1890,7 +1902,7 @@ public class clsPMSSalesFlashController {
 		totalsList.add("");
 		
 		totalsList.add(dblTotalBillValue);
-		totalsList.add(dblTotalDiscoun);
+		//totalsList.add(dblTotalDiscoun);
 		totalsList.add(dblTotalTaxAmt);
 		totalsList.add(dblTotalAdvanceAmt);
 		retList.add("PMSBillPrinting" + fromDte + "to" + toDte + "_" + userCode);
@@ -1911,7 +1923,7 @@ public class clsPMSSalesFlashController {
 		headerList.add("Room No");
 		headerList.add("Guest Name");
 		headerList.add("Bill Amount");
-		headerList.add("Discount Amount");
+		//headerList.add("Discount Amount");
 		headerList.add("Tax Amount");
 		headerList.add("Advance Amount");
 		
