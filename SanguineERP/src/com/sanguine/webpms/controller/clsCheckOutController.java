@@ -465,20 +465,32 @@ public class clsCheckOutController {
 	 							if (objFolioHdModel != null) {
 	 								
 	 								double balanceForPaymentCheck=0.00;
+	 								//Pooja 15-03-2021 0 bill CheckOut						
 	 								
-	 							    if(clientCode.equalsIgnoreCase("383.001"))
+	 								
+	 								if(clientCode.equalsIgnoreCase("383.001"))
 		 							{
+	 									String receiptAmt="a.dblReceiptAmt";
+	 									if(objFolioHdModel.getStrWalkInNo()!=null && objFolioHdModel.getStrWalkInNo().length()>0 )
+	 									{
+	 										receiptAmt="0";
+	 									}
+	 									
 		 								
-		 								String sql="SELECT b.BillAmount - a.receiptamt  FROM "
-		 										+" (SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) AS receiptamt FROM  "
-												+" (SELECT SUM(a.dblReceiptAmt) AS receiptAmt FROM tblreceipthd a, tblfoliohd b  "
-												+" WHERE a.strReservationNo = b.strReservationNo  "
-												+" AND a.strReservationNo = '"+objFolioHdModel.getStrReservationNo()+"') AS a,  "
-												+" (SELECT SUM(a.dblReceiptAmt) AS receiptAmt1 FROM tblreceipthd a, tblfoliohd b  "
-												+" WHERE a.strFolioNo = b.strFolioNo  "
-											    +"	AND b.strCheckInNo = b.strCheckInNo  "
-												+" AND a.strFolioNo = '"+objFolioHdModel.getStrFolioNo()+"') AS b) AS a,   "
-												+" (SELECT SUM(a.dblDebitAmt) AS BillAmount FROM tblfoliodtl a WHERE a.strFolioNo='"+objFolioHdModel.getStrFolioNo()+"') AS b ";
+	 									String sql="SELECT b.BillAmount - a.receiptamt"
+	 											+ " FROM (SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) AS receiptamt"
+	 											+ " FROM ("
+	 											+ " SELECT IFNULL(SUM("+receiptAmt+"),0) AS receiptAmt"
+	 											+ " FROM tblreceipthd a, tblfoliohd b"
+	 											+ "  WHERE a.strReservationNo = b.strReservationNo AND a.strReservationNo = '"+objFolioHdModel.getStrReservationNo()+"'  ) AS a, ("
+	 											+ " SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1"
+	 											+ " FROM tblreceipthd a, tblfoliohd b "
+	 											+ " WHERE a.strFolioNo = b.strFolioNo AND "
+	 											+ " a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+objFolioHdModel.getStrFolioNo()+"' AND  a.strReservationNo = '') AS b) AS a, ( "
+	 											+ " SELECT SUM(a.dblDebitAmt) AS BillAmount"
+	 											+ " FROM tblfoliodtl a "
+	 											+ " WHERE a.strFolioNo='"+objFolioHdModel.getStrFolioNo()+"') AS b ;";
+		 							 
 			 							List balAmtlist =  objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 			 							
 			 							if(balAmtlist!=null && balAmtlist.size()>0)
@@ -486,20 +498,6 @@ public class clsCheckOutController {
 			 								balanceForPaymentCheck=Double.parseDouble(balAmtlist.get(0).toString());
 			 							}
 			 							
-			 							/*String sqlPaidAmt="SELECT  ifnull(sum(c.folioAmt),0)+ifnull(sum(d.resAmt),0)+ifnull(SUM(e.checkInAmt),0) from   "
-														 +" (SELECT a.strReceiptNo,a.dblReceiptAmt AS folioAmt ,a.strReservationNo AS folioReservation,a.strCheckInNo "
-														 +"  AS folioCheckIn  FROM tblreceipthd  a WHERE strFolioNo='"+objFolioHdModel.getStrFolioNo()+"' AND  "
-														 +"  strAgainst='Folio-No')  c "
-														 +"  LEFT OUTER JOIN  "
-														 +" (SELECT a.strReceiptNo,a.dblReceiptAmt  AS checkInAmt,a.strReservationNo,a.strCheckInNo AS checkInNo "
-														 +"  FROM tblreceipthd a  WHERE strCheckInNo='"+objFolioHdModel.getStrCheckInNo()+"' AND  "
-														 +"  strAgainst='Check-In' ) e ON e.checkInNo=c.folioCheckIn "
-														 +"  LEFT OUTER JOIN  "
-														 +"  (SELECT a.strReceiptNo,a.dblReceiptAmt AS resAmt,a.strReservationNo  AS reservation,a.strCheckInNo FROM tblreceipthd  a "
-														 +"  WHERE strReservationNo='"+objFolioHdModel.getStrReservationNo()+"' AND  "
-														 +"  strAgainst='Reservation') d ON d.reservation=c.folioReservation  ;";*/
-			 							
-			 						
 			 							
 		 							}	
 			 							
