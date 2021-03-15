@@ -125,7 +125,7 @@ public class clsPMSSalesFlashController {
 		HashMap<String,clsPMSSalesFlashBean> hmRevenueType = new HashMap<String,clsPMSSalesFlashBean >();
 		
 		
-		/*String sql=" select * from  "
+		String sql=" select * from  "
                   +" (select a.strRevenueType AS strRevenueType,sum(a.Amount),sum(b.TAXAMT) from (SELECT a.strBillNo,b.strDocNo ,b.strRevenueType AS strRevenueType, sum(b.dblDebitAmt) AS Amount "
                   +" FROM tblbillhd a, tblbilldtl b "
                   +" WHERE a.strBillNo=b.strBillNo  AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
@@ -143,9 +143,9 @@ public class clsPMSSalesFlashController {
                   +" (select a.strFolioNo,b.strDocNo,sum(b.dblTaxAmt) AS TAXAMT from tblfoliodtl a ,tblfoliotaxdtl b "
                   +" where a.strFolioNo=b.strFolioNo and DATE(a.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
                   +" GROUP BY a.strFolioNo,b.strDocNo) b "
-                  +" where a.strFolioNo=b.strFolioNo and a.strDocNo=b.strDocNo group by a.strRevenueType )  d ; ";*/
+                  +" where a.strFolioNo=b.strFolioNo and a.strDocNo=b.strDocNo group by a.strRevenueType )  d ; ";
 		
-		String sql=" SELECT * FROM (SELECT a.strRevenueType AS strRevenueType, SUM(a.Amount), SUM(b.TAXAMT) "
+		/*String sql=" SELECT * FROM (SELECT a.strRevenueType AS strRevenueType, SUM(a.Amount), SUM(b.TAXAMT) "
                     +" FROM "
                     +" ( SELECT a.strBillNo,b.strDocNo,b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount "
 					+" FROM tblbillhd a, tblbilldtl b "
@@ -156,7 +156,7 @@ public class clsPMSSalesFlashController {
 					+" WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
 					+" GROUP BY a.strBillNo,b.strDocNo) b "
 					+" WHERE a.strBillNo=b.strBillNo AND a.strDocNo=b.strDocNo "
-					+" GROUP BY a.strRevenueType) c ; ";
+					+" GROUP BY a.strRevenueType) c ; ";*/
 		
 		List listRevenueDtl=objGlobalService.funGetListModuleWise(sql, "sql");
 	

@@ -63,6 +63,21 @@
 				<%
 				}}%>
 				
+				var messageForPaymentCheck;
+				<%if (session.getAttribute("balanceForPaymentCheck") != null) {
+		            if(session.getAttribute("MessagebalanceForPaymentCheck") != null){%>
+		            messageForPaymentCheck='<%=session.getAttribute("MessagebalanceForPaymentCheck").toString()%>';
+		            <%
+		            session.removeAttribute("MessagebalanceForPaymentCheck");
+		            }
+					boolean test = ((Boolean) session.getAttribute("balanceForPaymentCheck")).booleanValue();
+					session.removeAttribute("balanceForPaymentCheck");
+					if (test) {
+					%>
+					 alert(messageForPaymentCheck);
+		            <% 
+		            }}%>
+				
 			}); 
 	function funValidateData()
 	{
