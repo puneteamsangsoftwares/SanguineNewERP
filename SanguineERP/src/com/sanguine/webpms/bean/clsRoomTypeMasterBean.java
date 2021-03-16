@@ -9,8 +9,17 @@ public class clsRoomTypeMasterBean {
 	private double dblTrippleTariff;
 	private String strHsnSac;
 	private String strGuestCapcity;
+	private String strIsHouseKeeping;
 	
 	
+
+	public String getStrIsHouseKeeping() {
+		return strIsHouseKeeping;
+	}
+
+	public void setStrIsHouseKeeping(String strIsHouseKeeping) {
+		this.strIsHouseKeeping = strIsHouseKeeping;
+	}
 
 	public String getStrRoomTypeCode() {
 		return strRoomTypeCode;

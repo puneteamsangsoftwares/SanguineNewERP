@@ -42,10 +42,14 @@ public class clsRoomTypeMasterModel {
 	@Column(name = "strHsnSac")
 	private String strHsnSac;
 	
+	@Column(name = "strIsHouseKeeping")
+	private String strIsHouseKeeping;
+	
 	@Column(name = "strGuestCapcity")
 	private String strGuestCapcity;
 
-	public String getStrGuestCapcity() {
+	public String getStrGuestCapcity()
+	{
 		return strGuestCapcity;
 	}
 
@@ -140,6 +144,15 @@ public class clsRoomTypeMasterModel {
 
 	public void setDblTrippleTariff(double dblTrippleTariff) {
 		this.dblTrippleTariff = dblTrippleTariff;
+	
 	}
+	public String getstrIsHouseKeeping() {
+		return strIsHouseKeeping;
+	}
+
+	public void setstrIsHouseKeeping(String strIsHouseKeeping) {
+		this.strIsHouseKeeping = strIsHouseKeeping;
+	}
+	
 
 }

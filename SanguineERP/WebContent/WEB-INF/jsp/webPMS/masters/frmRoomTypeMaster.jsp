@@ -82,10 +82,10 @@
 				        {
 				        	if(response.strRoomTypeCode=='Invalid Code')
 				        	{
-				        		alert("Invalid RoomType Code");
+				        	
 				        		$("#txtRoomTypeCode").val('');
 				        	}
-				        	else
+				        	else 
 				        	{
 					        	$("#txtRoomTypeDesc").val(response.strRoomTypeDesc);
 					        	$("#txtRoomTerrif").val(response.dblRoomTerrif);
@@ -93,8 +93,22 @@
 					        	$("#txtTrippleTarrif").val(response.dblTrippleTariff);
 					        	$("#txtHsnSac").val(response.strHsnSac);
 					        	$("#txtGuestCapcity").val(response.strGuestCapcity);
+					        
 					        	
+					        	if(response.strIsHouseKeeping =='Y')
+								{
+									$("#ChkOnlyHouseKeeping").prop('checked', true);
+								}
+					        	else
+					        	{
+									$("#ChkOnlyHouseKeeping").prop('checked', false);
+
+					        	}	
+				        	
 				        	}
+				        	
+				        
+						   
 						},
 						error: function(jqXHR, exception) {
 				            if (jqXHR.status === 0) {
@@ -175,7 +189,20 @@
 				    					window.open('attachDoc.html?transName=frmRoomTypeMaster.jsp&formName=Member Profile&code='+$('#txtRoomTypeCode').val(),"mywindow","directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=600,left=400px");
 				    			});
 					 
-
+                               
+					 
+					 function funOnlyHouseKeeping()
+					{
+						var isSelected=$("#ChkOnlyHouseKeeping").prop('checked');
+						if(isSelected==true)
+						{
+							$("#ChkOnlyHouseKeeping").val("Y");				
+						}
+						else
+						{
+							$("#ChkOnlyHouseKeeping").val("N");				
+						}
+					} 
 	
 </script>
 
@@ -219,7 +246,15 @@
 				<s:input id="txtGuestCapcity" path="strGuestCapcity" type="number" onkeypress="return isNumber(event)" max="100"/>				
 			</div>
 			
-		</div>
+			<div class="col-md-2"><label>Only House Keeping</label><br>
+			<s:checkbox id="ChkOnlyHouseKeeping"  value="N" path="strIsHouseKeeping" style="margin-top: 2%;margin-left: 6%;" onclick="funOnlyHouseKeeping()"/>
+			        
+			        
+			</div>         
+		
+		 </div>
+         
+         
 		<br />
 		<p align="center" style="margin-right:32%">
 			<input type="submit" value="Submit" tabindex="3" class="btn btn-primary center-block" class="form_button"  onclick="return funCallFormAction('submit',this);"/>
