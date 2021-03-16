@@ -184,7 +184,7 @@ public class clsRoomStatusDiaryController {
 		
 		//For Virtual Room
 		String sqlVirtualRoom="";	
-		sqlVirtualRoom = "select a.strRoomCode,a.strRoomDesc,b.strRoomTypeDesc,a.strStatus,a.strRoomTypeCode from tblroom a,tblroomtypemaster b where a.strRoomTypeCode=b.strRoomTypeCode AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
+		sqlVirtualRoom = "select a.strRoomCode,a.strRoomDesc,b.strRoomTypeDesc,a.strStatus,a.strRoomTypeCode from tblroom a,tblroomtypemaster b where a.strRoomTypeCode=b.strRoomTypeCode AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'  and b.strIsHouseKeeping='N' "
 						+ " group by a.strRoomTypeCode order by b.strRoomTypeCode,a.strRoomDesc; ";			
 		List listVirtualRoom = objGlobalFunctionsService.funGetListModuleWise(sqlVirtualRoom, "sql");	
 	
@@ -983,7 +983,7 @@ public class clsRoomStatusDiaryController {
 		List listRoomStatusBeanDtl = new ArrayList<>();
 		Map objRoomTypeWise = new HashMap<>();
 		Map returnObject = new HashMap<>();
-		String sql = "select a.strRoomCode,a.strRoomDesc,b.strRoomTypeDesc,a.strStatus from tblroom a,tblroomtypemaster b where a.strRoomTypeCode=b.strRoomTypeCode AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
+		String sql = "select a.strRoomCode,a.strRoomDesc,b.strRoomTypeDesc,a.strStatus from tblroom a,tblroomtypemaster b where a.strRoomTypeCode=b.strRoomTypeCode AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' and b.strIsHouseKeeping='N' "
 					+ " order by b.strRoomTypeCode,a.strRoomDesc; ";
 		
 		List listRoom = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
@@ -1769,7 +1769,10 @@ public class clsRoomStatusDiaryController {
 			List listRoomStatus= new ArrayList<>();
 			if(PMSDate.equalsIgnoreCase(strCompDate))
 			{
-				String sql="select a.strRoomTypeDesc from tblroom a where a.strClientCode='"+clientCode+"' group by  a.strRoomTypeDesc ";
+				String sql=" select a.strRoomTypeDesc from tblroom a,tblroomtypemaster b  "
+						+ " where a.strClientCode='"+clientCode+"'  and a.strRoomTypeCode=b.strRoomTypeCode "
+						+ " and b.strIsHouseKeeping='N' "
+						+ " group by  a.strRoomTypeDesc ";
 				List listRoomDesc = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 				//while(listRoomDesc.size()>0)
 				for(int j=0;j<listRoomDesc.size();j++)
@@ -1854,7 +1857,11 @@ public class clsRoomStatusDiaryController {
 			else
 			{
 			
-			String sql="select a.strRoomTypeDesc from tblroom a where a.strClientCode='"+clientCode+"' group by a.strRoomTypeDesc ";
+			String sql=" select a.strRoomTypeDesc from tblroom a,tblroomtypemaster b "
+					+ " where a.strClientCode='"+clientCode+"' "
+					+ " and a.strRoomTypeCode=b.strRoomTypeCode "
+					+ " and b.strIsHouseKeeping='N'"
+					+ " group by a.strRoomTypeDesc ";
 			List listRoomDesc = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 			//while(listRoomDesc.size()>0)
 			for(int j=0;j<listRoomDesc.size();j++)

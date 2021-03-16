@@ -76,7 +76,7 @@ public class clsGuestMasterController {
 		listPrefix.add("Mr.");
 		listPrefix.add("Mrs.");
 		listPrefix.add("Miss");
-		listPrefix.add("Mater");
+		listPrefix.add("Master");
 		listPrefix.add("Both");
 		model.put("prefix", listPrefix);
 

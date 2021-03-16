@@ -1475,8 +1475,18 @@ table tbody tr:nth-child(even) {
 				  
 				  var table2=document.getElementById("tblDays");
 				  var indexDate=table2.rows[0];				  
-				  
-				  if(obj.parentNode.parentNode.cellIndex>1)
+				  if(gViewSelection=='House Keeping View')
+            	  {
+                	  var isCheckOk=confirm("Do You Want to schedule this room for cleaning ?"); 
+						  if(isCheckOk){
+							code=obj.defaultValue.split(","); 
+						    var subStr = code[1];						
+						    funCallRoomDirty(obj,subStr);
+						  }
+            	  }
+				  else
+				  {
+					  if(obj.parentNode.parentNode.cellIndex>1)
 					  {
 					  var isCheckOk=confirm("Do You Want to go on Reservation ?"); 
 						if(isCheckOk)
@@ -1485,7 +1495,7 @@ table tbody tr:nth-child(even) {
 						  window.open(url);
 						}
 					  }
-				  else
+					  else
 					  {
 					  var isCheckOk=confirm("Do You Want to go on Walkin ?"); 
 						if(isCheckOk)
@@ -1494,6 +1504,8 @@ table tbody tr:nth-child(even) {
 						  window.open(url);
 						}
 					  }
+				  }	  
+				  
 				  
 
 				  break;
