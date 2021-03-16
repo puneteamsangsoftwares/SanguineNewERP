@@ -5231,6 +5231,13 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
         sql=" ALTER TABLE `tblchangeroom`"
           + " CHANGE COLUMN `strRoomTypeCode` `strRoomTypeCode` VARCHAR(100) NOT NULL AFTER `strRoomNo`;" ;
         funExecutePMSQuery(sql);
+        
+        sql=" ALTER TABLE `tblroomtypemaster`"
+          + " ADD COLUMN `strISHouseKeeping` VARCHAR(2) NOT NULL DEFAULT 'N' AFTER `strHsnSac`;" ;
+        funExecutePMSQuery(sql);
+        
+    
+
       
 	        
 		/// END ///

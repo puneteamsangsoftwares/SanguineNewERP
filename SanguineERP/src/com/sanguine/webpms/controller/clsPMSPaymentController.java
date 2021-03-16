@@ -961,14 +961,14 @@ public class clsPMSPaymentController {
 			{
 
 				 sqlCheckIn = "SELECT sum(a.dblRoomRate) "
-				 		+ " FROM tblreservationroomratedtl a,tblcheckinhd b"
-				 		+ " WHERE a.strReservationNo=b.strReservationNo and b.strCheckInNo = '"+AdvAmount+"' " ;
+				 		+ " FROM tblreservationroomratedtl a,tblcheckinhd b ,tblcheckindtl c"
+				 		+ " WHERE a.strReservationNo=b.strReservationNo and b.strCheckInNo=c.strCheckInNo and b.strCheckInNo = '"+AdvAmount+"' " ;
 			}
 			else
 			{
 				sqlCheckIn =" SELECT sum(a.dblRoomRate) "
-						+ " FROM tblwalkinroomratedtl a,tblcheckinhd b"
-						+ " WHERE a.strWalkinNo=b.strWalkInNo and b.strCheckInNo = '"+AdvAmount+"' " ;
+						+ " FROM tblwalkinroomratedtl a,tblcheckinhd b ,tblcheckindtl c"
+						+ " WHERE a.strWalkinNo=b.strWalkInNo  and b.strCheckInNo=c.strCheckInNo  and b.strCheckInNo = '"+AdvAmount+"' " ;
 			}
 			/*String sqlCheckIn = "SELECT c.dblRoomRate FROM tblroomtypemaster a,tblcheckindtl b,tblreservationroomratedtl c,tblcheckinhd d"
 					+ "	WHERE b.strCheckInNo = '"+AdvAmount+"' AND a.strRoomTypeCode=b.strRoomType and a.strRoomTypeCode=c.strRoomType and d.strReservationNo=c.strReservationNo "
@@ -979,11 +979,11 @@ public class clsPMSPaymentController {
 					+ "LEFT OUTER JOIN tblwalkinroomratedtl b ON b.strWalkinNo=a.strWalkInNo WHERE a.strCheckInNo='"+AdvAmount+"') temp "
 					+ ",tblfoliohd c WHERE temp.strCheckInNo=c.strCheckInNo) temp2,tblfoliotaxdtl d "
 					+ "WHERE temp2.strFolioNo=d.strFolioNo";*/
-			 List listResevation = objGlobalFunctionsService.funGetDataList(sqlCheckIn, "sql");
-			 if (listResevation.size()>0) 
-				{
-					dblBalanceAmt=Double.parseDouble(listResevation.get(0).toString());
-				}
+			List listResevation = objGlobalFunctionsService.funGetDataList(sqlCheckIn, "sql");
+			if (listResevation.size()>0) 
+			{
+				dblBalanceAmt=Double.parseDouble(listResevation.get(0).toString());
+			}
 			 listAgainst.add(0, "Check-In");
 		}
 		request.setAttribute("code", AdvAmount);

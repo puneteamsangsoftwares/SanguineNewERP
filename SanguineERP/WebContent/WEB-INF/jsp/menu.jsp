@@ -27,7 +27,7 @@
 		var cntrlIsPressed = false;
 		$(document).ready(function()
 		{
-		     var pmsDate='<%=session.getAttribute("PMSDate")%>';			
+		    <%--  var pmsDate='<%=session.getAttribute("PMSDate")%>';			
 			 var today = new Date();			 
 			 var dd = today.getDate();
 			 var mm = today.getMonth()+1;
@@ -58,7 +58,7 @@
 				 {
 				    alert("PMS Date is not equal to System Date");
 				 } 
-			 }
+			 } --%>
 	});
 		$(document).keydown(function(event){
 		    if(event.which=="17")
