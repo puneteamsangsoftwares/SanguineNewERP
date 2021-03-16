@@ -1076,7 +1076,8 @@ public class clsCheckInController {
 						objFolioBean.setDteDepartureDate(objHdModel.getDteDepartureDate());
 						objFolioBean.setTmeArrivalTime(objHdModel.getTmeArrivalTime());
 						objFolioBean.setTmeDepartureTime(objHdModel.getTmeDepartureTime());
-						objFolioBean.setStrExtraBedCode(objCheckInDtlModel.getStrExtraBedCode());
+						objFolioBean.setStrExtraBedCode(objGlobal.funIfNull(objCheckInDtlModel.getStrExtraBedCode(), " ", objCheckInDtlModel.getStrExtraBedCode()));
+						//objFolioBean.setStrExtraBedCode(objCheckInDtlModel.getStrExtraBedCode());
 						objFolioBean.setStrGuestCode(objCheckInDtlModel.getStrGuestCode());
 						objFolioBean.setStrFolioNo(folioN);
 						
@@ -2777,11 +2778,9 @@ public class clsCheckInController {
 		objModel.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 		objModel.setStrClientCode(clientCode);
 		objModel.setStrRoomNo("");
-		if (objBean.getStrExtraBedCode() != null) {
-			objModel.setStrExtraBedCode(objBean.getStrExtraBedCode());
-		} else {
-			objModel.setStrExtraBedCode("");
-		}
+		
+		objModel.setStrExtraBedCode(objGlobal.funIfNull(objBean.getStrExtraBedCode()," ",objBean.getStrExtraBedCode()));
+		
 		objModel.setStrComplimentry(objBean.getStrComplimentry());
 
 		objModel.setIntNoOfAdults(objBean.getIntNoOfAdults());
@@ -2812,6 +2811,7 @@ public class clsCheckInController {
 				objClsCheckinDtlModel.setStrRoomNo(objCheckinDetails.getStrRoomNo());
 				//Below field is for roomwise Pax (As per Sachin Sir)
 				objClsCheckinDtlModel.setIntNoOfFolios(objCheckinDetails.getIntNoOfFolios());
+				objClsCheckinDtlModel.setStrExtraBedCode(objGlobal.funIfNull(objCheckinDetails.getStrExtraBedCode(), "", objCheckinDetails.getStrExtraBedCode()));
 				System.out.println("PAYEE=" + objCheckinDetails.getStrPayee());
 				if (objCheckinDetails.getStrPayee() != null) {
 					objClsCheckinDtlModel.setStrPayee(objCheckinDetails.getStrPayee());

@@ -102,12 +102,12 @@ public class clsFolioController {
 		objFolioModel.setDteDepartureDate(objFolioBean.getDteDepartureDate());
 		objFolioModel.setTmeArrivalTime(objFolioBean.getTmeArrivalTime());
 		objFolioModel.setTmeDepartureTime(objFolioBean.getTmeDepartureTime());
-		objFolioModel.setStrExtraBedCode(objFolioBean.getStrExtraBedCode());
+		objFolioModel.setStrExtraBedCode(objGlobal.funIfNull(objFolioBean.getStrExtraBedCode()," ",objFolioBean.getStrExtraBedCode()));
 		objFolioModel.setStrGuestCode(objFolioBean.getStrGuestCode());
 		objFolioModel.setStrClientCode(clientCode);
 		
 		
-		// getter settert
+		//getter settert
 		objFolioModel.setStrRoom(objGlobal.funIfNull(objFolioBean.getStrRoom(), "Y", objFolioBean.getStrRoom()));
 		objFolioModel.setStrFandB(objGlobal.funIfNull(objFolioBean.getStrFandB(), "Y", objFolioBean.getStrFandB()));
 		objFolioModel.setStrTelephone(objGlobal.funIfNull(objFolioBean.getStrTelephone(), "Y", objFolioBean.getStrTelephone()));
