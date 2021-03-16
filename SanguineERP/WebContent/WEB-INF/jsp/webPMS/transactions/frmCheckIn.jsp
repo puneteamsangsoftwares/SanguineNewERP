@@ -434,6 +434,14 @@ overflow-x: hidden;
 			
 			funAddRommRateDtlOnReservationSelect(response.listReservationRoomRateDtl);
 			funGetPreviouslyLoadedPkgList(response.listRoomPackageDtl);
+			if(response.strGroupCode.length >0 )
+			{
+			    for(var i=0;i<gcount;i++)
+		    	{
+			    	funSetGuestCode(cheGuestCode);
+		    	}
+				
+			}
 		}
 			
 		
@@ -1465,6 +1473,20 @@ overflow-x: hidden;
 					 
 					 function funValidateForm()
 					 {
+						 var table = document.getElementById("tblCheckInDetails");
+							var rowCount = table.rows.length;	
+							var TotalPaxNo=0;
+							for(var i=0;i<rowCount;i++)
+							{
+									
+								TotalPaxNo=TotalPaxNo + parseInt(table.rows[i].cells[7].children[0].value);
+																
+							}
+							if(TotalPaxNo > parseInt($("#txtNoOfAdults").val()))
+							{
+							  alert("Number of Pax is not matched");
+							  return false;
+							}
 						 	var ArrivalDate1 = $("#txtArrivalDate").val();
 							var DepartureDate1 = $("#txtDepartureDate").val();
 							 var g2 = new Date(ArrivalDate1); 
@@ -1545,20 +1567,21 @@ overflow-x: hidden;
 							}
 							
 							if($("#txtComplimentry").val()=='Y')
-								{
-								
+							{
+							
 								if($("#txtReason").val()=='')
-									{
-										alert("Please Enter Reason and Remarks");							
-									}
+								{
+									alert("Please Enter Reason and Remarks");							
+								}
 								else
-									{
-									return true;
-									
-									}
+								{
+								   return true;
+								
+								}
 								
 								return false;
-								}
+							}
+							
 							
 							
 							return true;	 

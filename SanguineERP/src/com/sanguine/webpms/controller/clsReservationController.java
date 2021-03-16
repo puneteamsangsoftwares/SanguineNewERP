@@ -306,6 +306,7 @@ public class clsReservationController {
 		objBean.setStrBillToCorporate(objReservationModel.getStrBillToCorporate());
 		objBean.setStrExternalNo(objReservationModel.getStrExternalNo());
 		objBean.setStrPlanCode(objReservationModel.getStrPlanCode());
+		objBean.setStrGroupCode(objGlobal.funIfNull(objReservationModel.getStrGroupCode(),"",objReservationModel.getStrGroupCode()));
 		clsRoomMasterModel objRoomMasterModel = objRoomMasterService.funGetRoomMaster(objReservationModel.getStrRoomNo(), clientCode);
 		objBean.setStrRoomNo(objReservationModel.getStrRoomNo());
 		if (objRoomMasterModel != null) {
