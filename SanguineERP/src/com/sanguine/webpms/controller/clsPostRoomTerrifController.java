@@ -543,7 +543,8 @@ public class clsPostRoomTerrifController {
 			    		if(objGroupBookingModel.getStrGroupLeaderCode().equals(objFolioHd.getStrGuestCode()))
 			    		{
 			    			
-			    			String strRoomRate = "SELECT SUM(roomterrif),ifnull(SUM(ChangeRoomRate),0) from"
+			    			
+			    			String strRoomRate = "SELECT (roomterrif),ifnull((ChangeRoomRate),0) from"
 			    					+ " (SELECT c.dblRoomTerrif as roomterrif,d.dblRoomRate As ChangeRoomRate "
 			    					+ " FROM tblfoliohd a "
 			    					+ " LEFT OUTER "
@@ -552,7 +553,8 @@ public class clsPostRoomTerrifController {
 			    					+ " JOIN tblroomtypemaster c ON b.strRoomTypeCode=c.strRoomTypeCode "
 			    					+ " LEFT OUTER JOIN tblreservationroomratedtl d ON "
 			    					+ "  d.strReservationNo=a.strReservationNo AND d.dtDate='"+PMSDate+"' "
-			    					+ " WHERE a.strCheckInNo='"+strCheckInNo+"' AND a.strClientCode='"+clientCode+"' GROUP BY a.strRoomNo) a";
+			    					+ " WHERE a.strCheckInNo='"+strCheckInNo+"' AND a.strClientCode='"+clientCode+"' GROUP BY a.strRoomNo) a "
+			    					+ " limit 1; ";
 			    					
 				    		List listRoomTariff = objGlobalFunctionsService.funGetListModuleWise(strRoomRate, "sql");
 				    		if(listRoomTariff!=null && listRoomTariff.size()>0)
@@ -568,6 +570,78 @@ public class clsPostRoomTerrifController {
 				    			}
 				    			
 				    		}
+				    		String strRoomNo="select a.strFolioNo,a.strRoomNo from tblfoliohd a where a.strCheckInNo='"+strCheckInNo+"'"
+				    				+ " group by a.strRoomNo; ";
+				    		List listRoomNo = objGlobalFunctionsService.funGetListModuleWise(strRoomNo, "sql");
+				    		if(listRoomNo!=null && listRoomNo.size()>0)
+				    		{
+				    			for(int i=0;i<listRoomNo.size();i++)
+				    			{
+				    				String docNoGroupDocNo=docNo;
+				    				if(i !=0)
+				    				{
+
+				    					 doc = objPMSUtility.funGenerateFolioDocForRoom("RoomFolio");
+				    					 docNoGroupDocNo = "RM" + String.format("%06d", doc);
+				    				}
+				    			
+								    	
+				    				
+				    				Object[] objRoom=(Object[]) listRoomNo.get(i);
+				    				
+
+					    			objFolioDtl = new clsFolioDtlModel();
+									objFolioDtl.setStrDocNo(docNoGroupDocNo);
+									objFolioDtl.setDteDocDate(PMSDate);
+									objFolioDtl.setDblDebitAmt(roomTerrif);
+									objFolioDtl.setDblBalanceAmt(0.0);
+									objFolioDtl.setDblCreditAmt(0);
+									objFolioDtl.setStrTransactionType(strTransType);
+									objFolioDtl.setStrUserEdited(strUserCode);
+									objFolioDtl.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+									if(objBean.getStrFolioType().equals("Room"))
+									{
+										objFolioDtl.setStrPerticulars("Room Tariff");
+									}
+									else
+									{
+										objFolioDtl.setStrPerticulars("Package");
+									}
+									objFolioDtl.setStrRevenueType(objBean.getStrFolioType());
+									objFolioDtl.setStrTransactionType(strTransType);
+									objFolioDtl.setStrRevenueCode(objRoom[1].toString());
+									objFolioDtl.setStrUserEdited(strUserCode);
+									objFolioDtl.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+									objFolioDtl.setStrRemark("");
+									listFolioDtl.add(objFolioDtl);
+									
+					    		
+
+						    		 //if group follio  tax calculation
+						    	  
+						    	    	if(listTaxProdDtl.size()>0) {
+						    	    		listTaxProdDtl.get(0).setDblTaxProdAmt(roomTerrif);
+						    	    	}	
+						    			hmTaxCalDtl = objPMSUtility.funCalculatePMSTax(listTaxProdDtl, "Room Night");
+						    		
+						    	    if(!hmTaxCalDtl.isEmpty())
+									{
+										List<clsTaxCalculation> listTaxCal = hmTaxCalDtl.get(objBean.getStrRoomNo());
+										for (clsTaxCalculation objTaxCal : listTaxCal) {
+											clsFolioTaxDtl objFolioTaxDtl = new clsFolioTaxDtl();
+											objFolioTaxDtl.setStrDocNo(docNoGroupDocNo);
+											objFolioTaxDtl.setStrTaxCode(objTaxCal.getStrTaxCode());
+											objFolioTaxDtl.setStrTaxDesc(objTaxCal.getStrTaxDesc());
+											objFolioTaxDtl.setDblTaxableAmt(objTaxCal.getDblTaxableAmt());
+											objFolioTaxDtl.setDblTaxAmt(objTaxCal.getDblTaxAmt());
+											listFolioTaxDtl.add(objFolioTaxDtl);
+										}
+									}
+									
+						    	   
+				    			}
+				    		}
+				    		
 				    		
 
 			    		}
@@ -575,32 +649,35 @@ public class clsPostRoomTerrifController {
 			    		else
 			    		{
 			    			roomTerrif = 0.0;
+			    			objFolioDtl = new clsFolioDtlModel();
+							objFolioDtl.setStrDocNo(docNo);
+							objFolioDtl.setDteDocDate(PMSDate);
+							objFolioDtl.setDblDebitAmt(roomTerrif);
+							objFolioDtl.setDblBalanceAmt(0.0);
+							objFolioDtl.setDblCreditAmt(0);
+							objFolioDtl.setStrTransactionType(strTransType);
+							objFolioDtl.setStrUserEdited(strUserCode);
+							objFolioDtl.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+							if(objBean.getStrFolioType().equals("Room"))
+							{
+								objFolioDtl.setStrPerticulars("Room Tariff");
+							}
+							else
+							{
+								objFolioDtl.setStrPerticulars("Package");
+							}
+							objFolioDtl.setStrRevenueType(objBean.getStrFolioType());
+							objFolioDtl.setStrTransactionType(strTransType);
+							objFolioDtl.setStrRevenueCode(objBean.getStrRoomNo());
+							objFolioDtl.setStrUserEdited(strUserCode);
+							objFolioDtl.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+							objFolioDtl.setStrRemark("");
+							listFolioDtl.add(objFolioDtl);
+							
 			    		}
 
-			    		objFolioDtl = new clsFolioDtlModel();
-						objFolioDtl.setStrDocNo(docNo);
-						objFolioDtl.setDteDocDate(PMSDate);
-						objFolioDtl.setDblDebitAmt(roomTerrif);
-						objFolioDtl.setDblBalanceAmt(0.0);
-						objFolioDtl.setDblCreditAmt(0);
-						objFolioDtl.setStrTransactionType(strTransType);
-						objFolioDtl.setStrUserEdited(strUserCode);
-						objFolioDtl.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
-						if(objBean.getStrFolioType().equals("Room"))
-						{
-							objFolioDtl.setStrPerticulars("Room Tariff");
-						}
-						else
-						{
-							objFolioDtl.setStrPerticulars("Package");
-						}
-						objFolioDtl.setStrRevenueType(objBean.getStrFolioType());
-						objFolioDtl.setStrTransactionType(strTransType);
-						objFolioDtl.setStrRevenueCode(objBean.getStrRoomNo());
-						objFolioDtl.setStrUserEdited(strUserCode);
-						objFolioDtl.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
-						objFolioDtl.setStrRemark("");
-						listFolioDtl.add(objFolioDtl);
+			    		
+						
 		    		
 	    			
 	    		}
@@ -608,29 +685,25 @@ public class clsPostRoomTerrifController {
 	    	}
 		    
 	    }
-	    //if group follio  then tax recalculate
-	    if(objHdModel.getStrDontApplyTax().equals("N") && !objModel.getStrGroupCode().equals(""))
-		{
-	    	if(listTaxProdDtl.size()>0) {
-	    		listTaxProdDtl.get(0).setDblTaxProdAmt(roomTerrif);
-	    	}	
-			hmTaxCalDtl = objPMSUtility.funCalculatePMSTax(listTaxProdDtl, "Room Night");
-		}
+	   
 	    
-
-		if(!hmTaxCalDtl.isEmpty())
+	    if(objHdModel.getStrDontApplyTax().equals("N") && objModel.getStrGroupCode().equals(""))
 		{
-			List<clsTaxCalculation> listTaxCal = hmTaxCalDtl.get(objBean.getStrRoomNo());
-			for (clsTaxCalculation objTaxCal : listTaxCal) {
-				clsFolioTaxDtl objFolioTaxDtl = new clsFolioTaxDtl();
-				objFolioTaxDtl.setStrDocNo(docNo);
-				objFolioTaxDtl.setStrTaxCode(objTaxCal.getStrTaxCode());
-				objFolioTaxDtl.setStrTaxDesc(objTaxCal.getStrTaxDesc());
-				objFolioTaxDtl.setDblTaxableAmt(objTaxCal.getDblTaxableAmt());
-				objFolioTaxDtl.setDblTaxAmt(objTaxCal.getDblTaxAmt());
-				listFolioTaxDtl.add(objFolioTaxDtl);
+	    	if(!hmTaxCalDtl.isEmpty())
+			{
+				List<clsTaxCalculation> listTaxCal = hmTaxCalDtl.get(objBean.getStrRoomNo());
+				for (clsTaxCalculation objTaxCal : listTaxCal) {
+					clsFolioTaxDtl objFolioTaxDtl = new clsFolioTaxDtl();
+					objFolioTaxDtl.setStrDocNo(docNo);
+					objFolioTaxDtl.setStrTaxCode(objTaxCal.getStrTaxCode());
+					objFolioTaxDtl.setStrTaxDesc(objTaxCal.getStrTaxDesc());
+					objFolioTaxDtl.setDblTaxableAmt(objTaxCal.getDblTaxableAmt());
+					objFolioTaxDtl.setDblTaxAmt(objTaxCal.getDblTaxAmt());
+					listFolioTaxDtl.add(objFolioTaxDtl);
+				}
 			}
 		}
+		
 		if(!flgDupExtraBed)
 		{	
 		if (!extraBedCode.isEmpty()) {

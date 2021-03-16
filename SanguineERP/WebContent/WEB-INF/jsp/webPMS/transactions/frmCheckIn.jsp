@@ -204,8 +204,9 @@ overflow-x: hidden;
 			if(isAdvanceOk)
 			{
 				checkInNo='<%=session.getAttribute("AdvanceAmount").toString()%>';
-				window.open(getContextPath()+"/frmPMSPaymentAdvanceAmount.html?AdvAmount="+checkInNo);
+				window.open(getContextPath()+"/frmPMSPaymentAdvanceAmount.html?AdvAmount="+checkInNo+"&against="+against);
 				session.removeAttribute("AdvanceAmount");
+				session.removeAttribute("against");
 				
 			}<%	
 		}
@@ -996,7 +997,7 @@ overflow-x: hidden;
 			//    table.deleteRow(index);
 			
 			
-			/* var isOk=confirm("Do You Want Change Amount For all Room Type Rate ?");
+			 var isOk=confirm("Do You Want Change Amount For all Room Type Rate ?");
 			if(isOk)
 				{
 					var value1=document.getElementById("dblRoomRate."+index).value;
@@ -1007,7 +1008,7 @@ overflow-x: hidden;
 				       // totalTarriff=totalTarriff+parseFloat(objName.value);
 				    }
 				}
-			funCalculateTotals(); */
+			funCalculateTotals(); 
 		}
 
 		
@@ -1124,9 +1125,10 @@ overflow-x: hidden;
 		}
 		
 		
-		function funAddRommRateDtl(dataList)
+		/* function funAddRommRateDtl(dataList)
 		{
 			$('#tblRommRate tbody').empty()
+			
 			 var table=document.getElementById("tblRommRate");
 			 
 			 for(var i=0;i<dataList.length;i++ )
@@ -1144,7 +1146,7 @@ overflow-x: hidden;
 		 	     row.insertCell(2).innerHTML= "<input type=\"text\"    style=\"text-align:right;\"  name=\"listReservationRoomRateDtl["+(rowCount)+"].dblRoomRate\" id=\"dblRoomRate."+(rowCount)+"\" onchange =\"Javacsript:funCalculateTotals()\" value='"+list[1]+"' >";
 		 	     row.insertCell(3).innerHTML= "<input type=\"hidden\" class=\"Box \"  name=\"listReservationRoomRateDtl["+(rowCount)+"].strRoomType\" id=\"strRoomType."+(rowCount)+"\" value='"+list[3]+"' >";
 			}
-		}
+		} */
 		
 		var alreadyCheckInRow=0;
 		function funAddRommRateDtlOnReservationSelect(dataList)
@@ -2257,7 +2259,7 @@ overflow-x: hidden;
 					<td style="width:14%;">Room No</td>
 					<td style="width:13%;">Extra Bed</td>					
 					<td style="width:0.5%">Payee</td>
-					<td style="width:3px;">No Of Folios</td>
+					<td style="width:3px;">Pax No</td><!-- No Of Folios replaceed by roomwise pax  -->
 					<td style="width:10px;">Delete</td>
 					
 				</tr>

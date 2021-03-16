@@ -2810,7 +2810,7 @@ public class clsCheckInController {
 				objClsCheckinDtlModel.setStrRegistrationNo(objModel.getStrRegistrationNo());
 				objClsCheckinDtlModel.setStrGuestCode(objCheckinDetails.getStrGuestCode());
 				objClsCheckinDtlModel.setStrRoomNo(objCheckinDetails.getStrRoomNo());
-				objClsCheckinDtlModel.setStrExtraBedCode(objCheckinDetails.getStrExtraBedCode());
+				//Below field is for roomwise Pax (As per Sachin Sir)
 				objClsCheckinDtlModel.setIntNoOfFolios(objCheckinDetails.getIntNoOfFolios());
 				System.out.println("PAYEE=" + objCheckinDetails.getStrPayee());
 				if (objCheckinDetails.getStrPayee() != null) {

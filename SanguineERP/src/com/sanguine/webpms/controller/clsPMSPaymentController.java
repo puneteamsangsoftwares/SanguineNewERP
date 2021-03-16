@@ -950,12 +950,30 @@ public class clsPMSPaymentController {
 			
 			/*String sqlCheckIn = "SELECT a.dblRoomTerrif FROM tblroomtypemaster a,tblcheckindtl  b "
 			 		+ "WHERE b.strCheckInNo = '"+AdvAmount+"' and a.strRoomTypeCode=b.strRoomType";*/
+			String strType="";
+			String sqlCheckIn="";
+			if(request.getParameter("against")!=null)
+			{
+				strType=request.getParameter("against").toString();
+			}
 			
-			
-			String sqlCheckIn = "SELECT c.dblRoomRate FROM tblroomtypemaster a,tblcheckindtl b,tblreservationroomratedtl c,tblcheckinhd d"
+			if( strType.equalsIgnoreCase("Reservation"))
+			{
+
+				 sqlCheckIn = "SELECT sum(a.dblRoomRate) "
+				 		+ " FROM tblreservationroomratedtl a,tblcheckinhd b"
+				 		+ " WHERE a.strReservationNo=b.strReservationNo and b.strCheckInNo = '"+AdvAmount+"' " ;
+			}
+			else
+			{
+				sqlCheckIn =" SELECT sum(a.dblRoomRate) "
+						+ " FROM tblwalkinroomratedtl a,tblcheckinhd b"
+						+ " WHERE a.strWalkinNo=b.strWalkInNo and b.strCheckInNo = '"+AdvAmount+"' " ;
+			}
+			/*String sqlCheckIn = "SELECT c.dblRoomRate FROM tblroomtypemaster a,tblcheckindtl b,tblreservationroomratedtl c,tblcheckinhd d"
 					+ "	WHERE b.strCheckInNo = '"+AdvAmount+"' AND a.strRoomTypeCode=b.strRoomType and a.strRoomTypeCode=c.strRoomType and d.strReservationNo=c.strReservationNo "
 							+ " and a.strClientCode=b.strClientCode and b.strClientCode=c.strClientCode and c.strClientCode=d.strClientCode";
-					
+		*/			
 			/*String sqlCheckIn="SELECT ifnull(ROUND(dblRoomRate-(temp2.dblRoomRate*temp2.dblDiscount)/100+ SUM(d.dblTaxAmt)),0) FROM "
 					+ "( SELECT temp.dblRoomRate,temp.dblDiscount,c.strFolioNo FROM ( SELECT b.dblRoomRate,b.dblDiscount,a.strCheckInNo FROM tblcheckinhd a "
 					+ "LEFT OUTER JOIN tblwalkinroomratedtl b ON b.strWalkinNo=a.strWalkInNo WHERE a.strCheckInNo='"+AdvAmount+"') temp "

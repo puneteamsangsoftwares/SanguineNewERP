@@ -357,7 +357,7 @@ public class clsFolioPrintingController {
 							+ " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
 							+ " WHERE a.strFolioNo='" + folioNo + "' AND b.strRevenueType!='Discount' "
 							+ " and b.strPerticulars='Room Tariff'"
-							+ " group by b.dteDocDate " 
+							+ " group by b.dteDocDate,b.strDocNo " 
 							+ " Union All"
 							+ " SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo, CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),b.dblQuantity,b.dblDebitAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark)  " + " "
 							+ " FROM tblfoliohd a "

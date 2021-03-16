@@ -22,7 +22,17 @@ public class clsBillPrintingBean {
 	
 	private String strTaxCode;
 	
+    private String strPaxNo;
 	
+	
+	public String getStrPaxNo() {
+		return strPaxNo;
+	}
+
+	public void setStrPaxNo(String strPaxNo) {
+		this.strPaxNo = strPaxNo;
+	}
+
 	public String getStrGuestName() {
 		return strGuestName;
 	}
