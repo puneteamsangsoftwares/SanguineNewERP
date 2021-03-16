@@ -519,6 +519,7 @@ public class clsPMSPaymentController {
 							+ "FROM tblreceipthd a "
 							+ "WHERE a.strReservationNo='"+obj[5].toString()+"' AND a.strClientCode='"+clientCode+"'";
 				}
+				
 				List listRecipt = objGlobalFunctionsService.funGetListModuleWise(sqlRecipt, "sql");
 				double reciptAmt=0.0;
 				if(listRecipt.size()>0)

@@ -96,7 +96,14 @@ public class clsPMSPaymentServiceImpl implements clsPMSPaymentService {
 				}
 			}
 		} else if (objPaymentBean.getStrAgainst().equals("Check-In")) {
-			String sql = " select b.strCheckInNo,a.strRegistrationNo,b.strReservationNo,b.strFolioNo " + " from tblcheckinhd a,tblfoliohd b " + " where a.strCheckInNo=b.strCheckInNo and a.strCheckInNo='" + objPaymentBean.getStrDocNo() + "' ";
+			/*String sql = " select b.strCheckInNo,a.strRegistrationNo,b.strReservationNo,b.strFolioNo " + " from tblcheckinhd a,tblfoliohd b " + " where a.strCheckInNo=b.strCheckInNo and a.strCheckInNo='" + objPaymentBean.getStrDocNo() + "' ";*/
+			String sql=" SELECT b.strCheckInNo,b.strRegistrationNo,b.strReservationNo,b.strFolioNo "
+						+" FROM tblfoliohd b,tblcheckindtl c "
+						+" WHERE c.strCheckInNo='"+objPaymentBean.getStrDocNo()+"' AND b.strCheckInNo=c.strCheckInNo "
+						+" AND b.strRoomNo=c.strRoomNo "
+						+" AND c.strPayee='Y' AND b.strRoom='Y' "
+						+" GROUP BY b.strFolioNo; ";
+			
 			List list = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 			if (list.size() > 0) {
 				for (int cnt = 0; cnt < list.size(); cnt++) {
