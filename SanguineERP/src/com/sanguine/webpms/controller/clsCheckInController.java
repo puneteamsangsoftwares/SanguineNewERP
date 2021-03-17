@@ -289,9 +289,12 @@ public class clsCheckInController {
 
 		if (!objCheckIn.getStrExtraBedCode().equals("")) {
 			List listExtraBedData = objExtraBedMasterDao.funGetExtraBedMaster(objCheckIn.getStrExtraBedCode(), clientCode);
+			if(listExtraBedData!=null && !listExtraBedData.isEmpty() )
+			{
 			clsExtraBedMasterModel objExtraBedMasterModel = (clsExtraBedMasterModel) listExtraBedData.get(0);
 			objBean.setStrExtraBedCode(objCheckIn.getStrExtraBedCode());
 			objBean.setStrExtraBedDesc(objExtraBedMasterModel.getStrExtraBedTypeDesc());
+			}
 		} else {
 			objBean.setStrExtraBedCode("");
 			objBean.setStrExtraBedDesc("");

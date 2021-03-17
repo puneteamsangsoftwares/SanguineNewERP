@@ -190,16 +190,28 @@ overflow-x: hidden;
 			against='<%=session.getAttribute("against").toString()%>';
 			if(clientCode != '387.001')
 			{
+				var isAdvanceOk=confirm("Do You Want to pay Advance Amount ?"); 
 				var isCheckOk=confirm("Do You Want to Generate Check-In Slip ?"); 
 				if(isCheckOk)
 				{
 					checkInNo='<%=session.getAttribute("AdvanceAmount").toString()%>';
 					
 					window.open(getContextPath() + "/rptCheckInSlip.html?checkInNo=" +checkInNo+"&cmbAgainst="+against,'_blank');
+				
+				 }
+				
+				if(isAdvanceOk)
+				{
+					checkInNo='<%=session.getAttribute("AdvanceAmount").toString()%>';
+					window.open(getContextPath()+"/frmPMSPaymentAdvanceAmount.html?AdvAmount="+checkInNo+"&against="+against);
+					session.removeAttribute("AdvanceAmount");
+					session.removeAttribute("against");
+					
 				}
+				
 			}
 		
-			var isAdvanceOk=confirm("Do You Want to pay Advance Amount ?"); 
+			<%-- var isAdvanceOk=confirm("Do You Want to pay Advance Amount ?"); 
 			
 			if(isAdvanceOk)
 			{
@@ -208,7 +220,8 @@ overflow-x: hidden;
 				session.removeAttribute("AdvanceAmount");
 				session.removeAttribute("against");
 				
-			}<%	
+			} --%>
+			<%	
 		}
 	}%>
 	

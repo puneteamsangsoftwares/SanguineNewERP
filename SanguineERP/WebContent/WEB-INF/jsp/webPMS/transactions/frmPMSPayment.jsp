@@ -560,7 +560,7 @@
 			 flg=false;
 		}
 		
-		if(settlementType=="Credit Card")
+		/* if(settlementType=="Credit Card")
 		{
 			if($("#txtCardNo").val().trim().length==0)
 			{
@@ -568,7 +568,7 @@
 				 flg=false;
 			}
 		}
-		
+		 */
 		if(settlementType=="Credit")
 		{
 			if(gstrIndustryType!='7-WebBanquet')

@@ -3424,7 +3424,8 @@ public class clsBillPrintingController {
 				List paymentDtlList=new ArrayList<>();
 				String sqlPaymentDtl="";
 				// get payment details
-
+                String settlementType="";
+                int cnt=0;
 				if(strSelectBill.contains("Room Tariff"))
 				{
 					 sqlPaymentDtl = "SELECT date(c.dteReceiptDate),c.strReceiptNo,IF(c.strAgainst='Bill',e.strSettlementDesc,CONCAT('ADVANCE ',e.strSettlementDesc)),'0.00' as debitAmt "
@@ -3433,6 +3434,7 @@ public class clsBillPrintingController {
 							+ " where c.strReceiptNo=d.strReceiptNo and d.strSettlementCode=e.strSettlementCode AND c.strFolioNo='"+folio+"' and d.strClientCode='"+clientCode+"'";
 	
 					 paymentDtlList = objFolioService.funGetParametersList(sqlPaymentDtl);
+					 
 					 for (int i = 0; i < paymentDtlList.size(); i++) {
 						Object[] paymentArr = (Object[]) paymentDtlList.get(i);
 	
@@ -3457,11 +3459,15 @@ public class clsBillPrintingController {
 							folioPrintingBean.setDblDebitAmt(debitAmount);
 							folioPrintingBean.setDblCreditAmt(creditAmount);
 							folioPrintingBean.setDblBalanceAmt(balance);
-	
+							settlementType=particulars;
 							dataList.add(folioPrintingBean);
+							cnt++;
 						}
 					}
-					
+					if(cnt>0)
+					{
+						settlementType="MultiSettle";
+					}
 					if (!(paymentDtlList.size() > 0)) {
 						sqlPaymentDtl = "SELECT date(c.dteReceiptDate),c.strReceiptNo,e.strSettlementDesc,'0.00' as debitAmt "
 								+ " ,d.dblSettlementAmt as creditAmt,'0.00' as balance "
@@ -3505,6 +3511,7 @@ public class clsBillPrintingController {
 	
 					}
 				}
+				reportParams.put("pSettlementType",settlementType);
 				
 				String sqlReservationAdvPayment = "select a.strReservationNo from tblbillhd a where a.strBillNo='"+billNo+"' AND a.strClientCode='"+clientCode+"'";
 				List listResAdvpayment = objGlobalFunctionsService.funGetDataList(sqlReservationAdvPayment, "sql");

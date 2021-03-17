@@ -2831,7 +2831,7 @@ public class clsSearchFormController {
 
 		case "roomType": {
 			columnNames = "strRoomTypeCode,strRoomTypeDesc ";
-			tableName = "clsRoomTypeMasterModel where strClientCode='" + clientCode + "' ";
+			tableName = "clsRoomTypeMasterModel where strClientCode='" + clientCode + "' AND strISHouseKeeping='N' ";
 			listColumnNames = "Code,RoomType Desc ";
 			idColumnName = "strRoomTypeCode";
 			// criteria = getCriteriaQuery(columnNames,search_with,tableName);

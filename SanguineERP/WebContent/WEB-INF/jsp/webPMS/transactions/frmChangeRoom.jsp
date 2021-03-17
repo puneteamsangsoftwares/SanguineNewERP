@@ -64,7 +64,29 @@ var selectedOccupiedRoom="",selectedFreeRoom="";
 				}
 			}%>
 			
-			funLoadData();
+			var checkInNo='';
+			var messageForPaymentCheck;
+			<%if (session.getAttribute("roomRateChange") != null) {
+	            if(session.getAttribute("MessageRoomRateChange") != null){%>
+	            checkInNo='<%=session.getAttribute("MessageRoomRateChange").toString()%>';
+	            <%
+	            session.removeAttribute("MessageRoomRateChange");
+	            }
+				boolean test = ((Boolean) session.getAttribute("roomRateChange")).booleanValue();
+				session.removeAttribute("roomRateChange");
+				if (test) {
+				%>
+				var isCheckOk=confirm("Do you want to Change Room Rate"); 
+				if(isCheckOk)
+				{
+					window.open(getContextPath() + "/frmCheckIn.html?docCode=" + checkInNo); 
+					
+				 }
+	            <% 
+	            }}%>
+			
+	            
+		  funLoadData();
 		});
 
 function funLoadData()

@@ -504,9 +504,27 @@ public class clsPMSPaymentController {
 				Object[] obj = (Object[])listFoliaData.get(i);
 				clsPaymentReciptBean objPaymentReciptBean = new clsPaymentReciptBean();
 				
-				/*String sqlRecipt="select sum(a.dblReceiptAmt) from tblreceipthd a where a.strReservationNo='"+obj[5].toString()+"'   group by a.strCheckInNo " ;*/
+				
 				String sqlRecipt="";
-				if(obj[5].toString().equals(""))
+				String receiptAmt="a.dblReceiptAmt";
+				if(obj[5]==" " )
+				{
+						receiptAmt="0";
+				}
+				
+				sqlRecipt="SELECT b.BillAmount - a.receiptamt"
+						+ " FROM ( SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) AS receiptamt"
+						+ " FROM "
+						+ " ( SELECT IFNULL(SUM("+receiptAmt+"),0) AS receiptAmt "
+						+ " FROM tblreceipthd a, tblfoliohd b "
+						+ " WHERE a.strReservationNo = b.strReservationNo AND a.strReservationNo = '"+obj[5].toString()+"') AS a,"
+						+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1 FROM tblreceipthd a, tblfoliohd b"
+						+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+docCode+"' AND a.strReservationNo = '') AS b) AS a, "
+						+ " ( SELECT SUM(a.dblDebitAmt) AS BillAmount"
+						+ " FROM tblfoliodtl a WHERE a.strFolioNo='"+docCode+"') AS b ;" ;
+				
+				
+				/*if(obj[5].toString().equals(""))
 				{
 				sqlRecipt = "SELECT ifnull(SUM(a.dblReceiptAmt),0) "
 						+ "FROM tblreceipthd a "
@@ -518,7 +536,7 @@ public class clsPMSPaymentController {
 					sqlRecipt = "SELECT ifnull(SUM(a.dblReceiptAmt),0) "
 							+ "FROM tblreceipthd a "
 							+ "WHERE a.strReservationNo='"+obj[5].toString()+"' AND a.strClientCode='"+clientCode+"'";
-				}
+				}*/
 				
 				List listRecipt = objGlobalFunctionsService.funGetListModuleWise(sqlRecipt, "sql");
 				double reciptAmt=0.0;
@@ -528,7 +546,8 @@ public class clsPMSPaymentController {
 					
 				}
 				NumberFormat formatter = new DecimalFormat("0.00");
-				double dblBal = Double.parseDouble(obj[4].toString())-reciptAmt;
+				//double dblBal = Double.parseDouble(obj[4].toString())-reciptAmt;
+				double dblBal = reciptAmt;
 				objPaymentReciptBean.setStrGuestCode(obj[0].toString());
 				objPaymentReciptBean.setStrFirstName(obj[1].toString());
 				objPaymentReciptBean.setStrMiddleName(obj[2].toString());

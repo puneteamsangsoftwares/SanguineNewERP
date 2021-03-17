@@ -327,7 +327,9 @@ WHERE DATE(b.dteDocDate) BETWEEN '2016-03-25' AND '2016-03-25' AND a.strFolioNo=
 				<text><![CDATA[Settlement Type :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="439" y="163" width="115" height="14" uuid="68c52d05-80d6-4ddd-bcf0-a9fc938a45b2"/>
+				<reportElement x="439" y="163" width="115" height="14" uuid="68c52d05-80d6-4ddd-bcf0-a9fc938a45b2">
+					<printWhenExpression><![CDATA[$P{pSettlementType} != null]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="11"/>
 				</textElement>

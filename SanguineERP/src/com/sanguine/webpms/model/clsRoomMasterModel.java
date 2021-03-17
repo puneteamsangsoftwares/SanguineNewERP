@@ -96,6 +96,8 @@ public class clsRoomMasterModel implements Serializable {
 	@Column(name = "strAccountCode", columnDefinition = "VARCHAR(20) NOT NULL default ''")
 	private String strAccountCode;
 
+	
+	@Column(name = "strRoomTypeDesc")
 	private String strRoomTypeDesc;
 	
 	
