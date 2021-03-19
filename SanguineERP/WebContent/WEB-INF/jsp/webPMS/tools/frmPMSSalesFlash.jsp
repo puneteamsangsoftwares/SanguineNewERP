@@ -221,13 +221,7 @@ function funOnClckRevenueHeadWiseBtn( divId)
 
 function funRevenueHeadWiseDetail(ProdDtl)
 {
-	if(clientCode == "383.001")
-  	{
-		document.all["idRevenueTaxAmt"].style.display = 'none';
-		document.all["txtTaxTotValue"].style.display = 'none';
-		
-		
-	}
+	
 	$('#tblRevenueHeadDet tbody').empty();
 	for(var i=0;i<ProdDtl.length;i++)
 	{
@@ -240,10 +234,8 @@ function funRevenueHeadWiseDetail(ProdDtl)
    
     row.insertCell(0).innerHTML= "<input name=\"strRevenueType["+(rowCount)+"]\" readonly=\"readonly\"  class=\"Box\" size=\"25%\" id=\"strRevenueType."+(rowCount)+"\" value='"+data.strRevenueType+"'>";		    
     row.insertCell(1).innerHTML= "<input name=\"dblAmount["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" style=\"text-align: right;\" size=\"57%\" id=\"dblAmount."+(rowCount)+"\" value='"+data.dblAmount+"'>";
-    if(clientCode != "383.001")
-	{
     row.insertCell(2).innerHTML= "<input name=\"dblTaxAmountt["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\"  style=\"text-align: right;\" size=\"27%\" id=\"dblTaxAmount."+(rowCount)+"\" value='"+data.dblTaxAmount+"'>";
-	} 
+	
     funApplyNumberValidation();
 	}	
 }

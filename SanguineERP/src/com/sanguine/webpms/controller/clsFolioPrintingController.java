@@ -514,8 +514,11 @@ public class clsFolioPrintingController {
 						+ " LEFT OUTER "
 						+ " JOIN tblreceiptdtl b ON a.strReceiptNo=b.strReceiptNo "
 						+ " LEFT OUTER "
-						+ " JOIN tblsettlementmaster c ON b.strSettlementCode=c.strSettlementCode WHERE "
-						+ " a.strReservationNo='"+reservationNo+"' AND a.strAgainst='Reservation' AND a.strClientCode='"+clientCode+"';";
+						+ " JOIN tblsettlementmaster c ON b.strSettlementCode=c.strSettlementCode ,tblfoliohd d"
+						+ " WHERE a.strReservationNo=d.strReservationNo AND  d.strFolioNo='"+folioNo+"' AND d.strRoom='Y' and "
+						+ " a.strReservationNo='"+reservationNo+"' AND a.strAgainst='Reservation'  AND a.strClientCode='"+clientCode+"'; ";
+
+						
 				
 				List paymentDtlListAgainstRes = objFolioService.funGetParametersList(sqlPayDtlAgainstRes);
 				if(paymentDtlListAgainstRes!=null && paymentDtlListAgainstRes.size()>0){
@@ -554,8 +557,10 @@ public class clsFolioPrintingController {
 						+ " LEFT OUTER "
 						+ " JOIN tblreceiptdtl b ON a.strReceiptNo=b.strReceiptNo "
 						+ " LEFT OUTER "
-						+ " JOIN tblsettlementmaster c ON b.strSettlementCode=c.strSettlementCode WHERE "
-						+ " a.strCheckInNo='"+CheckInNo+"' AND a.strAgainst='Check-In'  AND a.strClientCode='"+clientCode+"';";
+						+ " JOIN tblsettlementmaster c ON b.strSettlementCode=c.strSettlementCode ,tblfoliohd d "
+						+ " WHERE a.strReservationNo=d.strReservationNo AND  d.strFolioNo='"+folioNo+"' AND d.strRoom='Y' and "
+						+ " a.strCheckInNo='"+CheckInNo+"' AND a.strAgainst='Check-In' "
+						+ " AND a.strClientCode='"+clientCode+"';";
 				
 				List paymentDtlListAgainstCheckin = objFolioService.funGetParametersList(sqlPayDtlAgainstRes);
 				if(paymentDtlListAgainstCheckin!=null && paymentDtlListAgainstCheckin.size()>0){

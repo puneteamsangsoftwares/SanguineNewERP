@@ -176,36 +176,30 @@ public class clsCheckOutController {
 				objCheckOutRoomDtlBean.setDblAmount(0);
 				objCheckOutRoomDtlBean.setStrRoomDesc(obj[11].toString());
 
-				/*sql = "select a.strFolioNo,sum(b.dblDebitAmt) " + " from tblfoliohd a,tblfoliodtl b " + " where a.strFolioNo=b.strFolioNo and a.strRoomNo='" + obj[5].toString() + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'  and  a.strFolioNo='"+objCheckOutRoomDtlBean.getStrFolioNo()+"' group by a.strFolioNo";
-				List listFolioAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-				for (int cnt = 0; cnt < listFolioAmt.size(); cnt++) {
-					Object[] arrObjFolio = (Object[]) listFolioAmt.get(cnt);
-					objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() + Double.parseDouble(arrObjFolio[1].toString()));
-				}*/
-
-				/*sql = "select sum(b.dblDebitAmt),sum(c.dblTaxAmt) " + " from tblfoliohd a,tblfoliodtl b,tblfoliotaxdtl c " + " where a.strFolioNo=b.strFolioNo and b.strFolioNo=c.strFolioNo and b.strDocNo=c.strDocNo " + " and a.strRoomNo='" + obj[5].toString() + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' and  a.strFolioNo='"+objCheckOutRoomDtlBean.getStrFolioNo()+"' group by b.strFolioNo";
-				List listFolioTaxAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-				for (int cnt = 0; cnt < listFolioTaxAmt.size(); cnt++) {
-					Object[] arrObjFolio = (Object[]) listFolioTaxAmt.get(cnt);
-					if(!clientCode.equalsIgnoreCase("383.001"))
-					{
-						objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() + Double.parseDouble(arrObjFolio[1].toString()));
-					}
-					
-				}*/
-				sql="SELECT b.BillAmount - a.receiptamt +c.taxAmt "
-						+ " FROM ( SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) AS receiptamt"
-						+ " FROM "
-						+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt "
-						+ " FROM tblreceipthd a, tblfoliohd b "
-						+ " WHERE a.strReservationNo = b.strReservationNo AND b.strFolioNo='"+obj[6].toString()+"' AND b.strRoom='Y' ) AS a,"
-						+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1 FROM tblreceipthd a, tblfoliohd b"
-						+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+obj[6].toString()+"' AND a.strReservationNo = '') AS b) AS a, "
-						+ " ( SELECT IFNULL(SUM(a.dblDebitAmt),0) AS BillAmount"
-						+ " FROM tblfoliodtl a WHERE a.strFolioNo='"+obj[6].toString()+"') AS b,(SELECT IFNULL(sum(a.dblTaxAmt),0) AS taxAmt FROM tblfoliotaxdtl a ,tbltaxmaster b"
-						+ " WHERE a.strTaxCode=b.strTaxCode AND "
-						+ " b.strTaxCalculation='Forward' And"
-						+ " a.strFolioNo='"+obj[6].toString()+"') AS  c ;" ;
+			
+				sql="SELECT b.BillAmount - a.receiptamt +c.taxAmt"
+					+ " FROM "
+					+ "( SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) + IFNULL(c.recieptFolioAmt,0)  AS receiptamt"
+					+ " FROM "
+					+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt"
+					+ " FROM tblreceipthd a, tblfoliohd b"
+					+ " WHERE a.strReservationNo = b.strReservationNo AND b.strFolioNo='"+obj[6].toString()+"' AND b.strRoom='Y' "
+					+ " AND a.strFlagOfAdvAmt='Y' AND LENGTH(b.strWalkInNo)=0  )  AS a , "//Advance payment,group reservation,reservation,Group leeader payee
+					+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1"
+					+ " FROM tblreceipthd a, tblfoliohd b"
+					+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+obj[6].toString()+"'"
+					+ " AND a.strReservationNo = '') AS b, " //Folio payment ,walk in 
+					+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS recieptFolioAmt"
+					+ " FROM tblreceipthd a, tblfoliohd b"
+					+ " WHERE a.strReservationNo = b.strReservationNo  AND a.strFolioNo=b.strFolioNo"
+					+ " AND b.strFolioNo='"+obj[6].toString()+"' "
+					+ " AND a.strFlagOfAdvAmt='N' AND LENGTH(b.strWalkInNo)=0 ) AS c )  AS a, "//Folio payment ,group reservation,reservation,Non Group leeader payee
+					+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0) AS BillAmount"
+					+ " FROM tblfoliodtl a"
+					+ " WHERE a.strFolioNo='"+obj[6].toString()+"') AS b,"//total Folio Amount
+					+ " (SELECT IFNULL(SUM(a.dblTaxAmt),0) AS taxAmt"
+					+ " FROM tblfoliotaxdtl a,tbltaxmaster b"
+					+ " WHERE a.strTaxCode=b.strTaxCode AND b.strTaxCalculation='Forward' AND a.strFolioNo='"+obj[6].toString()+"') AS c ;" ;////total FolioTax  Amount
 		
 				List listFolioBalAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 				for (int cnt = 0; cnt < listFolioBalAmt.size(); cnt++) {
@@ -317,19 +311,30 @@ public class clsCheckOutController {
 						receiptAmt="0";
 				}
 				
-				sql="SELECT b.BillAmount - a.receiptamt +c.taxAmt "
-						+ " FROM ( SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) AS receiptamt"
+				sql="SELECT b.BillAmount - a.receiptamt +c.taxAmt"
 						+ " FROM "
-						+ " ( SELECT IFNULL(SUM("+receiptAmt+"),0) AS receiptAmt "
-						+ " FROM tblreceipthd a, tblfoliohd b "
-						+ " WHERE a.strReservationNo = b.strReservationNo AND b.strFolioNo='"+obj[6].toString()+"' AND b.strRoom='Y' ) AS a,"
-						+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1 FROM tblreceipthd a, tblfoliohd b"
-						+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+obj[6].toString()+"' AND a.strReservationNo = '') AS b) AS a, "
+						+ "( SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) + IFNULL(c.recieptFolioAmt,0)  AS receiptamt"
+						+ " FROM "
+						+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt"
+						+ " FROM tblreceipthd a, tblfoliohd b"
+						+ " WHERE a.strReservationNo = b.strReservationNo AND b.strFolioNo='"+obj[6].toString()+"' AND b.strRoom='Y' "
+						+ " AND a.strFlagOfAdvAmt='Y' AND LENGTH(b.strWalkInNo)=0  )  AS a , "//Advance payment,group reservation,reservation,Group leeader payee
+						+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1"
+						+ " FROM tblreceipthd a, tblfoliohd b"
+						+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+obj[6].toString()+"'"
+						+ " AND a.strReservationNo = '') AS b, " //Folio payment ,walk in 
+						+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS recieptFolioAmt"
+						+ " FROM tblreceipthd a, tblfoliohd b"
+						+ " WHERE a.strReservationNo = b.strReservationNo  AND a.strFolioNo=b.strFolioNo"
+						+ " AND b.strFolioNo='"+obj[6].toString()+"' "
+						+ " AND a.strFlagOfAdvAmt='N' AND LENGTH(b.strWalkInNo)=0 ) AS c )  AS a, "//Folio payment ,group reservation,reservation,Non Group leeader payee
 						+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0) AS BillAmount"
-						+ " FROM tblfoliodtl a WHERE a.strFolioNo='"+obj[6].toString()+"') AS b,(SELECT IFNULL(sum(a.dblTaxAmt),0) AS taxAmt FROM tblfoliotaxdtl a ,tbltaxmaster b"
-						+ " WHERE a.strTaxCode=b.strTaxCode AND "
-						+ " b.strTaxCalculation='Forward' And"
-						+ " a.strFolioNo='"+obj[6].toString()+"') AS  c ;" ;
+						+ " FROM tblfoliodtl a"
+						+ " WHERE a.strFolioNo='"+obj[6].toString()+"') AS b,"//total Folio Amount
+						+ " (SELECT IFNULL(SUM(a.dblTaxAmt),0) AS taxAmt"
+						+ " FROM tblfoliotaxdtl a,tbltaxmaster b"
+						+ " WHERE a.strTaxCode=b.strTaxCode AND b.strTaxCalculation='Forward' AND a.strFolioNo='"+obj[6].toString()+"') AS c ;" ;////total FolioTax  Amount
+			
 		
 				List listFolioBalAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 				for (int cnt = 0; cnt < listFolioBalAmt.size(); cnt++) {

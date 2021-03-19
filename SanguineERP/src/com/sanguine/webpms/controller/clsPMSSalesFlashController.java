@@ -196,20 +196,14 @@ public class clsPMSSalesFlashController {
 		    double amount=obj.getDblAmount();
 		    objBean.setDblAmount(amount);
 		    double taxAmount=obj.getDblTaxAmount();
-		    if(!strClientCode.equalsIgnoreCase("383.001"))
-			{
 		    objBean.setDblTaxAmount(taxAmount);
-			}
-		    listofRevenueDtl.add(objBean);
+			listofRevenueDtl.add(objBean);
 		    
-			
 		}
 		listofRevenueHeadTotal.add(listofRevenueDtl);
 		listofRevenueHeadTotal.add(dblTotalValue);
-		if(!strClientCode.equalsIgnoreCase("383.001"))
-		{
 		listofRevenueHeadTotal.add(dblTaxTotalValue);
-		}
+		
 		return listofRevenueHeadTotal;
 	}
 
@@ -233,18 +227,12 @@ public class clsPMSSalesFlashController {
 
 		List<clsPMSSalesFlashBean> listofTaxDtl = new ArrayList<clsPMSSalesFlashBean>();
 		List listofTaxTotal = new ArrayList<>();
-		String sql = " SELECT  IFNULL(c.strTaxDesc,''),"+taxableAmt+" , IFNULL(SUM(c.dblTaxAmt),0) "
-				+ " FROM tblbillhd a "
-				+ " LEFT OUTER "
-				+ " JOIN tblbilldtl b ON a.strBillNo=b.strBillNo "
-				+ " LEFT OUTER "
-				+ " JOIN tblbilltaxdtl c ON b.strDocNo=c.strDocNo AND b.strBillNo=c.strBillNo "
-				+ " WHERE DATE(a.dteBillDate) BETWEEN '"
-				+ fromDte
-				+ "' AND '"
-				+ toDte
-				+ "' AND c.strTaxDesc!='' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' "
-				+ " GROUP BY c.strTaxDesc; ";
+		String sql = "select d.strTaxDesc, SUM(c.dblTaxableAmt), SUM(c.dblTaxAmt) "
+				+ " FROM tblbillhd a, tblbilltaxdtl c, tbltaxmaster d where  a.strBillNo = c.strBillNo "
+				+ " and c.strTaxCode = d.strTaxCode "
+				+ " and DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' "
+				+ " AND a.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"'"
+				+ " group by d.strTaxDesc;";
 
 		List listTaxDtl = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listTaxDtl.isEmpty()) {
@@ -1174,18 +1162,12 @@ public class clsPMSSalesFlashController {
 		BigDecimal dblTotalValue = new BigDecimal(0);
 		BigDecimal dblTaxTotalValue = new BigDecimal(0);
 		DecimalFormat df = new DecimalFormat("#.##");
-		String sql=" SELECT  IFNULL(c.strTaxDesc,''), IFNULL(SUM(c.dblTaxableAmt),0), IFNULL(SUM(c.dblTaxAmt),0) "
-				+ " FROM tblbillhd a "
-				+ " LEFT OUTER "
-				+ " JOIN tblbilldtl b ON a.strBillNo=b.strBillNo  AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-				+ " LEFT OUTER "
-				+ " JOIN tblbilltaxdtl c ON b.strDocNo=c.strDocNo AND b.strBillNo=c.strBillNo  AND c.strClientCode='"+strClientCode+"'"
-				+ " WHERE DATE(a.dteBillDate) BETWEEN '"
-				+ fromDte
-				+ "' AND '"
-				+ toDte
-				+ "' AND c.strTaxDesc!='' "
-				+ " GROUP BY c.strTaxDesc;";
+		String sql = "select d.strTaxDesc, SUM(c.dblTaxableAmt), SUM(c.dblTaxAmt) "
+				+ " FROM tblbillhd a, tblbilltaxdtl c, tbltaxmaster d where  a.strBillNo = c.strBillNo "
+				+ " and c.strTaxCode = d.strTaxCode "
+				+ " and DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' "
+				+ " AND a.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"'"
+				+ " group by d.strTaxDesc;";
 		List listTaxDtl = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listTaxDtl.isEmpty()) {
 			for (int i = 0; i < listTaxDtl.size(); i++) {

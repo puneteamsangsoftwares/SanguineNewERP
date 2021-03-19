@@ -410,18 +410,18 @@ public class clsReservationController {
 			String strEmailAddress = "";
 			for (clsReservationDetailsBean objResDtlBean : listResDtlBean) 
 			{
-				if (null != objResDtlBean.getStrGuestCode() && !objResDtlBean.getStrGuestCode().equals(""))
+				/*if (null != objResDtlBean.getStrGuestCode() && !objResDtlBean.getStrGuestCode().equals(""))
 					
 				{
 					clsGuestMasterBean objGuestMasterBean = new clsGuestMasterBean();
 					objGuestMasterBean.setStrGuestCode(objResDtlBean.getStrGuestCode());
 					objGuestMasterBean.setStrGuestPrefix("");
 					List listGuestData = objGuestMasterDao.funGetGuestMaster(objResDtlBean.getStrGuestCode(), clientCode);
-					for (int i=0;i<listGuestData.size();i++)
+					clsGuestMasterHdModel obj =new clsGuestMasterHdModel();
+					if(listGuestData!=null && listGuestData.size()>0)
 					{
-						clsGuestMasterHdModel obj = (clsGuestMasterHdModel) listGuestData.get(0);
-						strGSTNo = obj.getStrGSTNo().toString();
-						strEmailAddress = obj.getStrEmailId();
+						 obj = (clsGuestMasterHdModel) listGuestData.get(0);
+					
 					}
 					
 					
@@ -432,17 +432,17 @@ public class clsReservationController {
 					objGuestMasterBean.setStrFirstName(arrSpGuest[0]);
 					if(arrSpGuest.length>1)
 					{
-					objGuestMasterBean.setStrMiddleName(objGlobal.funIfNull(arrSpGuest[1], "", arrSpGuest[1]));
+						obj.setStrMiddleName(objGlobal.funIfNull(arrSpGuest[1], "", arrSpGuest[1]));
 					}else{
 						objGuestMasterBean.setStrMiddleName("");
 					}
 					if(arrSpGuest.length>2)
 					{
-						objGuestMasterBean.setStrLastName(objGlobal.funIfNull(arrSpGuest[2], "", arrSpGuest[2]));
+						obj.setStrLastName(objGlobal.funIfNull(arrSpGuest[2], "", arrSpGuest[2]));
 					}
 					else
 					{
-						objGuestMasterBean.setStrLastName("");
+						obj.setStrLastName("");
 					}
 					
 					objGuestMasterBean.setIntFaxNo(0);
@@ -467,7 +467,7 @@ public class clsReservationController {
 					hmGuestMbWithCode.put(objResDtlBean.getLngMobileNo(), objGuestMasterModel.getStrGuestCode());	
 					String sqlguest=" update tblguestmaster a set a.dblClosingBalance='"+closingBal+"' where  a.strGuestCode='"+objResDtlBean.getStrGuestCode()+"' ";
 					objWebPMSUtility.funExecuteUpdate(sqlguest, "sql");
-				}
+				}*/
 			}
 
 			List<clsReservationDetailsBean> listReservationDtlBean = new ArrayList<clsReservationDetailsBean>();

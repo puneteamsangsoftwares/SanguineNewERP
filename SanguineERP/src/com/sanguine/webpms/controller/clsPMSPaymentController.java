@@ -510,19 +510,30 @@ public class clsPMSPaymentController {
 						receiptAmt="0";
 				}
 				
-				sqlRecipt="SELECT b.BillAmount - a.receiptamt +c.taxAmt "
-						+ " FROM ( SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) AS receiptamt"
+				sqlRecipt="SELECT b.BillAmount - a.receiptamt +c.taxAmt"
 						+ " FROM "
-						+ " ( SELECT IFNULL(SUM("+receiptAmt+"),0) AS receiptAmt "
-						+ " FROM tblreceipthd a, tblfoliohd b "
-						+ " WHERE a.strReservationNo = b.strReservationNo AND b.strFolioNo='"+docCode+"' AND b.strRoom='Y' ) AS a,"
-						+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1 FROM tblreceipthd a, tblfoliohd b"
-						+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+docCode+"' AND a.strReservationNo = '') AS b) AS a, "
-						+ " ( SELECT IFNULL(SUM(a.dblDebitAmt),0) AS BillAmount"
-						+ " FROM tblfoliodtl a WHERE a.strFolioNo='"+docCode+"') AS b,(SELECT IFNULL(sum(a.dblTaxAmt),0) AS taxAmt FROM tblfoliotaxdtl a ,tbltaxmaster b"
-						+ " WHERE a.strTaxCode=b.strTaxCode AND "
-						+ " b.strTaxCalculation='Forward' And"
-						+ " a.strFolioNo='"+docCode+"') AS  c ;" ;
+						+ "( SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) + IFNULL(c.recieptFolioAmt,0)  AS receiptamt"
+						+ " FROM "
+						+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt"
+						+ " FROM tblreceipthd a, tblfoliohd b"
+						+ " WHERE a.strReservationNo = b.strReservationNo AND b.strFolioNo='"+docCode+"' AND b.strRoom='Y' "
+						+ " AND a.strFlagOfAdvAmt='Y' AND LENGTH(b.strWalkInNo)=0  )  AS a , "//Advance payment,group reservation,reservation,Group leeader payee
+						+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1"
+						+ " FROM tblreceipthd a, tblfoliohd b"
+						+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+docCode+"'"
+						+ " AND a.strReservationNo = '') AS b, " //Folio payment ,walk in 
+						+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS recieptFolioAmt"
+						+ " FROM tblreceipthd a, tblfoliohd b"
+						+ " WHERE a.strReservationNo = b.strReservationNo  AND a.strFolioNo=b.strFolioNo"
+						+ " AND b.strFolioNo='"+docCode+"' "
+						+ " AND a.strFlagOfAdvAmt='N' AND LENGTH(b.strWalkInNo)=0 ) AS c )  AS a, "//Folio payment ,group reservation,reservation,Non Group leeader payee
+						+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0) AS BillAmount"
+						+ " FROM tblfoliodtl a"
+						+ " WHERE a.strFolioNo='"+docCode+"') AS b,"//total Folio Amount
+						+ " (SELECT IFNULL(SUM(a.dblTaxAmt),0) AS taxAmt"
+						+ " FROM tblfoliotaxdtl a,tbltaxmaster b"
+						+ " WHERE a.strTaxCode=b.strTaxCode AND b.strTaxCalculation='Forward' AND a.strFolioNo='"+docCode+"') AS c ;" ;////total FolioTax  Amount
+			
 				
 				/*if(obj[7].toString().equalsIgnoreCase("Y"))
 				{

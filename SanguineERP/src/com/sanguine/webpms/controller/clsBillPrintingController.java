@@ -3429,15 +3429,16 @@ public class clsBillPrintingController {
 
 				flgBillRecord = true;
 			}
-
+            
+			String settlementType="";
 			if (flgBillRecord) 
 			{
 				
 				List paymentDtlList=new ArrayList<>();
 				String sqlPaymentDtl="";
 				// get payment details
-                String settlementType="";
-                int cnt=0;
+               
+               
 				if(strSelectBill.contains("Room Tariff") ||  strSelectBill.length()==0 || strSelectBill.contains("POS"))
 				{
 					 sqlPaymentDtl = "SELECT date(c.dteReceiptDate),c.strReceiptNo,IF(c.strAgainst='Bill',e.strSettlementDesc,CONCAT('ADVANCE ',e.strSettlementDesc)),'0.00' as debitAmt "
@@ -3471,15 +3472,12 @@ public class clsBillPrintingController {
 							folioPrintingBean.setDblDebitAmt(debitAmount);
 							folioPrintingBean.setDblCreditAmt(creditAmount);
 							folioPrintingBean.setDblBalanceAmt(balance);
-							settlementType=particulars;
+							settlementType=settlementType+","+particulars;
 							dataList.add(folioPrintingBean);
-							cnt++;
+						
 						}
 					}
-					if(cnt>0)
-					{
-						settlementType="MultiSettle";
-					}
+					
 					if (!(paymentDtlList.size() > 0)) {
 						sqlPaymentDtl = "SELECT date(c.dteReceiptDate),c.strReceiptNo,e.strSettlementDesc,'0.00' as debitAmt "
 								+ " ,d.dblSettlementAmt as creditAmt,'0.00' as balance "
@@ -3516,14 +3514,14 @@ public class clsBillPrintingController {
 								folioPrintingBean.setDblDebitAmt(debitAmount);
 								folioPrintingBean.setDblCreditAmt(creditAmount);
 								folioPrintingBean.setDblBalanceAmt(balance);
-	
+								settlementType=settlementType+","+particulars;
 								dataList.add(folioPrintingBean);
 							}
 						}
 	
 					}
 				}
-				reportParams.put("pSettlementType",settlementType);
+			
 				
 				String sqlReservationAdvPayment = "select a.strReservationNo from tblbillhd a where a.strBillNo='"+billNo+"' AND a.strClientCode='"+clientCode+"'";
 				List listResAdvpayment = objGlobalFunctionsService.funGetDataList(sqlReservationAdvPayment, "sql");
@@ -3562,6 +3560,7 @@ public class clsBillPrintingController {
 							folioPrintingBean.setDblDebitAmt(debitAmount);
 							folioPrintingBean.setDblCreditAmt(creditAmount);
 							folioPrintingBean.setDblBalanceAmt(balance);
+							settlementType=settlementType+","+particulars;
 	
 							dataList.add(folioPrintingBean);
 						}
@@ -3734,6 +3733,9 @@ public class clsBillPrintingController {
 				
 
 			}
+			
+			reportParams.put("pSettlementType",settlementType.substring(1));
+			
 			List<clsBillPrintingBean> listtax=new ArrayList<>();
 			if(hmTax.size()>0){
 				for(Map.Entry<String, clsBillPrintingBean> entry:hmTax.entrySet()){
