@@ -124,7 +124,18 @@ public class clsBillHdModel implements Serializable {
 	@Column(name = "dblClosingBalance")
 	private double dblClosingBalance;
 	
+	@Column(name = "strGuestCode")
+	private String strGuestCode;
 	
+	
+
+	public String getStrGuestCode() {
+		return strGuestCode;
+	}
+
+	public void setStrGuestCode(String strGuestCode) {
+		this.strGuestCode = strGuestCode;
+	}
 
 	public String getStrCompanyName() {
 		return strCompanyName;

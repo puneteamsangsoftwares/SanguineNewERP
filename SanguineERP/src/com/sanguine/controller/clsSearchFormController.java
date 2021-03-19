@@ -3066,10 +3066,11 @@ public class clsSearchFormController {
 		}
 		
 		case "folioNo": {
-			columnNames = " distinct(strFolioNo), CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName) as Geust " + ", d.strRoomDesc,a.strCheckInNo,a.strRegistrationNo,a.strReservationNo,a.strWalkInNo ";
-			tableName = " from tblfoliohd a,tblguestmaster c,tblroom d " 
-			          + " where a.strGuestCode=c.strGuestCode and a.strRoomNo=d.strRoomCode ";
-			listColumnNames = "Folio No ,Guest Name ,Room No,Check In No,Registration No,Reservation No,Walk-In No ";
+			columnNames = " DISTINCT(strFolioNo), CONCAT(c.strGuestPrefix,' ', c.strFirstName,' ',c.strMiddleName,' ',c.strLastName) AS Guest, "
+					+ " d.strRoomDesc, a.strRoom, a.strFandB , a.strCheckInNo";
+			tableName = " from tblfoliohd a,tblguestmaster c,tblroom d"
+					+ " WHERE a.strGuestCode=c.strGuestCode AND a.strRoomNo=d.strRoomCode ";
+			listColumnNames = "Folio No ,Guest Name ,Room Desc,Room Bill,F&B ,Check In No";
 			idColumnName = "strFolioNo";
 			flgQuerySelection = true;
 			// criteria = getCriteriaQuery(columnNames,search_with,tableName);
@@ -3092,10 +3093,13 @@ public class clsSearchFormController {
 		}
 
 		case "receiptNo": {
-			columnNames = "a.strReceiptNo,CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName), DATE(a.dteReceiptDate),a.strAgainst,a.strCheckInNo,a.strReservationNo,a.strBillNo";
-			tableName = "from tblreceipthd a,tblcheckindtl b,tblguestmaster c "
-					+ "WHERE a.strCheckInNo=b.strCheckInNo AND b.strGuestCode=c.strGuestCode";
-			listColumnNames = "Receipt No,Guest Name,Receipt Date,Against,Check In No,Reservation No,Bill No";
+			columnNames = " a.strReceiptNo, CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName),DATE(a.dteReceiptDate),a.strAgainst, a.strBillNo, a.dblReceiptAmt  , d.strSettlementDesc, a.strUserCreated, a.strUserEdited";
+			tableName = " from tblreceipthd a, tblreceiptdtl b,tblguestmaster c, tblsettlementmaster d"
+					+ " WHERE a.strReceiptNo = b.strReceiptNo and b.strCustomerCode = c.strGuestCode"
+					+ " and b.strSettlementCode = d.strSettlementCode; ";
+			listColumnNames = "Receipt No,Guest Name,Receipt Date,Against,Bill No,Receipt Amt,Settlement Desc, User Created, User Edited";
+			
+			
 			idColumnName = "strReceiptNo";
 			flgQuerySelection = true;
 			// criteria = getCriteriaQuery(columnNames,search_with,tableName);

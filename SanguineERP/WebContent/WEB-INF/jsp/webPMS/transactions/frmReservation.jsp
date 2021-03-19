@@ -2285,7 +2285,7 @@
 		funSetCorporateCode(code.split("#")[2]);
 		funSetRoomType(code.split("#")[1]);
 		
-		var guestCode='';
+		var guestCode=code.split("#")[3];
 		var mobileNo='0';
 		var guestName='';
 		var roomType =$("#txtRoomTypeCode").val();

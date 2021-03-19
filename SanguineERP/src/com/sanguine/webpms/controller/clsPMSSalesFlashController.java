@@ -369,15 +369,12 @@ public class clsPMSSalesFlashController {
 			String toDte = arr1[2] + "-" + arr1[1] + "-" + arr1[0];
 
 			List<clsPMSSalesFlashBean> listofCheckInDtl = new ArrayList<clsPMSSalesFlashBean>();
-			String sql="SELECT a.strCheckInNo,a.strType, DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'),c.strRoomDesc,c.strRoomTypeDesc, "
-                      +" CONCAT(d.strFirstName,' ', d.strMiddleName,' ',d.strLastName), a.tmeArrivalTime "
-                      +" FROM tblcheckinhd a,tblcheckindtl b,tblroom c,tblguestmaster d "
-                      +" WHERE a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=c.strRoomCode "
-                      +" AND b.strGuestCode=d.strGuestCode "
-                      + "AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' "
-                      + "AND d.strClientCode='"+strClientCode+"'"
-                      + "AND DATE(a.dteCheckInDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND "
-                      + " a.strCheckInNo NOT IN (SELECT a.strCheckInNo FROM tblvoidbillhd a ); ";
+			String sql=" SELECT a.strCheckInNo,a.strType, DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'),c.strRoomDesc,c.strRoomTypeDesc, "
+					+ " CONCAT(d.strGuestPrefix ,' ',d.strFirstName,' ', d.strMiddleName,' ',d.strLastName), a.tmeArrivalTime"
+					+ " FROM tblcheckinhd a,tblcheckindtl b,tblroom c,tblguestmaster d"
+					+ " WHERE a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=c.strRoomCode AND b.strGuestCode=d.strGuestCode "
+					+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' "
+					+ " AND d.strClientCode='"+strClientCode+"' AND DATE(a.dteCheckInDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' ; ";
 			List listCheckInDtl = objGlobalService.funGetListModuleWise(sql, "sql");
 			if (!listCheckInDtl.isEmpty()) {
 				for (int i = 0; i < listCheckInDtl.size(); i++) {
@@ -412,25 +409,31 @@ public class clsPMSSalesFlashController {
 			List<clsPMSSalesFlashBean> listofCheckOutDtl = new ArrayList<clsPMSSalesFlashBean>();
 			List listofCheckOutTotal = new ArrayList<>();
 
-			String sql="SELECT a.strCheckInNo,a.strType, DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'),c.strRoomDesc,c.strRoomTypeDesc, "
-                      +" CONCAT(d.strFirstName,' ', d.strMiddleName,' ',d.strLastName), e.dblGrandTotal "
-                      +" FROM tblcheckinhd a,tblcheckindtl b,tblroom c,tblguestmaster d,tblbillhd e "
-                      +" WHERE a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=c.strRoomCode AND b.strGuestCode=d.strGuestCode " 
-                      +" AND  a.strCheckInNo=e.strCheckInNo AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
-                      + "AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' AND e.strClientCode='"+strClientCode+"' "
-                      + "AND DATE(a.dteDepartureDate) BETWEEN '"+fromDte+"' AND '"+toDte+"';";
+			String sql="SELECT   a.strCheckInNo,a.strType, DATE_FORMAT(e.dteBillDate,'%d-%m-%Y'),c.strRoomDesc,c.strRoomTypeDesc,"
+					+ " CONCAT(d.strFirstName,' ', d.strMiddleName,' ',d.strLastName), e.dblGrandTotal,e.strBillNo"
+					+ " FROM tblcheckinhd a,tblcheckindtl b,tblroom c,tblguestmaster d,tblbillhd e"
+					+ " WHERE a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=c.strRoomCode "
+					+ " AND b.strGuestCode=d.strGuestCode AND a.strCheckInNo=e.strCheckInNo "
+					+ " and b.strRoomNo = e.strRoomNo"
+					+ " AND a.strClientCode='"+strClientCode+"' "
+					+ " AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' "
+					+ " AND e.strClientCode='"+strClientCode+"' AND DATE(e.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"';";
+			
 			List listCheckOutDtl = objGlobalService.funGetListModuleWise(sql, "sql");
 			if (!listCheckOutDtl.isEmpty()) {
 				for (int i = 0; i < listCheckOutDtl.size(); i++) {
 				    Object[] arr2=(Object[]) listCheckOutDtl.get(i);
 					clsPMSSalesFlashBean objBean = new clsPMSSalesFlashBean();
-					objBean.setStrBillNo(arr2[0].toString());
+					objBean.setStrCheckInNo(arr2[0].toString());	
 					objBean.setStrBookingType(arr2[1].toString());
 					objBean.setDteDepartureDate(arr2[2].toString());
 					objBean.setStrRoomDesc(arr2[3].toString());
 					objBean.setStrRoomType(arr2[4].toString());
 					objBean.setStrGuestName(arr2[5].toString());
 					objBean.setDblGrandTotal(arr2[6].toString());
+					objBean.setStrBillNo(arr2[7].toString());
+					
+								
 					listofCheckOutDtl.add(objBean);
 					dblTotalValue = new BigDecimal(Double.parseDouble(arr2[6].toString())).add(dblTotalValue);
 				}
@@ -493,25 +496,18 @@ public class clsPMSSalesFlashController {
 		String toDate = request.getParameter("toDte").toString();
 		String[] arr1 = toDate.split("-");
 		String toDte = arr1[2] + "-" + arr1[1] + "-" + arr1[0];
-
+		String PMSDate=objGlobal.funGetDate("yyyy-MM-dd",request.getSession().getAttribute("PMSDate").toString());
+    
 		List<clsPMSSalesFlashBean> listofNoShowDtl = new ArrayList<clsPMSSalesFlashBean>();
-		String sql = "SELECT CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName),a.strReservationNo,a.strNoRoomsBooked, IFNULL(b.dblReceiptAmt,0) "
-				+ " from tblreservationhd a left outer join tblreceipthd b "
-				+ " on a.strReservationNo=b.strReservationNo,tblguestmaster c,tblreservationdtl d "
-				+ " where  a.strReservationNo=d.strReservationNo and d.strGuestCode=c.strGuestCode "
-				+ " and date(a.dteArrivalDate) between '"
-				+ fromDte
-				+ "' and '"
-				+ toDte
-				+ "' and "
-				+ " date(a.dteDepartureDate) between '"
-				+ fromDte
-				+ "' and '"
-				+ toDte
-				+ "' "
-				+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
-				+ "AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"'"
-				+ " and  a.strReservationNo Not IN(select strReservationNo from tblcheckinhd )";
+		
+		String sql=" SELECT CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName),"
+				+ " a.strReservationNo,a.strNoRoomsBooked, IFNULL(b.dblReceiptAmt,0)"
+				+ " FROM tblreservationhd a"
+				+ " LEFT OUTER JOIN tblreceipthd b ON a.strReservationNo=b.strReservationNo,tblguestmaster c,tblreservationdtl d"
+				+ " WHERE a.strReservationNo=d.strReservationNo AND d.strGuestCode=c.strGuestCode AND d.strClientCode='"+strClientCode+"' AND "
+				+ " DATE(a.dteArrivalDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND DATE(a.dteArrivalDate) <= '"+PMSDate+"' "
+				+ " AND a.strReservationNo NOT IN( SELECT strReservationNo FROM tblcheckinhd);";
+		
 		List listNoShowDtl = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listNoShowDtl.isEmpty()) {
 			for (int i = 0; i < listNoShowDtl.size(); i++) {
@@ -587,17 +583,15 @@ public class clsPMSSalesFlashController {
 		String toDte = arr1[2] + "-" + arr1[1] + "-" + arr1[0];
 
 		List<clsPMSSalesFlashBean> listPayment = new ArrayList<clsPMSSalesFlashBean>();
-		String sql = "SELECT a.strReceiptNo, DATE(a.dteReceiptDate),"
-				+ "Concat(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName),"
-				+ "a.strAgainst,e.strSettlementDesc,a.dblReceiptAmt "
-				+ "FROM tblreceipthd a,tblreceiptdtl b,tblcheckindtl c,tblguestmaster d,tblsettlementmaster e "
-				+ "WHERE a.strReceiptNo=b.strReceiptNo and a.strCheckInNo=c.strCheckInNo "
-				+ "and c.strGuestCode=d.strGuestCode and b.strSettlementCode=e.strSettlementCode "
-				+ "AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
-				+ "AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' "
-				+ "AND e.strClientCode='"+strClientCode+"' "
-				+ "AND DATE(a.dteReceiptDate) BETWEEN '"+fromDte+"' "
-				+ "AND '"+toDte+"' GROUP BY a.strReceiptNo ;";
+		String sql = "SELECT a.strReceiptNo, DATE(a.dteReceiptDate), CONCAT(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName),"
+				+ " a.strAgainst,e.strSettlementDesc,a.dblReceiptAmt"
+				+ " FROM tblreceipthd a,tblreceiptdtl b, tblguestmaster d, tblsettlementmaster e"
+				+ " WHERE a.strReceiptNo=b.strReceiptNo  "
+				+ " AND b.strSettlementCode=e.strSettlementCode "
+				+ " and b.strCustomerCode = d.strGuestCode"
+				+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
+				+ " AND d.strClientCode='"+strClientCode+"' AND e.strClientCode='"+strClientCode+"'"
+				+ " AND DATE(a.dteReceiptDate) BETWEEN '"+fromDte+"' AND '"+toDte+"';";
 		
 		List listVoidBill = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listVoidBill.isEmpty()) {
@@ -1424,13 +1418,13 @@ public class clsPMSSalesFlashController {
 				 +" FROM tblcheckinhd a,tblcheckindtl b,tblroom c,tblguestmaster d,tblbillhd e "
                  +" WHERE DATE(a.dteCheckInDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=c.strRoomCode AND b.strGuestCode=d.strGuestCode "
                  +" AND a.strCheckInNo=e.strCheckInNo  AND a.strCheckInNo NOT IN (SELECT a.strCheckInNo FROM tblvoidbillhd a ) ;";*/
-		
-		String sql="SELECT a.strCheckInNo,a.strType, DATE(a.dteArrivalDate),c.strRoomDesc,c.strRoomTypeDesc,CONCAT(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName), "
-                +" a.tmeArrivalTime"
-				 +" FROM tblcheckinhd a,tblcheckindtl b,tblroom c,tblguestmaster d "
-                +" WHERE DATE(a.dteCheckInDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=c.strRoomCode AND b.strGuestCode=d.strGuestCode "
-                +"AND a.strCheckInNo NOT IN (SELECT a.strCheckInNo FROM tblvoidbillhd a ) ;";
-		
+		String sql=" SELECT a.strCheckInNo,a.strType, DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'),c.strRoomDesc,c.strRoomTypeDesc, "
+				+ " CONCAT(d.strGuestPrefix ,' ',d.strFirstName,' ', d.strMiddleName,' ',d.strLastName), a.tmeArrivalTime"
+				+ " FROM tblcheckinhd a,tblcheckindtl b,tblroom c,tblguestmaster d"
+				+ " WHERE a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=c.strRoomCode AND b.strGuestCode=d.strGuestCode "
+				+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' "
+				+ " AND d.strClientCode='"+strClientCode+"' AND DATE(a.dteCheckInDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' ; ";
+	
 		List listCheckInDtl = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listCheckInDtl.isEmpty()) {
 			for (int i = 0; i < listCheckInDtl.size(); i++) {
@@ -1505,16 +1499,22 @@ public class clsPMSSalesFlashController {
 		
 		BigDecimal dblTotalValue = new BigDecimal(0);
 		DecimalFormat df = new DecimalFormat("#.##");
-		String sql="SELECT e.strBillNo,a.strType , DATE(a.dteDepartureDate),c.strRoomDesc,c.strRoomTypeDesc,CONCAT(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName),"
-				  +" e.dblGrandTotal"
-                +" FROM tblcheckinhd a,tblcheckindtl b,tblroom c,tblguestmaster d,tblbillhd e "
-                +" WHERE a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=c.strRoomCode AND b.strGuestCode=d.strGuestCode "
-                +" AND a.strCheckInNo=e.strCheckInNo AND DATE(a.dteCheckInDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' AND e.strClientCode='"+strClientCode+"';";
+		String sql="SELECT  a.strCheckInNo,a.strType, DATE_FORMAT(e.dteBillDate,'%d-%m-%Y'),c.strRoomDesc,c.strRoomTypeDesc,"
+				+ " CONCAT(d.strFirstName,' ', d.strMiddleName,' ',d.strLastName), e.dblGrandTotal,e.strBillNo "
+				+ " FROM tblcheckinhd a,tblcheckindtl b,tblroom c,tblguestmaster d,tblbillhd e"
+				+ " WHERE a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=c.strRoomCode "
+				+ " AND b.strGuestCode=d.strGuestCode AND a.strCheckInNo=e.strCheckInNo "
+				+ " and b.strRoomNo = e.strRoomNo"
+				+ " AND a.strClientCode='"+strClientCode+"' "
+				+ " AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' "
+				+ " AND e.strClientCode='"+strClientCode+"' AND DATE(e.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"';";
+		
 		List listCheckOutDtl = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listCheckOutDtl.isEmpty()) {
 			for (int i = 0; i < listCheckOutDtl.size(); i++) {
 			    Object[] arr2=(Object[]) listCheckOutDtl.get(i);
 			    List DataList = new ArrayList<>();
+			    DataList.add(arr2[7].toString());
 			    DataList.add(arr2[0].toString());
 			    DataList.add(arr2[1].toString());
 			    DataList.add(arr2[2].toString());
@@ -1544,6 +1544,7 @@ public class clsPMSSalesFlashController {
 	    retList.add(filterData);  
 	    
 		headerList.add("Bill No");
+		headerList.add("CheckIn No");
 		headerList.add("Booking Type");
 		headerList.add("Departure Date");
 		headerList.add("Room Description");
@@ -1750,13 +1751,15 @@ public class clsPMSSalesFlashController {
 		String[] arr1 = toDate.split("-");
 		String toDte = arr1[2] + "-" + arr1[1] + "-" + arr1[0];
 		
-		String sql = "SELECT a.strReceiptNo, DATE(a.dteReceiptDate),"
-				+ "Concat(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName),"
-				+ "a.strAgainst,e.strSettlementDesc,a.dblReceiptAmt "
-				+ "FROM tblreceipthd a,tblreceiptdtl b,tblcheckindtl c,tblguestmaster d,tblsettlementmaster e "
-				+ "WHERE a.strReceiptNo=b.strReceiptNo and a.strCheckInNo=c.strCheckInNo "
-				+ "and c.strGuestCode=d.strGuestCode and b.strSettlementCode=e.strSettlementCode AND DATE(a.dteReceiptDate) BETWEEN '"+fromDte+"' "
-				+ "AND '"+toDte+"' GROUP BY a.strReceiptNo ;";
+		String sql = "SELECT a.strReceiptNo, DATE(a.dteReceiptDate), CONCAT(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName),"
+				+ " a.strAgainst,e.strSettlementDesc,a.dblReceiptAmt"
+				+ " FROM tblreceipthd a,tblreceiptdtl b, tblguestmaster d, tblsettlementmaster e"
+				+ " WHERE a.strReceiptNo=b.strReceiptNo  "
+				+ " AND b.strSettlementCode=e.strSettlementCode "
+				+ " and b.strCustomerCode = d.strGuestCode"
+				+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
+				+ " AND d.strClientCode='"+strClientCode+"' AND e.strClientCode='"+strClientCode+"'"
+				+ " AND DATE(a.dteReceiptDate) BETWEEN '"+fromDte+"' AND '"+toDte+"';";
 		
 		List listVoidBill = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listVoidBill.isEmpty()) {

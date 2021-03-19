@@ -563,14 +563,19 @@ function funCheckOutDetail(ProdDtl)
     	bookingType=bookingType.replace(" ",'_');
     	}
     
+   
     row.insertCell(0).innerHTML='<input name=\"strBillNo['+(rowCount)+']\" readonly=\"readonly\" class=\"Box\" size=\"15%\" id=\"strBillNo.'+(rowCount)+'\" value='+data.strBillNo+'> </a> ';
-	row.insertCell(1).innerHTML= "<input name=\"strGuestName["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"28%\" id=\"strGuestName."+(rowCount)+"\" value='"+data.strGuestName+"'>";
-    row.insertCell(2).innerHTML= "<input name=\"dteDepartureDate["+(rowCount)+"]\" id=\"dteDepartureDate."+(rowCount)+"\" readonly=\"readonly\"   size=\"14%\" class=\"Box\" value="+data.dteDepartureDate+">";
-    row.insertCell(3).innerHTML= "<input name=\"strRoomDesc["+(rowCount)+"]\" id=\"strRoomDesc."+(rowCount)+"\" readonly=\"readonly\"   size=\"14%\" class=\"Box\" value="+roomDesc+">";
-    row.insertCell(4).innerHTML= "<input name=\"strRoomType["+(rowCount)+"]\" readonly=\"readonly\"  class=\"Box\" size=\"14%\" id=\"strRoomType."+(rowCount)+"\" value='"+data.strRoomType+"'>";
-    row.insertCell(5).innerHTML= "<input name=\"strBookingType["+(rowCount)+"]\" id=\"strBookingType."+(rowCount)+"\" readonly=\"readonly\"   size=\"14%\" class=\"Box\" value="+data.strBookingType+">";		    	   
-    row.insertCell(6).innerHTML= "<input name=\"dblGrandTotal["+(rowCount)+"]\" id=\"dblGrandTotal."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;\" size=\"14%\" class=\"Box\" value="+data.dblGrandTotal+">";
+    row.insertCell(1).innerHTML='<input name=\"strCheckInNo['+(rowCount)+']\" readonly=\"readonly\" class=\"Box\" size=\"15%\" id=\"strCheckInNo.'+(rowCount)+'\" value='+data.strCheckInNo+'> </a> ';
+    row.insertCell(2).innerHTML= "<input name=\"strGuestName["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"28%\" id=\"strGuestName."+(rowCount)+"\" value='"+data.strGuestName+"'>";
+    row.insertCell(3).innerHTML= "<input name=\"dteDepartureDate["+(rowCount)+"]\" id=\"dteDepartureDate."+(rowCount)+"\" readonly=\"readonly\"   size=\"14%\" class=\"Box\" value="+data.dteDepartureDate+">";
+    row.insertCell(4).innerHTML= "<input name=\"strRoomDesc["+(rowCount)+"]\" id=\"strRoomDesc."+(rowCount)+"\" readonly=\"readonly\"   size=\"14%\" class=\"Box\" value="+roomDesc+">";
+    row.insertCell(5).innerHTML= "<input name=\"strRoomType["+(rowCount)+"]\" readonly=\"readonly\"  class=\"Box\" size=\"22%\" id=\"strRoomType."+(rowCount)+"\" value='"+data.strRoomType+"'>";
+    row.insertCell(6).innerHTML= "<input name=\"strBookingType["+(rowCount)+"]\" id=\"strBookingType."+(rowCount)+"\" readonly=\"readonly\"   size=\"14%\" class=\"Box\" value="+data.strBookingType+">";		    	   
+    row.insertCell(7).innerHTML= "<input name=\"dblGrandTotal["+(rowCount)+"]\" id=\"dblGrandTotal."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;\" size=\"14%\" class=\"Box\" value="+data.dblGrandTotal+">";
+	
+	
 	} 
+
 }
 
 
@@ -1734,25 +1739,29 @@ function funSetAvailableRooms(item)
 		<div id="divCheckOutList" class="dynamicTableContainer" style="height:400px;">
 			<table style="width: 100%; border: #0F0; table-layout: fixed;" class="transTablex col15-center">
 				<tr bgcolor="#c0c0c0">
-					<td width="7.4%">Check-in No </td>
-					<td width="10%">Guest Name</td>
-					<td width="6.1%">Departure Date</td>
+				    <td width="4%">Bill No</td>
+					<td width="5%">Check-in No </td>
+					<td width="6.4%">Guest Name</td>
+					<td width="4.5%">Departure Date</td>
 					<td width="5%">Room Description</td>
 					<td width="4.5%">Room Type</td>
 					<td width="4.5%">Booking Type</td>
-					<td width="5.1%">Grand Total</td>
+					<td width="4.1%">Grand Total</td>
+					
 				</tr>
 			</table>
 			<div style="background-color: #fbfafa; border: 1px solid #ccc; display: block; height: 330px; margin: auto; overflow-x: hidden; overflow-y: scroll; width: 100%;">
 				<table id="tblCheckOutDet" style="width: 100%; border: #0F0; table-layout: fixed;" class="transTablex col15-center">
 					<tbody>
-						<col style="width: 7.2%">
-						<col style="width: 10%">
-						<col style="width: 6%">
+					    <col style="width: 4.2%;">
+						<col style="width: 5%;">
+						<col style="width: 9%;">
 						<col style="width: 5%">
 						<col style="width: 4.5%">
-						<col style="width: 4.5%">
+						<col style="width: 6.5%;">
 						<col style="width: 5%">
+						<col style="width: 5%">
+						
 					</tbody>
 				</table>
 			</div>

@@ -176,14 +176,14 @@ public class clsCheckOutController {
 				objCheckOutRoomDtlBean.setDblAmount(0);
 				objCheckOutRoomDtlBean.setStrRoomDesc(obj[11].toString());
 
-				sql = "select a.strFolioNo,sum(b.dblDebitAmt) " + " from tblfoliohd a,tblfoliodtl b " + " where a.strFolioNo=b.strFolioNo and a.strRoomNo='" + obj[5].toString() + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'  and  a.strFolioNo='"+objCheckOutRoomDtlBean.getStrFolioNo()+"' group by a.strFolioNo";
+				/*sql = "select a.strFolioNo,sum(b.dblDebitAmt) " + " from tblfoliohd a,tblfoliodtl b " + " where a.strFolioNo=b.strFolioNo and a.strRoomNo='" + obj[5].toString() + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'  and  a.strFolioNo='"+objCheckOutRoomDtlBean.getStrFolioNo()+"' group by a.strFolioNo";
 				List listFolioAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 				for (int cnt = 0; cnt < listFolioAmt.size(); cnt++) {
 					Object[] arrObjFolio = (Object[]) listFolioAmt.get(cnt);
 					objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() + Double.parseDouble(arrObjFolio[1].toString()));
-				}
+				}*/
 
-				sql = "select sum(b.dblDebitAmt),sum(c.dblTaxAmt) " + " from tblfoliohd a,tblfoliodtl b,tblfoliotaxdtl c " + " where a.strFolioNo=b.strFolioNo and b.strFolioNo=c.strFolioNo and b.strDocNo=c.strDocNo " + " and a.strRoomNo='" + obj[5].toString() + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' and  a.strFolioNo='"+objCheckOutRoomDtlBean.getStrFolioNo()+"' group by b.strFolioNo";
+				/*sql = "select sum(b.dblDebitAmt),sum(c.dblTaxAmt) " + " from tblfoliohd a,tblfoliodtl b,tblfoliotaxdtl c " + " where a.strFolioNo=b.strFolioNo and b.strFolioNo=c.strFolioNo and b.strDocNo=c.strDocNo " + " and a.strRoomNo='" + obj[5].toString() + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' and  a.strFolioNo='"+objCheckOutRoomDtlBean.getStrFolioNo()+"' group by b.strFolioNo";
 				List listFolioTaxAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 				for (int cnt = 0; cnt < listFolioTaxAmt.size(); cnt++) {
 					Object[] arrObjFolio = (Object[]) listFolioTaxAmt.get(cnt);
@@ -192,58 +192,29 @@ public class clsCheckOutController {
 						objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() + Double.parseDouble(arrObjFolio[1].toString()));
 					}
 					
-				}
-                
-				if(obj[12].toString().equalsIgnoreCase("Y"))
-				{
-				sql = "select a.strReceiptNo,sum(b.dblSettlementAmt) " + " from tblreceipthd a,tblreceiptdtl b " + " where a.strReceiptNo=b.strReceiptNo and a.strRegistrationNo='" + objCheckOutRoomDtlBean.getStrRegistrationNo() + "' and a.strAgainst='Check-In' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' group by a.strReceiptNo";
-				List listReceiptAmtAtCheckIN = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-				for (int cnt = 0; cnt < listReceiptAmtAtCheckIN.size(); cnt++) {
-					Object[] arrObjFolio = (Object[]) listReceiptAmtAtCheckIN.get(cnt);
-					objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() - Double.parseDouble(arrObjFolio[1].toString()));
-				}
-				}
-				
-				sql = "SELECT Sum(a.dblCreditAmt) from tblfoliodtl a where a.strFolioNo='"+obj[6].toString()+"' AND a.strClientCode='"+clientCode+"'";
-				List listFolioDisc = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-				for (int cnt = 0; cnt < listFolioDisc.size(); cnt++) {
-					objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() - Double.parseDouble(listFolioDisc.get(cnt).toString()));
-				}
-	            
-				boolean flgIsFullPayment=false;
-				if(!objCheckOutRoomDtlBean.getStrReservationNo().toString().isEmpty())
-				{
-					sql="SELECT ifnull(SUM(c.dblSettlementAmt),0),ifnull(sum(b.dblGrandTotal),0)"
-							+ " FROM tblreceipthd a left outer join tblbillhd b on a.strBillNo=b.strBillNo and a.strReservationNo and b.strReservationNo,tblreceiptdtl c"
-							+ " WHERE a.strReceiptNo=c.strReceiptNo AND a.strReservationNo='"+objCheckOutRoomDtlBean.getStrReservationNo()+"'"; 
-						List listCheckForFullPayment= objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-						for (int cnt = 0; cnt < listCheckForFullPayment.size(); cnt++) 
-						{
-							Object arrObjFolio[] = (Object[]) listCheckForFullPayment.get(cnt);
-							if(Double.parseDouble(arrObjFolio[0].toString())>0)
-							{
-								if(Double.parseDouble(arrObjFolio[0].toString())==Double.parseDouble(arrObjFolio[1].toString()))
-								{
-									flgIsFullPayment=true;
-									break;
-								}
-							}
-						}
-						if(!flgIsFullPayment)
-						{
-							sql = "select sum(b.dblSettlementAmt) " + " from tblreceipthd a,tblreceiptdtl b " + " where a.strReceiptNo=b.strReceiptNo and a.strReservationNo='" + objCheckOutRoomDtlBean.getStrReservationNo() + "' " + " and a.strAgainst='Reservation' " + " group by a.strReceiptNo";
-							List listReceiptAmtAtReservation = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-							for (int cnt = 0; cnt < listReceiptAmtAtReservation.size(); cnt++) {
-								Object arrObjFolio = (Object) listReceiptAmtAtReservation.get(cnt);
-								if(obj[12].toString().equalsIgnoreCase("Y"))
-								{
-								objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() - Double.parseDouble(arrObjFolio.toString()));
-								}
-							}	
-						}
-				}
-				
+				}*/
+				sql="SELECT b.BillAmount - a.receiptamt +c.taxAmt "
+						+ " FROM ( SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) AS receiptamt"
+						+ " FROM "
+						+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt "
+						+ " FROM tblreceipthd a, tblfoliohd b "
+						+ " WHERE a.strReservationNo = b.strReservationNo AND b.strFolioNo='"+obj[6].toString()+"' AND b.strRoom='Y' ) AS a,"
+						+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1 FROM tblreceipthd a, tblfoliohd b"
+						+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+obj[6].toString()+"' AND a.strReservationNo = '') AS b) AS a, "
+						+ " ( SELECT IFNULL(SUM(a.dblDebitAmt),0) AS BillAmount"
+						+ " FROM tblfoliodtl a WHERE a.strFolioNo='"+obj[6].toString()+"') AS b,(SELECT IFNULL(sum(a.dblTaxAmt),0) AS taxAmt FROM tblfoliotaxdtl a ,tbltaxmaster b"
+						+ " WHERE a.strTaxCode=b.strTaxCode AND "
+						+ " b.strTaxCalculation='Forward' And"
+						+ " a.strFolioNo='"+obj[6].toString()+"') AS  c ;" ;
+		
+				List listFolioBalAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
+				for (int cnt = 0; cnt < listFolioBalAmt.size(); cnt++) {
+					
+					
+					objCheckOutRoomDtlBean.setDblAmount(Double.parseDouble( listFolioBalAmt.get(0).toString()));
+					
 				listCheckOutRoomDtl.add(objCheckOutRoomDtlBean);
+				}
 			}
 		}	
 		else
@@ -282,7 +253,7 @@ public class clsCheckOutController {
 				objCheckOutRoomDtlBean.setDblAmount(0);
 				objCheckOutRoomDtlBean.setStrRoomDesc(obj[11].toString());
 
-				sql = "select a.strFolioNo,sum(b.dblDebitAmt) " + " from tblfoliohd a,tblfoliodtl b " + " where a.strFolioNo=b.strFolioNo and a.strRoomNo='" + roomCode + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' group by a.strFolioNo";
+				/*sql = "select a.strFolioNo,sum(b.dblDebitAmt) " + " from tblfoliohd a,tblfoliodtl b " + " where a.strFolioNo=b.strFolioNo and a.strRoomNo='" + roomCode + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' group by a.strFolioNo";
 				List listFolioAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 				for (int cnt = 0; cnt < listFolioAmt.size(); cnt++) {
 					Object[] arrObjFolio = (Object[]) listFolioAmt.get(cnt);
@@ -339,7 +310,35 @@ public class clsCheckOutController {
 							}	
 						}
 				}
+				*/
+				String receiptAmt="a.dblReceiptAmt";
+				if(obj[2].toString().equalsIgnoreCase("") )
+				{
+						receiptAmt="0";
+				}
 				
+				sql="SELECT b.BillAmount - a.receiptamt +c.taxAmt "
+						+ " FROM ( SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) AS receiptamt"
+						+ " FROM "
+						+ " ( SELECT IFNULL(SUM("+receiptAmt+"),0) AS receiptAmt "
+						+ " FROM tblreceipthd a, tblfoliohd b "
+						+ " WHERE a.strReservationNo = b.strReservationNo AND b.strFolioNo='"+obj[6].toString()+"' AND b.strRoom='Y' ) AS a,"
+						+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1 FROM tblreceipthd a, tblfoliohd b"
+						+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+obj[6].toString()+"' AND a.strReservationNo = '') AS b) AS a, "
+						+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0) AS BillAmount"
+						+ " FROM tblfoliodtl a WHERE a.strFolioNo='"+obj[6].toString()+"') AS b,(SELECT IFNULL(sum(a.dblTaxAmt),0) AS taxAmt FROM tblfoliotaxdtl a ,tbltaxmaster b"
+						+ " WHERE a.strTaxCode=b.strTaxCode AND "
+						+ " b.strTaxCalculation='Forward' And"
+						+ " a.strFolioNo='"+obj[6].toString()+"') AS  c ;" ;
+		
+				List listFolioBalAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
+				for (int cnt = 0; cnt < listFolioBalAmt.size(); cnt++) {
+					
+					
+					objCheckOutRoomDtlBean.setDblAmount(Double.parseDouble( listFolioBalAmt.get(0).toString()));
+					
+			
+				}
 				
 				List<clsCheckOutRoomDtlBean> listRevenueTypeDtl= new ArrayList<>();
 				
@@ -362,8 +361,7 @@ public class clsCheckOutController {
 		}
 		
 		
-		 
-
+	
 		return listCheckOutRoomDtl;
 	}
 
@@ -471,55 +469,10 @@ public class clsCheckOutController {
 	 							if (objFolioHdModel != null) {
 	 								
 	 								double balanceForPaymentCheck=0.00;
-	 								//Pooja 15-03-2021 0 bill CheckOut						
 	 								
-	 								
-	 								if(clientCode.equalsIgnoreCase("383.001"))
-		 							{
-	 									String receiptAmt="a.dblReceiptAmt";
-	 									if(objFolioHdModel.getStrWalkInNo()!=null && objFolioHdModel.getStrWalkInNo().length()>0 )
-	 									{
-	 										receiptAmt="0";
-	 									}
-	 									
-		 								
-	 									String sql="SELECT b.BillAmount - a.receiptamt"
-	 											+ " FROM (SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) AS receiptamt"
-	 											+ " FROM ("
-	 											+ " SELECT IFNULL(SUM("+receiptAmt+"),0) AS receiptAmt"
-	 											+ " FROM tblreceipthd a, tblfoliohd b"
-	 											+ "  WHERE a.strReservationNo = b.strReservationNo AND a.strReservationNo = '"+objFolioHdModel.getStrReservationNo()+"'  ) AS a, ("
-	 											+ " SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1"
-	 											+ " FROM tblreceipthd a, tblfoliohd b "
-	 											+ " WHERE a.strFolioNo = b.strFolioNo AND "
-	 											+ " a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+objFolioHdModel.getStrFolioNo()+"' AND  a.strReservationNo = '') AS b) AS a, ( "
-	 											+ " SELECT SUM(a.dblDebitAmt) AS BillAmount"
-	 											+ " FROM tblfoliodtl a "
-	 											+ " WHERE a.strFolioNo='"+objFolioHdModel.getStrFolioNo()+"') AS b ;";
-		 							 
-			 							List balAmtlist =  objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-			 							
-			 							if(balAmtlist!=null && balAmtlist.size()>0)
-			 							{
-			 								balanceForPaymentCheck=Double.parseDouble(balAmtlist.get(0).toString());
-			 							}
-			 							
-			 							
-		 							}	
-			 							
-	 								
-			 							if(clientCode.equalsIgnoreCase("383.001") && balanceForPaymentCheck > 0 )
-			 							{
-			 								req.getSession().setAttribute("balanceForPaymentCheck", true);
-			 								req.getSession().setAttribute("MessagebalanceForPaymentCheck","Payment is Pending !!!!");
-			 								
-			 					 			
-			 								return new ModelAndView("redirect:/frmCheckOut.html?saddr=" + urlHits);
-			 							}
-			 							else
-			 							{
-			 								
-			 								// generate billNo.
+	 						
+			 					
+			 						     // generate billNo.
 			 								
 			 								
 			 								                                                                        RommNo = objFolioHdModel.getStrRoomNo();
@@ -553,6 +506,7 @@ public class clsCheckOutController {
 			 								objBillHdModel.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 			 								objBillHdModel.setStrGSTNo(GSTNo);
 			 								objBillHdModel.setStrCompanyName(companyName);
+			 								objBillHdModel.setStrGuestCode(objFolioHdModel.getStrGuestCode());
 
 			 								double grandTotal = 0;
 
@@ -796,8 +750,7 @@ public class clsCheckOutController {
 				 							req.getSession().setAttribute("success", true);
 				 							req.getSession().setAttribute("successMessage", "Room No. : ".concat(objBean.getStrSearchTextField()));
 				 							flag=true;
-			 							}
-			 							
+			 								
 			 							
 	 								
 			 							
@@ -1202,6 +1155,7 @@ public class clsCheckOutController {
 						objBillHdModel.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 						objBillHdModel.setStrGSTNo(GSTNo);
 						objBillHdModel.setStrCompanyName(companyName);
+						objBillHdModel.setStrGuestCode(objFolioHdModel.getStrGuestCode());
 
 						double grandTotal = 0;
 

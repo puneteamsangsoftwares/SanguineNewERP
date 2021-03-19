@@ -110,9 +110,9 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dteArrivalDate}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="438" y="42" width="112" height="14" uuid="2721457a-8086-462b-b990-f64b7c9148dd"/>
-				<textElement>
+				<textElement textAlignment="Left">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{strRoomNo}]]></textFieldExpression>

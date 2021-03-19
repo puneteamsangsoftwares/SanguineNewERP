@@ -111,14 +111,64 @@
 						}
 						else
 						{
-							returnValue=true;
+							 var table=document.getElementById("tblRoomDtl");
+								var rowCount=table.rows.length;
+								var totalAmt=0.00;
+								if(rowCount>0)
+								{
+								    for(var i=0;i<rowCount;i++)
+								    {
+								    	var balanceAmount=table.rows[i].cells[4].innerHTML;
+								       	totalAmt=totalAmt+parseFloat($(balanceAmount).val());
+								    }
+								   	totalAmt=parseFloat(totalAmt).toFixed(maxAmountDecimalPlaceLimit);
+								   	
+								}
+								
+								if(totalAmt>0)
+								{
+									 alert("Payment is Pending !!!!");
+									 returnValue= false;
+								}
+								else
+								{
+									 returnValue=true;
+								
+								}
 						}	
 					
 	 			   }
 		 		   else
 	 			   {
-		 			  returnValue=true;
+		 			  var table=document.getElementById("tblRoomDtl");
+						var rowCount=table.rows.length;
+						var totalAmt=0.00;
+						if(rowCount>0)
+						{
+						    for(var i=0;i<rowCount;i++)
+						    {
+						    	var balanceAmount=table.rows[i].cells[4].innerHTML;
+						       	totalAmt=totalAmt+parseFloat($(balanceAmount).val());
+						    }
+						   	totalAmt=parseFloat(totalAmt).toFixed(maxAmountDecimalPlaceLimit);
+						   	
+						}
+						
+						if(totalAmt>0)
+						{
+							 alert("Payment is Pending !!!!");
+							 returnValue= false;
+						}
+						else
+						{
+							 returnValue=true;
+						
+						}
+		 			 
 	 			   }
+		 		   
+		 		 
+					
 				},
 				error: function(jqXHR, exception) 
 				{

@@ -852,6 +852,7 @@ public class clsCheckInController {
 				req.getSession().setAttribute("successMessage", "Check In No : ".concat(objHdModel.getStrCheckInNo()));
 				req.getSession().setAttribute("AdvanceAmount", objHdModel.getStrCheckInNo());
 				req.getSession().setAttribute("against", objHdModel.getStrType());
+				req.getSession().setAttribute("reservationCode", objHdModel.getStrReservationNo());
 				}
 			}			
 			else
@@ -1373,6 +1374,7 @@ public class clsCheckInController {
 			req.getSession().setAttribute("successMessage", "Check In No : ".concat(objHdModel.getStrCheckInNo()));
 			req.getSession().setAttribute("AdvanceAmount", objHdModel.getStrCheckInNo());
 			req.getSession().setAttribute("against", objHdModel.getStrType());
+			req.getSession().setAttribute("reservationCode", objHdModel.getStrReservationNo());
 			}
 			return new ModelAndView("redirect:/frmCheckIn.html");
 		} else {

@@ -3151,7 +3151,13 @@ public class clsBillPrintingController {
 							+ " WHERE a.strBillNo='"+billNo+"' "
 							+ " and b.strRevenueCode=c.strRoomCode and a.strCheckInNo=d.strCheckInNo "
 							+ " and d.strRoomNo=b.strRevenueCode  "
-							+ " order by b.dteDocDate ";
+							+ " UNION"
+							+ " SELECT DATE(b.dteDocDate),b.strDocNo, "
+							+ " IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),"
+							+ " b.dblDebitAmt, b.dblCreditAmt, b.dblBalanceAmt, IFNULL(a.strReservationNo,''),b.strPerticulars,'',''"
+							+ " FROM tblbillhd a"
+							+ " INNER JOIN tblbilldtl b ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo"
+							+ " WHERE a.strBillNo='"+billNo+"'   AND b.strPerticulars!='Room Tariff'";
 				}
 				else
 				{
@@ -3163,7 +3169,13 @@ public class clsBillPrintingController {
 							+ " WHERE a.strBillNo='"+billNo+"' AND a.strClientCode='"+clientCode+"'"
 							+ " and b.strRevenueCode=c.strRoomCode and a.strCheckInNo=d.strCheckInNo "
 							+ " and d.strRoomNo=b.strRevenueCode  "
-							+ " order by b.dblCreditAmt ,b.dteDocDate ";
+							+ " UNION"
+							+ " SELECT DATE(b.dteDocDate),b.strDocNo, "
+							+ " IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),"
+							+ " b.dblDebitAmt, b.dblCreditAmt, b.dblBalanceAmt, IFNULL(a.strReservationNo,''),b.strPerticulars,'',''"
+							+ " FROM tblbillhd a"
+							+ " INNER JOIN tblbilldtl b ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo"
+							+ " WHERE a.strBillNo='"+billNo+"'   AND b.strPerticulars!='Room Tariff'";
 				}
 				
 				// + " and DATE(b.dteDocDate) BETWEEN '" + fromDate + "' AND '"
@@ -3426,7 +3438,7 @@ public class clsBillPrintingController {
 				// get payment details
                 String settlementType="";
                 int cnt=0;
-				if(strSelectBill.contains("Room Tariff"))
+				if(strSelectBill.contains("Room Tariff") ||  strSelectBill.length()==0 || strSelectBill.contains("POS"))
 				{
 					 sqlPaymentDtl = "SELECT date(c.dteReceiptDate),c.strReceiptNo,IF(c.strAgainst='Bill',e.strSettlementDesc,CONCAT('ADVANCE ',e.strSettlementDesc)),'0.00' as debitAmt "
 							+ " ,d.dblSettlementAmt as creditAmt,'0.00' as balance "
@@ -3652,7 +3664,7 @@ public class clsBillPrintingController {
 				
 				
 				String walkIn = "";
-				if(strSelectBill.contains("Room Tariff"))
+				if(strSelectBill.contains("Room Tariff") ||  strSelectBill.length()==0 || strSelectBill.contains("POS"))
 				{
 					String sqlWalkInNo = "select a.strWalkInNo from tblcheckinhd a where a.strCheckInNo='"+checkInNo+"' AND a.strClientCode='"+clientCode+"'";
 					List listWalkIn = objFolioService.funGetParametersList(sqlWalkInNo);

@@ -110,7 +110,7 @@ public class clsPMSGroupBookingController{
 			objPMSGroupBookingService.funAddUpdatePMSGroupBooking(objModel);
 			req.getSession().setAttribute("success", true);
 			req.getSession().setAttribute("successMessage", objModel.getStrGroupCode());
-			req.getSession().setAttribute("GroupCodeAndRoomCode", objModel.getStrGroupCode()+"#"+objBean.getStrRoomType()+"#"+objBean.getStrCompCode());
+			req.getSession().setAttribute("GroupCodeAndRoomCode", objModel.getStrGroupCode()+"#"+objBean.getStrRoomType()+"#"+objBean.getStrCompCode()+"#"+objBean.getStrGroupLeaderCode());
 			return new ModelAndView("redirect:/frmPMSGroupReservation.html");
 			//return new ModelAndView("frmPMSGroupReservation");
 		}

@@ -79,6 +79,7 @@ public class clsPMSPaymentServiceImpl implements clsPMSPaymentService {
 					reservationNo = arrObj[2].toString();
 					folioNo = arrObj[3].toString();
 					guestCode=arrObj[4].toString();
+					objPaymentBean.setStrCustomerCode(guestCode);
 					billNo = "";
 					
 					String sql1="select a.dblClosingBalance from tblguestmaster a where a.strGuestCode='"+guestCode+"' ";
@@ -97,7 +98,7 @@ public class clsPMSPaymentServiceImpl implements clsPMSPaymentService {
 			}
 		} else if (objPaymentBean.getStrAgainst().equals("Check-In")) {
 			/*String sql = " select b.strCheckInNo,a.strRegistrationNo,b.strReservationNo,b.strFolioNo " + " from tblcheckinhd a,tblfoliohd b " + " where a.strCheckInNo=b.strCheckInNo and a.strCheckInNo='" + objPaymentBean.getStrDocNo() + "' ";*/
-			String sql=" SELECT b.strCheckInNo,b.strRegistrationNo,b.strReservationNo,b.strFolioNo "
+			String sql=" SELECT b.strCheckInNo,b.strRegistrationNo,b.strReservationNo,b.strFolioNo,b.strGuestCode "
 						+" FROM tblfoliohd b,tblcheckindtl c "
 						+" WHERE c.strCheckInNo='"+objPaymentBean.getStrDocNo()+"' AND b.strCheckInNo=c.strCheckInNo "
 						+" AND b.strRoomNo=c.strRoomNo "
@@ -112,6 +113,7 @@ public class clsPMSPaymentServiceImpl implements clsPMSPaymentService {
 					registrationNo = arrObj[1].toString();
 					reservationNo = arrObj[2].toString();
 					folioNo = arrObj[3].toString();
+					objPaymentBean.setStrCustomerCode(arrObj[4].toString());
 					billNo = "";
 				}
 			}
@@ -129,6 +131,7 @@ public class clsPMSPaymentServiceImpl implements clsPMSPaymentService {
 					folioNo = arrObj[3].toString();
 					guestCode = arrObj[4].toString();
 					billNo = "";
+					objPaymentBean.setStrCustomerCode(guestCode);
 					
 					String sql1="select a.dblClosingBalance from tblguestmaster a where a.strGuestCode='"+guestCode+"' ";
 					List guestlist = objGlobalFunctionsService.funGetListModuleWise(sql1, "sql");
@@ -170,6 +173,7 @@ public class clsPMSPaymentServiceImpl implements clsPMSPaymentService {
 					folioNo = arrObj[3].toString();
 					billNo = objPaymentBean.getStrDocNo();
 					guestCode=arrObj[4].toString();
+					objPaymentBean.setStrCustomerCode(guestCode);
 					clsBillHdModel objBillHdModel = objBillService.funLoadBill(billNo, clientCode);
 					String sqlReceipt=" SELECT ifnull(SUM(a.dblReceiptAmt),0) FROM tblreceipthd a WHERE a.strFolioNo='"+folioNo+"' ";
 					List listReceipt = objGlobalFunctionsService.funGetListModuleWise(sqlReceipt, "sql");

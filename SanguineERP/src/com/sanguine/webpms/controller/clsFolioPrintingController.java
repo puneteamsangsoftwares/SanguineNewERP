@@ -106,10 +106,12 @@ public class clsFolioPrintingController {
 			String sqlParametersFromFolio = "SELECT a.strFolioNo,e.strRoomDesc,a.strRegistrationNo,a.strReservationNo " + " ,date(b.dteArrivalDate),b.tmeArrivalTime ,ifnull(date(b.dteDepartureDate),'NA'),ifnull(b.tmeDepartureTime,'NA')" + " ,d.strGuestPrefix,d.strFirstName,d.strMiddleName,d.strLastName ,b.intNoOfAdults,b.intNoOfChild,'NA',d.strGuestCode,d.dblClosingBalance "
 					+ " FROM tblfoliohd a LEFT OUTER JOIN tblreservationhd b ON a.strReservationNo=b.strReservationNo AND b.strClientCode='"+clientCode+"'" + " LEFT OUTER JOIN tblguestmaster d ON a.strGuestCode=d.strGuestCode AND d.strClientCode='"+clientCode+"'" + " LEFT OUTER JOIN tblroom e ON a.strRoomNo=e.strRoomCode AND e.strClientCode='"+clientCode+"'" + " where a.strFolioNo='" + folioNo + "' and a.strClientCode='" + clientCode + "'";
 
-			String sqlFolio = "select strReservationNo,strWalkInNo from tblfoliohd where strFolioNo='" + folioNo + "' and strClientCode='" + clientCode + "' ";
+			String sqlFolio = "select strReservationNo,strWalkInNo,strCheckInNo from tblfoliohd where strFolioNo='" + folioNo + "' and strClientCode='" + clientCode + "' ";
 			List folioDtl = objFolioService.funGetParametersList(sqlFolio);
+			String CheckInNo="";
 			if (folioDtl.size() > 0) {
 				Object[] arrFolioDtl = (Object[]) folioDtl.get(0);
+				CheckInNo=arrFolioDtl[2].toString();
 				if (!arrFolioDtl[1].toString().isEmpty()) {
 					sqlParametersFromFolio = "SELECT a.strFolioNo,e.strRoomDesc,a.strRegistrationNo,a.strReservationNo " + " ,date(b.dteWalkinDate),b.tmeWalkinTime ,ifnull(date(b.dteCheckOutDate),'NA'),ifnull(b.tmeCheckOutTime,'NA')" + " ,d.strGuestPrefix,d.strFirstName,d.strMiddleName,d.strLastName ,b.intNoOfAdults,b.intNoOfChild,'NA',d.strGuestCode,d.dblClosingBalance  "
 							+ " FROM tblfoliohd a LEFT OUTER JOIN tblwalkinhd b ON a.strWalkinNo=b.strWalkinNo  AND b.strClientCode='"+clientCode+"'" + " LEFT OUTER JOIN tblguestmaster d ON a.strGuestCode=d.strGuestCode AND d.strClientCode='"+clientCode+"'" + " LEFT OUTER JOIN tblroom e ON a.strRoomNo=e.strRoomCode  AND e.strClientCode='"+clientCode+"'" + " where a.strFolioNo='" + folioNo + "' and a.strClientCode='" + clientCode + "'";
@@ -470,7 +472,7 @@ public class clsFolioPrintingController {
 						+ " AND c.strClientCode='"+clientCode+"'"
 						+ " left outer join tblreceiptdtl d on c.strReceiptNo=d.strReceiptNo AND d.strClientCode='"+clientCode+"'" + " left outer join"
 						+ "  tblsettlementmaster e on d.strSettlementCode=e.strSettlementCode AND e.strClientCode='"+clientCode+"'" + " "
-						+ " WHERE a.strFolioNo='" + folioNo + "' " + ""
+						+ " WHERE a.strFolioNo='" + folioNo + "'  AND c.strAgainst='Folio-No'  "  + ""
 						+ " GROUP BY d.strReceiptNo,d.strSettlementCode ";
 				
 				List paymentDtlList = objFolioService.funGetParametersList(sqlPaymentDtl);
@@ -513,13 +515,53 @@ public class clsFolioPrintingController {
 						+ " JOIN tblreceiptdtl b ON a.strReceiptNo=b.strReceiptNo "
 						+ " LEFT OUTER "
 						+ " JOIN tblsettlementmaster c ON b.strSettlementCode=c.strSettlementCode WHERE "
-						+ " a.strReservationNo='"+reservationNo+"' AND a.strClientCode='"+clientCode+"';";
+						+ " a.strReservationNo='"+reservationNo+"' AND a.strAgainst='Reservation' AND a.strClientCode='"+clientCode+"';";
 				
 				List paymentDtlListAgainstRes = objFolioService.funGetParametersList(sqlPayDtlAgainstRes);
 				if(paymentDtlListAgainstRes!=null && paymentDtlListAgainstRes.size()>0){
 					
 					for (int i = 0; i < paymentDtlListAgainstRes.size(); i++) {
 						Object[] paymentArr = (Object[]) paymentDtlListAgainstRes.get(i);
+
+						String docDate = paymentArr[0].toString();
+						if (paymentArr[1] == null) {
+							continue;
+						} else {
+							clsFolioPrintingBean folioPrintingBean = new clsFolioPrintingBean();
+
+							String docNo = paymentArr[1].toString();
+							String particulars = paymentArr[2].toString();
+							double debitAmount = Double.parseDouble(paymentArr[3].toString());
+							double creditAmount = Double.parseDouble(paymentArr[4].toString());
+							balance += debitAmount - creditAmount;
+
+							folioPrintingBean.setDteDocDate(objGlobal.funGetDate("dd-mm-yyyy", docDate));
+							folioPrintingBean.setStrDocNo(docNo);
+							folioPrintingBean.setStrPerticulars(particulars);
+							folioPrintingBean.setDblDebitAmt(debitAmount);
+							folioPrintingBean.setDblCreditAmt(creditAmount);
+							folioPrintingBean.setDblBalanceAmt(balance);
+
+							dataList.add(folioPrintingBean);
+						}
+					}
+
+				}
+				
+				 sqlPayDtlAgainstRes = "SELECT DATE_FORMAT(DATE(a.dteReceiptDate),'%d-%m-%Y'),a.strReceiptNo,c.strSettlementDesc,'0.00' AS debitAmt,"
+						+ " b.dblSettlementAmt AS creditAmt,'0.00' AS balance"
+						+ " FROM tblreceipthd a"
+						+ " LEFT OUTER "
+						+ " JOIN tblreceiptdtl b ON a.strReceiptNo=b.strReceiptNo "
+						+ " LEFT OUTER "
+						+ " JOIN tblsettlementmaster c ON b.strSettlementCode=c.strSettlementCode WHERE "
+						+ " a.strCheckInNo='"+CheckInNo+"' AND a.strAgainst='Check-In'  AND a.strClientCode='"+clientCode+"';";
+				
+				List paymentDtlListAgainstCheckin = objFolioService.funGetParametersList(sqlPayDtlAgainstRes);
+				if(paymentDtlListAgainstCheckin!=null && paymentDtlListAgainstCheckin.size()>0){
+					
+					for (int i = 0; i < paymentDtlListAgainstCheckin.size(); i++) {
+						Object[] paymentArr = (Object[]) paymentDtlListAgainstCheckin.get(i);
 
 						String docDate = paymentArr[0].toString();
 						if (paymentArr[1] == null) {

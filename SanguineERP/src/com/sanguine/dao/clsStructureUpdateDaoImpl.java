@@ -5236,7 +5236,14 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
           + " ADD COLUMN `strISHouseKeeping` VARCHAR(2) NOT NULL DEFAULT 'N' AFTER `strHsnSac`;" ;
         funExecutePMSQuery(sql);
         
-    
+        
+        sql=" ALTER TABLE `tbltaxmaster` "
+          + " ADD COLUMN `strTaxCalculation` VARCHAR(50) NOT NULL DEFAULT 'Forward' AFTER `dblToRate`; " ;
+        funExecutePMSQuery(sql);
+        
+        sql=" ALTER TABLE `tblbillhd`"
+          + " ADD COLUMN `strGuestCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `dblClosingBalance`; ";
+        funExecutePMSQuery(sql); 		
 
       
 	        
