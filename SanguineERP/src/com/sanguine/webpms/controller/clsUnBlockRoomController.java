@@ -34,9 +34,6 @@ import com.sanguine.webpms.service.clsRoomMasterService;
 @Controller
 public class clsUnBlockRoomController {
 	
-	/*@Autowired
-	private clsBlockRoomMasterService objBlockRoomMasterService;
-*/
 	@Autowired
 	private clsGlobalFunctionsService objGlobalFunctionsService;
 	
@@ -54,8 +51,7 @@ public class clsUnBlockRoomController {
 		model.put("urlHits", urlHits);
 
 		String clientCode = request.getSession().getAttribute("clientCode").toString();
-		//List<String> listRoomType = objBlockRoomMasterService.funGetRoomTypeList(clientCode);
-		//model.put("listRoomType", listRoomType);
+		
 		clsUnBlockRoomBean UnBlockRoomBean=   new clsUnBlockRoomBean();
 		String webStockDB=request.getSession().getAttribute("WebStockDB").toString();
 		String sqlBlockRoom="SELECT a.strRoomCode,a.strRoomDesc , a.strRoomTypeCode, c.strRoomTypeDesc"
@@ -121,19 +117,9 @@ public class clsUnBlockRoomController {
 					
 					String sqlDeletePrevData = "delete from tblblockroom  where strRoomCode in ("+roomCode+") ";
 					objWebPMSUtility.funExecuteUpdate(sqlDeletePrevData, "sql");
-						
-										
-					
 			
-			
-			/*String sqlBlock = "UPDATE tblroom a SET a.strStatus='Blocked' WHERE a.strRoomCode='"+objBean.getStrRoomCode()+"' AND a.strClientCode='"+clientCode+"'";
-			objWebPMSUtility.funExecuteUpdate(sqlBlock, "sql"); 
-			
-			*/
 			req.getSession().setAttribute("success", true);
-//			req.getSession().setAttribute("successMessage", "Room Code : ".concat(objModel.getStrRoomCode()));
-			
-			//return new ModelAndView("redirect:/frmBlockRoomMaster.html?saddr=" + urlHits);
+
 		}
 	   else {
 			

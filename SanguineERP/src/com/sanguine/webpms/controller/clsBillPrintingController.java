@@ -3734,7 +3734,7 @@ public class clsBillPrintingController {
 
 			}
 			
-			reportParams.put("pSettlementType",settlementType.substring(1));
+			reportParams.put("pSettlementType",settlementType.substring(1).replaceAll("ADVANCE", " "));
 			
 			List<clsBillPrintingBean> listtax=new ArrayList<>();
 			if(hmTax.size()>0){

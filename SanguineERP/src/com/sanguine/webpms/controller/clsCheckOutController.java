@@ -1084,50 +1084,6 @@ public class clsCheckOutController {
 			
 			if (objFolioHdModel != null) {
 				
-				
-				double balanceForPaymentCheck=0.00;
-				if(clientCode.equalsIgnoreCase("383.001"))
-					{
-						String receiptAmt="a.dblReceiptAmt";
-						if(objFolioHdModel.getStrWalkInNo()!=null && objFolioHdModel.getStrWalkInNo().length()>0 )
-						{
-							receiptAmt="0";
-						}
-						
-						
-						String sql="SELECT b.BillAmount - a.receiptamt"
-								+ " FROM (SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) AS receiptamt"
-								+ " FROM ("
-								+ " SELECT IFNULL(SUM("+receiptAmt+"),0) AS receiptAmt"
-								+ " FROM tblreceipthd a, tblfoliohd b"
-								+ "  WHERE a.strReservationNo = b.strReservationNo AND a.strReservationNo = '"+objFolioHdModel.getStrReservationNo()+"'  ) AS a, ("
-								+ " SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1"
-								+ " FROM tblreceipthd a, tblfoliohd b "
-								+ " WHERE a.strFolioNo = b.strFolioNo AND "
-								+ " a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+objFolioHdModel.getStrFolioNo()+"' AND  a.strReservationNo = '') AS b) AS a, ( "
-								+ " SELECT SUM(a.dblDebitAmt) AS BillAmount"
-								+ " FROM tblfoliodtl a "
-								+ " WHERE a.strFolioNo='"+objFolioHdModel.getStrFolioNo()+"') AS b ;";
-					 
-						List balAmtlist =  objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-						
-						if(balAmtlist!=null && balAmtlist.size()>0)
-						{
-							balanceForPaymentCheck=Double.parseDouble(balAmtlist.get(0).toString());
-						}
-						
-						
-					}	
-					if(clientCode.equalsIgnoreCase("383.001") && balanceForPaymentCheck > 0 )
-					{
-						req.getSession().setAttribute("balanceForPaymentCheck", true);
-						req.getSession().setAttribute("MessagebalanceForPaymentCheck","Payment is Pending !!!!");
-						
-			 			
-						return new ModelAndView("redirect:/frmCheckOut.html?saddr=" + urlHits);
-					}
-					else
-					{
 						// generate billNo.
 						String transaDate = objGlobal.funGetCurrentDateTime("dd-MM-yyyy").split(" ")[0];
 							billNo = objGlobal.funGeneratePMSDocumentCode("frmBillHd", transaDate, req);
@@ -1329,7 +1285,7 @@ public class clsCheckOutController {
 						
 						
 						objBillPrintingController.funGenerateBillPrintingReport(PMSDate, PMSDate, billNo, strParticulars, req, resp);
-					}
+					
 			
 			
 				

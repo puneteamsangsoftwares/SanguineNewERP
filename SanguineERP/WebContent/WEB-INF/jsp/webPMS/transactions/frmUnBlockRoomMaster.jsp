@@ -53,14 +53,13 @@
 	**/
 	$(document).ready(function()
 	{
-		//alert(listOfBlockRoom);
+		
 		$.each(listOfBlockRoom, function(i, obj) 
 		{
-			//alert(obj.strRoomCode+""+obj.strRoomDesc+""+obj.strRoomTypeCode+""+obj.strRoomTypeCode+""+obj.strRoomTypeDesc);
-			
+		  
 			funUnblockRoom(obj.strRoomCode,obj.strRoomDesc,obj.strRoomTypeCode,obj.strRoomTypeDesc);
-			
-	    });
+		
+		});
 		
 		var message='';
 		<%if (session.getAttribute("success") != null) {

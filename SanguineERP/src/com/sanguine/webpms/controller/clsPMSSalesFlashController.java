@@ -270,16 +270,18 @@ public class clsPMSSalesFlashController {
 
 		List<clsPMSSalesFlashBean> listofExpectedArrDtl = new ArrayList<clsPMSSalesFlashBean>();
 		List listofExpectedArrTotal = new ArrayList<>();
-		String sql = "SELECT a.strReservationNo,  DATE_FORMAT(a.dteDateCreated,'%d-%m-%Y'),CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName),    DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'), DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'), IFNULL(d.dblReceiptAmt,0) "
-				+ " FROM tblreservationhd a "
-				+ " LEFT OUTER JOIN tblreservationdtl b ON a.strReservationNo=b.strReservationNo "
-				+ " LEFT OUTER JOIN tblbookingtype c ON a.strBookingTypeCode=c.strBookingTypeCode "
-				+ " LEFT OUTER JOIN tblreceipthd d ON a.strReservationNo=d.strRegistrationNo "
-				+ " LEFT OUTER JOIN tblguestmaster e ON e.strGuestCode=b.strGuestCode "
-				+ " WHERE DATE(a.dteArrivalDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode=b.strClientCode "
-				+ "AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' "
-				+ "AND e.strClientCode='"+strClientCode+"' AND a.strReservationNo NOT IN (SELECT strReservationNo FROM tblcheckinhd) ;";
+		
+        String sql = "SELECT a.strReservationNo, DATE_FORMAT(a.dteDateCreated,'%d-%m-%Y'), "
+				+ " CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName), "
+				+ " DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'), DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'), "
+				+ " IFNULL(d.dblReceiptAmt,0) "
+				+ " FROM tblreservationhd a LEFT OUTER JOIN tblreceipthd d ON a.strReservationNo=d.strReservationNo,"
+				+ " tblguestmaster e,tblbookingtype c"
+				+ " WHERE DATE(a.dteArrivalDate) BETWEEN '"+fromDte+"'  AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND "
+				+ " e.strGuestCode=a.strGuestCode AND a.strBookingTypeCode=c.strBookingTypeCode "
+				+ " AND a.strReservationNo NOT IN ( SELECT strReservationNo FROM tblcheckinhd) ;";
 
+		
 		List listArrivalDtl = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listArrivalDtl.isEmpty()) {
 			for (int i = 0; i < listArrivalDtl.size(); i++) {
@@ -1242,14 +1244,16 @@ public class clsPMSSalesFlashController {
 		
 		BigDecimal dblTotalValue = new BigDecimal(0);
 		DecimalFormat df = new DecimalFormat("#.##");
-		String sql="SELECT a.strReservationNo,  DATE_FORMAT(a.dteDateCreated,'%d-%m-%Y'),CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName),   IFNULL(d.dblReceiptAmt,0), DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'), DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y') "
-				+ " FROM tblreservationhd a "
-				+ " LEFT OUTER JOIN tblreservationdtl b ON a.strReservationNo=b.strReservationNo AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-				+ " LEFT OUTER JOIN tblbookingtype c ON a.strBookingTypeCode=c.strBookingTypeCode AND c.strClientCode='"+strClientCode+"'"
-				+ " LEFT OUTER JOIN tblreceipthd d ON a.strReservationNo=d.strRegistrationNo AND d.strClientCode='"+strClientCode+"'"
-				+ " LEFT OUTER JOIN tblguestmaster e ON e.strGuestCode=b.strGuestCode AND e.strClientCode='"+strClientCode+"'"
-				+ " WHERE DATE(a.dteArrivalDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode=b.strClientCode "
-				+ " AND a.strReservationNo NOT IN (SELECT strReservationNo FROM tblcheckinhd) ;";
+		 String sql = "SELECT a.strReservationNo, DATE_FORMAT(a.dteDateCreated,'%d-%m-%Y'), "
+					+ " CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName), "
+					+ " DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'), DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'), "
+					+ " IFNULL(d.dblReceiptAmt,0) "
+					+ " FROM tblreservationhd a LEFT OUTER JOIN tblreceipthd d ON a.strReservationNo=d.strReservationNo,"
+					+ " tblguestmaster e,tblbookingtype c"
+					+ " WHERE DATE(a.dteArrivalDate) BETWEEN '"+fromDte+"'  AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND "
+					+ " e.strGuestCode=a.strGuestCode AND a.strBookingTypeCode=c.strBookingTypeCode "
+					+ " AND a.strReservationNo NOT IN ( SELECT strReservationNo FROM tblcheckinhd) ;";
+		
 		List listArrivalDtl = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listArrivalDtl.isEmpty()) {
 			for (int i = 0; i < listArrivalDtl.size(); i++) {
@@ -1258,10 +1262,10 @@ public class clsPMSSalesFlashController {
 			    DataList.add(arr2[0].toString());
 			    DataList.add(arr2[1].toString());
 			    DataList.add(arr2[2].toString());
+			    DataList.add(arr2[5].toString());
 			    DataList.add(arr2[3].toString());
 			    DataList.add(arr2[4].toString());
-			    DataList.add(arr2[5].toString());
-			    dblTotalValue = new BigDecimal(df.format(Double.parseDouble(arr2[3].toString()))).add(dblTotalValue);
+			    dblTotalValue = new BigDecimal(df.format(Double.parseDouble(arr2[5].toString()))).add(dblTotalValue);
 				detailList.add(DataList);
 
 			}

@@ -252,31 +252,21 @@ public class clsCheckInListReportController {
 			Map<String,List> hmDtl=new HashMap<String,List>();
 			Set setHeader=new HashSet();
 			
-			String sql=" SELECT g.strRoomDesc AS RoomDesc, CONCAT(IFNULL(e.strFirstName,''),' ', "
-					  +" IFNULL(e.strMiddleName,''),' ', IFNULL(e.strLastName,'')) AS GuestName,j.strRoomTypeDesc,  "
-					 +" DATE_FORMAT(a.dteCheckInDate,'%d-%m-%Y'),DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'),  "
-					 +" (b.intNoOfFolios) AS Pax,IFNULL(f.strPlanDesc,'') AS PlanDesc  "
-					 +" ,(SUM(d.dblDebitAmt)) AS FinalAmt,i.strBookingTypeDesc AS BookedBy  "
-					 +" FROM tblcheckinhd a  "
-					 +" LEFT OUTER  "
-					 +" JOIN tblplanmaster f ON a.strPlanCode=f.strPlanCode,tblcheckindtl b,tblfoliohd c,tblfoliodtl d, "
-				     +"	tblguestmaster e,tblroom g,tblreservationhd h,tblbookingtype i,tblroomtypemaster j  "
-					 +" WHERE  b.strRoomType=j.strRoomTypeCode AND  "
-					 +" h.strBookingTypeCode=i.strBookingTypeCode AND a.strReservationNo=h.strReservationNo AND c.strRoomNo =g.strRoomCode AND b.strGuestCode=e.strGuestCode AND c.strFolioNo=d.strFolioNo AND a.strCheckInNo=c.strCheckInNo AND a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' AND d.strRevenueType='Room' AND a.strType='Reservation'  "
-					 +" GROUP BY c.strRoomNo  "
-					 +" UNION ALL  "
-					 +" SELECT g.strRoomDesc AS RoomDesc, CONCAT(IFNULL(e.strFirstName,''),' ', IFNULL(e.strMiddleName,''),' ',  "
-					 +" IFNULL(e.strLastName,'')) AS GuestName,i.strRoomTypeDesc,DATE_FORMAT(a.dteCheckInDate,'%d-%m-%Y'),DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'),(b.intNoOfFolios) AS Pax,IFNULL( f.strPlanDesc,'') AS PlanDesc,  "
-					 +" (SUM(d.dblDebitAmt)) AS FinalAmt, a.strUserCreated AS BookedBy  "
-					 +" FROM tblcheckinhd a  "
-					 +" LEFT OUTER  "
-					 +" JOIN tblplanmaster f ON a.strPlanCode=f.strPlanCode,tblcheckindtl b,tblfoliohd c,tblfoliodtl d,  "
-					 +" tblguestmaster e,tblroom g,tblroomtypemaster i "
-					 +" WHERE b.strRoomType=i.strRoomTypeCode AND "
-					 +" b.strRoomNo=g.strRoomCode AND b.strGuestCode=e.strGuestCode AND c.strFolioNo=d.strFolioNo "
-					 +" AND a.strCheckInNo=c.strCheckInNo AND a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' "
-				 	 +" AND b.strClientCode='"+clientCode+"' AND d.strRevenueType='Room' AND a.strType='Walk In' "
-				 	 +" GROUP BY c.strRoomNo ;";			
+			String sql=" SELECT e.strRoomDesc AS RoomDesc, CONCAT(IFNULL(f.strFirstName,''),' ',"
+					+ " IFNULL(f.strMiddleName,''),' ', IFNULL(f.strLastName,'')) AS GuestName,g.strRoomTypeDesc,"
+					+ " DATE_FORMAT(c.dteCheckInDate,'%d-%m-%Y'), DATE_FORMAT(c.dteDepartureDate,'%d-%m-%Y'),"
+					+ " (d.intNoOfFolios) AS Pax, IFNULL(j.strPlanDesc,'') AS PlanDesc,(SUM(b.dblDebitAmt)) AS FinalAmt,"
+					+ " IFNULL(i.strBookingTypeDesc,c.strUserCreated) AS BookedBy "
+					+ " FROM tblfoliohd a, tblfoliodtl b, tblcheckinhd c "
+					+ " LEFT OUTER JOIN tblplanmaster j ON c.strPlanCode=j.strPlanCode "
+					+ " LEFT OUTER JOIN tblreservationhd h ON c.strReservationNo=h.strReservationNo "
+					+ " LEFT OUTER JOIN  "
+					+ " tblbookingtype i ON  h.strBookingTypeCode=i.strBookingTypeCode, "
+					+ " tblcheckindtl d, tblroom e, tblguestmaster f, tblroomtypemaster g "
+					+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = c.strCheckInNo  "
+					+ " AND a.strCheckInNo = c.strCheckInNo AND a.strRoomNo = d.strRoomNo"
+					+ " AND c.strCheckInNo = d.strCheckInNo AND a.strRoomNo = e.strRoomCode "
+					+ " AND a.strGuestCode = f.strGuestCode AND e.strRoomTypeCode = g.strRoomTypeCode GROUP BY e.strRoomCode";			
 			List finalList=new ArrayList();
 			List listOccupancy = objGlobalFunctionsService.funGetDataList(sql, "sql");
 			if(listOccupancy.size()>0)
@@ -342,26 +332,21 @@ public class clsCheckInListReportController {
 			
 			String clientCode = req.getSession().getAttribute("clientCode").toString();
 			
-			String sql="SELECT g.strRoomDesc AS RoomDesc, CONCAT(IFNULL(e.strFirstName,''),' ', IFNULL(e.strMiddleName,''),' ', "
-					+" IFNULL(e.strLastName,'')) AS GuestName,j.strRoomTypeDesc,DATE_FORMAT(a.dteCheckInDate,'%d-%m-%Y'),DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'),(b.intNoOfFolios) AS Pax, IFNULL(f.strPlanDesc,'') AS PlanDesc, "
-					+" i.strBookingTypeDesc AS BookedBy "
-				    +"	FROM tblcheckinhd a  LEFT OUTER JOIN tblplanmaster f ON a.strPlanCode=f.strPlanCode, "
-					+" tblcheckindtl b,tblfoliohd c,tblfoliodtl d,tblguestmaster e,tblroom g,tblreservationhd h, "
-					+" tblbookingtype i,tblroomtypemaster j "
-					+" WHERE  b.strRoomType=j.strRoomTypeCode AND "
-					+" h.strBookingTypeCode=i.strBookingTypeCode AND a.strReservationNo=h.strReservationNo AND c.strRoomNo =g.strRoomCode AND b.strGuestCode=e.strGuestCode AND c.strFolioNo=d.strFolioNo AND a.strCheckInNo=c.strCheckInNo AND a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' AND d.strRevenueType='Room' AND a.strType='Reservation' "
-					+" GROUP BY c.strRoomNo "
-					+" UNION ALL "
-					+" SELECT g.strRoomDesc AS RoomDesc, CONCAT(IFNULL(e.strFirstName,''),' ', IFNULL(e.strMiddleName,''),' ', "
-					+" IFNULL(e.strLastName,'')) AS GuestName,i.strRoomTypeDesc,DATE_FORMAT(a.dteCheckInDate,'%d-%m-%Y'),DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'), (b.intNoOfFolios) AS Pax, IFNULL(f.strPlanDesc,'') AS PlanDesc, "
-					+" a.strUserCreated AS BookedBy "
-					+" FROM tblcheckinhd a  LEFT OUTER JOIN tblplanmaster f ON a.strPlanCode=f.strPlanCode,tblcheckindtl b,tblfoliohd c,tblfoliodtl d, "
-					+" tblguestmaster e,tblroom g,tblroomtypemaster i "
-					+" WHERE  b.strRoomType=i.strRoomTypeCode AND "
-					+" b.strRoomNo=g.strRoomCode AND b.strGuestCode=e.strGuestCode AND c.strFolioNo=d.strFolioNo  "
-					+" AND a.strCheckInNo=c.strCheckInNo AND a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' "
-					+" AND b.strClientCode='"+clientCode+"' AND d.strRevenueType='Room' AND a.strType='Walk In' "
-					+" GROUP BY c.strRoomNo ;";
+		    String sql=" SELECT e.strRoomDesc AS RoomDesc, CONCAT(IFNULL(f.strFirstName,''),' ',"
+					+ " IFNULL(f.strMiddleName,''),' ', IFNULL(f.strLastName,'')) AS GuestName,g.strRoomTypeDesc,"
+					+ " DATE_FORMAT(c.dteCheckInDate,'%d-%m-%Y'), DATE_FORMAT(c.dteDepartureDate,'%d-%m-%Y'),"
+					+ " (d.intNoOfFolios) AS Pax, IFNULL(j.strPlanDesc,'') AS PlanDesc,"
+					+ " IFNULL(i.strBookingTypeDesc,c.strUserCreated) AS BookedBy "
+					+ " FROM tblfoliohd a, tblfoliodtl b, tblcheckinhd c "
+					+ " LEFT OUTER JOIN tblplanmaster j ON c.strPlanCode=j.strPlanCode "
+					+ " LEFT OUTER JOIN tblreservationhd h ON c.strReservationNo=h.strReservationNo "
+					+ " LEFT OUTER JOIN  "
+					+ " tblbookingtype i ON  h.strBookingTypeCode=i.strBookingTypeCode, "
+					+ " tblcheckindtl d, tblroom e, tblguestmaster f, tblroomtypemaster g "
+					+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = c.strCheckInNo  "
+					+ " AND a.strCheckInNo = c.strCheckInNo AND a.strRoomNo = d.strRoomNo"
+					+ " AND c.strCheckInNo = d.strCheckInNo AND a.strRoomNo = e.strRoomCode "
+					+ " AND a.strGuestCode = f.strGuestCode AND e.strRoomTypeCode = g.strRoomTypeCode GROUP BY e.strRoomCode";			
 		
 			List finalList = new ArrayList();
             

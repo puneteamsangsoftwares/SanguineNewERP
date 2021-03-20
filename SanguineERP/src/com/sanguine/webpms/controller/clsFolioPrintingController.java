@@ -465,7 +465,7 @@ public class clsFolioPrintingController {
 						+ " WHERE a.strFolioNo='" + folioNo + "' " + ""
 						+ " GROUP BY d.strReceiptNo,d.strSettlementCode ";*/
 				
-
+				balance=Math.round(balance); 
 				String sqlPaymentDtl = "SELECT DATE_FORMAT(date(b.dteDocDate),'%d-%m-%Y'),c.strReceiptNo,e.strSettlementDesc,'0.00' as debitAmt,d.dblSettlementAmt as creditAmt" + " ,'0.00' as "
 						+ " balance " + " FROM tblfoliohd a LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo AND a.strClientCode='"+clientCode+"' "
 						+ " AND b.strClientCode='"+clientCode+"'" + " left outer join tblreceipthd c on a.strFolioNo=c.strFolioNo  "
@@ -477,7 +477,7 @@ public class clsFolioPrintingController {
 				
 				List paymentDtlList = objFolioService.funGetParametersList(sqlPaymentDtl);
 				if(paymentDtlList!=null && paymentDtlList.size()>0){
-					
+				
 					for (int i = 0; i < paymentDtlList.size(); i++) {
 						Object[] paymentArr = (Object[]) paymentDtlList.get(i);
 
@@ -491,6 +491,7 @@ public class clsFolioPrintingController {
 							String particulars = paymentArr[2].toString();
 							double debitAmount = Double.parseDouble(paymentArr[3].toString());
 							double creditAmount = Double.parseDouble(paymentArr[4].toString());
+							
 							balance += debitAmount - creditAmount;
 
 							folioPrintingBean.setDteDocDate(objGlobal.funGetDate("dd-mm-yyyy", docDate));

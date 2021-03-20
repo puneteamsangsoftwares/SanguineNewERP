@@ -3054,10 +3054,10 @@ public class clsSearchFormController {
 		}
 
 		case "folioNoForNoPost": {
-			columnNames = " distinct(strFolioNo), CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName) as Geust " + ", d.strRoomDesc,a.strCheckInNo,a.strRegistrationNo,a.strReservationNo,a.strWalkInNo ";
+			columnNames = " distinct(strFolioNo), CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName) as Geust " + ", d.strRoomDesc,a.strCheckInNo,a.strRegistrationNo,a.strReservationNo,a.strWalkInNo,a.strRoom,a.strFandB ";
 			tableName = " from tblfoliohd a,tblguestmaster c,tblroom d ,tblcheckinhd e" 
 			          + " where a.strGuestCode=c.strGuestCode and a.strRoomNo=d.strRoomCode  and e.strCheckInNo=a.strCheckInNo and e.strNoPostFolio='N' and a.strFandB='Y'";
-			listColumnNames = "Folio No ,Guest Name ,Room No,Check In No,Registration No,Reservation No,Walk-In No ";
+			listColumnNames = "Folio No ,Guest Name ,Room No,Check In No,Registration No,Reservation No,Walk-In No,Room Bill,F&B ";
 			idColumnName = "strFolioNo";
 			flgQuerySelection = true;
 			// criteria = getCriteriaQuery(columnNames,search_with,tableName);
@@ -3080,11 +3080,11 @@ public class clsSearchFormController {
 
 		case "folioPayee": {
 			columnNames = " distinct(strFolioNo),d.strRoomDesc,a.strCheckInNo,a.strRegistrationNo,a.strReservationNo" 
-		     + ",CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName) as Geust ";
+		     + ",CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName) as Geust,a.strRoom,a.strFandB ";
 			tableName = " from tblfoliohd a,tblguestmaster c,tblroom d ,tblcheckindtl e" 
 			+ " where a.strGuestCode=c.strGuestCode and a.strRoomNo=d.strRoomCode " 
 			+ " and a.strCheckInNo=e.strCheckInNo and e.strRegistrationNo =a.strRegistrationNo and e.strPayee='Y' and e.strGuestCode=a.strGuestCode ";
-			listColumnNames = "Folio No,Room Desc,Check In No,Registration No,Reservation No,Guest Name";
+			listColumnNames = "Folio No,Room Desc,Check In No,Registration No,Reservation No,Guest Name,Room Bill,F&B";
 			idColumnName = "strFolioNo";
 			flgQuerySelection = true;
 			// criteria = getCriteriaQuery(columnNames,search_with,tableName);

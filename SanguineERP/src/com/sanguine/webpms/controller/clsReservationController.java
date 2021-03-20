@@ -830,6 +830,7 @@ public class clsReservationController {
 			 * ().equals(null)) { objModel.setStrGuestcode(""); }
 			 */
 			objResDtlModel.setStrGuestCode(objResDtl.getStrGuestCode());
+			objModel.setStrGuestcode(objResDtl.getStrGuestCode());
 			objResDtlModel.setStrRoomNo(objResDtl.getStrRoomNo());
 			objResDtlModel.setStrExtraBedCode(objResDtl.getStrExtraBedCode());
 			objResDtlModel.setStrRoomType(objResDtl.getStrRoomType());

@@ -351,7 +351,7 @@ WHERE DATE(b.dteDocDate) BETWEEN '2016-03-25' AND '2016-03-25' AND a.strFolioNo=
 			</staticText>
 			<staticText>
 				<reportElement x="136" y="76" width="299" height="13" uuid="9cfe563a-458c-42d0-a7a6-4338135e10d4"/>
-				<text><![CDATA[Contact:02114-272454/278888,Email:unitedretreatfo@gmail.com]]></text>
+				<text><![CDATA[Contact:02114-272454/278888,Email: sales@united21retreat.com]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="139" y="91" width="299" height="13" uuid="90ce5bdf-cb55-463a-a3b2-7c8c5b1eea53"/>

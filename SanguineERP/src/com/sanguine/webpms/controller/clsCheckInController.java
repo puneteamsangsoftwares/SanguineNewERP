@@ -1758,6 +1758,8 @@ public class clsCheckInController {
     						{
     							taxAmt = tariffAmt * 100 / (100 + taxValue);
     							taxAmt = tariffAmt - taxAmt;
+    							taxAmt=taxAmt/2;
+    							
     						}
     						finalTax = finalTax+taxAmt;
     					}
@@ -2032,6 +2034,7 @@ public class clsCheckInController {
 								{
 									taxAmt = tariffAmt * 100 / (100 + taxValue);
 									taxAmt = tariffAmt - taxAmt;
+									taxAmt=taxAmt/2;
 								}
 								finalTax = finalTax+taxAmt;
 							}
