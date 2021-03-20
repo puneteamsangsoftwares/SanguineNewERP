@@ -79,6 +79,7 @@ public class clsPMSUtilityFunctions {
 							{
 								taxAmt = objTaxProdDtl.getDblTaxProdAmt() * 100 / (100 + taxValue);
 								taxAmt = objTaxProdDtl.getDblTaxProdAmt() - taxAmt;
+								taxAmt=taxAmt/2;
 							}
 							if (taxAmt > 0) 
 							{
@@ -113,6 +114,7 @@ public class clsPMSUtilityFunctions {
 							{
 								taxAmt = objTaxProdDtl.getDblTaxProdAmt() * 100 / (100 + taxValue);
 								taxAmt = objTaxProdDtl.getDblTaxProdAmt() - taxAmt;
+								taxAmt=taxAmt/2;
 							}
 							if (taxAmt > 0) 
 							{
@@ -148,6 +150,7 @@ public class clsPMSUtilityFunctions {
 								{
 									taxAmt = objTaxProdDtl.getDblTaxProdAmt() * 100 / (100 + taxValue);
 									taxAmt = objTaxProdDtl.getDblTaxProdAmt() - taxAmt;
+									taxAmt=taxAmt/2;
 								}
 								if (taxAmt > 0) {
 									objTaxCal.setStrTaxCode(arrObjTaxDtl[0].toString());
@@ -183,6 +186,7 @@ public class clsPMSUtilityFunctions {
 								{
 									taxAmt = tariffAmt * 100 / (100 + taxValue);
 									taxAmt = tariffAmt - taxAmt;
+									taxAmt=taxAmt/2;
 								}
 								if (taxAmt > 0) {
 									objTaxCal.setStrTaxCode(arrObjTaxDtl[0].toString());
@@ -227,6 +231,7 @@ public class clsPMSUtilityFunctions {
 								{
 									taxAmt = objTaxProdDtl.getDblTaxProdAmt() * 100 / (100 + taxValue);
 									taxAmt = objTaxProdDtl.getDblTaxProdAmt() - taxAmt;
+									taxAmt=taxAmt/2;
 								}
 								if (taxAmt > 0) {
 									objTaxCal.setStrTaxCode(arrObjTaxDtl[0].toString());
@@ -263,6 +268,7 @@ public class clsPMSUtilityFunctions {
 								{
 									taxAmt = tariffAmt * 100 / (100 + taxValue);
 									taxAmt = tariffAmt - taxAmt;
+									taxAmt=taxAmt/2;
 								}
 								if (taxAmt > 0) {
 									objTaxCal.setStrTaxCode(arrObjTaxDtl[0].toString());
