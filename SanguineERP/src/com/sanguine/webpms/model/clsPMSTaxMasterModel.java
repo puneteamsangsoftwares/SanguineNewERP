@@ -76,6 +76,10 @@ public class clsPMSTaxMasterModel implements Serializable {
 
 	@Column(name = "strTaxOn")
 	private String strTaxOn;
+	
+	@Column(name = "strTaxCalculation")
+	private String strTaxCalculation;
+	
 
 	@Column(name = "strDeplomat")
 	private String strDeplomat;
@@ -282,6 +286,16 @@ public class clsPMSTaxMasterModel implements Serializable {
 
 	public void setStrTaxOnType(String strTaxOnType) {
 		this.strTaxOnType = strTaxOnType;
+	}
+
+	
+	public String getStrTaxCalculation() {
+		return strTaxCalculation;
+	}
+	
+
+	public void setStrTaxCalculation(String strTaxCalculation) {
+		this.strTaxCalculation = strTaxCalculation;
 	}
 
 	public String getStrAccountCode() {

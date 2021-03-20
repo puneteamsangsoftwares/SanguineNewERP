@@ -248,6 +248,7 @@ public class clsPMSTaxMasterController {
 	private clsPMSTaxMasterModel funPrepareModel(clsPMSTaxMasterBean objBean, String userCode, String clientCode, String propertyCode) {
 		long lastNo = 0;
 		clsPMSTaxMasterModel objModel = null;
+
 		if (objBean.getStrTaxCode().trim().length() == 0) {
 			lastNo = objGlobalFunctionsService.funGetPMSMasterLastNo("tbltaxmaster", "TaxMaster", "strTaxCode", clientCode);
 			String taxCode = "TC" + String.format("%06d", lastNo);
@@ -269,6 +270,9 @@ public class clsPMSTaxMasterController {
 		objModel.setStrTaxOnType(objBean.getStrTaxOnType());
 		objModel.setDblTaxValue(objBean.getDblTaxValue());
 		objModel.setStrTaxOn(objBean.getStrTaxOn());
+		
+		objModel.setStrTaxCalculation(objBean.getStrTaxCalculation());
+		
 		objModel.setStrDeplomat(objBean.getStrDeplomat());
 		objModel.setStrLocalOrForeigner(objBean.getStrLocalOrForeigner());
 		objModel.setDteValidFrom(objGlobal.funGetDate("yyyy-MM-dd", objBean.getDteValidFrom()));

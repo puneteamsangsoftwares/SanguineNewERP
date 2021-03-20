@@ -60,6 +60,8 @@ public class clsPMSTaxMasterBean {
 	
 	private String strSettlementDesc;
 	
+	private String strTaxCalculation;
+	
 	private List<clsPMSSettlementTaxMasterModel> listSettlement;
 	
 
@@ -70,6 +72,15 @@ public class clsPMSTaxMasterBean {
 
 	public void setIntGId(long intGId) {
 		this.intGId = intGId;
+	}
+	
+	
+    public String getStrTaxCalculation() {
+		return strTaxCalculation;
+	}
+
+	public void setStrTaxCalculation(String strTaxCalculation) {
+		this.strTaxCalculation = strTaxCalculation;
 	}
 
 	public String getStrTaxCode() {

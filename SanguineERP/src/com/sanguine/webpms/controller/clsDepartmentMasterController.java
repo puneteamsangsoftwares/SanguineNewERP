@@ -74,7 +74,7 @@ public class clsDepartmentMasterController {
 
 	@RequestMapping(value = "/loadDeptMasterData", method = RequestMethod.GET)
 	public @ResponseBody clsDepartmentMasterModel funFetchDeptMasterData(@RequestParam("deptCode") String deptCode, HttpServletRequest req) {
-		clsDepartmentMasterModel objDepartmentMasterModel = null;
+		clsDepartmentMasterModel objDepartmentMasterModel = new clsDepartmentMasterModel();
 
 		String clientCode = req.getSession().getAttribute("clientCode").toString();
 		List listDepData = objDeptMasterDao.funGetDepartmentMaster(deptCode, clientCode);

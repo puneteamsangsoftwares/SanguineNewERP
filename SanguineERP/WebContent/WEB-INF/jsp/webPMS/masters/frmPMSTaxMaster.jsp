@@ -233,6 +233,9 @@
 	        		$("#dblTaxValue").val(response.dblTaxValue);
 	        		$("#strTaxOn").val(response.strTaxOn);
 	        		$("#cmbTaxOnType").val(response.strTaxOnType);
+	        		
+	        		$("#cmbTaxCalculation").val(response.strTaxCalculation);
+	        		
 	        		$("#strDeplomat").val(response.strDeplomat);
 	        		$("#strLocalOrForeigner").val(response.strLocalOrForeigner);
 	        		funSetDate(dteValidFrom,response.dteValidFrom);
@@ -657,7 +660,15 @@
 						<option value="Extra Bed">Extra Bed</option>
 					</s:select>
 			      </div>
-			      <div class="col-md-6"></div>
+			      
+			     
+			      
+			      <div class="col-md-6"></div> 
+			      
+			       
+			      
+			      
+			     <!-- <div class="col-md-6"></div> -->
 			     
 			 	<div class="col-md-2">
 			   		<s:input id="txtDeptCode"  path="strDeptCode" style= "display:none; margin-top: 11%;" ondblclick=" funHelp('deptCode')"  placeholder="Dept Code" cssClass="searchTextBox"/>
@@ -752,7 +763,15 @@
 			
 			<div class="col-md-2"><label>Tax Group</label>
 				<s:select id="strTaxGroupCode" path="strTaxGroupCode" items="${listTaxGroup}" style="width: 80%;"></s:select>				
-			</div>		
+			</div>	
+			<div class="col-md-2">
+			     	<label>Tax Calculation</label>
+				    <s:select id="cmbTaxCalculation" path="strTaxCalculation" style="width: auto ">
+						<option value="Forward" selected>Forward</option>
+						<option value="Backward">Backward</option>
+						</s:select>
+			      </div>
+			      	
 		</div>
 	</div>
 		<!--General Tab End  -->
