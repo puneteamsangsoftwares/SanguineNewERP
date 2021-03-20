@@ -62,7 +62,7 @@ public class clsUnBlockRoomController {
 				+ " ORDER BY c.strRoomTypeDesc";
 		List listOfBlockRooms = objGlobalFunctionsService.funGetListModuleWise(sqlBlockRoom,"sql");
 
-		JSONObject objUnBlockRoomBean= new JSONObject();
+		JSONObject objJsonUnBlockRoomBean= new JSONObject();
 		JSONArray jrr= new JSONArray();
 		List<clsUnBlockRoomBean> listOfBLkRoom=new ArrayList<>();
 		if(listOfBlockRooms!=null && listOfBlockRooms.size()>0)
@@ -70,12 +70,12 @@ public class clsUnBlockRoomController {
 			for(int i=0;i<listOfBlockRooms.size();i++)
 			{
 			      Object[] obj=(Object[])listOfBlockRooms.get(i);
-			      objUnBlockRoomBean= new JSONObject();
-			      objUnBlockRoomBean.put("strRoomCode",obj[0].toString());
-			      objUnBlockRoomBean.put("strRoomDesc",obj[1].toString());
-			      objUnBlockRoomBean.put("strRoomTypeCode",obj[2].toString());
-			      objUnBlockRoomBean.put("strRoomTypeDesc",obj[3].toString());	
-			      jrr.add(objUnBlockRoomBean);
+			      objJsonUnBlockRoomBean= new JSONObject();
+			      objJsonUnBlockRoomBean.put("strRoomCode",obj[0].toString());
+			      objJsonUnBlockRoomBean.put("strRoomDesc",obj[1].toString());
+			      objJsonUnBlockRoomBean.put("strRoomTypeCode",obj[2].toString());
+			      objJsonUnBlockRoomBean.put("strRoomTypeDesc",obj[3].toString());	
+			      jrr.add(objJsonUnBlockRoomBean);
 			}
 		}
 		UnBlockRoomBean.setJsonArrBlockRooms(jrr);
