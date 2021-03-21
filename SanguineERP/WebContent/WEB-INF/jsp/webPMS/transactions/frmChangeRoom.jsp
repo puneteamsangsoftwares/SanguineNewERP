@@ -64,7 +64,7 @@ var selectedOccupiedRoom="",selectedFreeRoom="";
 				}
 			}%>
 			
-			var checkInNo='';
+			<%-- var checkInNo='';
 			var messageForPaymentCheck;
 			<%if (session.getAttribute("roomRateChange") != null) {
 	            if(session.getAttribute("MessageRoomRateChange") != null){%>
@@ -82,9 +82,16 @@ var selectedOccupiedRoom="",selectedFreeRoom="";
 					window.open(getContextPath() + "/frmCheckIn.html?docCode=" + checkInNo); 
 					
 				 }
+				else
+				{  
+					 document.frmChangeRoom.action = "changeRoom.html";
+				  	 document.frmChangeRoom.method = "POST";
+					 document.frmChangeRoom.submit();
+				}	
 	            <% 
-	            }}%>
-			
+	            }
+				}%>
+			 --%>
 	            
 		  funLoadData();
 		});
@@ -471,7 +478,7 @@ function funResetFields()
 <body onload="funLoadData()">
 	 <div class="transTable" style="margin-left: 10px;width:94%">
 		<label id="formHeading">Change Room</label>
-	     <s:form name="Change Room" method="POST" action="changeRoom.html" >
+	     <s:form name="frmChangeRoom" method="POST" action="changeRoom.html" >
 	      <div class="row">
                 <div class="col-md-4" style="padding-left: 28px;"><label>Reason Code</label>
 				   <div class="row">

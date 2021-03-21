@@ -254,18 +254,21 @@ public class clsRoomChangeController {
 			String strReasonCode = objBean.getStrReasonCode();
 			String strRemarks = objBean.getStrRemarks();
 			
-			String sqlOfChangeRoom = "select a.strRoomDesc as previousRoom,a.strRoomTypeDesc as previousroomType,d.strFolioNo,b.strCheckInNo,date(b.dteCheckInDate),concat(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName) "
-					    //"select a.strRoomDesc as previousRoom,a.strRoomTypeDesc as previousroomType,d.strFolioNo,b.strCheckInNo,date(b.dteCheckInDate),concat(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName) "
-						+ " ,b.strRemarks,b.strReasonCode,a.strStatus,e.strGuestCode,a.strRoomTypeCode "
-						+ " from tblfoliohd d,tblcheckinhd b left outer join tblcheckindtl c on b.strCheckInNo=c.strCheckInNo " 
-						+ " left outer join tblroom a on a.strRoomCode=c.strRoomNo  " 
-						+ " JOIN tblroomtypemaster f ON a.strRoomTypeCode=f.strRoomTypeCode, "
-						+ " tblguestmaster e "
-						+ " where  a.strStatus!='Free' and a.strClientCode='"+clientCode+"' " 
-						+ " and b.strCheckInNo=d.strCheckInNo "
-						+ " and c.strGuestCode=e.strGuestCode " 
-						+ " and a.strRoomCode='"+objBean.getStrRoomCode().split("#")[0]+"' AND b.strClientCode='"+clientCode+"' AND c.strClientCode='"+clientCode+"' AND d.strClientCode='"+clientCode+"' AND e.strClientCode='"+clientCode+"'" ;
+			String sqlOfChangeRoom="SELECT a.strRoomDesc AS previousRoom,a.strRoomTypeDesc "
+					+ " AS previousroomType,d.strFolioNo,b.strCheckInNo, DATE(b.dteCheckInDate), CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName),b.strRemarks,"
+					+ " b.strReasonCode,a.strStatus,e.strGuestCode,a.strRoomTypeCode"
+					+ " FROM tblfoliohd d "
+					+ " , tblroom a  "
+					+ " , tblguestmaster e,tblcheckinhd b"
+					+ " WHERE a.strStatus!='Free' AND a.strClientCode='"+clientCode+"' and a.strRoomCode=d.strRoomNo "
+					+ " AND b.strCheckInNo=d.strCheckInNo"
+					+ " AND d.strGuestCode=e.strGuestCode AND d.strRoomNo='"+objBean.getStrRoomCode().split("#")[0]+"' "
+					+ " AND b.strClientCode='"+clientCode+"' "
+					+ " AND d.strClientCode='"+clientCode+"' AND e.strClientCode='"+clientCode+"' ";
+			
 			List listData = objWebPMSUtility.funExecuteQuery(sqlOfChangeRoom, "sql"); 
+	    
+			
 			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			Date date = new Date();
 			
@@ -300,7 +303,7 @@ public class clsRoomChangeController {
 			
 			
 			
-			if(!previousRoomType.equalsIgnoreCase(roomTypeCode))
+			/*if(!previousRoomType.equalsIgnoreCase(roomTypeCode))
 			{
 				req.getSession().setAttribute("roomRateChange", true);
 			    req.getSession().setAttribute("MessageRoomRateChange",objBean.getStrRoomType().split("\\.")[0]);
@@ -309,7 +312,7 @@ public class clsRoomChangeController {
 					
 			}
 			else
-			{
+			{*/
 
 				String sqlNewRoomStatus = "select a.strStatus from tblroom a where a.strRoomCode='"+objBean.getStrRoomDesc()+"' AND a.strClientCode='"+clientCode+"'";
 				List listNewRoomStatus = objWebPMSUtility.funExecuteQuery(sqlNewRoomStatus, "sql");
@@ -386,11 +389,11 @@ public class clsRoomChangeController {
 				
 				
 	            req.getSession().setAttribute("success", true);
-				req.getSession().setAttribute("successMessage", "Reservation No. : ".concat(objBean.getStrRoomCode().split("#")[0]));
+				req.getSession().setAttribute("successMessage", "Room No. : ".concat(objBean.getStrRoomCode().split("#")[0]));
 				
 				}
 				return new ModelAndView("redirect:/frmChangeRoom.html");
-			}
+			//}
 			
 			
 
