@@ -449,7 +449,7 @@ overflow-x: hidden;
 			funGetPreviouslyLoadedPkgList(response.listRoomPackageDtl);
 			if(response.strGroupCode.length >0 )
 			{
-			    for(var i=0;i<gcount;i++)
+			    for(var i=1;i<gcount;i++)
 		    	{
 			    	funSetGuestCode(cheGuestCode);
 		    	}
@@ -614,16 +614,13 @@ overflow-x: hidden;
 		function funAddDetailsRow(guestName,guestCode,mobileNo,roomNo,roomDesc,extraBedCode,extraBedDesc,payee,roomTypeCode) 
 		{
 			
-			if(gTempAdultcount>$("#txtNoOfAdults").val()){
+		/*  if(gTempAdultcount>=$("#txtNoOfAdults").val()){
 				
-			//	alert("Room Booking Full");
+				alert("Room Booking Full");
 			}
-			/* else if(gAdult.hasObject(guestName)){
-							
-				alert("Guest already Added");
-			} */
+		
 			else
-			{
+			{  */
 					gTempAdultcount++;
 					gAdult.push(guestName);
 				    var table = document.getElementById("tblCheckInDetails");
@@ -707,7 +704,7 @@ overflow-x: hidden;
 				  	$("#txttotguest").val(globalNoOfGuest.size);
 			    
 	    }
-		}
+//	}
 
 			function funSetIncomeHead(code)
 			{
