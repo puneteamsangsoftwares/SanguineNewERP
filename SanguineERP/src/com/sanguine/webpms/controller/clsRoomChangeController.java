@@ -278,7 +278,7 @@ public class clsRoomChangeController {
 				{
 					Object[] obj = (Object[]) listData.get(i);
 					sqlOfChangeRoom = "insert into tblchangeroom (strRoomNo,strRoomTypeCode,strFolioNo,strGuestCode,strReason,strRemark,strUserEdited,dteChangeDate) "
-							+ " values('"+obj[0].toString()+"','"+obj[1].toString()+"','"+obj[2].toString()+"','"+obj[9].toString()+"','"+strReasonCode+"','"+strRemarks+"','"+userCode+"','"+dteChangedRoom+" ')";
+ 							+ " values('"+obj[0].toString()+"','"+obj[1].toString()+"','"+obj[2].toString()+"','"+obj[9].toString()+"','"+strReasonCode+"','"+strRemarks+"','"+userCode+"','"+dteChangedRoom+" ')";
 					objWebPMSUtility.funExecuteUpdate(sqlOfChangeRoom, "sql"); 
 					previousRoomType=obj[10].toString();
 					

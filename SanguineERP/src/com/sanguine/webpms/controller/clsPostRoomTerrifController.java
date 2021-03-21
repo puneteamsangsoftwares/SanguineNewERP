@@ -593,7 +593,15 @@ public class clsPostRoomTerrifController {
 					    			objFolioDtl = new clsFolioDtlModel();
 									objFolioDtl.setStrDocNo(docNoGroupDocNo);
 									objFolioDtl.setDteDocDate(PMSDate);
-									objFolioDtl.setDblDebitAmt(roomTerrif);
+									if(strComp.equalsIgnoreCase("Y"))
+									{
+										objFolioDtl.setDblDebitAmt(0);
+									}
+									else
+									{
+										objFolioDtl.setDblDebitAmt(roomTerrif);
+									}
+								
 									objFolioDtl.setDblBalanceAmt(0.0);
 									objFolioDtl.setDblCreditAmt(0);
 									objFolioDtl.setStrTransactionType(strTransType);
@@ -618,11 +626,19 @@ public class clsPostRoomTerrifController {
 					    		
 
 						    		 //if group follio  tax calculation
-						    	  
-						    	    	if(listTaxProdDtl.size()>0) {
-						    	    		listTaxProdDtl.get(0).setDblTaxProdAmt(roomTerrif);
-						    	    	}	
-						    			hmTaxCalDtl = objPMSUtility.funCalculatePMSTax(listTaxProdDtl, "Room Night");
+					    	  
+					    	    	if(listTaxProdDtl.size()>0) {
+				    	    		if(strComp.equalsIgnoreCase("Y"))
+									{
+				    	    			listTaxProdDtl.get(0).setDblTaxProdAmt(0);
+									}
+				    	    		else
+				    	    		{
+				    	    			listTaxProdDtl.get(0).setDblTaxProdAmt(roomTerrif);
+				    	    		}
+					    	    		
+					    	    	}	
+					    			hmTaxCalDtl = objPMSUtility.funCalculatePMSTax(listTaxProdDtl, "Room Night");
 						    		
 						    	    if(!hmTaxCalDtl.isEmpty())
 									{

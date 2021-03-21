@@ -1758,7 +1758,7 @@ public class clsUserController {
 				if (count.intValue() > 0) {
 					try{
 						//for phpmyadmin server query
-						sql = "select date(max(dtePMSDate)),ANY_VALUE(strStartDay) from tbldayendprocess " + " where strPropertyCode='" + propertyCode+ "' and strClientCode='" + clientCode + "' " + " and strDayEnd='N' ";
+						sql = "select date(max(dtePMSDate)),strStartDay from tbldayendprocess " + " where strPropertyCode='" + propertyCode+ "' and strClientCode='" + clientCode + "' " + " and strDayEnd='N' ";
 						listStartFlag = objGlobalService.funGetListModuleWise(sql, "sql");
 					}
 					catch(Exception e)

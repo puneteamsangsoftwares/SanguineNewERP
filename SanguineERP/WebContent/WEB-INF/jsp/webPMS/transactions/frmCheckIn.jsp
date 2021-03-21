@@ -614,9 +614,9 @@ overflow-x: hidden;
 		function funAddDetailsRow(guestName,guestCode,mobileNo,roomNo,roomDesc,extraBedCode,extraBedDesc,payee,roomTypeCode) 
 		{
 			
-			if(gTempAdultcount>=$("#txtNoOfAdults").val()){
+			if(gTempAdultcount>$("#txtNoOfAdults").val()){
 				
-				alert("Room Booking Full");
+			//	alert("Room Booking Full");
 			}
 			/* else if(gAdult.hasObject(guestName)){
 							
