@@ -384,7 +384,7 @@ function funLoadData()
 		{
 			if($("#txtRemarks").val().trim().length==0)
 			{
-				alert("Please Enter Remark!!");
+				 alert("Please Enter Remark!!");
 				 flg=false;
 			}
 		}	

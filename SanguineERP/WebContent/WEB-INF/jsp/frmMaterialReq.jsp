@@ -418,10 +418,10 @@ var fieldName,strLocationType,listRow=0,showReqVal="",showReqStk="";
 								if (response.strNonStockableItem == "N") {
 									var dblStock = funGetProductStock(response.strProdCode);
 
-									if (dblStock < response.dblReorderLvl) {
+									/* if (dblStock < response.dblReorderLvl) {
 										alert("Stock is below the re-order level.");
 										return;
-									}
+									} */
 									$("#spStock").text(dblStock);
 								} else {
 									$("#spStock").text("0");

@@ -19,6 +19,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,6 +50,11 @@ public class clsPOSItemMasterImportController {
 
 	@Autowired
 	private clsProductMasterService objProductMasterService;
+	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+	    binder.setAutoGrowCollectionLimit(1000000);
+	}
 
 	@RequestMapping(value = "/frmPOSItemMasterImport", method = RequestMethod.GET)
 	public ModelAndView funOpenForm(Map<String, Object> model, HttpServletRequest request) {
@@ -561,7 +568,7 @@ public class clsPOSItemMasterImportController {
 		String dbName = spParam[2];
 		String userName = spParam[3];
 		String pass = spParam[4];
-		Connection con = funConnection(IpAdd, port, dbName, userName, pass);
+		Connection con = funConnection(IpAdd, port, dbName, userName.toLowerCase(), pass);
 		if (con != null) {
 			code = "200";
 		}

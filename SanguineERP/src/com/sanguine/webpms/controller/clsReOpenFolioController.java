@@ -213,7 +213,7 @@ public class clsReOpenFolioController
 					
 				}
 				
-				
+			                                                                                                          	
 				req.getSession().setAttribute("success", true);
 				req.getSession().setAttribute("successMessage", "ReOpened Folio No : ".concat(objBean.getStrFolioNo()) );
 				return new ModelAndView("frmReOpenFolio", "command", new clsFolioHdBean());

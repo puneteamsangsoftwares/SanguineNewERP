@@ -272,9 +272,6 @@ public class clsRoomChangeController {
 			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			Date date = new Date();
 			
-			String previousRoomType="";
-			String roomTypeCode="";
-			
 			if(listData.size()>0)
 			{
 				for(int i=0;i<listData.size();i++)
@@ -283,36 +280,12 @@ public class clsRoomChangeController {
 					sqlOfChangeRoom = "insert into tblchangeroom (strRoomNo,strRoomTypeCode,strFolioNo,strGuestCode,strReason,strRemark,strUserEdited,dteChangeDate) "
  							+ " values('"+obj[0].toString()+"','"+obj[1].toString()+"','"+obj[2].toString()+"','"+obj[9].toString()+"','"+strReasonCode+"','"+strRemarks+"','"+userCode+"','"+dteChangedRoom+" ')";
 					objWebPMSUtility.funExecuteUpdate(sqlOfChangeRoom, "sql"); 
-					previousRoomType=obj[10].toString();
-					
 				
 				}
 			}
 			
 			
-			
-			String sqlNewRoomType = "SELECT a.strRoomTypeCode FROM tblroom a WHERE a.strRoomCode='"+objBean.getStrRoomDesc()+"'";
-			List listNewRoomTypeCode = objWebPMSUtility.funExecuteQuery(sqlNewRoomType, "sql");
-			if (listNewRoomTypeCode!=null)
-			{
-				for(int i=0; i<listNewRoomTypeCode.size(); i++)
-				{
-					roomTypeCode=listNewRoomTypeCode.get(0).toString();
-				}
-			}
-			
-			
-			
-			/*if(!previousRoomType.equalsIgnoreCase(roomTypeCode))
-			{
-				req.getSession().setAttribute("roomRateChange", true);
-			    req.getSession().setAttribute("MessageRoomRateChange",objBean.getStrRoomType().split("\\.")[0]);
-				
-				return new ModelAndView("redirect:/frmChangeRoom.html?saddr");
-					
-			}
-			else
-			{*/
+		
 
 				String sqlNewRoomStatus = "select a.strStatus from tblroom a where a.strRoomCode='"+objBean.getStrRoomDesc()+"' AND a.strClientCode='"+clientCode+"'";
 				List listNewRoomStatus = objWebPMSUtility.funExecuteQuery(sqlNewRoomStatus, "sql");
@@ -324,6 +297,8 @@ public class clsRoomChangeController {
 				else
 				{
 				//strRoomCode means Occupied roomNo and strRoomDesc means Free Room NO
+				//New Room No = objBean.getStrRoomDesc()
+				//Old Room No = objBean.getStrRoomCode().split("#")[0]	
 				String sql="update tblcheckindtl a set a.strRoomNo='"+objBean.getStrRoomDesc()+"' "
 							+ " where a.strRoomNo='"+objBean.getStrRoomCode().split("#")[0]+"' AND a.strClientCode='"+clientCode+"'";
 				objWebPMSUtility.funExecuteUpdate(sql, "sql"); 
@@ -335,23 +310,30 @@ public class clsRoomChangeController {
 				objWebPMSUtility.funExecuteUpdate(sql, "sql"); 
 					
 					
-				sql = " select a.strRoomNo from tblfoliohd a where a.strCheckInNo='"+prevCheckiInNo+"' AND a.strClientCode='"+clientCode+"'";
+				sql = " select a.strRoomNo,a.strFolioNo from tblfoliohd a where a.strCheckInNo='"+prevCheckiInNo+"' AND a.strClientCode='"+clientCode+"' AND a.strRoomNo='"+objBean.getStrRoomCode().split("#")[0]+"' ";
 				String selectedRoomNoOfFolio="";
+				String folioNo="";
 				List list = objWebPMSUtility.funExecuteQuery(sql, "sql");
 					
 				if (list!=null)
 				{
 					for(int i=0; i<list.size(); i++)
 					{
-						Object obj=list.get(0);
-						selectedRoomNoOfFolio = obj.toString();
+						Object[] obj=(Object[]) list.get(i);
+						selectedRoomNoOfFolio = obj[0].toString();
+						folioNo=obj[1].toString();
+						
 					}
 				}
 					 
 				sql="update tblfoliohd a  set a.strRoomNo='"+objBean.getStrRoomDesc()+"' "
 					+ " where a.strRoomNo='"+selectedRoomNoOfFolio+"' and a.strCheckInNo='"+prevCheckiInNo+"' AND a.strClientCode='"+clientCode+"'"; 
-				objWebPMSUtility.funExecuteUpdate(sql, "sql"); 
-					
+				objWebPMSUtility.funExecuteUpdate(sql, "sql");
+				
+				sql="UPDATE tblfoliodtl a SET a.strRevenueCode='"+objBean.getStrRoomDesc()+"' WHERE  a.strRevenueCode='"+objBean.getStrRoomCode().split("#")[0]+"' AND  "
+					+ " a.strFolioNo= '"+folioNo+"' ";
+                objWebPMSUtility.funExecuteUpdate(sql, "sql");
+				
 				
 				
 				sql="update tblroom a set a.strStatus='"+objBean.getStrRoomType().split("\\.")[1]+"'  where a.strRoomCode='"+objBean.getStrRoomDesc()+"' AND a.strClientCode='"+clientCode+"'";
@@ -372,20 +354,11 @@ public class clsRoomChangeController {
 				}
 				
 						
-						
-				
 				sql = "update tblwalkinroomratedtl b set b.dblRoomRate='"+newRate+"', b.strRoomType='"+newRoomTypeCode+"' where b.strWalkinNo="
-						+ "(select a.strWalkInNo from tblcheckinhd a where a.strCheckInNo='"+prevCheckiInNo+"' AND b.strClientCode='"+clientCode+"')  AND b.strClientCode='"+clientCode+"';;";
+						+ "(select a.strWalkInNo from tblcheckinhd a where a.strCheckInNo='"+prevCheckiInNo+"' AND b.strClientCode='"+clientCode+"')  AND b.strClientCode='"+clientCode+"';";
 				objWebPMSUtility.funExecuteUpdate(sql, "sql");
 				
-				
-				sql = "update tblcheckindtl a set a.strRoomNo='"+objBean.getStrRoomDesc()+"'  where a.strCheckInNo='"+prevCheckiInNo+"'  AND a.strClientCode='"+clientCode+"'";
-				objWebPMSUtility.funExecuteUpdate(sql, "sql");
-				
-				//For reservationroomate update
-				sql = "UPDATE tblreservationroomratedtl a SET a.strRoomType='"+roomTypeCode+"' "
-					+ " WHERE a.strReservationNo=(SELECT a.strReservationNo FROM tblcheckinhd a WHERE a.strCheckInNo='"+prevCheckiInNo+"'); ";
-				objWebPMSUtility.funExecuteUpdate(sql, "sql");
+			
 				
 				
 	            req.getSession().setAttribute("success", true);
@@ -393,7 +366,7 @@ public class clsRoomChangeController {
 				
 				}
 				return new ModelAndView("redirect:/frmChangeRoom.html");
-			//}
+			
 			
 			
 
