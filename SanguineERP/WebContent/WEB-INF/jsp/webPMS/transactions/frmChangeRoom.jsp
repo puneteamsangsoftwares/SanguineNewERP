@@ -47,7 +47,7 @@ var selectedOccupiedRoom="",selectedFreeRoom="";
 		**/
 		$(document).ready(function()
 		{
-			var message='';
+	        var message='';
 			<%if (session.getAttribute("success") != null) 
 			{
 				if(session.getAttribute("successMessage") != null)
@@ -93,6 +93,7 @@ var selectedOccupiedRoom="",selectedFreeRoom="";
 				}%>
 			 --%>
 	            
+			 
 		  funLoadData();
 		});
 
@@ -384,7 +385,7 @@ function funLoadData()
 		{
 			if($("#txtRemarks").val().trim().length==0)
 			{
-				alert("Please Enter Remark!!");
+				 alert("Please Enter Remark!!");
 				 flg=false;
 			}
 		}	
