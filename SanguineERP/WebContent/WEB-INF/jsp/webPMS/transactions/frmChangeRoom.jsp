@@ -47,7 +47,7 @@ var selectedOccupiedRoom="",selectedFreeRoom="";
 		**/
 		$(document).ready(function()
 		{
-			var message='';
+	        var message='';
 			<%if (session.getAttribute("success") != null) 
 			{
 				if(session.getAttribute("successMessage") != null)
