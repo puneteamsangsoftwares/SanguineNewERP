@@ -110,11 +110,6 @@ public class clsGroupMasterController {
 			req.setCharacterEncoding("UTF-8");
 			resp.setCharacterEncoding("UTF-8");
 			urlHits = req.getParameter("saddr").toString();
-			/*
-			 * strMarathiName=req.getParameter("marathiName").toString();
-			 * System.out.println(strMarathiName);
-			 */
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			urlHits = "1";

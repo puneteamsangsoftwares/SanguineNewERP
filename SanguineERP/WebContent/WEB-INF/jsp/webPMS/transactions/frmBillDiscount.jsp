@@ -41,8 +41,8 @@ font-size:12px;}
 			case 'CheckInNo' : 
 				funSetCheckInNo(code);
 				break;
-			case 'FolioNo' : 
-				funSetFolioNo(code);
+			case 'folioNo' : 
+				funSetFolioData(code);
 				break;
 		}
 	}
@@ -120,20 +120,72 @@ font-size:12px;}
 		});
 	}
 
-	function funSetFolioNo(code){
-
+	//set folio Data
+	function funSetFolioData(folioNo)
+	{
+		$("#txtBillNo").val(folioNo);
+		
+	   var searchUrl=getContextPath()+"/loadFolioDataForFolioDisc.html?folioNo="+folioNo;
 		$.ajax({
-			type : "GET",
-			url : getContextPath()+ "/loadFolioNo.html?docCode=" + code,
-			dataType : "json",
-			success : function(response){ 
-
+			
+			url:searchUrl,
+			type :"GET",
+			dataType: "json",
+	        success: function(response)
+	        {
+	        	if(response.strFolioNo=='Invalid Code')
+	        	{
+	        		alert("Invalid Folio No.");
+	        		$("#strFolioNo").val('');
+	        	}
+	        	else
+	        	{		
+	        		$("#txtBillNo").val(response.strFolioNo);
+		    		$("#txtBillDate").val(response.dteBillDate);
+		    		$("#txtCheckInNo").val(response.strCheckInNo);
+		    		$("#txtFolioNo").val(response.strFolioNo);
+		    		
+		    		funSetRoomMasterData(response.strRoomNo)
+		    		$("#txtDiscAmt").val("0");
+		    		var amt=0,subTotal=0;
+		    		$.each(response.listFolioDtlModel,function(i,item)
+	        		{
+	        			amt = item.dblDebitAmt;
+	        			subTotal = subTotal + amt;
+	        			/* if(item.strRevenueType=="Discount")
+	        			{
+	        				discount = item.dblDebitAmt;
+	        			} */
+	            	 
+	            	});
+		    		$("#txtGrandTotal").val(subTotal);
+		    		$("#txtTotal").val(subTotal);
+		    		
+		    		$("#txtRemark").val('');
+		    		$("#cmbReason").val('');
+	        	}
 			},
-			error : function(e){
-
-			}
-		});
+			error: function(jqXHR, exception) 
+			{
+	            if (jqXHR.status === 0) {
+	                alert('Not connect.n Verify Network.');
+	            } else if (jqXHR.status == 404) {
+	                alert('Requested page not found. [404]');
+	            } else if (jqXHR.status == 500) {
+	                alert('Internal Server Error [500].');
+	            } else if (exception === 'parsererror') {
+	                alert('Requested JSON parse failed.');
+	            } else if (exception === 'timeout') {
+	                alert('Time out error.');
+	            } else if (exception === 'abort') {
+	                alert('Ajax request aborted.');
+	            } else {
+	                alert('Uncaught Error.n' + jqXHR.responseText);
+	            }		            
+	        }				
+		}); 
 	}
+
 
 	function funSetRoomMasterData(roomCode)
 	{
@@ -179,8 +231,17 @@ font-size:12px;}
 
   function funHelp(transactionName)
 	{
-		fieldName=transactionName;
-		window.open("searchform.html?formname="+transactionName+"&searchText=","","dialogHeight:600px;dialogWidth:600px;dialogLeft:400px;");
+	    var discMode=$("#cmbDiscountMode").val();
+		 if(discMode=="Folio")
+		 {
+			 fieldName='folioNo';
+		 }
+		 else if(discMode=="Bill")
+		 {
+			 fieldName='billNo';
+		 }
+		
+		window.open("searchform.html?formname="+fieldName+"&searchText=","","dialogHeight:600px;dialogWidth:600px;dialogLeft:400px;");
 	}
 	
 	function funDiscountSelection(){
@@ -271,6 +332,11 @@ font-size:12px;}
 			document.getElementById('txtDiscPer').style.display = 'block';
 			document.getElementById('txtDiscAmt').style.display = 'none';
 	 }
+	 function funOnChangeDiscMode()
+	 {
+		 
+		
+	 }
 </script>
 
 </head>
@@ -282,12 +348,20 @@ font-size:12px;}
 		<div class="row">
 			<div class="col-md-3">
 			    <div class="row">
-			         <div class="col-md-6"><label>Bill No</label>
+			     <div class="col-md-6"><label>Discount Mode</label>
+				    <s:select id="cmbDiscountMode" path="strDiscountMode" onchange="funOnChangeDiscMode()">
+ 					    <s:option value="Folio">Folio</s:option>
+				    	<s:option value="Bill">Bill</s:option>				    	
+				   </s:select>
+				   </div>
+			         <div class="col-md-6"><label>Bill/Folio No</label>
 				          <s:input type="text" path="strBillNo" id="txtBillNo" cssClass="searchTextBox" ondblclick="funHelp('billNo')" />
+				     
 				     </div>
-		             <div class="col-md-6"><label>Bill Date</label>
+				       <div class="col-md-6"><label>Bill Date</label>
 				          <s:input type="text" readonly="true" path="dteBillDate" id="txtBillDate" cssClass="calenderTextBox" />
 				      </div>
+		           
 	         </div></div>
 	         
 			 <div class="col-md-3">

@@ -38,6 +38,8 @@ public class clsBillDiscountBean {
 	
 	private String strDiscOn;
 	
+	private String strDiscountMode;
+	
 	
 	
 	public double getDblTotal() {
@@ -183,6 +185,14 @@ public class clsBillDiscountBean {
 
 	public void setStrDiscOn(String strDiscOn) {
 		this.strDiscOn = strDiscOn;
+	}
+
+	public String getStrDiscountMode() {
+		return strDiscountMode;
+	}
+
+	public void setStrDiscountMode(String strDiscountMode) {
+		this.strDiscountMode = strDiscountMode;
 	}
 
 }

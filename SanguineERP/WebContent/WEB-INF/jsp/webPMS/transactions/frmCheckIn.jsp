@@ -1107,8 +1107,7 @@ overflow-x: hidden;
 				 {
 						 roomDescList = roomDescList + ","+table.rows[i].cells[11].children[0].value;
 					
-				 }
-				
+				 }				
 				 else
 				 {
 					 roomDescList = table.rows[i].cells[11].children[0].value;	 

@@ -39,6 +39,16 @@ public class clsFolioHdBean
 	private String strTelephone;
 	
 	private String strExtra;
+	
+	private String strFromFolioNo;
+	
+	private String strToFolioNo;
+	
+	private String strReasonCode; 
+	
+	private String strReasonDesc;
+	
+	private String strRemarks;
 
 	private List<clsFolioDtlBean> listFolioDtlBean;
 
@@ -177,6 +187,46 @@ public class clsFolioHdBean
 
 	public void setStrExtra(String strExtra) {
 		this.strExtra = strExtra;
+	}
+
+	public String getStrFromFolioNo() {
+		return strFromFolioNo;
+	}
+
+	public void setStrFromFolioNo(String strFromFolioNo) {
+		this.strFromFolioNo = strFromFolioNo;
+	}
+
+	public String getStrToFolioNo() {
+		return strToFolioNo;
+	}
+
+	public void setStrToFolioNo(String strToFolioNo) {
+		this.strToFolioNo = strToFolioNo;
+	}
+
+	public String getStrReasonCode() {
+		return strReasonCode;
+	}
+
+	public void setStrReasonCode(String strReasonCode) {
+		this.strReasonCode = strReasonCode;
+	}
+
+	public String getStrReasonDesc() {
+		return strReasonDesc;
+	}
+
+	public void setStrReasonDesc(String strReasonDesc) {
+		this.strReasonDesc = strReasonDesc;
+	}
+
+	public String getStrRemarks() {
+		return strRemarks;
+	}
+
+	public void setStrRemarks(String strRemarks) {
+		this.strRemarks = strRemarks;
 	}
 
 }
