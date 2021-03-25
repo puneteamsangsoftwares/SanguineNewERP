@@ -24,7 +24,9 @@ public class clsBillDiscountHdModel implements Serializable {
 	}
 
 	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "strBillNo", column = @Column(name = "strBillNo")), @AttributeOverride(name = "strClientCode", column = @Column(name = "strClientCode")) })
+	@AttributeOverrides({ @AttributeOverride(name = "strBillNo", column = @Column(name = "strBillNo")),
+		@AttributeOverride(name = "strClientCode", column = @Column(name = "strClientCode"))
+	,@AttributeOverride(name = "strRoomNo", column = @Column(name = "strRoomNo"))})
 	// Variable Declaration
 	@Column(name = "strBillNo")
 	private String strBillNo;
@@ -73,6 +75,10 @@ public class clsBillDiscountHdModel implements Serializable {
 	
 	@Column(name = "strRemark")
 	private String strRemark;
+	
+	@Column(name = "strDiscType")
+	private String strDiscType;
+	
 	
 	// Setter-Getter Methods
 	public String getStrBillNo() {
@@ -208,6 +214,14 @@ public class clsBillDiscountHdModel implements Serializable {
 
 	public void setStrRemark(String strRemark) {
 		this.strRemark = strRemark;
+	}
+
+	public String getStrDiscType() {
+		return strDiscType;
+	}
+
+	public void setStrDiscType(String strDiscType) {
+		this.strDiscType = strDiscType;
 	}
 
 }

@@ -5306,6 +5306,16 @@
 			<put-attribute name="body"	value="/WEB-INF/jsp/webPMS/transactions/frmUpdateHouseKeepingStatus.jsp"></put-attribute>
 		</definition>
 		
+		<definition name="frmTransferFolio" extends="base.definition">
+			<put-attribute name="title" value="Transfer Folio"></put-attribute>
+			<put-attribute name="body" 	value="/WEB-INF/jsp/webPMS/transactions/frmTransferFolio.jsp"></put-attribute>
+		</definition>
+		
+		<definition name="frmTransferFolio_1" extends="base.definition4">
+			<put-attribute name="title" value="Transfer Folio"></put-attribute>
+			<put-attribute name="body"	value="/WEB-INF/jsp/webPMS/transactions/frmTransferFolio.jsp"></put-attribute>
+		</definition>
+		
 		
 		
 		<definition name="frmSeasonMaster" extends="base.definition">

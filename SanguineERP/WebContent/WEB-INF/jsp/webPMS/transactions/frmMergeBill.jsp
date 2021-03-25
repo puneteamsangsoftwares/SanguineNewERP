@@ -260,19 +260,19 @@
 		});
 	}
 	
-	function funFillBillTable(strBillNo,strFolioNo,strCheckInNo,strTotal,strGuestName,dteCheckInDate,dteCheckOutDate){
+	function funFillBillTable(strBillNo,strFolioNo,strCheckInNo,strTotal,strGuestName,dteCheckOutDate,strDocNo){
 	 	var table = document.getElementById("tblBillDetails");
 	    var rowCount = table.rows.length;
 	    var row = table.insertRow(rowCount);
 
-	    row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].strBillNo\" id=\"strBillNo."+(rowCount)+"\" value='"+strBillNo+"' />";
+	    row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].strFromBillNo\" id=\"strBillNo."+(rowCount)+"\" value='"+strBillNo+"' />";
 	    row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].strFolioNo\" id=\"strFolioNo."+(rowCount)+"\" value='"+strFolioNo+"' />";
-	   	row.insertCell(2).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].strCheckInNo\" id=\"strCheckInNo."+(rowCount)+"\" value='"+strCheckInNo+"' />";
-	   	row.insertCell(3).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].strGuestName\" id=\"strGuestName."+(rowCount)+"\" value='"+strGuestName+"' />";
-	   	row.insertCell(4).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].dteCheckIndate\" id=\"dteCheckInDate."+(rowCount)+"\" value='"+dteCheckInDate+"' />";
+	   	row.insertCell(2).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].strDocNo\" id=\"strDocNo."+(rowCount)+"\" value='"+strDocNo+"' />";
+	   	row.insertCell(3).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].strCheckInNo\" id=\"strCheckInNo."+(rowCount)+"\" value='"+strCheckInNo+"' />";
+	   	row.insertCell(4).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].strGuestName\" id=\"strGuestName."+(rowCount)+"\" value='"+strGuestName+"' />";
 	   	row.insertCell(5).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].dteCheckoutdate\" id=\"dteCheckOutDate."+(rowCount)+"\" value='"+dteCheckOutDate+"' />";
 	    row.insertCell(6).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: right;width:100%\" name=\"listMergeBill["+(rowCount)+"].dblDblTotal\" id=\"dblDblTotal."+(rowCount)+"\" value='"+strTotal+"' />";
-	    row.insertCell(7).innerHTML= "<input type=\"button\" class=\"deletebutton\" size=\"6%\" value = \"\" onClick=\"Javacsript:funDeleteRow(this)\"/>";
+		row.insertCell(7).innerHTML= "<input readonly=\"readonly\" type=\"checkbox\"  class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listFolioDtlBean["+(rowCount)+"].strIsBillSelected\" onClick=\"funCheckBillTransfer("+rowCount+")\"  id=\"strIsBillSelected."+rowCount+"\" value='N' >"; 
 	    total = total+strTotal;
 	    funCalculateTotal(total);
 	   // row.insertCell(0).innerHTML= "<input id=\"cbSuppSel."+(rowCount)+"\" name=\"Suppthemes\" type=\"checkbox\" class=\"SuppCheckBoxClass\"  checked=\"checked\" value='"+strSuppCode+"' />";
@@ -298,6 +298,29 @@
 		}
 	} 
 	
+
+	function funCheckBillTransfer(count)
+	{
+		
+		var no=0;
+		$('#tblBillDetails tr').each(function() {
+			
+			if(document.getElementById("strIsBillSelected."+no).checked == true)
+			{
+				document.getElementById("strIsBillSelected."+no).value='Y';
+			
+			}
+			else
+			{
+			 document.getElementById("strIsBillSelected."+no).value='N';
+			}
+			no++;
+		});
+	
+		
+		
+	}
+	
 	
 </script>
 
@@ -310,31 +333,42 @@
        <div class="row">
      		 <div class="col-md-3">
 			     <div class="row">
-			       <div class="col-md-6"><label>Bill No.</label>
-				       <s:input id="strBillNo" path="strBillNo"  cssClass="searchTextBox" ondblclick="funHelp('MergeBill')" style="height: 45%;"/>												
-				       
-				      <%--  <s:radiobutton id="MergeRadioButton" path="strMergeButton"   value="Y"   style="margin-left: 20px;margin-right:5px;" />Merge
-				       <s:radiobutton id="RevertRadioButton" path="strRevertButton" value="Y"     style="margin-left: 20px;margin-right:5px;" />Revert
- --%>				       				       
+			       <div class="col-md-6"><label>From Bill No.</label>
+				       <s:input id="strBillNo" path="strFromBillNo"  cssClass="searchTextBox" ondblclick="funHelp('MergeBill')" style="height: 45%;"/><!-- 	From Bill No -->		       				       
 			       </div>
-			       
+			          <div class="col-md-6"><label>To Bill No.</label>
+				       <s:input id="strBillNo" path="strToBillNo"  cssClass="searchTextBox" ondblclick="funHelp('MergeBill')" style="height: 45%;"/><!-- 	From Bill No -->		       				       
+			       </div>
+		
 			     <!--   <div class="col-md-6">
 			     <a href="#"><button class="btn btn-primary center-block" id="btnAdd" value="Add" onclick="return btnAdd_onclick()">Add</button></a>
 			</div> -->
 		     </div></div>
 		</div>
+		<div class="row">
+                <div class="col-md-4" ><label>Reason Code</label>
+				   <div class="row">
+				      <div class="col-md-5"><s:input type="text" id="txtReasonCode" path="strReasonCode" cssClass="searchTextBox" ondblclick="funHelp('reasonPMS','reason');" style="height: 25px;"/></div>
+				      <div class="col-md-7"><s:input type="text" id="txtReasonDesc" path="strReasonDesc"  style="height: 25px;"/></div>
+			       </div>
+			    </div> 
+			
+				<div class="col-md-2"><label>Remarks</label>
+				        <s:input type="text" id="strRemarks" path="strRemarks" style="height: 25px;"/>
+				</div>
+			</div>
 		<div class="dynamicTableContainer" style="width:90%;height: 300px;margin-top:10px;">
 				<table style="height: 28px; border: #0F0; width: 100%; font-size: 11px; font-weight: bold;">
 					<tr bgcolor="#c0c0c0">
 					
 						<td style="width:8%;">Bill No</td>
 						<td style="width:7.5%;">Folio No</td>
-						<td style="width:9%;">Check In No</td>
-						<td style="width:14%; text-align: center;">Guest Name</td>
-						<td style="width:9%; text-align: center;">CheckIn Date</td>
+						<td style="width:9%;">Doc No</td>
+						<td style="width:14%; text-align: center;">Check In No</td>
+						<td style="width:9%; text-align: center;">Guest Name</td>
 						<td style="width:9%; text-align: center;">Checkout Date</td>
 						<td style="width:9%; text-align: center;">Total</td>
-						<td style="width:3%;">Delete</td>
+						<td style`="width:3%;">Select</td>
 					</tr>
 				</table>
 		
@@ -372,8 +406,9 @@
 		<br />
 		<p align="center" style="margin-right:-68%">
 			<input type="submit" value="Submit" tabindex="3" class="btn btn-primary center-block" class="form_button" onclick="return funValidateFields()" />&nbsp;
-			<input type="button" value="Revert Bill" tabindex="3" class="btn btn-primary center-block" class="form_button" onclick="return funValidateRevertFields()" />&nbsp;
-			<input type="reset" value="Reset" class="btn btn-primary center-block" class="form_button" onclick="funResetFields()"/>
+<!-- 			<input type="button" value="Revert Bill" tabindex="3" class="btn btn-primary center-block" class="form_button" onclick="return funValidateRevertFields()" />&nbsp;
+ -->			
+            <input type="reset" value="Reset" class="btn btn-primary center-block" class="form_button" onclick="funResetFields()"/>
 			
 		</p>
 		<s:input type="hidden" id="hidData" path="" ></s:input>				

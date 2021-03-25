@@ -28,6 +28,9 @@ public class clsFolioDtlBean {
 	private String dteDateEdited;
 
 	private String strTransactionType;
+	
+	private String strIsFolioSelected;
+
 
 	
 	private List<clsIncomeHeadMasterBean> listIncomeHeadBeans;
@@ -135,6 +138,14 @@ public class clsFolioDtlBean {
 
 	public void setStrTransactionType(String strTransactionType) {
 		this.strTransactionType = strTransactionType;
+	}
+
+	public String getStrIsFolioSelected() {
+		return strIsFolioSelected;
+	}
+
+	public void setStrIsFolioSelected(String strIsFolioSelected) {
+		this.strIsFolioSelected = strIsFolioSelected;
 	}
 
 }

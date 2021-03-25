@@ -277,9 +277,9 @@ public class clsDayEndController {
 					 else
 					 {
 						 
-						 /*sqlRoomRate=" select a.dblRoomRate from  tblreservationroomratedtl a "
-							        +" where a.strReservationNo='"+arrObjRoom[4].toString()+"' and a.strClientCode='"+clientCode+"' and a.strRoomType='"+arrObjRoom[6].toString()+"' order by date(a.dtDate) desc ";*/
-						 sqlRoomRate=" SELECT a.dblRoomTerrif FROM tblroomtypemaster a WHERE a.strRoomTypeCode='"+arrObjRoom[6].toString()+"' ";
+						 sqlRoomRate=" select a.dblRoomRate from  tblreservationroomratedtl a "
+							        +" where a.strReservationNo='"+arrObjRoom[4].toString()+"' and a.strClientCode='"+clientCode+"' and a.strRoomType='"+arrObjRoom[6].toString()+"' order by date(a.dtDate) desc ";
+						 
 						 listRoomRate = objGlobalFunctionsService.funGetListModuleWise(sqlRoomRate, "sql");
 						 if(listRoomRate.size()>0)
 						 {
@@ -321,10 +321,10 @@ public class clsDayEndController {
 					 }
 					 else
 					 {
-						/*sqlRoomRate=" select a.dblRoomRate from  tblwalkinroomratedtl a "
-							        +" where a.strWalkinNo='"+arrObjRoom[5].toString()+"' and a.strClientCode='"+clientCode+"' and a.strRoomType='"+arrObjRoom[6].toString()+"'  order by date(a.dtDate) desc ";*/
-						 sqlRoomRate=" SELECT a.dblRoomTerrif FROM tblroomtypemaster a WHERE a.strRoomTypeCode='"+arrObjRoom[6].toString()+"'  ";
-						  listRoomRate = objGlobalFunctionsService.funGetListModuleWise(sqlRoomRate, "sql");
+						 sqlRoomRate=" select a.dblRoomRate from  tblwalkinroomratedtl a "
+							        +" where a.strWalkinNo='"+arrObjRoom[5].toString()+"' and a.strClientCode='"+clientCode+"' and a.strRoomType='"+arrObjRoom[6].toString()+"'  order by date(a.dtDate) desc ";
+						 
+						 listRoomRate = objGlobalFunctionsService.funGetListModuleWise(sqlRoomRate, "sql");
 						 if(listRoomRate.size()>0)
 						 {
 						    dblRoomRate=Double.parseDouble(listRoomRate.get(0).toString());

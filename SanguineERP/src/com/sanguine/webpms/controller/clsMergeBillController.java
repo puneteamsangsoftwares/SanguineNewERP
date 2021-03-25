@@ -166,6 +166,7 @@ public class clsMergeBillController {
 				strCheckInNo = strCheckInNo+","+objModel.getStrCheckInNo();
 				objMergeBillHdModel.setStrClientCode(objModel.getStrClientCode());
 				objMergeBillHdModel.setStrCompanyName(objModel.getStrCompanyName());
+				objMergeBillHdModel.setStrGuestCode(objModel.getStrGuestCode());
 				//objMergeBillHdModel.setStrExtraBedCode(strExtraBedCode);
 				if(!objModel.getStrExtraBedCode().equals(""))
 				{

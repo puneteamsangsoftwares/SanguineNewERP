@@ -14,13 +14,24 @@ public class clsBillDiscountModel_ID implements Serializable {
 
 	@Column(name = "strClientCode")
 	private String strClientCode;
+	
+	@Column(name = "strRoomNo")
+	private String strRoomNo;
+	
 
+	
 	public clsBillDiscountModel_ID() {
 	}
 
 	public clsBillDiscountModel_ID(String strBillNo, String strClientCode) {
 		this.strBillNo = strBillNo;
 		this.strClientCode = strClientCode;
+	}
+
+	public clsBillDiscountModel_ID(String strBillNo, String strClientCode,String strRoomNo) {
+		this.strBillNo = strBillNo;
+		this.strClientCode = strClientCode;
+		this.strRoomNo=strRoomNo;
 	}
 
 	// Setter-Getter Methods
@@ -54,6 +65,14 @@ public class clsBillDiscountModel_ID implements Serializable {
 	@Override
 	public int hashCode() {
 		return this.strBillNo.hashCode() + this.strClientCode.hashCode();
+	}
+
+	public String getStrRoomNo() {
+		return strRoomNo;
+	}
+
+	public void setStrRoomNo(String strRoomNo) {
+		this.strRoomNo = strRoomNo;
 	}
 
 }

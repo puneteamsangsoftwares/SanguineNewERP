@@ -125,7 +125,7 @@ public class clsPMSSalesFlashController {
 		HashMap<String,clsPMSSalesFlashBean> hmRevenueType = new HashMap<String,clsPMSSalesFlashBean >();
 		
 		
-		String sql=" select * from  "
+		/*String sql=" select * from  "
                   +" (select a.strRevenueType AS strRevenueType,sum(a.Amount),sum(b.TAXAMT) from (SELECT a.strBillNo,b.strDocNo ,b.strRevenueType AS strRevenueType, sum(b.dblDebitAmt) AS Amount "
                   +" FROM tblbillhd a, tblbilldtl b "
                   +" WHERE a.strBillNo=b.strBillNo  AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
@@ -141,23 +141,43 @@ public class clsPMSSalesFlashController {
                   +" WHERE a.strFolioNo=b.strFolioNo     AND DATE(b.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
                   +" GROUP BY b.strRevenueType)  a , "
                   +" (select a.strFolioNo,b.strDocNo,sum(b.dblTaxAmt) AS TAXAMT from tblfoliodtl a ,tblfoliotaxdtl b "
-                  +" where a.strFolioNo=b.strFolioNo and DATE(a.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
+                  +" where a.strFolioNo=b.strFolioNo AND a.strDocNo = b.strDocNo and DATE(a.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
                   +" GROUP BY a.strFolioNo,b.strDocNo) b "
                   +" where a.strFolioNo=b.strFolioNo and a.strDocNo=b.strDocNo group by a.strRevenueType )  d ; ";
-		
-		/*String sql=" SELECT * FROM (SELECT a.strRevenueType AS strRevenueType, SUM(a.Amount), SUM(b.TAXAMT) "
-                    +" FROM "
-                    +" ( SELECT a.strBillNo,b.strDocNo,b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount "
-					+" FROM tblbillhd a, tblbilldtl b "
-					+" WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
-					+" GROUP BY a.strBillNo,b.strDocNo) a, "
-					+" ( SELECT a.strBillNo,b.strDocNo, SUM(b.dblTaxAmt) AS TAXAMT "
-					+" FROM tblbillhd a, tblbilltaxdtl b "
-					+" WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
-					+" GROUP BY a.strBillNo,b.strDocNo) b "
-					+" WHERE a.strBillNo=b.strBillNo AND a.strDocNo=b.strDocNo "
-					+" GROUP BY a.strRevenueType) c ; ";*/
-		
+		*/
+		String sql=" SELECT * "
+				+ " FROM ( "
+				+ " SELECT a.strRevenueType AS strRevenueType, SUM(a.Amount), SUM(b.TAXAMT) "
+				+ " FROM ( "
+				+ " SELECT a.strBillNo,b.strDocNo,b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount "
+				+ " FROM tblbillhd a, tblbilldtl b "
+				+ " WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
+				+ " GROUP BY a.strBillNo,b.strDocNo) a, ( "
+				+ " SELECT a.strBillNo,c.strDocNo, SUM(c.dblTaxAmt) AS TAXAMT "
+				+ " FROM tblbillhd a, tblbilldtl b, tblbilltaxdtl c "
+				+ " WHERE a.strBillNo=b.strBillNo AND a.strBillNo = c.strBillNo "
+				+ " AND b.strDocNo = c.strDocNo "
+				+ " AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
+				+ " AND c.strClientCode='"+strClientCode+"' "
+				+ " GROUP BY a.strBillNo, b.strRevenueType) b "
+				+ " WHERE a.strBillNo=b.strBillNo AND a.strDocNo=b.strDocNo "
+				+ " GROUP BY a.strRevenueType) c UNION "
+				+ " SELECT * "
+				+ " FROM ( "
+				+ " SELECT a.strRevenueType AS strRevenueType, SUM(a.Amount), SUM(b.TAXAMT) "
+				+ " FROM ( "
+				+ " SELECT a.strFolioNo,b.strDocNo,b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount "
+				+ " FROM tblfoliohd a,tblfoliodtl b "
+				+ " WHERE a.strFolioNo=b.strFolioNo AND DATE(b.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
+				+ " GROUP BY b.strRevenueType) a, ("
+				+ " SELECT a.strFolioNo, b.strDocNo, SUM(b.dblTaxAmt) AS TAXAMT "
+				+ " FROM tblfoliodtl a,tblfoliotaxdtl b "
+				+ " WHERE a.strFolioNo=b.strFolioNo "
+				+ " AND a.strDocNo = b.strDocNo AND DATE(a.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' "
+				+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
+				+ " GROUP BY a.strFolioNo, a.strRevenueType) b "
+				+ " WHERE a.strFolioNo=b.strFolioNo AND a.strDocNo=b.strDocNo "
+				+ " GROUP BY a.strRevenueType) d ;";
 		List listRevenueDtl=objGlobalService.funGetListModuleWise(sql, "sql");
 	
 		if(!listRevenueDtl.isEmpty())

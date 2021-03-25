@@ -215,11 +215,7 @@ public class clsPMSUtilityFunctions {
 					if(strTaxOn.equals("Gross Amount"))
 					{
 						if(fromRate<=tariffAmt && tariffAmt<=toRate){
-							if (arrObjTaxDtl[3].toString().equalsIgnoreCase("Percentage")) // Check
-																							// for
-																							// Tax
-																							// Type
-																							// Per/Amt
+							if (arrObjTaxDtl[3].toString().equalsIgnoreCase("Percentage")) // Check																// Per/Amt
 							{
 								double taxAmt = 0;
 								if (taxCalType.equals("Forward")) // Forward Tax
