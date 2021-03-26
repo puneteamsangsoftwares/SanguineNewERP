@@ -467,6 +467,9 @@ public class clsPostRoomTerrifController {
 				objFolioDtl.setStrUserEdited(strUserCode);
 				objFolioDtl.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 				objFolioDtl.setStrRemark("");
+				objFolioDtl.setDblDiscAmt(0.00);
+				objFolioDtl.setDblDiscPer(0.00);
+				objFolioDtl.setStrOldFolioNo(" ");
 				listFolioDtl.add(objFolioDtl);
 	    	}
 	    	else
@@ -512,6 +515,9 @@ public class clsPostRoomTerrifController {
 					objFolioDtl.setStrUserEdited(strUserCode);
 					objFolioDtl.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 					objFolioDtl.setStrRemark("");
+					objFolioDtl.setDblDiscAmt(0.00);
+					objFolioDtl.setDblDiscPer(0.00);
+					objFolioDtl.setStrOldFolioNo(" ");
 					listFolioDtl.add(objFolioDtl);
 		    	
 	    		}
@@ -621,6 +627,9 @@ public class clsPostRoomTerrifController {
 									objFolioDtl.setStrUserEdited(strUserCode);
 									objFolioDtl.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 									objFolioDtl.setStrRemark("");
+									objFolioDtl.setDblDiscAmt(0.00);
+									objFolioDtl.setDblDiscPer(0.00);
+									objFolioDtl.setStrOldFolioNo(" ");
 									listFolioDtl.add(objFolioDtl);
 									
 					    		
@@ -688,6 +697,9 @@ public class clsPostRoomTerrifController {
 							objFolioDtl.setStrUserEdited(strUserCode);
 							objFolioDtl.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 							objFolioDtl.setStrRemark("");
+							objFolioDtl.setDblDiscAmt(0.00);
+							objFolioDtl.setDblDiscPer(0.00);
+							objFolioDtl.setStrOldFolioNo(" ");
 							listFolioDtl.add(objFolioDtl);
 							
 			    		}
@@ -751,6 +763,9 @@ public class clsPostRoomTerrifController {
 			objFolioDtl.setStrUserEdited(strUserCode);
 			objFolioDtl.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 			objFolioDtl.setStrRemark("");
+			objFolioDtl.setDblDiscAmt(0.00);
+			objFolioDtl.setDblDiscPer(0.00);
+			objFolioDtl.setStrOldFolioNo(" ");
 			listFolioDtl.add(objFolioDtl);
 
 			objTaxProductDtl = new clsTaxProductDtl();

@@ -191,9 +191,9 @@ public class clsTranferFolioController {
 				voidbillDtlModel.setStrPerticulars(objMdl[3].toString());
 				voidbillDtlModel.setStrRevenueType(objMdl[7].toString());
 				voidbillDtlModel.setStrRevenueCode(objMdl[8].toString());
-				voidbillDtlModel.setDblDebitAmt(Double.parseDouble(objMdl[5].toString()));
-				voidbillDtlModel.setDblCreditAmt(Double.parseDouble(objMdl[6].toString()));
-				voidbillDtlModel.setDblBalanceAmt(Double.parseDouble(objMdl[7].toString()));
+				voidbillDtlModel.setDblDebitAmt(Double.parseDouble(objMdl[4].toString()));
+				voidbillDtlModel.setDblCreditAmt(Double.parseDouble(objMdl[5].toString()));
+				voidbillDtlModel.setDblBalanceAmt(Double.parseDouble(objMdl[6].toString()));
 				listVoidBillDtlModels.add(voidbillDtlModel);
 			
 		}

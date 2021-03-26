@@ -638,11 +638,12 @@ function funCreateNewGuest(){
             <div class="col-md-5"></div>
             
 		    <div class="col-md-1"><label>Amount</label>
-			     <s:input style="" id="txtReceiptAmt" path="dblReceiptAmt"/>
+			     <s:input id="txtReceiptAmt" style="text-align: right;"  path="dblReceiptAmt"/>
 			</div>
-			 
+						 
 		    <div class="col-md-2"><label> Balance Amount</label><br>
-			      <label id="lblBalnceAmount" readonly="readonly" style="background-color:#dcdada94; width: 100%; height: 42%;"></label>
+			      <label id="lblBalnceAmount" readonly="readonly" 
+			      style="background-color:#dcdada94;width: 100%;height: 42%;text-align: right;padding-top: 3px;"></label>
 			</div>
 	
 			<%-- <tr>

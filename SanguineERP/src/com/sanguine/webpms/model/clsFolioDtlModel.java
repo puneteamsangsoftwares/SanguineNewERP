@@ -54,7 +54,14 @@ public class clsFolioDtlModel implements Serializable {
 	@Column(name = "strRemark")
 	private String strRemark;
 
+	@Column(name = "dblDiscPer")
+	private double dblDiscPer;
 	
+	@Column(name = "dblDiscAmt")
+	private double dblDiscAmt;
+	
+	@Column(name = "strOldFolioNo")
+	private String strOldFolioNo;
 	
 	// Setter-Getter Methods
 	public String getDteDocDate() {
@@ -174,6 +181,30 @@ public class clsFolioDtlModel implements Serializable {
 
 	public void setStrRemark(String strRemark) {
 		this.strRemark = strRemark;
+	}
+
+	public double getDblDiscPer() {
+		return dblDiscPer;
+	}
+
+	public void setDblDiscPer(double dblDiscPer) {
+		this.dblDiscPer = dblDiscPer;
+	}
+
+	public double getDblDiscAmt() {
+		return dblDiscAmt;
+	}
+
+	public void setDblDiscAmt(double dblDiscAmt) {
+		this.dblDiscAmt = dblDiscAmt;
+	}
+
+	public String getStrOldFolioNo() {
+		return strOldFolioNo;
+	}
+
+	public void setStrOldFolioNo(String strOldFolioNo) {
+		this.strOldFolioNo = strOldFolioNo;
 	}
 
 	

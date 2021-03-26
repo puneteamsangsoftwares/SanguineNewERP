@@ -629,7 +629,7 @@ public class clsGRNController {
 						double taxableAmt = 0.0,taxAmt = 0.0;						
 						String prdDetailForTax = ob.getStrProdCode() + "," + ob.getDblUnitPrice() + ","
 								+ objHdModel.getStrSuppCode() + "," + ob.getDblQty() + "," + dblDiscount;
-						if(clientCode.equals("382.000"))
+						if(clientCode.equals("382.000")  || clientCode.equals("389.001"))
 						{
 							prdDetailForTax = ob.getStrProdCode() + "," + ob.getDblUnitPrice() + ","
 									+ objHdModel.getStrSuppCode() + "," + ob.getDblQty() + "," + dblDiscount+ ",0," + ob.getStrGroupTaxCode();

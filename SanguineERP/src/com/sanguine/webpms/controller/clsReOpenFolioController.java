@@ -171,6 +171,9 @@ public class clsReOpenFolioController
 						objDtl.setStrTransactionType(arrDtlData[12].toString());
 						objDtl.setStrUserEdited(arrDtlData[13].toString());
 						objDtl.setStrRemark(" ");
+						objDtl.setDblDiscAmt(0.00);
+						objDtl.setDblDiscPer(0.00);
+						objDtl.setStrOldFolioNo("");
 						listFolioDtlModels.add(objDtl);
 						
 					}

@@ -3056,7 +3056,8 @@ public class clsSearchFormController {
 		case "folioNoForNoPost": {
 			columnNames = " distinct(strFolioNo), CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName) as Geust " + ", d.strRoomDesc,a.strCheckInNo,a.strRegistrationNo,a.strReservationNo,a.strWalkInNo,a.strRoom,a.strFandB ";
 			tableName = " from tblfoliohd a,tblguestmaster c,tblroom d ,tblcheckinhd e" 
-			          + " where a.strGuestCode=c.strGuestCode and a.strRoomNo=d.strRoomCode  and e.strCheckInNo=a.strCheckInNo and e.strNoPostFolio='N' and a.strFandB='Y'";
+			          + " where a.strGuestCode=c.strGuestCode and a.strRoomNo=d.strRoomCode  and e.strCheckInNo=a.strCheckInNo and e.strNoPostFolio='N' ";
+			          //+ " where a.strGuestCode=c.strGuestCode and a.strRoomNo=d.strRoomCode  and e.strCheckInNo=a.strCheckInNo and e.strNoPostFolio='N' and a.strFandB='Y'";
 			listColumnNames = "Folio No ,Guest Name ,Room No,Check In No,Registration No,Reservation No,Walk-In No,Room Bill,F&B ";
 			idColumnName = "strFolioNo";
 			flgQuerySelection = true;

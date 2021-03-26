@@ -5245,8 +5245,27 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
           + " ADD COLUMN `strGuestCode` VARCHAR(20) NOT NULL DEFAULT '' AFTER `dblClosingBalance`; ";
         funExecutePMSQuery(sql); 		
 
-      
-	        
+        sql=" ALTER TABLE `tblbilldiscount` ADD COLUMN `strDiscType` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strRemark`;" ;
+        	    funExecutePMSQuery(sql);
+        	    
+        	    
+        sql="ALTER TABLE `tblbilldiscount` DROP PRIMARY KEY, ADD PRIMARY KEY (`strBillNo`, `strClientCode`, `strRoomNo`);";
+        funExecutePMSQuery(sql);	
+        	    
+           	    
+       sql="ALTER TABLE `tblfoliodtl` ADD COLUMN `dblDiscAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strRemark`, "
+       	+ " ADD COLUMN `dblDiscPer` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblDiscAmt`; ";
+       funExecutePMSQuery(sql);	
+       
+       sql=" ALTER TABLE `tblfoliodtl` ADD COLUMN `strOldFolioNo` VARCHAR(15) NOT NULL DEFAULT '' AFTER `dblDiscPer`; ";
+       funExecutePMSQuery(sql);	
+
+       sql=" ALTER TABLE `tblfoliobckp` ADD COLUMN `dblDiscAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strRemark`,"
+       	+ " ADD COLUMN `dblDiscPer` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblDiscAmt`; ";
+       funExecutePMSQuery(sql);	
+       
+       sql=" ALTER TABLE `tblfoliobckp` ADD COLUMN `strOldFolioNo` VARCHAR(15) NOT NULL DEFAULT '' AFTER `dblDiscPer`;";
+       funExecutePMSQuery(sql);	     
 		/// END ///
 
 		/*----------------WebPMS Forms End---------------------------*/
@@ -5582,7 +5601,8 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
 				+ "('frmAdvanceStatusReport', 'Advance Status Report', 'Report', 1, 'R', 1, 2, '1', 'default.png', '7', 1, '1', '1', 'NO', 'NA', 'frmAdvanceStatusReport.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
 				+ "('frmBookingFlash', 'Banquet Flash', 'Report', 1, 'R', 1, 2, '1', 'default.png', '7', 1, '1', '1', 'NO', 'NA', 'frmBookingFlash.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'),"
 		        + "('frmRefund', 'Refund', 'Transaction', 1, 'T', 5, 5, '1', 'default.png', '3', 1, '1', '1', 'NO', 'NO', 'frmRefund.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y') ,"
-		        + "('frmUnBlockRoomMaster', 'UnBlock Room', 'Transaction', '2', 'T', '118', '118', '1', 'default.png', '3', '1', '1', '1', 'NO', 'NO', 'frmUnBlockRoomMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y') ";
+		        + "('frmUnBlockRoomMaster', 'UnBlock Room', 'Transaction', '2', 'T', '118', '118', '1', 'default.png', '3', '1', '1', '1', 'NO', 'NO', 'frmUnBlockRoomMaster.html', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y'), "
+		        + "('frmTransferFolio', 'Transfer Folio', 'Transaction', 2, 'T', 10, 10, '1', 'default.png', '3', 1, '1', '1', 'NO', 'NO', 'frmTransferFolio.html',NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Y');";
 		funExecuteQuery(sql);
 		
 		/*----------------------WebBanquetsFrom End-----------------------*/

@@ -45,6 +45,8 @@ public class clsFolioDtlBackupModel implements Serializable {
 	
 	@Column(name = "dblQuantity",columnDefinition = "DECIMAL(18,4) NOT NULL default '0.0000'")
 	private double dblQuantity;
+	
+	
 
 	// Setter-Getter Methods
 	public String getDteDocDate() {

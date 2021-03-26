@@ -147,7 +147,7 @@ public class clsMergeBillController {
 			{
 				clsPMSMergeBillBean objTempBean = (clsPMSMergeBillBean) listTemp.get(i);
 				
-				clsBillHdModel objModel = objBillService.funLoadBill(objTempBean.getStrBillNo(), clientCode);
+				clsBillHdModel objModel = objBillService.funLoadBill(objTempBean.getStrDocNo(), clientCode);
 				
 				dblSumGrandTotal = dblSumGrandTotal+objModel.getDblGrandTotal();
 				
@@ -240,7 +240,7 @@ public class clsMergeBillController {
 			for(int i=0;i<listTemp.size();i++)
 			{
 				clsPMSMergeBillBean objTempBean = (clsPMSMergeBillBean) listTemp.get(i);
-				clsBillHdModel objModel = objBillService.funLoadBill(objTempBean.getStrBillNo(), clientCode);
+				clsBillHdModel objModel = objBillService.funLoadBill(objTempBean.getStrDocNo(), clientCode);
 				objBillService.funDeleteBill(objModel);
 			}
 			

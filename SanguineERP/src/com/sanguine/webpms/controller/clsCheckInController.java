@@ -570,6 +570,7 @@ public class clsCheckInController {
 						objFolioBean.setStrFolioNo(folioN);
 						
 						
+						
 						clsFolioHdModel objFolioHdModel = objFolioController.funPrepareFolioModel(objFolioBean, clientCode, req);
 						
 						

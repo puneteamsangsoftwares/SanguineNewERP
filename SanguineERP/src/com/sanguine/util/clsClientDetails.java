@@ -236,6 +236,7 @@ public class clsClientDetails {
 			hmClientDtl.put("384.001", clsClientDetails.createClientDetails("384.001", "Delightful Foods Private Limited", dFormat.parse("2021-01-15"), dFormat.parse("2021-02-22")));
 			hmClientDtl.put("387.001", clsClientDetails.createClientDetails("387.001", "HOTEL RIYA IMPERRIAL", dFormat.parse("2021-02-17"), dFormat.parse("2021-03-17")));
 			hmClientDtl.put("389.001", clsClientDetails.createClientDetails("389.001", "HOPWORKS BREWING COMPANY", dFormat.parse("2021-03-23"), dFormat.parse("2021-04-23")));
+			hmClientDtl.put("391.001", clsClientDetails.createClientDetails("391.001", "HOTEL EXPRESS CLUB", dFormat.parse("2021-03-25"), dFormat.parse("2021-04-10")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

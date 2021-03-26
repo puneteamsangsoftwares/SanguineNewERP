@@ -121,7 +121,9 @@ public class clsFolioPostingController {
 				objFolioDtlModel.setStrUserEdited(userCode);
 				objFolioDtlModel.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 				objFolioDtlModel.setStrRemark(listIncomeHeadBeans.get(ih).getStrRemark());
-				
+				objFolioDtlModel.setDblDiscAmt(0.00);
+				objFolioDtlModel.setDblDiscPer(0.00);
+				objFolioDtlModel.setStrOldFolioNo(" ");
 				listFolioDtlModels.add(objFolioDtlModel);
 
 				clsTaxProductDtl objTaxProductDtl = new clsTaxProductDtl();
