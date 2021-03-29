@@ -54,6 +54,7 @@ public class clsVoidBillDaoImpl implements clsVoidBillDao {
 	}
 	
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "WebPMSTransactionManager")
 	public void funSaveVoidBillData(clsVoidBillHdModel objVoidHdModel) 
 	{
 		webPMSSessionFactory.getCurrentSession().saveOrUpdate(objVoidHdModel);	

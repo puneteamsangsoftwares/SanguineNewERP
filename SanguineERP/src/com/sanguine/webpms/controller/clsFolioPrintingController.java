@@ -344,28 +344,32 @@ public class clsFolioPrintingController {
 				
 				// get folio details
 				
-				String sqlFolioDtl = "SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo, CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),b.dblQuantity,b.dblDebitAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark)  " + " FROM tblfoliohd a LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'" + " WHERE a.strFolioNo='" + folioNo + "' and b.strRevenueType!='Discount'"
+				String sqlFolioDtl = "SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo, CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),"
+						+ " b.dblQuantity,b.dblDebitAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark),d.strRoomDesc,b.strOldFolioNo  " + ""
+						+ " FROM tblfoliohd a LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'" + ", tblroom d  "
+						+ " WHERE b.strRevenueCode=d.strRoomCode AND a.strFolioNo='" + folioNo + "' and b.strRevenueType!='Discount'"
 						+ " order by b.dteDocDate ASC";
 
 				if(clientCode.equalsIgnoreCase("383.001"))
 				{
+					
 					sqlFolioDtl = "SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo,"
 							+ " CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),"
 							+ " b.dblQuantity,b.dblDebitAmt -ifnull(SUM(c.dblTaxAmt),0),b.dblCreditAmt,b.dblBalanceAmt,"
-							+ " CONCAT(b.strPerticulars,' ',b.strRemark)"
+							+ " CONCAT(b.strPerticulars,' ',b.strRemark),d.strRoomDesc,b.strOldFolioNo"
 							+ " FROM tblfoliohd a"
 							+ " LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo"
 							+ " LEFT OUTER JOIN tblfoliotaxdtl c ON b.strFolioNo=c.strFolioNo and b.strDocNo=c.strDocNo "
-							+ " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
-							+ " WHERE a.strFolioNo='" + folioNo + "' AND b.strRevenueType!='Discount' "
+							+ " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' ,tblroom d "
+							+ " WHERE b.strRevenueCode=d.strRoomCode AND  a.strFolioNo='" + folioNo + "' AND b.strRevenueType!='Discount' "
 							+ " and b.strPerticulars='Room Tariff'"
 							+ " group by b.dteDocDate,b.strDocNo " 
 							+ " Union All"
-							+ " SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo, CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),b.dblQuantity,b.dblDebitAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark)  " + " "
+							+ " SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo, CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),b.dblQuantity,b.dblDebitAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark),'',strOldFolioNo  " + " "
 							+ " FROM tblfoliohd a "
 							+ " LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo "
 							+ " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'" + ""
-							+ "  WHERE a.strFolioNo='" + folioNo + "' and b.strRevenueType!='Discount' and  b.strPerticulars<>'Room Tariff' "   ;
+							+ " WHERE a.strFolioNo='" + folioNo + "' and b.strRevenueType!='Discount' and  b.strPerticulars<>'Room Tariff' "   ;
 				
 				}
 				 						
@@ -378,7 +382,16 @@ public class clsFolioPrintingController {
 					} else {
 						clsFolioPrintingBean folioPrintingBean = new clsFolioPrintingBean();
 						String docNo = folioArr[1].toString();
-						String particulars = folioArr[2].toString();
+						String particulars ;
+						if(folioArr[9].toString().equalsIgnoreCase(" "))
+						{
+							particulars = folioArr[8].toString()+"-"+folioArr[2].toString();
+						}
+						else
+						{
+							particulars = "Transfer "+folioArr[8].toString()+"-"+folioArr[2].toString();
+						}
+					 
 						double debitAmount = Double.parseDouble(folioArr[4].toString());
 						double creditAmount = Double.parseDouble(folioArr[5].toString());
 						balance += debitAmount - creditAmount;

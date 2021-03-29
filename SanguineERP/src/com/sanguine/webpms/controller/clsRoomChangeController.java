@@ -330,8 +330,10 @@ public class clsRoomChangeController {
 					+ " where a.strRoomNo='"+selectedRoomNoOfFolio+"' and a.strCheckInNo='"+prevCheckiInNo+"' AND a.strClientCode='"+clientCode+"'"; 
 				objWebPMSUtility.funExecuteUpdate(sql, "sql");
 				
-				sql="UPDATE tblfoliodtl a SET a.strRevenueCode='"+objBean.getStrRoomDesc()+"' WHERE  a.strRevenueCode='"+objBean.getStrRoomCode().split("#")[0]+"' AND  "
-					+ " a.strFolioNo= '"+folioNo+"' ";
+				/*sql="UPDATE tblfoliodtl a SET a.strRevenueCode='"+objBean.getStrRoomDesc()+"' WHERE  a.strRevenueCode='"+objBean.getStrRoomCode().split("#")[0]+"' AND  "
+					+ " a.strFolioNo= '"+folioNo+"' ";*/
+				sql="UPDATE tblfoliodtl a SET a.strRevenueCode='"+objBean.getStrRoomDesc()+"' WHERE  a.strRevenueCode='"+objBean.getStrRoomCode().split("#")[0]+"'   ";
+						
                 objWebPMSUtility.funExecuteUpdate(sql, "sql");
 				
 				

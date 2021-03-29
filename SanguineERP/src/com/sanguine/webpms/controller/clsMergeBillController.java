@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang.text.StrBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -28,9 +29,11 @@ import com.sanguine.controller.clsGlobalFunctions;
 import com.sanguine.service.clsGlobalFunctionsService;
 import com.sanguine.webpms.bean.clsBillPrintingBean;
 import com.sanguine.webpms.bean.clsCheckInDetailsBean;
+import com.sanguine.webpms.bean.clsFolioDtlBean;
 import com.sanguine.webpms.bean.clsPMSMergeBillBean;
 import com.sanguine.webpms.bean.clsReservationBean;
 import com.sanguine.webpms.bean.clsUpdateHouseKeepingStatusBean;
+import com.sanguine.webpms.dao.clsWebPMSDBUtilityDao;
 import com.sanguine.webpms.model.clsBillDtlBackupModel;
 import com.sanguine.webpms.model.clsBillDtlModel;
 import com.sanguine.webpms.model.clsBillHdBackupModel;
@@ -39,7 +42,11 @@ import com.sanguine.webpms.model.clsBillTaxDtlBackupModel;
 import com.sanguine.webpms.model.clsBillTaxDtlModel;
 import com.sanguine.webpms.model.clsCheckInDtl;
 import com.sanguine.webpms.model.clsExtraBedMasterModel;
+import com.sanguine.webpms.model.clsFolioHdModel;
 import com.sanguine.webpms.model.clsPropertySetupHdModel;
+import com.sanguine.webpms.model.clsVoidBillDtlModel;
+import com.sanguine.webpms.model.clsVoidBillHdModel;
+import com.sanguine.webpms.model.clsVoidBillTaxDtlModel;
 import com.sanguine.webpms.service.clsBillService;
 import com.sanguine.webpms.service.clsVoidBillService;
 @Controller
@@ -51,9 +58,15 @@ public class clsMergeBillController {
 	@Autowired
 	private clsBillService objBillService;
 	
-	
+    	
 	@Autowired
 	private clsGlobalFunctions objGlobal;
+	
+	@Autowired
+	private clsVoidBillService objVoidBillService;
+	
+	@Autowired
+	clsWebPMSDBUtilityDao objWebPMSUtility;
 	
 	@RequestMapping(value = "/frmMergeBill", method = RequestMethod.GET)
 	public ModelAndView funOpenForm(Map<String, Object> model,
@@ -96,12 +109,11 @@ public class clsMergeBillController {
 		String strBillNo = req.getParameter("strBillNo").toString();
 		List retList = new ArrayList<>();
 		
-	
-		String sqlData= "SELECT a.strBillNo,a.strFolioNo,a.strCheckInNo,a.dblGrandTotal,"
-				+ " DATE_FORMAT(b.dteArrivalDate,'%d-%m-%Y'), "
-				+ "DATE_FORMAT(b.dteDepartureDate,'%d-%m-%Y'),CONCAT(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName) "
-				+ "FROM tblbillhd a,tblcheckinhd b left outer join tblcheckindtl c on b.strCheckInNo=c.strCheckInNo "
-				+ "left outer join tblguestmaster d on c.strGuestCode=d.strGuestCode where a.strBillNo='"+strBillNo+"' AND a.strCheckInNo=b.strCheckInNo and a.strClientCode='"+clientCode+"' group by a.strBillNo";
+		String sqlData="SELECT a.strBillNo,a.strFolioNo,b.strDocNo,a.strCheckInNo,"
+				+ " CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName),DATE_FORMAT(a.dteBillDate,'%d-%m-%Y'),b.dblDebitAmt"
+				+ " FROM tblbillhd a,tblbilldtl b,tblguestmaster c  WHERE "
+				+ " a.strBillNo=b.strBillNo AND a.strGuestCode=c.strGuestCode AND "
+				+ " a.strBillNo='"+strBillNo+"' AND a.strClientCode='"+clientCode+"';";
 		List listData = objGlobalFunctionsService.funGetListModuleWise(sqlData, "sql");
 
 	
@@ -113,15 +125,148 @@ public class clsMergeBillController {
 	
 	@RequestMapping(value = "/saveMergeBill", method = RequestMethod.POST)
 	public ModelAndView funsaveMergeBill(@ModelAttribute("command") @Valid clsPMSMergeBillBean objBean, BindingResult result, HttpServletRequest req) {
-		List listRooms = new ArrayList<>();
-		List listHouseKeeping = new ArrayList<>();
 		String clientCode = req.getSession().getAttribute("clientCode").toString();
 		String userCode = req.getSession().getAttribute("usercode").toString();
-		String strPMSDate = req.getSession().getAttribute("PMSDate").toString();
-		LocalTime time = LocalTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-		String strCurrTime = time.format(formatter);
-		if (!result.hasErrors()) 
+		String strToBillNo=objBean.getStrToBillNo();
+		String PMSDate = objGlobal.funGetDate("yyyy-MM-dd", req.getSession().getAttribute("PMSDate").toString());
+		String strFromBillNo="";
+		String strFromDocNo="''";
+		
+		for(clsPMSMergeBillBean objDtlBean:objBean.getListMergeBill())
+		{
+			strFromBillNo=objDtlBean.getStrFromBillNo();
+			if(objDtlBean!=null)
+			{
+				if(objDtlBean.getStrIsBillSelected().equalsIgnoreCase("Y"))
+				{
+					if(strFromDocNo.equals("''"))
+					{
+						strFromDocNo="'"+objDtlBean.getStrDocNo()+"'";
+					}
+					else
+					{
+						strFromDocNo +=",'"+objDtlBean.getStrDocNo()+"'";
+					}
+				}
+			}
+			
+		}
+		
+		//Old  Folio No Model
+        clsBillHdModel objFromBillHd = objBillService.funLoadBill(strFromBillNo, clientCode);
+     
+        //New  folio no Model
+        clsBillHdModel objToBillHd =objBillService.funLoadBill(strFromBillNo, clientCode);
+
+        
+     
+		clsVoidBillHdModel objVoidHdModel=new clsVoidBillHdModel();
+		
+		objVoidHdModel.setStrBillNo(strFromBillNo);//Old From Folio No
+		objVoidHdModel.setDteBillDate(PMSDate);
+		objVoidHdModel.setStrClientCode(clientCode);
+		objVoidHdModel.setStrCheckInNo(objFromBillHd.getStrCheckInNo());
+		objVoidHdModel.setStrFolioNo(objFromBillHd.getStrFolioNo());//New To folio no
+		objVoidHdModel.setStrRoomNo(objFromBillHd.getStrRoomNo());
+		objVoidHdModel.setStrExtraBedCode(objFromBillHd.getStrExtraBedCode());
+		objVoidHdModel.setStrRegistrationNo(objFromBillHd.getStrRegistrationNo());
+		objVoidHdModel.setStrReservationNo(objFromBillHd.getStrReservationNo());
+		objVoidHdModel.setDblGrandTotal(0);
+		objVoidHdModel.setStrUserCreated(userCode);
+		objVoidHdModel.setStrUserEdited(userCode);
+		objVoidHdModel.setDteDateCreated(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+		objVoidHdModel.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+		objVoidHdModel.setStrBillSettled(" ");
+		objVoidHdModel.setStrVoidType("Bill Transfer");
+		objVoidHdModel.setStrReasonCode(objBean.getStrReasonCode());
+		objVoidHdModel.setStrReasonName(objBean.getStrReasonDesc());
+		objVoidHdModel.setStrRemark(objBean.getStrRemarks());
+		List<clsVoidBillDtlModel> listVoidBillDtlModels=new ArrayList();
+		
+		 
+		String sql="SELECT * FROM tblbilldtl a WHERE a.strBillNo='"+strFromBillNo+"' AND a.strDocNo IN("+strFromDocNo+") AND a.strClientCode='"+clientCode+"';";
+		List listBillDtl = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
+		
+		for (int j = 0; j < listBillDtl.size(); j++) {
+			Object[] objModel = (Object[]) listBillDtl.get(j);
+			clsVoidBillDtlModel voidbillDtlModel = new clsVoidBillDtlModel();
+			
+				voidbillDtlModel.setStrFolioNo(objModel[1].toString());
+				voidbillDtlModel.setDteDocDate(objModel[2].toString());
+				voidbillDtlModel.setStrDocNo(objModel[3].toString());
+				voidbillDtlModel.setStrPerticulars(objModel[4].toString());
+				voidbillDtlModel.setStrRevenueType(objModel[5].toString());
+				voidbillDtlModel.setStrRevenueCode(objModel[6].toString());
+				voidbillDtlModel.setDblDebitAmt(Double.parseDouble(objModel[7].toString()));
+				voidbillDtlModel.setDblCreditAmt(Double.parseDouble(objModel[8].toString()));
+				voidbillDtlModel.setDblBalanceAmt(Double.parseDouble(objModel[9].toString()));
+				listVoidBillDtlModels.add(voidbillDtlModel);
+			
+		}
+		objVoidHdModel.setListVoidBillDtlModels(listVoidBillDtlModels);
+		
+		
+		List<clsVoidBillTaxDtlModel> listVoidBillTaxDtlModels=new ArrayList();
+		sql="SELECT * FROM tblbilltaxdtl a WHERE a.strBillNo='"+strFromBillNo+"'  AND a.strDocNo IN("+strFromDocNo+") AND a.strClientCode='"+clientCode+"'; ";
+		List listBillTaxDtl = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
+
+		if(listBillTaxDtl.size()>0){
+			for (int j = 0; j < listBillTaxDtl.size(); j++) {
+				Object[] objMdl = (Object[]) listBillTaxDtl.get(j);
+				clsVoidBillTaxDtlModel obVoidTaxDtl=new clsVoidBillTaxDtlModel();
+				
+				obVoidTaxDtl.setStrDocNo(objMdl[1].toString());
+				obVoidTaxDtl.setStrTaxCode(objMdl[2].toString());
+				obVoidTaxDtl.setStrTaxDesc(objMdl[3].toString());
+				obVoidTaxDtl.setDblTaxableAmt(Double.parseDouble(objMdl[4].toString()));
+				obVoidTaxDtl.setDblTaxAmt(Double.parseDouble(objMdl[5].toString()));
+				
+				listVoidBillTaxDtlModels.add(obVoidTaxDtl);
+			}
+		}
+		
+		objVoidHdModel.setListVoidBillTaxDtlModels(listVoidBillTaxDtlModels);
+		
+		objVoidBillService.funSaveVoidBillData(objVoidHdModel);
+		
+		    sql="UPDATE tblbillhd a set a.strMergedBillNo='"+strFromBillNo+"' "
+					+ " where a.strBillNo = '"+strToBillNo+"' and a.strClientCode='"+clientCode+"' ";
+			objWebPMSUtility.funExecuteUpdate(sql, "sql");
+			
+			sql="UPDATE tblbilldtl a set a.strOldFolioNo='"+objFromBillHd.getStrFolioNo()+"' "
+						+ " where a.strBillNo = '"+strToBillNo+"' and a.strClientCode='"+clientCode+"' ";
+			objWebPMSUtility.funExecuteUpdate(sql, "sql");
+			
+			sql="UPDATE tblbilldtl a set a.strOldBillNo=a.strBillNo"
+					+ " where a.strDocNo in ("+strFromDocNo+") and a.strClientCode='"+clientCode+"' ";
+			objWebPMSUtility.funExecuteUpdate(sql, "sql");
+			
+		
+			sql="UPDATE tblbilldtl a set a.strBillNo ='"+strToBillNo+"' "
+			 	+ " where a.strDocNo in ("+strFromDocNo+") and a.strClientCode='"+clientCode+"'   ";
+			objWebPMSUtility.funExecuteUpdate(sql, "sql");
+			
+			
+			sql="UPDATE tblbilltaxdtl a set a.strBillNo ='"+strToBillNo+"' "
+				+ " where a.strDocNo in ("+strFromDocNo+") and a.strClientCode='"+clientCode+"'  ";
+			objWebPMSUtility.funExecuteUpdate(sql, "sql");
+			
+			
+			sql="select a.strBillNo,a.dteDocDate,a.strDocNo from tblbilldtl  a where a.strFolioNo='"+strFromBillNo+"' and a.strClientCode='"+clientCode+"' ";
+			List listBillNo  = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
+			if(!(listBillNo!=null && listBillNo.size()>0))
+			{
+				/*//Update Room Status Free For Old Folio No
+				sql="update tblroom a set a.strStatus='Free' where a.strRoomCode='"+objFromFolioHd.getStrRoomNo()+"' ";
+				objWebPMSUtility.funExecuteUpdate(sql, "sql");
+				*/
+				
+				sql="delete from tblbillhd  where strBillNo='"+strFromBillNo+"' and strClientCode='"+clientCode+"' ";
+				objWebPMSUtility.funExecuteUpdate(sql, "sql");
+				
+			}
+		
+	/*	if (!result.hasErrors()) 
 		{
 			clsBillHdModel objMergeBillHdModel = new clsBillHdModel();
 			
@@ -244,12 +389,18 @@ public class clsMergeBillController {
 				objBillService.funDeleteBill(objModel);
 			}
 			
-		} 
-		else {
+		} */
+		/*else {
 			return new ModelAndView("redirect:/frmMergeBill.html?saddr=" + 1);
-		}
+		}*/
+			
+			req.getSession().setAttribute("success", true);		
+			req.getSession().setAttribute("successMessage","Bill Merged");		
 		return new ModelAndView("redirect:/frmMergeBill.html?saddr=" + 1);
 	}
+	
+	
+	
 	private clsBillHdBackupModel funPrepareModel(clsBillHdModel objModel,String clientCode)
 	{
 		

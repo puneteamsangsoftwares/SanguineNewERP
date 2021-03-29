@@ -37,6 +37,7 @@ import com.sanguine.webpms.model.clsVoidBillDtlModel;
 import com.sanguine.webpms.model.clsVoidBillHdModel;
 import com.sanguine.webpms.model.clsVoidBillTaxDtlModel;
 import com.sanguine.webpms.service.clsFolioService;
+import com.sanguine.webpms.service.clsVoidBillService;
 
 
 
@@ -57,6 +58,9 @@ public class clsTranferFolioController {
 	
 	@Autowired
 	clsWebPMSDBUtilityDao objWebPMSUtility;
+	
+	@Autowired
+	clsVoidBillService objVoidBillService;
 
 	
 	// Open transfer folio
@@ -171,6 +175,7 @@ public class clsTranferFolioController {
 		objVoidHdModel.setStrUserEdited(userCode);
 		objVoidHdModel.setDteDateCreated(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 		objVoidHdModel.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+		objVoidHdModel.setStrBillSettled(" ");
 		objVoidHdModel.setStrVoidType("Transfer Folio");
 		objVoidHdModel.setStrReasonCode(objBean.getStrReasonCode());
 		objVoidHdModel.setStrReasonName(objBean.getStrReasonDesc());
@@ -221,13 +226,14 @@ public class clsTranferFolioController {
 		
 		objVoidHdModel.setListVoidBillTaxDtlModels(listVoidBillTaxDtlModels);
 		
+		objVoidBillService.funSaveVoidBillData(objVoidHdModel);
 		//Audit Entry End
 
 			
 		//Tranfer Folio Entry Start
 		
 		//Update Old Folio No in  strOldFolioNo field ( Folio Dtl Table )
-		 sql="UPDATE tblfoliodtl a set a.strOldFolioNo=a.strFolioNo"
+		sql="UPDATE tblfoliodtl a set a.strOldFolioNo=a.strFolioNo"
 				+ " where a.strDocNo in ("+strFromDocNo+") and a.strClientCode='"+clientCode+"' ";
 		objWebPMSUtility.funExecuteUpdate(sql, "sql");
 		

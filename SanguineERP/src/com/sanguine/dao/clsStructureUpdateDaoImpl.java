@@ -5265,8 +5265,21 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
        funExecutePMSQuery(sql);	
        
        sql=" ALTER TABLE `tblfoliobckp` ADD COLUMN `strOldFolioNo` VARCHAR(15) NOT NULL DEFAULT '' AFTER `dblDiscPer`;";
-       funExecutePMSQuery(sql);	     
-		/// END ///
+       funExecutePMSQuery(sql);	   
+       
+       sql="ALTER TABLE `tblvoidbillhd` CHANGE COLUMN `strVoidType` `strVoidType` VARCHAR (20) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci'  AFTER `strBillSettled`;";
+       funExecutePMSQuery(sql);	
+       
+       sql="ALTER TABLE `tblbilldtl` ADD COLUMN `strRemark` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strUserEdited`,"
+       	+ " ADD COLUMN `dblDiscAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strRemark`,"
+       	+ " ADD COLUMN `dblDiscPer` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblDiscAmt`, "
+       	+ " ADD COLUMN `strOldFolioNo` VARCHAR(20) NOT NULL DEFAULT '' AFTER `dblDiscPer`, "
+       	+ " ADD COLUMN `strOldBillNo` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strOldFolioNo`; ";
+    	
+       funExecutePMSQuery(sql);	  
+
+       
+       /// END ///
 
 		/*----------------WebPMS Forms End---------------------------*/
 

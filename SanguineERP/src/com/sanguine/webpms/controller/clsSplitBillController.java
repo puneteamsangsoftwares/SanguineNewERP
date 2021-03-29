@@ -139,6 +139,10 @@ public class clsSplitBillController {
 							billDtlModel.setDblDebitAmt(Double.parseDouble(objMdl[7].toString())/guestCount);
 							billDtlModel.setDblCreditAmt(Double.parseDouble(objMdl[8].toString())/guestCount);
 							billDtlModel.setDblBalanceAmt(Double.parseDouble(objMdl[9].toString())/guestCount);
+							billDtlModel.setDblDiscAmt(0.00);
+							billDtlModel.setDblDiscPer(0.00);
+							billDtlModel.setStrOldFolioNo(" ");
+							billDtlModel.setStrOldBillNo(" ");
 							tempDtl.add(billDtlModel);
 							
 
@@ -179,6 +183,10 @@ public class clsSplitBillController {
 								billDtlModel.setDblDebitAmt(Double.parseDouble(objMdl[7].toString()));
 								billDtlModel.setDblCreditAmt(Double.parseDouble(objMdl[8].toString()));
 								billDtlModel.setDblBalanceAmt(Double.parseDouble(objMdl[9].toString()));
+								billDtlModel.setDblDiscAmt(0.00);
+								billDtlModel.setDblDiscPer(0.00);
+								billDtlModel.setStrOldFolioNo(" ");
+								billDtlModel.setStrOldBillNo(" ");
 								tempDtl.add(billDtlModel);
 							}
 
@@ -247,6 +255,10 @@ public class clsSplitBillController {
 								billDtlModel.setDblDebitAmt(Double.parseDouble(objMdl[7].toString())/guestCount);
 								billDtlModel.setDblCreditAmt( Double.parseDouble(objMdl[8].toString())/guestCount);
 								billDtlModel.setDblBalanceAmt(Double.parseDouble(objMdl[9].toString())/guestCount);
+								billDtlModel.setDblDiscAmt(0.00);
+								billDtlModel.setDblDiscPer(0.00);
+								billDtlModel.setStrOldFolioNo(" ");
+								billDtlModel.setStrOldBillNo(" ");
 								tempDtl.add(billDtlModel);
 								
 								grandAmtRest -= Double.parseDouble(objMdl[7].toString())/guestCount;
@@ -289,7 +301,11 @@ public class clsSplitBillController {
 							billDtlModel.setDblDebitAmt(debitAmt);
 							billDtlModel.setDblCreditAmt(criditAmt);
 							billDtlModel.setDblBalanceAmt(balAmt);
-
+							billDtlModel.setDblDiscAmt(0.00);
+							billDtlModel.setDblDiscPer(0.00);
+							billDtlModel.setStrOldFolioNo(" ");
+							billDtlModel.setStrOldBillNo(" ");
+							
 							flgCheck = true;
 
 							grandAmtRest -= Double.parseDouble(objMdl[7].toString());

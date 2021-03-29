@@ -113,6 +113,9 @@ public class clsCheckOutDiscountMasterController {
 			objFolioDtlModel.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 			objFolioDtlModel.setStrTransactionType(strTransactionType);
 			objFolioDtlModel.setStrUserEdited(userCode);
+			objFolioDtlModel.setDblDiscAmt(0.00);
+			objFolioDtlModel.setDblDiscPer(0.00);
+			objFolioDtlModel.setStrOldFolioNo(" ");
 			listFolioDtlModels.add(objFolioDtlModel);
 			objFolioHdModel.setListFolioDtlModel(listFolioDtlModels);
 			objPMSUtility.funInsertFolioDtlBackup(objFolioHdModel.getStrFolioNo());

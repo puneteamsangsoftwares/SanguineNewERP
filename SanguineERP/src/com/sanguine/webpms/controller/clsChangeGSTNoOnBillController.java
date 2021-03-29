@@ -146,7 +146,10 @@ public class clsChangeGSTNoOnBillController {
 										objBillDtlModel.setDblDebitAmt(Double.parseDouble(objMdl[7].toString()));
 										objBillDtlModel.setDblCreditAmt(Double.parseDouble(objMdl[8].toString()));
 										objBillDtlModel.setDblBalanceAmt(Double.parseDouble(objMdl[9].toString()));
-										
+										objBillDtlModel.setDblDiscAmt(0.00);
+		 								objBillDtlModel.setDblDiscPer(0.00);
+		 								objBillDtlModel.setStrOldFolioNo(" ");
+		 								objBillDtlModel.setStrOldBillNo(" ");
 										listBillDtlModels.add(objBillDtlModel);
 										//hmBillDtl.put(objMdl[6].toString(), objBillDtlModel);
 										

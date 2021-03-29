@@ -31,14 +31,21 @@ public class clsBillDtlModel implements Serializable, Comparable {
 
 	private String strRevenueCode;
 	
-	
 	private String strUserEdited;
-	
 	
 	private String dteDateEdited;
 	
-	
 	private String strTransactionType;
+	
+    private double dblDiscPer;
+	
+	private double dblDiscAmt;
+	
+	private String strOldFolioNo;
+	
+	private String strOldBillNo;
+	
+	
 
 	// Setter-Getter Methods
 	public String getStrFolioNo() {
@@ -156,6 +163,38 @@ public class clsBillDtlModel implements Serializable, Comparable {
 
 	public void setStrTransactionType(String strTransactionType) {
 		this.strTransactionType = strTransactionType;
+	}
+
+	public double getDblDiscPer() {
+		return dblDiscPer;
+	}
+
+	public void setDblDiscPer(double dblDiscPer) {
+		this.dblDiscPer = dblDiscPer;
+	}
+
+	public double getDblDiscAmt() {
+		return dblDiscAmt;
+	}
+
+	public void setDblDiscAmt(double dblDiscAmt) {
+		this.dblDiscAmt = dblDiscAmt;
+	}
+
+	public String getStrOldFolioNo() {
+		return strOldFolioNo;
+	}
+
+	public void setStrOldFolioNo(String strOldFolioNo) {
+		this.strOldFolioNo = strOldFolioNo;
+	}
+
+	public String getStrOldBillNo() {
+		return strOldBillNo;
+	}
+
+	public void setStrOldBillNo(String strOldBillNo) {
+		this.strOldBillNo = strOldBillNo;
 	}
 
 }

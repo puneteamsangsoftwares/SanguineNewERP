@@ -53,7 +53,7 @@
 	
 	function funSetBillNo(billNo)
 	{
-		$("#strBillNo").val(billNo);
+		$("#strFromBillNo").val(billNo);
 		funLoadBillData(billNo);
 	}	
 	
@@ -65,7 +65,7 @@
 	/**
 	* Success Message After Saving Record
 	**/
-	<%--  $(document).ready(function()
+	$(document).ready(function()
 				{
 		var message='';
 		<%if (session.getAttribute("success") != null) {
@@ -78,11 +78,11 @@
 						session.removeAttribute("success");
 						if (test) {
 						%>	
-			alert("Data Save successfully\n\n"+message);
+			alert(message);
 		<%
 		}}%>
 		
-		 var pmsDate='<%=session.getAttribute("PMSDate").toString()%>';
+		 <%-- var pmsDate='<%=session.getAttribute("PMSDate").toString()%>';
 		  var dte=pmsDate.split("-");
 		  $("#txtPMSDate").val(dte[2]+"-"+dte[1]+"-"+dte[0]);
 		  
@@ -103,10 +103,10 @@
 				 %>
 				 
 			 }
-			 
+			  --%>
 		  
 
-	}); --%>
+	}); 
 	/**
 		* Success Message After Saving Record
 	**/
@@ -155,40 +155,45 @@
 		switch(fieldName)
 		{
 			case "MergeBill":
-				funSetBillNo(code);
-				break;
+				 if(fromToBillNo=='FromBillNo')
+				  {
+					 funLoadFromBillData(code);
+				  }
+				  else if(fromToBillNo=='ToBillNo')				
+				  {
+					  funSetBillNo(code);
+				  }
 				
-			
+				
+				break;
+			case 'reasonPMS' : 
+				funSetReasonData(code);
+			break;	
 		}
 	}
- 
-	function funHelp(transactionName)
+	
+	function funSetBillNo(billNo)
 	{
+		$("#strToBillNo").val(billNo);
+	}
+    
+	var fromToBillNo="";
+	function funHelp(transactionName,frmToBillNo)
+	{
+		fromToBillNo=frmToBillNo;
 		fieldName=transactionName;
 		var fromDate=$("#dteFromDate").val();
 		var toDate=$("#dteToDate").val();
 		var type=$("#cmbType").val();
 		window.open("searchform.html?formname="+transactionName+"&searchText=","mywindow","directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=600,left=400px");
-		/* if(type=='Bill')
-		{
-		window.open("searchform.html?formname="+transactionName+"&searchText=","mywindow","directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=600,left=400px");
-		//window.showModalDialog("searchform.html?formname="+transactionName+"&searchText=","","dialogHeight:600px;dialogWidth:600px;dialogLeft:400px;");
-		}else{
-			transactionName="checkInForBill";
-		    fieldName=transactionName;
-		    
-		    var fDate=fromDate.split("-");
-		    var tDate=toDate.split("-");
-		    fromDate=fDate[2]+"-"+fDate[1]+"-"+fDate[0];
-		    toDate=tDate[2]+"-"+tDate[1]+"-"+tDate[0];
-		    
-		    window.open("searchform.html?formname="+transactionName+"&fromDate="+fromDate+"&toDate="+toDate+"&searchText=","mywindow","directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=600,left=400px");
-		} */
 	}
 	
- function funLoadBillData(code){
-		var searchUrl=getContextPath()+ "/loadBillDataForMergeBill.html?strBillNo=" + code;;
-		$.ajax({
+ 	function funLoadFromBillData(code)
+       {
+ 		 $('#tblBillDetails tbody').empty()
+ 		 $("#strFromBillNo").val(code);
+	     var searchUrl=getContextPath()+ "/loadBillDataForMergeBill.html?strBillNo=" + code;;
+		 $.ajax({
 			type :"GET",
 			url : searchUrl,
 			dataType : "json",
@@ -197,7 +202,7 @@
 				//funRemoveRows();
 				$.each(response, function(i,item)
 				{
-					funFillBillTable(response[i][0],response[i][1],response[i][2],response[i][3],response[i][6],response[i][4],response[i][5]);
+					funFillBillTable(response[i][0],response[i][1],response[i][2],response[i][3],response[i][4],response[i][5],response[i][6]);
 				});
 				
 			},
@@ -221,7 +226,7 @@
 			}
 
 		});
-	}
+	 }
 
 	function funLoadBillDataForCheckIn(code){
 		var searchUrl=getContextPath()+ "/loadBillDetailsForCheckin.html?strBillNo=" + code;;
@@ -260,7 +265,8 @@
 		});
 	}
 	
-	function funFillBillTable(strBillNo,strFolioNo,strCheckInNo,strTotal,strGuestName,dteCheckOutDate,strDocNo){
+	
+	function funFillBillTable(strBillNo,strFolioNo,strDocNo,strCheckInNo,strGuestName,dteCheckOutDate,strTotal){
 	 	var table = document.getElementById("tblBillDetails");
 	    var rowCount = table.rows.length;
 	    var row = table.insertRow(rowCount);
@@ -272,7 +278,7 @@
 	   	row.insertCell(4).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].strGuestName\" id=\"strGuestName."+(rowCount)+"\" value='"+strGuestName+"' />";
 	   	row.insertCell(5).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: left;width:100%\" name=\"listMergeBill["+(rowCount)+"].dteCheckoutdate\" id=\"dteCheckOutDate."+(rowCount)+"\" value='"+dteCheckOutDate+"' />";
 	    row.insertCell(6).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" style=\"text-align: right;width:100%\" name=\"listMergeBill["+(rowCount)+"].dblDblTotal\" id=\"dblDblTotal."+(rowCount)+"\" value='"+strTotal+"' />";
-		row.insertCell(7).innerHTML= "<input readonly=\"readonly\" type=\"checkbox\"  class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listFolioDtlBean["+(rowCount)+"].strIsBillSelected\" onClick=\"funCheckBillTransfer("+rowCount+")\"  id=\"strIsBillSelected."+rowCount+"\" value='N' >"; 
+		row.insertCell(7).innerHTML= "<input readonly=\"readonly\" type=\"checkbox\"  class=\"Box \"  style=\"padding-left: 5px;width: 100%;\" name=\"listMergeBill["+(rowCount)+"].strIsBillSelected\" onClick=\"funCheckBillTransfer("+rowCount+")\"  id=\"strIsBillSelected."+rowCount+"\" value='N' >"; 
 	    total = total+strTotal;
 	    funCalculateTotal(total);
 	   // row.insertCell(0).innerHTML= "<input id=\"cbSuppSel."+(rowCount)+"\" name=\"Suppthemes\" type=\"checkbox\" class=\"SuppCheckBoxClass\"  checked=\"checked\" value='"+strSuppCode+"' />";
@@ -322,6 +328,49 @@
 	}
 	
 	
+	function funSetReasonData(code)
+	{
+		$("#txtReasonCode").val(code);
+		var searchurl=getContextPath()+"/loadPMSReasonMasterData.html?reasonCode="+code;
+		 $.ajax({
+			        type: "GET",
+			        url: searchurl,
+			        dataType: "json",
+			        success: function(response)
+			        {
+			        	if(response.strReasonCode=='Invalid Code')
+			        	{
+			        		alert("Invalid Reason Code");
+			        		$("#txtReasonCode").val('');
+			        	}
+			        	else
+			        	{	
+			        		$("#txtReasonCode").val(response.strReasonCode);
+			        		$("#txtReasonDesc").val(response.strReasonDesc);
+				        	
+			        	}
+					},
+					error: function(jqXHR, exception) {
+			            if (jqXHR.status === 0) {
+			                alert('Not connect.n Verify Network.');
+			            } else if (jqXHR.status == 404) {
+			                alert('Requested page not found. [404]');
+			            } else if (jqXHR.status == 500) {
+			                alert('Internal Server Error [500].');
+			            } else if (exception === 'parsererror') {
+			                alert('Requested JSON parse failed.');
+			            } else if (exception === 'timeout') {
+			                alert('Time out error.');
+			            } else if (exception === 'abort') {
+			                alert('Ajax request aborted.');
+			            } else {
+			                alert('Uncaught Error.n' + jqXHR.responseText);
+			            }		            
+			        }
+		      });
+	}
+
+	
 </script>
 
 </head>
@@ -334,10 +383,10 @@
      		 <div class="col-md-3">
 			     <div class="row">
 			       <div class="col-md-6"><label>From Bill No.</label>
-				       <s:input id="strBillNo" path="strFromBillNo"  cssClass="searchTextBox" ondblclick="funHelp('MergeBill')" style="height: 45%;"/><!-- 	From Bill No -->		       				       
+				       <s:input id="strFromBillNo" path="strFromBillNo"  cssClass="searchTextBox" ondblclick="funHelp('MergeBill','FromBillNo')" style="height: 45%;"/><!-- 	From Bill No -->		       				       
 			       </div>
 			          <div class="col-md-6"><label>To Bill No.</label>
-				       <s:input id="strBillNo" path="strToBillNo"  cssClass="searchTextBox" ondblclick="funHelp('MergeBill')" style="height: 45%;"/><!-- 	From Bill No -->		       				       
+				       <s:input id="strToBillNo" path="strToBillNo"  cssClass="searchTextBox" ondblclick="funHelp('MergeBill','ToBillNo')" style="height: 45%;"/><!-- 	From Bill No -->		       				       
 			       </div>
 		
 			     <!--   <div class="col-md-6">
@@ -361,13 +410,13 @@
 				<table style="height: 28px; border: #0F0; width: 100%; font-size: 11px; font-weight: bold;">
 					<tr bgcolor="#c0c0c0">
 					
-						<td style="width:8%;">Bill No</td>
-						<td style="width:7.5%;">Folio No</td>
-						<td style="width:9%;">Doc No</td>
-						<td style="width:14%; text-align: center;">Check In No</td>
-						<td style="width:9%; text-align: center;">Guest Name</td>
-						<td style="width:9%; text-align: center;">Checkout Date</td>
-						<td style="width:9%; text-align: center;">Total</td>
+						<td style="width:12%;">Bill No</td>
+						<td style="width:12%;">Folio No</td>
+						<td style="width:11%;">Doc No</td>
+						<td style="width:22%; text-align: center;">Check In No</td>
+						<td style="width:12%; text-align: center;">Guest Name</td>
+						<td style="width:12%; text-align: center;">Checkout Date</td>
+						<td style="width:13%; text-align: center;">Total</td>
 						<td style`="width:3%;">Select</td>
 					</tr>
 				</table>

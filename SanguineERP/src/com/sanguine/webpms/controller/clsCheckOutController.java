@@ -541,7 +541,10 @@ public class clsCheckOutController {
 			 	 									objBillDtlModel.setStrUserEdited(arrFolioDtlRevenueWise[13].toString());
 			 	 									objBillDtlModel.setDteDateEdited(arrFolioDtlRevenueWise[11].toString());
 			 	 									objBillDtlModel.setStrTransactionType(arrFolioDtlRevenueWise[12].toString());
-			 	 									
+			 	 								    objBillDtlModel.setDblDiscAmt(Double.parseDouble(arrFolioDtlRevenueWise[15].toString()));
+			 	 								    objBillDtlModel.setDblDiscPer(Double.parseDouble(arrFolioDtlRevenueWise[16].toString()));
+			 	 								    objBillDtlModel.setStrOldFolioNo(arrFolioDtlRevenueWise[17].toString());
+			 	 								    objBillDtlModel.setStrOldBillNo(" ");
 			 	 									if(strRevenueTypeCode.isEmpty())
 													{
 														strRevenueTypeCode="'"+arrFolioDtlRevenueWise[2].toString()+"'";
@@ -603,7 +606,10 @@ public class clsCheckOutController {
 			 											objBillDtlModel.setStrUserEdited(arr[13].toString());
 			 											objBillDtlModel.setDteDateEdited(arr[11].toString());
 			 											objBillDtlModel.setStrTransactionType(arr[12].toString());
-			 										
+			 											objBillDtlModel.setDblDiscAmt(Double.parseDouble(arr[15].toString()));
+					 	 								objBillDtlModel.setDblDiscPer(Double.parseDouble(arr[16].toString()));
+					 	 							    objBillDtlModel.setStrOldFolioNo(arr[17].toString());
+					 	 								objBillDtlModel.setStrOldBillNo(" ");
 			 											
 			 											
 			 											grandTotal += Double.parseDouble(arr[7].toString());
@@ -627,7 +633,7 @@ public class clsCheckOutController {
 			 								}
 			 								else
 			 								{
-			 									List listFolioTaxDtlRevenueWise = objGlobalFunctionsService.funGetListModuleWise(sqlFolioTaxDtlRevenueWise, "sql");
+			 									  List listFolioTaxDtlRevenueWise = objGlobalFunctionsService.funGetListModuleWise(sqlFolioTaxDtlRevenueWise, "sql");
 			 	 			 					if(listFolioTaxDtlRevenueWise!=null && listFolioTaxDtlRevenueWise.size()>0)
 			 	 								{
 			 	 			 						for(int m=0;m<listFolioTaxDtlRevenueWise.size();m++)
@@ -1138,7 +1144,10 @@ public class clsCheckOutController {
 							objBillDtlModel.setStrUserEdited(objFolioDtlModel.getStrUserEdited());
 							objBillDtlModel.setDteDateEdited(objFolioDtlModel.getDteDateEdited());
 							objBillDtlModel.setStrTransactionType(objFolioDtlModel.getStrTransactionType());
-							
+							objBillDtlModel.setDblDiscAmt(objFolioDtlModel.getDblDiscAmt());
+							objBillDtlModel.setDblDiscPer(objFolioDtlModel.getDblDiscPer());
+							objBillDtlModel.setStrOldFolioNo(objFolioDtlModel.getStrOldFolioNo());
+							objBillDtlModel.setStrOldBillNo(" ");
 							
 							
 							grandTotal += objFolioDtlModel.getDblDebitAmt();
@@ -1166,7 +1175,10 @@ public class clsCheckOutController {
 									objBillDtlModel.setStrUserEdited(arr[13].toString());
 									objBillDtlModel.setDteDateEdited(arr[11].toString());
 									objBillDtlModel.setStrTransactionType(arr[12].toString());
-									
+									objBillDtlModel.setDblDiscAmt(Double.parseDouble(arr[15].toString()));
+	 								objBillDtlModel.setDblDiscPer(Double.parseDouble(arr[16].toString()));
+	 								objBillDtlModel.setStrOldFolioNo(arr[17].toString());
+	 								objBillDtlModel.setStrOldBillNo(" ");
 									
 									
 									grandTotal += Double.parseDouble(arr[7].toString());

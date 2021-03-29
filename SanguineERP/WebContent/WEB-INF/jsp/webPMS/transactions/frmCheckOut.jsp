@@ -97,9 +97,10 @@
 		        success: function(response)
 		        {
 		           checkOutParam=response;
+		           var clientCode=	'<%=session.getAttribute("clientCode").toString()%>';
 		 		   if(checkOutParam==false)
 	 			   {
-		 			  var test=confirm("Do you want to do Post Room Tariff ?");
+		 			    var test=confirm("Do you want to do Post Room Tariff ?");
 						/* if(test)
 						{
 							window.open(getContextPath() +"/frmPostRoomTerrif.html",'_blank');
@@ -111,7 +112,9 @@
 						}
 						else
 						{
-							 var table=document.getElementById("tblRoomDtl");
+							if(clientCode == '383.001')
+							{
+							    var table=document.getElementById("tblRoomDtl");
 								var rowCount=table.rows.length;
 								var totalAmt=0.00;
 								if(rowCount>0)
@@ -135,38 +138,50 @@
 									 returnValue=true;
 								
 								}
-						}	
+							}
+							else
+							{
+								returnValue=true;
+							}
+					}
 					
 	 			   }
 		 		   else
 	 			   {
-		 			  var table=document.getElementById("tblRoomDtl");
-						var rowCount=table.rows.length;
-						var totalAmt=0.00;
-						if(rowCount>0)
+		 			    if(clientCode == '383.001')
 						{
-						    for(var i=0;i<rowCount;i++)
-						    {
-						    	var balanceAmount=table.rows[i].cells[4].innerHTML;
-						       	totalAmt=totalAmt+parseFloat($(balanceAmount).val());
-						    }
-						   	totalAmt=parseFloat(totalAmt).toFixed(maxAmountDecimalPlaceLimit);
-						   	
+							var table=document.getElementById("tblRoomDtl");
+							var rowCount=table.rows.length;
+							var totalAmt=0.00;
+							if(rowCount>0)
+							{
+							    for(var i=0;i<rowCount;i++)
+							    {
+							    	var balanceAmount=table.rows[i].cells[4].innerHTML;
+							       	totalAmt=totalAmt+parseFloat($(balanceAmount).val());
+							    }
+							   	totalAmt=parseFloat(totalAmt).toFixed(maxAmountDecimalPlaceLimit);
+							   	
+							}
+							
+							if(totalAmt>0)
+							{
+								 alert("Payment is Pending !!!!");
+								 returnValue= false;
+							}
+							else
+							{
+								 returnValue=true;
+							
+							}
 						}
-						
-						if(totalAmt>0)
-						{
-							 alert("Payment is Pending !!!!");
-							 returnValue= false;
-						}
-						else
-						{
-							 returnValue=true;
-						
-						}
+		 			    else
+	 			    	{
+		 			    	 returnValue=true;
+	 			    	}
 		 			 
 	 			   }
-		 		   
+		 		    
 		 		 
 					
 				},
