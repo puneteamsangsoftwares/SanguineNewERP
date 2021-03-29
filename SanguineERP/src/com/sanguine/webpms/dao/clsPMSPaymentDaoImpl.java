@@ -21,6 +21,7 @@ public class clsPMSPaymentDaoImpl implements clsPMSPaymentDao {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "WebPMSTransactionManager")
 	public void funAddUpdatePaymentHd(clsPMSPaymentHdModel objHdModel) {
+		webPMSSessionFactory.getCurrentSession().delete(objHdModel);	
 		webPMSSessionFactory.getCurrentSession().saveOrUpdate(objHdModel);
 	}
 
@@ -30,6 +31,7 @@ public class clsPMSPaymentDaoImpl implements clsPMSPaymentDao {
 		Criteria cr = webPMSSessionFactory.getCurrentSession().createCriteria(clsPMSPaymentHdModel.class);
 		cr.add(Restrictions.eq("strReceiptNo", receiptNo));
 		cr.add(Restrictions.eq("strClientCode", clientCode));
+		
 		List list = cr.list();
 		clsPMSPaymentHdModel objModel = null;
 		if (list.size() > 0) {
