@@ -653,6 +653,7 @@ public class clsGRNController {
 						ob.setDblTaxableAmt(Double.parseDouble(dff.format(taxableAmt * currValue)));
 						ob.setDblTaxAmt(Double.parseDouble(dff.format(taxAmt * currValue)));
 						ob.setDblUnitPrice(ob.getDblUnitPrice() * currValue);
+						ob.setDblTotalPrice(ob.getDblQty()  * ob.getDblUnitPrice() * currValue);						
 						ob.setDblFreeQty(ob.getDblFreeQty());
 						ob.setStrGroupTaxCode(objGlobalFunctions.funIfNull(ob.getStrGroupTaxCode(), "", ob.getStrGroupTaxCode()));
 						objGRNService.funAddUpdateDtl(ob);	

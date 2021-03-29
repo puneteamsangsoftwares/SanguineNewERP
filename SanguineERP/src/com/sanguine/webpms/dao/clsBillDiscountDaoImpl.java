@@ -19,6 +19,7 @@ public class clsBillDiscountDaoImpl implements clsBillDiscountDao {
 	@Override
 	@Transactional(value = "WebPMSTransactionManager")
 	public void funAddUpdateBillDiscount(clsBillDiscountHdModel objMaster) {
+		webPMSSessionFactory.getCurrentSession().delete(objMaster);
 		webPMSSessionFactory.getCurrentSession().saveOrUpdate(objMaster);
 	}
 

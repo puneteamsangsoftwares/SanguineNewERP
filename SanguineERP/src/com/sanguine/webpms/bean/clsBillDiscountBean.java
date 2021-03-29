@@ -28,6 +28,8 @@ public class clsBillDiscountBean {
 
 	private String strReason;
 	
+	private String strReasonName;
+	
 	private String strRemark;
 	
 	private String strDiscountType;
@@ -193,6 +195,14 @@ public class clsBillDiscountBean {
 
 	public void setStrDiscountMode(String strDiscountMode) {
 		this.strDiscountMode = strDiscountMode;
+	}
+
+	public String getStrReasonName() {
+		return strReasonName;
+	}
+
+	public void setStrReasonName(String strReasonName) {
+		this.strReasonName = strReasonName;
 	}
 
 }

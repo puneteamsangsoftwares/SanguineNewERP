@@ -1139,7 +1139,7 @@ public class clsSearchFormController {
 
 			case "grncode": {
 
-				columnNames = "a.strGRNCode,DATE_FORMAT(a.dtGRNDate,'%d-%m-%Y'),c.strLocName,a.strAgainst,a.strPONo,b.strPName,a.strBillNo" + ",a.strPayMode,DATE_FORMAT(a.strUserCreated,'%d-%m-%Y'),DATE_FORMAT(a.dtDateCreated,'%d-%m-%Y'),a.strNarration,a.strRefNo";
+				columnNames = "a.strGRNCode,DATE_FORMAT(a.dtGRNDate,'%d-%m-%Y'),c.strLocName,a.strAgainst,a.strPONo,b.strPName,a.strBillNo" + ",a.strPayMode,a.strUserCreated,DATE_FORMAT(a.dtDateCreated,'%d-%m-%Y'),a.strNarration,a.strRefNo";
 				tableName = "clsGRNHdModel a,clsSupplierMasterModel b ,clsLocationMasterModel c " + "where a.strSuppCode=b.strPCode and a.strLocCode=c.strLocCode  and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' and c.strClientCode='" + clientCode + "' " + " and EXTRACT(YEAR FROM a.dtGRNDate) between '" + finYear[0] + "' and '" + finYear[1] + "' ";
 				if (showPrptyWiseProdDoc.equalsIgnoreCase("Y")) {
 					tableName = tableName + " and c.strPropertyCode='" + propCode + "' ";

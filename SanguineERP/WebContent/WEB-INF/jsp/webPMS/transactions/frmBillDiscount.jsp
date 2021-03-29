@@ -279,6 +279,8 @@ font-size:12px;}
 	
 	function funBtnSubmit(){
 		
+		var reasonName= $('#cmbReason option:selected').text();
+		$("#hidReasonName").val(reasonName);
 		if($("#txtBillNo").val()==''){
 			alert("Select Bill No");
 			return false;
@@ -324,13 +326,52 @@ font-size:12px;}
 	 function funChangeDiscType()
 	 {
 		 
-		 $("#cmbDiscountType").val('Per')
-		 document.getElementById("txtDiscAmt").readOnly = true;
-			document.getElementById("txtDiscPer").readOnly = false; 
-			$("#txtDiscAmt").val(0.0);
-			$("#txtGrandTotal").val($("#txtTotal").val());
-			document.getElementById('txtDiscPer').style.display = 'block';
-			document.getElementById('txtDiscAmt').style.display = 'none';
+		$("#cmbDiscountType").val('Per');
+		document.getElementById("txtDiscAmt").readOnly = true;
+		document.getElementById("txtDiscPer").readOnly = false; 
+		$("#txtDiscAmt").val(0.0);
+		$("#txtGrandTotal").val($("#txtTotal").val());
+		var folioNo=$("#txtFolioNo").val();
+		var discOn=$("#cmbDiscountOn").val();
+		
+		document.getElementById('txtDiscPer').style.display = 'block';
+	    document.getElementById('txtDiscAmt').style.display = 'none';
+		 
+	   
+		 var searchUrl=getContextPath()+"/loadFolioDataRevenueWise.html?discOn="+discOn+"&folioNo="+folioNo;
+			$.ajax({
+				
+				url:searchUrl,
+				type :"GET",
+				dataType: "json",
+		        success: function(response)
+		        {
+		        	
+		        		$("#txtGrandTotal").val(response[0]);
+		        		$("#txtTotal").val(response[0]);
+		        	
+				},
+				error: function(jqXHR, exception) 
+				{
+		            if (jqXHR.status === 0) {
+		                alert('Not connect.n Verify Network.');
+		            } else if (jqXHR.status == 404) {
+		                alert('Requested page not found. [404]');
+		            } else if (jqXHR.status == 500) {
+		                alert('Internal Server Error [500].');
+		            } else if (exception === 'parsererror') {
+		                alert('Requested JSON parse failed.');
+		            } else if (exception === 'timeout') {
+		                alert('Time out error.');
+		            } else if (exception === 'abort') {
+		                alert('Ajax request aborted.');
+		            } else {
+		                alert('Uncaught Error.n' + jqXHR.responseText);
+		            }
+		        }
+			});
+			
+		
 	 }
 	 function funOnChangeDiscMode()
 	 {
@@ -423,7 +464,7 @@ font-size:12px;}
 			</div> 
 			
 			<div class="col-md-2"><label>Reason</label>
-			    <s:select id="cmbReason" path="strReason">
+			    <s:select id="cmbReason" name="nameCmbReason" path="strReason">
     			   <s:options items="${listReason}"/>
     			</s:select>
    			</div>
@@ -438,6 +479,8 @@ font-size:12px;}
 			<input type="submit" value="Submit" tabindex="3" class="btn btn-primary center-block" class="form_button" onclick="return funBtnSubmit()" />&nbsp;
 			<input type="reset" value="Reset" class="btn btn-primary center-block" class="form_button" onclick="funResetFields()"/>
 		</p>
+		
+		<s:hidden id="hidReasonName"  path="strReasonName"   />
 
 	</s:form>
 	</div>
