@@ -251,6 +251,9 @@ public class clsCheckInListReportController {
 			String clientCode = req.getSession().getAttribute("clientCode").toString();
 			Map<String,List> hmDtl=new HashMap<String,List>();
 			Set setHeader=new HashSet();
+			int totPax=0;
+			double totRoomAmount=0.00;
+			int count=0;
 			
 			String sql=" SELECT e.strRoomDesc AS RoomDesc, CONCAT(IFNULL(f.strFirstName,''),' ',"
 					+ " IFNULL(f.strMiddleName,''),' ', IFNULL(f.strLastName,'')) AS GuestName,g.strRoomTypeDesc,"
@@ -266,7 +269,7 @@ public class clsCheckInListReportController {
 					+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = c.strCheckInNo  "
 					+ " AND a.strCheckInNo = c.strCheckInNo AND a.strRoomNo = d.strRoomNo"
 					+ " AND c.strCheckInNo = d.strCheckInNo AND a.strRoomNo = e.strRoomCode "
-					+ " AND a.strGuestCode = f.strGuestCode AND e.strRoomTypeCode = g.strRoomTypeCode GROUP BY e.strRoomCode";			
+					+ " AND a.strGuestCode = f.strGuestCode AND e.strRoomTypeCode = g.strRoomTypeCode GROUP BY e.strRoomCode ORDER BY e.strRoomDesc Asc ";			
 			List finalList=new ArrayList();
 			List listOccupancy = objGlobalFunctionsService.funGetDataList(sql, "sql");
 			if(listOccupancy.size()>0)
@@ -292,9 +295,28 @@ public class clsCheckInListReportController {
 					dataList.add(ob[7].toString());//Final Amt
 					dataList.add(ob[8].toString());//Booked By
 					finalList.add(dataList);
+					totPax=totPax+ Integer.parseInt(ob[5].toString());
+					totRoomAmount=totRoomAmount + Double.parseDouble(ob[7].toString());
+					count++;
 				}
 			}
 			
+			List blank = new ArrayList<>();
+			blank.add("");
+			finalList.add(blank);
+			
+			List totallist=new ArrayList<>();
+			totallist.add(" Total-     " +count);
+			totallist.add(" ");
+			totallist.add(" ");
+			totallist.add(" ");
+			totallist.add(" ");
+			totallist.add(totPax);
+			totallist.add(" ");
+			totallist.add(totRoomAmount);
+			totallist.add(" ");
+			totallist.add(" ");
+			finalList.add(totallist);
 			
 			
 		
