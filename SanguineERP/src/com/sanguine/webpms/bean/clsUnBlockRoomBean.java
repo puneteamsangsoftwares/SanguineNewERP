@@ -22,7 +22,7 @@ public class clsUnBlockRoomBean {
 	private String strRoomDesc;
 	private String strRoomTypeDesc;
 	private String strUnBlockRoomFlag;
-	private List<clsUnBlockRoomBean> listOfUnblockRoom = new ArrayList<clsUnBlockRoomBean>();;
+	private List<clsUnBlockRoomBean> listOfUnblockRoom = new ArrayList<clsUnBlockRoomBean>();
 	
 	private JSONArray jsonArrBlockRooms= new JSONArray();
 	

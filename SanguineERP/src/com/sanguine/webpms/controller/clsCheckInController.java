@@ -1,6 +1,7 @@
 package com.sanguine.webpms.controller;
 
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -12,6 +13,7 @@ import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
+import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -19,10 +21,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 
 import com.sanguine.base.service.intfBaseService;
 import com.sanguine.controller.clsGlobalFunctions;
+import com.sanguine.controller.clsSendEmailController;
 import com.sanguine.model.clsCompanyMasterModel;
 import com.sanguine.model.clsPropertyMaster;
 import com.sanguine.model.clsPropertySetupModel;
@@ -80,6 +85,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -181,6 +187,12 @@ public class clsCheckInController {
 	@Autowired
 	private clsPMSGroupBookingService objPMSGroupBookingService;
 	
+	@Autowired
+	private JavaMailSender mailSender;
+	
+	final static Logger logger = Logger.getLogger(clsSendEmailController.class);
+	
+	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 	    binder.setAutoGrowCollectionLimit(1000000);
@@ -190,8 +202,10 @@ public class clsCheckInController {
 	public ModelAndView funOpenForm(Map<String, Object> model, HttpServletRequest request) {
 		String urlHits = "1";
 		try {
+			
 			urlHits = request.getParameter("saddr").toString();
-		} catch (NullPointerException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			urlHits = "1";
 		}
 		model.put("urlHits", urlHits);
@@ -432,6 +446,13 @@ public class clsCheckInController {
 						objWalkinDao.funAddUpdateWalkinHd(objWalkinHdModel);
 					}
 					
+					if(null!=objBean.getListCheckInDetailsBean()){
+						for (clsCheckInDetailsBean objCheckInDtlBean :objBean.getListCheckInDetailsBean()) {
+						String sql=" UPDATE tblcheckindtl a SET a.intNoOfFolios='"+objCheckInDtlBean.getIntNoOfFolios()+"' WHERE a.strCheckInNo='"+objBean.getStrCheckInNo()+"' AND a.strRoomNo='"+objCheckInDtlBean.getStrRoomNo()+"'";
+						objWebPMSUtility.funExecuteUpdate(sql, "sql");
+						}
+					}
+				    
 					String sqlCheckIn="	UPDATE tblcheckinhd a SET a.dteDepartureDate='"+objGlobal.funGetDate("yyyy-MM-dd", objBean.getDteDepartureDate())+"' WHERE a.strCheckInNo='"+objBean.getStrCheckInNo()+"' ";
 					objWebPMSUtility.funExecuteUpdate(sqlCheckIn, "sql"); 
 					
@@ -1145,7 +1166,17 @@ public class clsCheckInController {
 				List listWalkinData = objWalkinDao.funGetWalkinDataDtl(objBean.getStrAgainstDocNo(), clientCode);
 				clsWalkinHdModel objWalkinHdModel = (clsWalkinHdModel) listWalkinData.get(0);
 				List<clsWalkinRoomRateDtlModel> listRommRate = new ArrayList<clsWalkinRoomRateDtlModel>();
-				//listRommRate=objWalkinHdModel.getListWalkinRoomRateDtlModel();
+				
+                double discount=0.00;
+				if(null!=objWalkinHdModel.getListWalkinRoomRateDtlModel())
+				{
+					for (clsWalkinRoomRateDtlModel objWalkInRoomDtl :objWalkinHdModel.getListWalkinRoomRateDtlModel()) 
+					{
+					    discount=objWalkInRoomDtl.getDblDiscount();
+					}
+				}
+				
+				
 				if(null!=objBean.getListWalkinRoomRateDtl()){
 					for (clsWalkinRoomRateDtlModel objRommDtlBean :objBean.getListWalkinRoomRateDtl()) {
 					
@@ -1153,6 +1184,7 @@ public class clsCheckInController {
 						if(date.split("-")[0].toString().length()<3)
 						{	
 						 objRommDtlBean.setDtDate(objGlobal.funGetDate("yyyy-MM-dd",date));
+						 objRommDtlBean.setDblDiscount(discount);
 						}
 						listRommRate.add(objRommDtlBean);
 					}
@@ -3061,4 +3093,6 @@ public class clsCheckInController {
 		}
 		return returnList;
 	}
+
+	
 }

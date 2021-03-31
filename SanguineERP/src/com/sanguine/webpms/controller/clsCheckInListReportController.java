@@ -224,7 +224,8 @@ public class clsCheckInListReportController {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/rptOccupancyReportExport", method = RequestMethod.POST)
-	private ModelAndView funExportOccupancyReport(HttpServletResponse resp, HttpServletRequest req, clsReportBean objBean) {
+	public ModelAndView funExportOccupancyReport(HttpServletResponse resp, HttpServletRequest req, clsReportBean objBean) {
+		
 		objGlobal = new clsGlobalFunctions();
 		Connection con = objGlobal.funGetConnection(req);
 		List ExportList = new ArrayList();
@@ -306,14 +307,14 @@ public class clsCheckInListReportController {
 			finalList.add(blank);
 			
 			List totallist=new ArrayList<>();
-			totallist.add(" Total-     " +count);
+			totallist.add(" Total No. of Rooms -" +count);
 			totallist.add(" ");
 			totallist.add(" ");
 			totallist.add(" ");
 			totallist.add(" ");
-			totallist.add(totPax);
+			totallist.add(" Total Pax -" +totPax);
 			totallist.add(" ");
-			totallist.add(totRoomAmount);
+			totallist.add(" Total Amount - " +totRoomAmount);
 			totallist.add(" ");
 			totallist.add(" ");
 			finalList.add(totallist);
@@ -327,7 +328,7 @@ public class clsCheckInListReportController {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/rptInHouseReportExport", method = RequestMethod.POST)
-	private ModelAndView funExportInHouseReport(HttpServletResponse resp, HttpServletRequest req) {
+	public ModelAndView funExportInHouseReport(HttpServletResponse resp, HttpServletRequest req) {
 		objGlobal = new clsGlobalFunctions();
 		Connection con = objGlobal.funGetConnection(req);
 		List ExportList = new ArrayList();

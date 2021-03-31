@@ -54,6 +54,9 @@ public class clsHouseKeepingMasterModel implements Serializable{
 
 	@Column(name="strClientCode")
 	private String strClientCode;
+    
+	@Column(name="strRoomTypeCode")
+	private String strRoomTypeCode;
 
 //Setter-Getter Methods
 	public String getStrHouseKeepCode(){
@@ -114,7 +117,15 @@ public class clsHouseKeepingMasterModel implements Serializable{
 	}
 
 
-//Function to Set Default Values
+public String getStrRoomTypeCode() {
+		return strRoomTypeCode;
+	}
+
+	public void setStrRoomTypeCode(String strRoomTypeCode) {
+		this.strRoomTypeCode = strRoomTypeCode;
+	}
+
+	//Function to Set Default Values
 	private Object setDefaultValue(Object value, Object defaultValue){
 		if(value !=null && (value instanceof String && value.toString().length()>0)){
 			return value;

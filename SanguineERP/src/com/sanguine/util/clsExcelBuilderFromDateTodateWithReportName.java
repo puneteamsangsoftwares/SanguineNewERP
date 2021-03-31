@@ -1,11 +1,17 @@
 package com.sanguine.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import jxl.write.WritableWorkbook;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.view.document.AbstractXlsView;
 
@@ -17,8 +23,13 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+
 @Controller
+
 public class clsExcelBuilderFromDateTodateWithReportName extends AbstractXlsView {
+
+	
 
 	@SuppressWarnings({ "rawtypes" })
 	@Override
@@ -46,15 +57,21 @@ public class clsExcelBuilderFromDateTodateWithReportName extends AbstractXlsView
 		String[] HeaderList = (String[]) Datalist.get(3);
 		response.setContentType("application/vnd.ms-excel");
 		response.setHeader("Content-disposition", "attachment; filename=" + reportName.trim() + ".xls");
-
+		
 		List listStock = new ArrayList();
 		try {
 			listStock = (List) Datalist.get(4);
 		} catch (Exception e) {
 			listStock = new ArrayList();
 		}
-
+		
+		
+	
+		
+			 
+		
 		// create a new Excel sheet
+		
 		Sheet sheet =  workbook.createSheet("Sheet");
 		sheet.setDefaultColumnWidth(20);
 
@@ -114,6 +131,17 @@ public class clsExcelBuilderFromDateTodateWithReportName extends AbstractXlsView
 			}
 
 		}
+		
+		if(reportName.equalsIgnoreCase("OccupancyReport"))
+		{
+			String filePath = System.getProperty("user.dir");
+			File file = new File(filePath + File.separator + "Reports" + File.separator +" OccupancyReport .xls");
+			FileOutputStream fileOut = new FileOutputStream(file);  
+			workbook.write(fileOut);  
+			//closing the Stream  
+			fileOut.close();  
+		}
+
 
 	}
 

@@ -1,10 +1,15 @@
 package com.sanguine.webpms.controller;
 
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 
 import com.ibm.icu.text.SimpleDateFormat;
@@ -14,6 +19,7 @@ import com.sanguine.model.clsCompanyMasterModel;
 import com.sanguine.model.clsPropertyMaster;
 import com.sanguine.service.clsGlobalFunctionsService;
 import com.sanguine.service.clsPropertyMasterService;
+import com.sanguine.util.clsReportBean;
 import com.sanguine.webpms.bean.clsDayEndBean;
 import com.sanguine.webpms.bean.clsPostRoomTerrifBean;
 import com.sanguine.webpms.dao.clsWebPMSDBUtilityDao;
@@ -36,6 +42,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +55,10 @@ import java.util.Map;
 import org.springframework.validation.BindingResult;
 
 import javax.validation.Valid;
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class clsDayEndController {
@@ -84,7 +95,14 @@ public class clsDayEndController {
 	
 	@Autowired
 	private clsSendEmailController objSendEmail;
+	
+	@Autowired
+	private JavaMailSender mailSender;
+	
+	final static Logger logger = Logger.getLogger(clsSendEmailController.class);
 
+	@Autowired
+	clsCheckInListReportController  objCheckInListReportController;
 	// Open DayEnd
 	@RequestMapping(value = "/frmDayEnd", method = RequestMethod.GET)
 	public ModelAndView funOpenForm(Map<String, Object> model, HttpServletRequest request) {
@@ -109,7 +127,7 @@ public class clsDayEndController {
 
 	// Save or Update DayEnd
 	@RequestMapping(value = "/dayEndProcess", method = RequestMethod.POST)
-	public ModelAndView funAddUpdate(@ModelAttribute("command") @Valid clsDayEndBean objBean, BindingResult result, HttpServletRequest req)
+	public ModelAndView funAddUpdate(@ModelAttribute("command") @Valid clsDayEndBean objBean, BindingResult result, HttpServletRequest req, HttpServletResponse resp)   
 	{
 		
 		ModelAndView model=new ModelAndView("frmDayEnd");		
@@ -414,6 +432,15 @@ public class clsDayEndController {
 				String sqlUpdateStatusOfRoom = "update tblroom a set a.strStatus='Dirty' where a.strStatus='Occupied' and a.strClientCode='"+clientCode+"' ";
 				objWebPMSUtility.funExecuteUpdate(sqlUpdateStatusOfRoom, "sql"); 
 			}
+			try{
+				
+				funSendPMSReportOnEmail( req, resp) ;
+			}
+			catch(Exception ex)
+			{
+				ex.printStackTrace();
+			}
+			 
 			model= new ModelAndView("redirect:/frmModuleSelection.html");
 		//}
 		return model;
@@ -596,5 +623,45 @@ public class clsDayEndController {
 		}
 		return dayOfWeek;
 	}
+	
+	@RequestMapping(value = "/SendPMSReportOnEmail", method = RequestMethod.GET)
+	public void  funSendPMSReportOnEmail(HttpServletRequest request,HttpServletResponse resp) throws JRException
+	{
+		// takes input from e-mail form
+		try
+		{
+			objCheckInListReportController.funExportOccupancyReport( resp,  request, new clsReportBean());
+		    String subject="PMS Report"	+request.getSession().getAttribute("PMSDate").toString() +" Of "+request.getSession().getAttribute("companyName").toString();
+		    String message="Reports";
+			String clientCode = request.getSession().getAttribute("clientCode").toString();
+			String propertyCode = request.getSession().getAttribute("propertyCode").toString();
+			String userCode = request.getSession().getAttribute("usercode").toString();
+		       
+			logger.info("To:himanshumishra99999@gmail.com,mohite.swapnil23@gmail.com,sachinm555@gmail.com");   // receipientsArr[i].toString());
+			logger.info("Subject: " + subject);
+			logger.info("Message: " + message);
+        			
+        	MimeMessageHelper helper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
+        	
+        	String filePath = System.getProperty("user.dir");
+        	File file = new File(filePath + File.separator + "Reports" + File.separator +" OccupancyReport .xls");
+			helper.setTo("himanshumishra99999@gmail.com,mohite.swapnil23@gmail.com,sachinm555@gmail.com");//receipientsArr[i].toString());
+			helper.setSubject(subject);
+			helper.addAttachment("Excel Report", file);
+			helper.setText(message);
+			mailSender.send(helper.getMimeMessage());
+  
+		}
+		catch (javax.mail.MessagingException e)
+		{
+			
+			e.printStackTrace();
+			logger.info(e);
+			
+		}
 
+	}
+	
+	
+	
 }

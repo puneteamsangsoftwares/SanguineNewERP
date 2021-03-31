@@ -5276,9 +5276,12 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
        	+ " ADD COLUMN `strOldFolioNo` VARCHAR(20) NOT NULL DEFAULT '' AFTER `dblDiscPer`, "
        	+ " ADD COLUMN `strOldBillNo` VARCHAR(20) NOT NULL DEFAULT '' AFTER `strOldFolioNo`; ";
     	
-       funExecutePMSQuery(sql);	  
-
+       funExecutePMSQuery(sql);	 
        
+       sql=" ALTER TABLE `tblhousekeepmaster` ADD COLUMN `strRoomTypeCode` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strUserEdited`;";
+       funExecutePMSQuery(sql);	 
+       
+        
        /// END ///
 
 		/*----------------WebPMS Forms End---------------------------*/

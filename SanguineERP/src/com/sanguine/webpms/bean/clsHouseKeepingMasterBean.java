@@ -1,5 +1,10 @@
 package com.sanguine.webpms.bean;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.simple.JSONArray;
+
 public class clsHouseKeepingMasterBean{
 //Variable Declaration
 	private String strHouseKeepCode;
@@ -19,8 +24,15 @@ public class clsHouseKeepingMasterBean{
 	private String strUserEdited;
 
 	private String strClientCode;
+	
+	private String strIsRoomTypeSelected;
+	
+	private List<clsHouseKeepingMasterBean> listOfHouseKeeping = new ArrayList<clsHouseKeepingMasterBean>();
+	
+	private JSONArray jsonArrHouseKeeping= new JSONArray();
 
-//Setter-Getter Methods
+   
+	//Setter-Getter Methods
 	public String getStrHouseKeepCode(){
 		return strHouseKeepCode;
 	}
@@ -83,6 +95,26 @@ public class clsHouseKeepingMasterBean{
 	public void setStrClientCode(String strClientCode){
 		this.strClientCode=strClientCode;
 	}
+	public String getStrIsRoomTypeSelected() {
+		return strIsRoomTypeSelected;
+	}
+	public void setStrIsRoomTypeSelected(String strIsRoomTypeSelected) {
+		this.strIsRoomTypeSelected = strIsRoomTypeSelected;
+	}
+	public List<clsHouseKeepingMasterBean> getListOfHouseKeeping() {
+		return listOfHouseKeeping;
+	}
+	public void setListOfHouseKeeping(
+			List<clsHouseKeepingMasterBean> listOfHouseKeeping) {
+		this.listOfHouseKeeping = listOfHouseKeeping;
+	}
+	public JSONArray getJsonArrHouseKeeping() {
+		return jsonArrHouseKeeping;
+	}
+	public void setJsonArrHouseKeeping(JSONArray jsonArrHouseKeeping) {
+		this.jsonArrHouseKeeping = jsonArrHouseKeeping;
+	}
+	
 
 
 

@@ -19,10 +19,17 @@
 <title></title>
 <script type="text/javascript">
 	var fieldName;
-
+	
+	var listOfHouseKeep=${command.jsonArrHouseKeeping};
 	$(function() 
 	{
+
+		$.each(listOfHouseKeep, function(i, obj) 
+		{
+		  
+			funHouseKeeping(obj.strRoomTypeCode,obj.strRoomTypeDesc);
 		
+		});
 		var message='';
 		<%if (session.getAttribute("success") != null) {
 			            if(session.getAttribute("successMessage") != null){%>
@@ -72,7 +79,30 @@
 	        		$("#txtHouseKeepCode").val(response.strHouseKeepCode);
 	        	    $("#txtHouseKeepName").val(response.strHouseKeepName);
 	        	    $("#txtRemarks").val(response.strRemarks);
-	        
+	        	    
+	        	    var roomTypeCode=response.strRoomTypeCode.split(",");
+	        	  
+	        	    var table=document.getElementById("tblRoom");
+	        		var rowCount=table.rows.length;
+	        		
+	        		if(rowCount>0)
+	        		{
+	        		    for(var i=0;i<rowCount;i++)
+	        		    {
+	        		    	var roomType=table.rows[i].cells[0].innerHTML;
+	        		        roomType=$(roomType).val();
+	        		    	for(var j=0;j<roomTypeCode.length;j++)
+	        		    	{
+	        		    	var roomType1=roomTypeCode[j];
+	        		    	if(roomType==roomType1)
+	        		       		{
+	        		    		document.getElementById("strIsRoomTypeSelected."+i).checked=1;
+	        		       		}
+	        		       	
+	        		    	}
+	        		    }
+	        		}
+	              	
 	        	}
 			},
 			error: function(jqXHR, exception) 
@@ -98,17 +128,73 @@
 
 
 
+	 function funHouseKeeping(strRoomTypeCode,strRoomTypeDesc){
+	 		
+	 		var table=document.getElementById("tblRoom");
+	 		var rowCount=table.rows.length;
+	 		var row=table.insertRow();
+	 		row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box payeeSel\"  style=\"padding-left: 5px;width: 70%;\" name=\"listOfHouseKeeping["+(rowCount)+"].strHouseKeepCode\" id=\"strHouseKeepCode."+rowCount+"\"value='"+strRoomTypeCode+"' >";
+	 		row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100%;margin-left: 14%;\" name=\"listOfHouseKeeping["+(rowCount)+"].strHouseKeepName\"  id=\"strHouseKeepName."+rowCount+"\" value='"+strRoomTypeDesc+"' >";
+	 	    row.insertCell(2).innerHTML= "<input readonly=\"readonly\" type=\"checkbox\"  class=\"Box payeeSel\"  style=\"padding-left: 5px;width: 170%;\" name=\"listOfHouseKeeping["+(rowCount)+"].strIsRoomTypeSelected\" onClick=\"Javacsript:funCheckHouseKeeping("+rowCount+")\"  id=\"strIsRoomTypeSelected."+rowCount+"\" value='N' >"; 
+	 	    
+	 	}
 
-
-
-
-
+	 function funCheckHouseKeeping(count)
+	 	{
+	 		
+	 		var no=0;
+	 		$('#tblRoom tr').each(function() {
+	 			
+	 			if(document.getElementById("strIsRoomTypeSelected."+no).checked == true)
+	 			{
+	 				document.getElementById("strIsRoomTypeSelected."+no).value='Y';
+	 			
+	 			}
+	 			else
+	 			{
+	 			 document.getElementById("strIsRoomTypeSelected."+no).value='N';
+	 			}
+	 			no++;
+	 		});
+	 	  }
 
 
 	function funHelp(transactionName)
 	{
 		fieldName=transactionName;
 		window.open("searchform.html?formname="+transactionName+"&searchText=","mywindow","directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=600,left=400px");
+	}
+	
+	function funHouseKeepRoomType()
+	{
+		var table = document.getElementById("tblRoom");
+		var rowCount = table.rows.length;	
+		if ($('#chkHouseKeepingStatus').is(":checked"))
+		{
+			for(var i=0;i<rowCount;i++)
+			{		
+			document.getElementById("strIsRoomTypeSelected."+i).checked=1;
+			document.getElementById("strIsRoomTypeSelected."+i).value='Y';
+	    	}
+		}
+		else
+		{				
+			for(var i=0;i<rowCount;i++)
+			{		
+				document.getElementById("strIsRoomTypeSelected."+i).checked=0;
+				document.getElementById("strIsRoomTypeSelected."+i).value='N';
+	    	}
+			
+		}
+	 
+	}
+	 
+	/**
+     * Reset from
+    **/
+	function funResetFields()
+	{
+		location.reload(true); 
 	}
 </script>
 
@@ -133,6 +219,40 @@
 				<s:input colspan="3" type="text" id="txtRemarks" path="strRemarks"  />
 			</div>
 		</div>
+		
+		  <div class="dynamicTableContainer" style="height: 400px;width:57%;">
+			<table style="width: 100%; border: #0F0; table-layout: fixed;height: 10%;" class="transTablex col15-center">
+				<tr bgcolor="#c0c0c0">
+					<td width="20%">Room Type Code</td>
+					<td width="40%" style="text-align:center">Room Description</td>
+					<td style="width:30%;padding:5px;float: right;">Select All<br>
+	    				<input type="checkbox" id="chkHouseKeepingStatus" name="chkBoxAll1" value="Bike" style="margin-left: 10px;" onclick="funHouseKeepRoomType()">
+					</td>
+				</tr>
+			</table>
+			
+			<div style="background-color: #fbfafa; border: 1px solid #ccc; display: block; height: 337px; margin: auto; overflow-x: hidden; overflow-y: scroll; width: 100%;">
+				<table id="tblRoom" style="width: 100%; border: #0F0; table-layout: fixed; overflow: scroll" class="transTablex col9-center">
+					<tbody>
+						<!-- col1   -->
+						<col style="width: 80px">
+						<!-- col1   -->
+						<!-- col1   -->
+						
+						<!-- col2   -->
+						<col style="width: 118px;">
+						<!-- col2   -->
+						
+						<!-- col3   -->
+						<col style="width: 85px;">
+						<!-- col3   -->
+					</tbody>
+				</table>
+			</div>
+		</div> 
+		
+	
+		
 		<div class="center" style="margin-right:52%;">
 			<a href="#"><button class="btn btn-primary center-block" value="Submit" 
 				class="form_button">Submit</button></a>&nbsp;
