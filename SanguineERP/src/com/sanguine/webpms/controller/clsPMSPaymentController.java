@@ -294,65 +294,11 @@ public class clsPMSPaymentController {
 			}
 		}
 	}
-//			if(listBillData.size()>0)
-//			{
-//				for(int i=0;i<listBillData.size();i++)
-//				{
-//				Object[] obj = (Object[])listBillData.get(i);
-//				clsPaymentReciptBean objPaymentReciptBean = new clsPaymentReciptBean();
-//	   
-//				
-//				objPaymentReciptBean.setStrGuestCode(obj[0].toString());
-//				objPaymentReciptBean.setStrFirstName(obj[1].toString());
-//				objPaymentReciptBean.setStrMiddleName(obj[2].toString());
-//				objPaymentReciptBean.setStrLastName(obj[3].toString());
-//				sql = "select dblDebitAmt-ifnull(dblDiscAmt,0)"
-//					+ " from " 
-//					+ " (select a.strBillNo, SUM(a.dblDebitAmt)dblDebitAmt "
-//					+ " from tblbilldtl a "
-//					+ " where a.strBillNo='" + docCode + "') a "
-//					+ " left outer join "
-//					+ "(select a.strBillNo,sum(ifnull(a.dblDiscAmt,0))dblDiscAmt "
-//					+ " from tblbilldiscount a "
-//					+ " where a.strBillNo='" + docCode + "') b on a.strBillNo=b.strBillNo ";
-//				List list = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-//				if(list.size()>0)
-//				{
-//					Object ob = list.get(0);
-////			        String sqlRecipt="select sum(a.dblReceiptAmt) from tblreceipthd a where a.strCheckInNo='"+obj[4].toString()+"'  group by a.strCheckInNo " ;
-//					String sqlRecipt="select a.dblReceiptAmt from tblreceipthd a,tblreceiptdtl b,tblbillhd c " 
-//							+ " where a.strReceiptNo=b.strReceiptNo " 
-//							+ " and a.strReservationNo=c.strReservationNo "
-//							+ " and c.strBillNo='" + docCode + "' ";
-//					
-//					List listRecipt = objGlobalFunctionsService.funGetListModuleWise(sqlRecipt, "sql");
-//					double reciptAmt=0.0;
-//					if(listRecipt.size()>0)
-//					{
-//						reciptAmt=Double.parseDouble(listRecipt.get(0).toString());	
-//						
-//					}
-//					
-//					objPaymentReciptBean.setDblBalanceAmount(Double.parseDouble(obj[5].toString())-reciptAmt);
-//				}
-//				
-//				
-//				
-//				
-//				
-//				listGuestDataDtl.add(objPaymentReciptBean);
-//				
-//				}
-//			}
-		
+
 
 		else if (docName.equals("Reservation")) 
 		{
-			/*sql = " select a.strGuestCode,b.strFirstName,b.strMiddleName,b.strLastName,c.dblRoomRate " 
-					+ " from tblreservationdtl a,tblguestmaster b, tblreservationroomratedtl c " 
-					+ " where a.strGuestCode=b.strGuestCode and a.strReservationNo=c.strReservationNo and a.strClientCode=b.strClientCode "  
-					+ " and b.strClientCode=c.strClientCode and a.strReservationNo='" + docCode + "' ";
-			*/
+			
 			sql="select b.strGuestCode,c.strFirstName,c.strMiddleName,c.strLastName "
 				+ " from tblreservationhd a,tblreservationdtl b,tblguestmaster c "
 				+ " where a.strReservationNo=b.strReservationNo and b.strGuestCode=c.strGuestCode "
@@ -447,40 +393,12 @@ public class clsPMSPaymentController {
 				}
 			}
 			
-//			if(listReservData.size()>0)
-//			{
-//				for(int i=0;i<listReservData.size();i++)
-//				{
-//				Object[] obj = (Object[])listReservData.get(i);
-//				clsPaymentReciptBean objPaymentReciptBean = new clsPaymentReciptBean();
-//				objPaymentReciptBean.setStrGuestCode(obj[0].toString());
-//				objPaymentReciptBean.setStrFirstName(obj[1].toString());
-//				objPaymentReciptBean.setStrMiddleName(obj[2].toString());
-//				objPaymentReciptBean.setStrLastName(obj[3].toString());
-//				objPaymentReciptBean.setDblBalanceAmount(0);
-//				listGuestDataDtl.add(objPaymentReciptBean);
-//				}
-//			}
+
 		} 
 		else if (docName.equals("Folio-No")) 
 		{
 			clsFolioDtlBean objFolioDtlBean = new clsFolioDtlBean();
-			//sql = " select c.strGuestCode,c.strFirstName,c.strMiddleName,c.strLastName " + " from tblcheckindtl a,tblguestmaster c ,tblfoliohd d  " + " where a.strGuestCode=c.strGuestCode and a.strGuestCode=d.strGuestCode " + " and a.strCheckInNo=d.strCheckInNo " + " and a.strRegistrationNo =d.strRegistrationNo  " + " and d.strFolioNo='" + docCode + "' and a.strPayee='Y' ";
-//			sql ="select a.strGuestCode,a.strFirstName,a.strMiddleName,a.strLastName,sum(amount - ifnull(discount,0)),a.strCheckInNo "
-//				 + " from"
-//				 + "(SELECT c.strGuestCode,c.strFirstName,c.strMiddleName,c.strLastName,sum(e.dblDebitAmt) as amount,a.strCheckInNo"
-//				 + " FROM tblcheckindtl a,tblguestmaster c,tblfoliohd d,tblfoliodtl e"
-//				 + " WHERE a.strGuestCode=c.strGuestCode AND a.strGuestCode=d.strGuestCode "
-//				 + " AND a.strCheckInNo=d.strCheckInNo AND a.strRegistrationNo =d.strRegistrationNo "
-//				 + " AND d.strFolioNo='" + docCode + "' AND a.strPayee='Y' and e.strRevenueType!='discount'"
-//				 + "  and d.strFolioNo=e.strFolioNo) as a,"
-//				 + " (SELECT c.strGuestCode,c.strFirstName,c.strMiddleName,c.strLastName,sum(e.dblDebitAmt) as discount"
-//				 + " FROM tblcheckindtl a,tblguestmaster c,tblfoliohd d,tblfoliodtl e"
-//				 + " WHERE a.strGuestCode=c.strGuestCode AND a.strGuestCode=d.strGuestCode "
-//				 + " AND a.strCheckInNo=d.strCheckInNo AND a.strRegistrationNo =d.strRegistrationNo "
-//				 + " AND d.strFolioNo='" + docCode + "' AND a.strPayee='Y'"
-//				 + " and e.strRevenueType='Discount' and d.strFolioNo=e.strFolioNo) as b;";
-			
+				
 			sql="SELECT a.strGuestCode,a.strFirstName,a.strMiddleName,a.strLastName,IFNULL(SUM(amount - IFNULL(discount,0)),0),a.strReservationNo ,a.strCheckInNo,a.strRoom"
 			 +" FROM(SELECT c.strGuestCode,c.strFirstName,c.strMiddleName,c.strLastName, SUM(e.dblDebitAmt) AS amount, "
 			 +" a.strCheckInNo,f.strReservationNo,d.strRoom  FROM tblcheckindtl a,tblguestmaster c,tblfoliohd d,tblfoliodtl e,tblcheckinhd f "
@@ -527,57 +445,14 @@ public class clsPMSPaymentController {
 						+ " WHERE a.strReservationNo = b.strReservationNo  AND a.strFolioNo=b.strFolioNo"
 						+ " AND b.strFolioNo='"+docCode+"' "
 						+ " AND a.strFlagOfAdvAmt='N' AND LENGTH(b.strWalkInNo)=0 ) AS c )  AS a, "//Folio payment ,group reservation,reservation,Non Group leeader payee
-						+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0) AS BillAmount"
+						+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0) - IFNULL(SUM(a.dblDiscAmt ),0)   AS BillAmount"
 						+ " FROM tblfoliodtl a"
 						+ " WHERE a.strFolioNo='"+docCode+"') AS b,"//total Folio Amount
 						+ " (SELECT IFNULL(SUM(a.dblTaxAmt),0) AS taxAmt"
 						+ " FROM tblfoliotaxdtl a,tbltaxmaster b"
 						+ " WHERE a.strTaxCode=b.strTaxCode AND b.strTaxCalculation='Forward' AND a.strFolioNo='"+docCode+"') AS c ;" ;////total FolioTax  Amount
 			
-				
-				/*if(obj[7].toString().equalsIgnoreCase("Y"))
-				{
-					String receiptAmt="a.dblReceiptAmt";
-					if(obj[5].toString().equalsIgnoreCase("") )
-					{
-							receiptAmt="0";
-					}
-					sqlRecipt="SELECT b.BillAmount - a.receiptamt"
-							+ " FROM ( SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) AS receiptamt"
-							+ " FROM "
-							+ " ( SELECT IFNULL(SUM("+receiptAmt+"),0) AS receiptAmt "
-							+ " FROM tblreceipthd a, tblfoliohd b "
-							+ " WHERE a.strReservationNo = b.strReservationNo AND a.strReservationNo = '"+obj[5].toString()+"' AND b.strRoom='Y' ) AS a,"
-							+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1 FROM tblreceipthd a, tblfoliohd b"
-							+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+docCode+"' AND a.strReservationNo = '' AND b.strRoom='Y') AS b) AS a, "
-							+ " ( SELECT SUM(a.dblDebitAmt) AS BillAmount"
-							+ " FROM tblfoliodtl a WHERE a.strFolioNo='"+docCode+"') AS b ;" ;
-					
-					
-				}
-				else
-				{
-					sqlRecipt=" SELECT ifnull(SUM(a.dblReceiptAmt),0) FROM tblreceipthd a  "
-							 + " WHERE a.strFolioNo='"+docCode+"' AND a.strClientCode='"+clientCode+"'; ";
-				}*/
-				
-				
-				
-				
-				/*if(obj[5].toString().equals(""))
-				{
-				sqlRecipt = "SELECT ifnull(SUM(a.dblReceiptAmt),0) "
-						+ "FROM tblreceipthd a "
-						+ "WHERE a.strCheckInNo='"+obj[6].toString()+"' AND a.strClientCode='"+clientCode+"'";
-				
-				}
-				else
-				{
-					sqlRecipt = "SELECT ifnull(SUM(a.dblReceiptAmt),0) "
-							+ "FROM tblreceipthd a "
-							+ "WHERE a.strReservationNo='"+obj[5].toString()+"' AND a.strClientCode='"+clientCode+"'";
-				}
-				dblBal = Double.parseDouble(obj[4].toString())-reciptAmt;*/	
+			
 				
 				List listRecipt = objGlobalFunctionsService.funGetListModuleWise(sqlRecipt, "sql");
 				double reciptAmt=0.0;

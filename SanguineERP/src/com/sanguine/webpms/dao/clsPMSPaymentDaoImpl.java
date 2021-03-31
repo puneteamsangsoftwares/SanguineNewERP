@@ -15,6 +15,7 @@ import com.sanguine.webpms.model.clsPMSPaymentHdModel;
 
 @Repository("clsPMSPaymentDao")
 public class clsPMSPaymentDaoImpl implements clsPMSPaymentDao {
+	
 	@Autowired
 	private SessionFactory webPMSSessionFactory;
 

@@ -232,6 +232,17 @@ public class clsTranferFolioController {
 			
 		//Tranfer Folio Entry Start
 		
+		//Update particulars for  only Income head post
+		//For example Transfer-303 A(Room No)  DINNER(Income Head Name)
+		
+		sql=" UPDATE tblfoliohd a "
+			+ " INNER join  tblfoliodtl b on a.strFolioNo = b.strFolioNo"
+			+ " INNER join  tblroom c on a.strRoomNo =c.strRoomCode"
+			+ " SET b.strPerticulars = CONCAT('Transfer-', c.strRoomDesc,' ', b.strPerticulars) "
+			+ " where b.strDocNo in ("+strFromDocNo+") and a.strClientCode='"+clientCode+"' and b.strRevenueType='Income Head' " ;
+		objWebPMSUtility.funExecuteUpdate(sql, "sql");
+		
+		
 		//Update Old Folio No in  strOldFolioNo field ( Folio Dtl Table )
 		sql="UPDATE tblfoliodtl a set a.strOldFolioNo=a.strFolioNo"
 				+ " where a.strDocNo in ("+strFromDocNo+") and a.strClientCode='"+clientCode+"' ";
@@ -261,7 +272,7 @@ public class clsTranferFolioController {
 			objWebPMSUtility.funExecuteUpdate(sql, "sql");
 			
 		}
-		
+		//Income Head
 		//Tranfer Folio Entry Entry
 		
 			

@@ -115,41 +115,14 @@ public class clsCheckOutController {
 	// get room detail for checkout
 	@RequestMapping(value = "/getRoomDtlList", method = RequestMethod.GET)
 	public @ResponseBody List funLoadMasterData(@RequestParam("roomCode") String roomCode,HttpServletRequest request) {
-		/*
-		 * String sql=
-		 * "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') "
-		 * +
-		 * " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(f.strFirstName,' ',f.strMiddleName,' ',f.strLastName) as GuestName "
-		 * +
-		 * " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA'),ifnull(sum(e.dblDebitAmt),0)+ifnull(sum(h.dblTaxAmt),0) "
-		 * +
-		 * " from tblcheckinhd a left outer join tblcheckindtl b on a.strCheckInNo=b.strCheckInNo "
-		 * +
-		 * " left outer join tblreservationhd c on a.strReservationNo=c.strReservationNo "
-		 * + " left outer join tblfoliohd d on a.strCheckInNo=d.strCheckInNo " +
-		 * " left outer join tblfoliodtl e on d.strFolioNo=e.strFolioNo " +
-		 * " left outer join tblfoliotaxdtl h on e.strFolioNo=h.strFolioNo and e.strDocNo=h.strDocNo "
-		 * +
-		 * " left outer join tblguestmaster f on b.strGuestCode=f.strGuestCode "
-		 * + " left outer join tblwalkinhd g on a.strWalkInNo=g.strWalkinNo " +
-		 * " where d.strRoomNo='"+roomCode+"' " + " group by e.strFolioNo ";
-		 * List list = objGlobalFunctionsService.funGetListModuleWise(sql,
-		 * "sql");
-		 */
+		
 		String clientCode = request.getSession().getAttribute("clientCode").toString();
 		String sql="";
 		List<clsCheckOutRoomDtlBean> listCheckOutRoomDtl = new ArrayList<clsCheckOutRoomDtlBean>();
 		if(request.getParameter("groupCheckIn")!=null)
 		{
 			request.getSession().setAttribute("GroupCheckIn", "Y");			
-			/*sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA') "
-					+ " from tblcheckinhd a left outer join tblcheckindtl b on a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
-					+ " left outer join tblreservationhd c on a.strReservationNo=c.strReservationNo AND c.strClientCode='"+clientCode+"'"
-					+ " left outer join tblfoliohd d on a.strCheckInNo=d.strCheckInNo AND d.strClientCode='"+clientCode+"'" 
-					+ " left outer join tblguestmaster f on b.strGuestCode=f.strGuestCode AND f.strClientCode='"+clientCode+"'" 
-					+ " left outer join tblwalkinhd g on a.strWalkInNo=g.strWalkinNo AND g.strClientCode='"+clientCode+"'"
-					+ " where d.strCheckInNo='" + roomCode + "' " + " and d.strGuestCode=f.strGuestCode group by d.strFolioNo ";	
-             */
+		
 			
 			sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA')  ,h.strRoomDesc,d.strRoom "
 					+ " from tblcheckinhd a left outer join tblcheckindtl b on a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
@@ -194,7 +167,7 @@ public class clsCheckOutController {
 					+ " WHERE a.strReservationNo = b.strReservationNo  AND a.strFolioNo=b.strFolioNo"
 					+ " AND b.strFolioNo='"+obj[6].toString()+"' "
 					+ " AND a.strFlagOfAdvAmt='N' AND LENGTH(b.strWalkInNo)=0 ) AS c )  AS a, "//Folio payment ,group reservation,reservation,Non Group leeader payee
-					+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0) AS BillAmount"
+					+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0)- IFNULL(SUM(a.dblDiscAmt ),0)  AS BillAmount"
 					+ " FROM tblfoliodtl a"
 					+ " WHERE a.strFolioNo='"+obj[6].toString()+"') AS b,"//total Folio Amount
 					+ " (SELECT IFNULL(SUM(a.dblTaxAmt),0) AS taxAmt"
@@ -214,14 +187,7 @@ public class clsCheckOutController {
 		else
 		{
 			request.getSession().setAttribute("GroupCheckIn", "N");		
-			/*sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA') "
-					+ " from tblcheckinhd a left outer join tblcheckindtl b on a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
-					+ " left outer join tblreservationhd c on a.strReservationNo=c.strReservationNo AND c.strClientCode='"+clientCode+"'"
-					+ " left outer join tblfoliohd d on a.strCheckInNo=d.strCheckInNo AND d.strClientCode='"+clientCode+"'" 
-					+ " left outer join tblguestmaster f on b.strGuestCode=f.strGuestCode AND f.strClientCode='"+clientCode+"'" 
-					+ " left outer join tblwalkinhd g on a.strWalkInNo=g.strWalkinNo AND g.strClientCode='"+clientCode+"'"
-					+ " where d.strRoomNo='" + roomCode + "' " + " group by d.strFolioNo ";		
-			*/
+			
 			sql = "select a.strCheckInNo,a.strRegistrationNo,ifnull(a.strReservationNo,'NA'),ifnull(a.strWalkinNo,'NA') " + " ,c.strCorporateCode,d.strRoomNo,d.strFolioNo,concat(IFNULL(f.strFirstName,''),' ',IFNULL(f.strMiddleName,''),' ',IFNULL(f.strLastName,'')) as GuestName " + " ,date(a.dteArrivalDate),date(a.dteDepartureDate),ifnull(g.strCorporateCode,'NA'), h.strRoomDesc "
 					+ " from tblcheckinhd a left outer join tblcheckindtl b on a.strCheckInNo=b.strCheckInNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'"
 					+ " left outer join tblreservationhd c on a.strReservationNo=c.strReservationNo AND c.strClientCode='"+clientCode+"'"
@@ -247,64 +213,7 @@ public class clsCheckOutController {
 				objCheckOutRoomDtlBean.setDblAmount(0);
 				objCheckOutRoomDtlBean.setStrRoomDesc(obj[11].toString());
 
-				/*sql = "select a.strFolioNo,sum(b.dblDebitAmt) " + " from tblfoliohd a,tblfoliodtl b " + " where a.strFolioNo=b.strFolioNo and a.strRoomNo='" + roomCode + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' group by a.strFolioNo";
-				List listFolioAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-				for (int cnt = 0; cnt < listFolioAmt.size(); cnt++) {
-					Object[] arrObjFolio = (Object[]) listFolioAmt.get(cnt);
-					objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() + Double.parseDouble(arrObjFolio[1].toString()));
-				}
-                if(!clientCode.equalsIgnoreCase("383.001"))
-                {
-					sql = "select sum(b.dblDebitAmt),sum(c.dblTaxAmt) " + " from tblfoliohd a,tblfoliodtl b,tblfoliotaxdtl c " + " where a.strFolioNo=b.strFolioNo and b.strFolioNo=c.strFolioNo and b.strDocNo=c.strDocNo " + " and a.strRoomNo='" + roomCode + "' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' group by b.strFolioNo";
-					List listFolioTaxAmt = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-					for (int cnt = 0; cnt < listFolioTaxAmt.size(); cnt++) {
-						Object[] arrObjFolio = (Object[]) listFolioTaxAmt.get(cnt);
-						objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() + Double.parseDouble(arrObjFolio[1].toString()));
-					}
-                }
-				sql = "select a.strReceiptNo,sum(b.dblSettlementAmt) " + " from tblreceipthd a,tblreceiptdtl b " + " where a.strReceiptNo=b.strReceiptNo and a.strRegistrationNo='" + objCheckOutRoomDtlBean.getStrRegistrationNo() + "' and a.strAgainst='Check-In' " + " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' group by a.strReceiptNo";
-				List listReceiptAmtAtCheckIN = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-				for (int cnt = 0; cnt < listReceiptAmtAtCheckIN.size(); cnt++) {
-					Object[] arrObjFolio = (Object[]) listReceiptAmtAtCheckIN.get(cnt);
-					objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() - Double.parseDouble(arrObjFolio[1].toString()));
-				}
 				
-				sql = "SELECT ifnull(Sum(a.dblCreditAmt),0.0) from tblfoliodtl a where a.strFolioNo='"+obj[6].toString()+"' AND a.strClientCode='"+clientCode+"'";
-				List listFolioDisc = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-				for (int cnt = 0; cnt < listFolioDisc.size(); cnt++) {
-					objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() - Double.parseDouble(listFolioDisc.get(cnt).toString()));
-				}
-	            
-				boolean flgIsFullPayment=false;
-				if(!objCheckOutRoomDtlBean.getStrReservationNo().toString().isEmpty())
-				{
-					sql="SELECT ifnull(SUM(c.dblSettlementAmt),0),ifnull(sum(b.dblGrandTotal),0)"
-							+ " FROM tblreceipthd a left outer join tblbillhd b on a.strBillNo=b.strBillNo and a.strReservationNo and b.strReservationNo,tblreceiptdtl c"
-							+ " WHERE a.strReceiptNo=c.strReceiptNo AND a.strReservationNo='"+objCheckOutRoomDtlBean.getStrReservationNo()+"'"; 
-						List listCheckForFullPayment= objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-						for (int cnt = 0; cnt < listCheckForFullPayment.size(); cnt++) 
-						{
-							Object arrObjFolio[] = (Object[]) listCheckForFullPayment.get(cnt);
-							if(Double.parseDouble(arrObjFolio[0].toString())>0)
-							{
-								if(Double.parseDouble(arrObjFolio[0].toString())==Double.parseDouble(arrObjFolio[1].toString()))
-								{
-									flgIsFullPayment=true;
-									break;
-								}
-							}
-						}
-						if(!flgIsFullPayment)
-						{
-							sql = "select sum(b.dblSettlementAmt) " + " from tblreceipthd a,tblreceiptdtl b " + " where a.strReceiptNo=b.strReceiptNo and a.strReservationNo='" + objCheckOutRoomDtlBean.getStrReservationNo() + "' " + " and a.strAgainst='Reservation' " + " group by a.strReceiptNo";
-							List listReceiptAmtAtReservation = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-							for (int cnt = 0; cnt < listReceiptAmtAtReservation.size(); cnt++) {
-								Object arrObjFolio = (Object) listReceiptAmtAtReservation.get(cnt);
-								objCheckOutRoomDtlBean.setDblAmount(objCheckOutRoomDtlBean.getDblAmount() - Double.parseDouble(arrObjFolio.toString()));
-							}	
-						}
-				}
-				*/
 				String receiptAmt="a.dblReceiptAmt";
 				if(obj[2].toString().equalsIgnoreCase("") )
 				{
@@ -328,7 +237,7 @@ public class clsCheckOutController {
 						+ " WHERE a.strReservationNo = b.strReservationNo  AND a.strFolioNo=b.strFolioNo"
 						+ " AND b.strFolioNo='"+obj[6].toString()+"' "
 						+ " AND a.strFlagOfAdvAmt='N' AND LENGTH(b.strWalkInNo)=0 ) AS c )  AS a, "//Folio payment ,group reservation,reservation,Non Group leeader payee
-						+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0) AS BillAmount"
+						+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0) -IFNULL(SUM(a.dblDiscAmt ),0)   AS BillAmount"
 						+ " FROM tblfoliodtl a"
 						+ " WHERE a.strFolioNo='"+obj[6].toString()+"') AS b,"//total Folio Amount
 						+ " (SELECT IFNULL(SUM(a.dblTaxAmt),0) AS taxAmt"

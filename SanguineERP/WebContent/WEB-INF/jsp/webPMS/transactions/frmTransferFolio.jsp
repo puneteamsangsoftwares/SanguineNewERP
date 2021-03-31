@@ -22,14 +22,28 @@
 	function funValidateFields()
 	{
 		var flag=false;
+		 
 		if($("#taxToFolioNo").val().trim().length==0)
 		{
 			alert("Please Select To Folio No.");
+			flag=false;
 		}
-		else
+		if($("#txtReasonCode").val().trim().length==0)
 		{
-			flag=true;
-		}	
+			alert("Please Select Reason.");
+			flag=false;
+		}
+		if($("#txtReasonDesc").val().trim().length==0)
+		{
+			alert("Please Select Reason.");
+			flag=false;
+		}
+		if($("#txtRemarks").val().trim().length==0)
+		{
+			alert("Please Select Remarks");
+			flag=false;
+		}			
+		
 		var isCheckOk=confirm("Do you want to Transfer Folio???????"); 
 		if(isCheckOk)
 		{

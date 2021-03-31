@@ -354,7 +354,7 @@ public class clsFolioPrintingController {
 				{
 					
 					sqlFolioDtl = "SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo,"
-							+ " CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),"
+							+ " CONCAT(if(length(b.strOldFolioNo)>1,'Tranfer - ',''),CONCAT(CONCAT(d.strRoomDesc,' - '),CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark)) )  ,"
 							+ " b.dblQuantity,b.dblDebitAmt -ifnull(SUM(c.dblTaxAmt),0),b.dblCreditAmt,b.dblBalanceAmt,"
 							+ " CONCAT(b.strPerticulars,' ',b.strRemark),d.strRoomDesc,b.strOldFolioNo"
 							+ " FROM tblfoliohd a"
@@ -382,16 +382,7 @@ public class clsFolioPrintingController {
 					} else {
 						clsFolioPrintingBean folioPrintingBean = new clsFolioPrintingBean();
 						String docNo = folioArr[1].toString();
-						String particulars ;
-						if(folioArr[9].toString().equalsIgnoreCase(" "))
-						{
-							particulars = folioArr[8].toString()+"-"+folioArr[2].toString();
-						}
-						else
-						{
-							particulars = "Transfer "+folioArr[8].toString()+"-"+folioArr[2].toString();
-						}
-					 
+						String particulars = folioArr[2].toString();
 						double debitAmount = Double.parseDouble(folioArr[4].toString());
 						double creditAmount = Double.parseDouble(folioArr[5].toString());
 						balance += debitAmount - creditAmount;
@@ -465,6 +456,29 @@ public class clsFolioPrintingController {
 				}
 				}
 				
+				sqlFolioDtl="SELECT ifnull(sum(b.dblDiscAmt),0)"
+						+ " FROM tblfoliohd a,tblbilldiscount b"
+						+ " where a.strFolioNo=b.strFolioNo and a.strFolioNo='"+folioNo+"'"
+						+ " group by b.strFolioNo ";
+				folioDtlList = objFolioService.funGetParametersList(sqlFolioDtl);
+				if(folioDtlList !=null && folioDtlList.size()>0)
+				{
+				
+					clsFolioPrintingBean folioPrintingBean = new clsFolioPrintingBean();
+        			BigDecimal bgCredit = (BigDecimal)folioDtlList.get(0);
+				
+					balance  += 0 - bgCredit.doubleValue();
+
+					folioPrintingBean.setDteDocDate("");
+					folioPrintingBean.setStrDocNo("");
+					folioPrintingBean.setStrPerticulars("Discount");
+					folioPrintingBean.setDblDebitAmt(0);
+					folioPrintingBean.setDblCreditAmt(bgCredit.doubleValue());
+					folioPrintingBean.setDblBalanceAmt(balance);
+
+					dataList.add(folioPrintingBean);
+				
+				}
 				// get payment details
 				/*String sqlPaymentDtl = "Select IFNULL(DATE(b.dteDocDate),''),ifnull(c.strReceiptNo,''),ifnull(e.strSettlementDesc,''),'0.00' AS debitAmt,ifnull(d.dblSettlementAmt,0.0) AS creditAmt,'0.00' AS balance" + " FROM tblfoliohd a LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo " + " left outer join tblreceipthd c on a.strFolioNo=c.strFolioNo and a.strReservationNo=c.strReservationNo "
 						+ " left outer join tblreceiptdtl d on c.strReceiptNo=d.strReceiptNo " + " left outer join tblsettlementmaster e on d.strSettlementCode=e.strSettlementCode " + " WHERE  a.strFolioNo='" + folioNo + "' " + " group by a.strFolioNo ";*/

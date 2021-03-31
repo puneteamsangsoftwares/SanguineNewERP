@@ -601,15 +601,11 @@ public class clsBillDiscountController {
 		{
 			funCalculateDiscountRoomWise(objBean,result,req,"All");
 			funCalculateDiscountIncomeheadwise(objBean,result,req,"All");
-		}	
-		
+		}			
 		req.getSession().setAttribute("success", true);
 		req.getSession().setAttribute("successMessage", "Bill Modify Succesfully");
 		
 		return new ModelAndView("redirect:/frmBillDiscount.html?saddr=" + urlHits);
-	
-	
-
 	}
 	@RequestMapping(value = "/loadFolioDataRevenueWise", method = RequestMethod.GET)
 	public @ResponseBody List funLoadFolioDataRevenueWise(@RequestParam("discOn") String strDiscOn,@RequestParam("folioNo") String strFolioNo, HttpServletRequest req) {
@@ -666,11 +662,11 @@ public class clsBillDiscountController {
 		Map<String,Double> mapDisc= new HashMap<>();
 		double dblDiscPerDay = 0;
 		double dblTaxAmt=0;
-		String sqlRoomTariffAmt = "select sum(a.dblDebitAmt),a.strRevenueCode from tblfoliodtl a "
+		String sqlRoomTariffAmt = "select (a.dblDebitAmt),a.strRevenueCode,Date(a.dteDocDate),a.strDocNo from tblfoliodtl a "
 				+ " where a.strPerticulars='Room Tariff' "
 				+ " and a.strFolioNo='"+objBean.getStrBillNo()+"' "
-				+ " AND a.strClientCode='"+clientCode+"'"
-				+ " group by a.strRevenueCode ;";
+				+ " AND a.strClientCode='"+clientCode+"'";
+				
 		List listRoomTariffAmt = objGlobalFunctionsService.funGetListModuleWise(sqlRoomTariffAmt, "sql");
 		if(listRoomTariffAmt!=null && listRoomTariffAmt.size()>0)
 		{
@@ -679,7 +675,7 @@ public class clsBillDiscountController {
 				Object[] obj=(Object[])listRoomTariffAmt.get(i);
 				dblSumTariffAmt = dblSumTariffAmt + Double.parseDouble(obj[0].toString());
 				dblRoomTariff = Double.parseDouble(obj[0].toString());
-				mapDisc.put(obj[1].toString(),dblRoomTariff);					
+				mapDisc.put(obj[1].toString()+"#"+obj[2].toString()+"#"+obj[3].toString(),dblRoomTariff);					
 			}
 		}
 
@@ -694,13 +690,11 @@ public class clsBillDiscountController {
 			else//per
 			{
 				dblDiscPerDay = (entry.getValue()*objBean.getDblDiscPer())/100;
-			}
-			
-			
+			}		
 			objModel.setDblDiscAmt(dblDiscPerDay);
 			objModel.setDblGrandTotal(entry.getValue());
-			objModel.setStrRoomNo(entry.getKey());
-			objModel.setDteBillDate(PMSDate);
+			objModel.setStrRoomNo(entry.getKey().split("#")[2]);//Reffered for doc No
+			objModel.setDteBillDate(entry.getKey().split("#")[1]);
 			objModel.setStrDiscType(strDiscType);
 			
 			if (objModel != null) {
@@ -739,6 +733,7 @@ public class clsBillDiscountController {
 				{					
 					double discPer = (objBean.getDblDiscAmt() / Double.parseDouble(obj[0].toString())) * 100;
 					dblDiscPerDay =  Double.parseDouble(obj[0].toString()) * (discPer / 100);
+					objBean.setDblDiscPer(discPer);
 				}
 				else//per
 				{
@@ -828,11 +823,10 @@ public class clsBillDiscountController {
 		double dblDiscPerDay = 0;
 		double dblTaxAmt=0;
 		double dblSumIncomeHeadAmt=0;
-		String sqlIncomeHeadAmt = "select sum(a.dblDebitAmt),a.strRevenueCode from tblfoliodtl a "
+		String sqlIncomeHeadAmt = "select (a.dblDebitAmt),a.strRevenueCode,Date(a.dteDocDate),a.strDocNo from tblfoliodtl a "
 				+ " where a.strRevenueType='Income Head' "
 				+ " and a.strFolioNo='"+objBean.getStrBillNo()+"' "
-				+ " AND a.strClientCode='"+clientCode+"'"
-				+ " group by a.strRevenueCode ;";
+				+ " AND a.strClientCode='"+clientCode+"'";
 		List listIncomeHeadAmt = objGlobalFunctionsService.funGetListModuleWise(sqlIncomeHeadAmt, "sql");
 		if(listIncomeHeadAmt!=null && listIncomeHeadAmt.size()>0)
 		{
@@ -841,7 +835,8 @@ public class clsBillDiscountController {
 				Object[] obj=(Object[])listIncomeHeadAmt.get(i);
 				dblSumIncomeHeadAmt = dblSumIncomeHeadAmt + Double.parseDouble(obj[0].toString());
 				double dblIncomeHeadAmt = Double.parseDouble(obj[0].toString());
-				mapDisc.put(obj[1].toString(),dblIncomeHeadAmt);					
+				mapDisc.put(obj[1].toString()+"#"+obj[2].toString()+"#"+obj[3].toString(),dblIncomeHeadAmt);					
+
 			}
 		}
 
@@ -861,17 +856,14 @@ public class clsBillDiscountController {
 			
 			objModel.setDblDiscAmt(dblDiscPerDay);
 			objModel.setDblGrandTotal(entry.getValue());
-			objModel.setStrRoomNo(entry.getKey());
-			objModel.setDteBillDate(PMSDate);
+			objModel.setStrRoomNo(entry.getKey().split("#")[2]);//Reffered for doc No
+			objModel.setDteBillDate(entry.getKey().split("#")[1]);
 			objModel.setStrDiscType(strDiscType);
 			
 			if (objModel != null) {
 				objBillDiscountService.funAddUpdateBillDiscount(objModel);
 			}
 		}
-		
-		
-
 		
 		Date dt = new Date();
 		String date = (dt.getYear() + 1900) + "-" + (dt.getMonth() + 1) + "-" + dt.getDate();
@@ -902,6 +894,7 @@ public class clsBillDiscountController {
 				{					
 					double discPer = (objBean.getDblDiscAmt() / Double.parseDouble(obj[0].toString())) * 100;
 					dblDiscPerDay =  Double.parseDouble(obj[0].toString()) * (discPer / 100);
+					objBean.setDblDiscPer(discPer);
 				}
 				else//per
 				{
