@@ -80,6 +80,7 @@ public class clsPropertySetupController {
 			model.put("ratePickUpFrom", "Room Type Master");
 			model.put("billFooter", "");
 			model.put("checkInFooter", "");
+			model.put("emailId", "");
 			
 		} else {
 			model.put("checkInTime", objModel.getTmeCheckInTime());
@@ -106,6 +107,7 @@ public class clsPropertySetupController {
 			model.put("dayForHousekeeping", objModel.getStrDayForHousekeeping());
 			model.put("billFooter", objModel.getStrBillFooter());
 			model.put("checkInFooter", objModel.getStrCheckInFooter());
+			model.put("emailId", objModel.getStrEmailId());
 		}
 		
 		String sql = "select count(1) from tblroom a where a.strClientCode='" + clientCode + "' ";
@@ -512,6 +514,7 @@ public class clsPropertySetupController {
 		objPropertySetupModel.setStrDayForHousekeeping(objBean.getStrDayForHousekeeping());
 		objPropertySetupModel.setStrBillFooter(objBean.getStrBillFooter());
 		objPropertySetupModel.setStrCheckInFooter(objBean.getStrCheckInFooter());
+		objPropertySetupModel.setStrEmailId(objBean.getStrEmailId());
 		return objPropertySetupModel;
 	}
 }

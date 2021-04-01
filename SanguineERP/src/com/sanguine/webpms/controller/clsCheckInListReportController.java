@@ -369,10 +369,12 @@ public class clsCheckInListReportController {
 					+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = c.strCheckInNo  "
 					+ " AND a.strCheckInNo = c.strCheckInNo AND a.strRoomNo = d.strRoomNo"
 					+ " AND c.strCheckInNo = d.strCheckInNo AND a.strRoomNo = e.strRoomCode "
-					+ " AND a.strGuestCode = f.strGuestCode AND e.strRoomTypeCode = g.strRoomTypeCode GROUP BY e.strRoomCode";			
+					+ " AND a.strGuestCode = f.strGuestCode AND e.strRoomTypeCode = g.strRoomTypeCode GROUP BY e.strRoomCode ORDER BY e.strRoomDesc Asc";			
 		
 			List finalList = new ArrayList();
-            
+			int totPax=0;
+			
+			int count=0;
 			List listInHouse = objGlobalFunctionsService.funGetDataList(sql, "sql");
 			if(listInHouse.size()>0)
 			{
@@ -396,8 +398,24 @@ public class clsCheckInListReportController {
 					}
 					dataList.add(ob[7].toString());//Booked By
 					finalList.add(dataList);
+					totPax=totPax+ Integer.parseInt(ob[5].toString());
+					count++;
 				}
 			}
+			
+			List blank = new ArrayList<>();
+			blank.add("");
+			finalList.add(blank);
+			
+			List totallist=new ArrayList<>();
+			totallist.add(" Total No. of Rooms -" +count);
+			totallist.add(" ");
+			totallist.add(" ");
+			totallist.add(" ");
+			totallist.add(" ");
+			totallist.add(" Total Pax -" +totPax);
+			finalList.add(totallist);
+			
 			
 		
 	     ExportList.add(finalList);

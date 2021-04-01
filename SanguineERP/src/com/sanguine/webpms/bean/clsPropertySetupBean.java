@@ -63,6 +63,8 @@ public class clsPropertySetupBean {
 	private String strBillFooter;
 	
 	private String strCheckInFooter;
+	
+	private String strEmailId;
 
 	public String getStrGSTNo() {
 		return strGSTNo;
@@ -311,6 +313,14 @@ public class clsPropertySetupBean {
 
 	public void setStrCheckInFooter(String strCheckInFooter) {
 		this.strCheckInFooter = strCheckInFooter;
+	}
+
+	public String getStrEmailId() {
+		return strEmailId;
+	}
+
+	public void setStrEmailId(String strEmailId) {
+		this.strEmailId = strEmailId;
 	}
 
 	

@@ -56,6 +56,7 @@ import org.springframework.validation.BindingResult;
 
 import javax.validation.Valid;
 import javax.activation.DataSource;
+import javax.mail.internet.InternetAddress;
 import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -636,8 +637,15 @@ public class clsDayEndController {
 			String clientCode = request.getSession().getAttribute("clientCode").toString();
 			String propertyCode = request.getSession().getAttribute("propertyCode").toString();
 			String userCode = request.getSession().getAttribute("usercode").toString();
-		       
-			logger.info("To:himanshumishra99999@gmail.com,mohite.swapnil23@gmail.com,sachinm555@gmail.com");   // receipientsArr[i].toString());
+			clsPropertySetupHdModel objPropertySetupModel = objPropertySetupService.funGetPropertySetup(propertyCode, clientCode);
+			String[] arrRecipient = objPropertySetupModel.getStrEmailId().split(",");
+
+			for (int cnt = 0; cnt < arrRecipient.length; cnt++)
+			{
+			    System.out.println(arrRecipient[cnt]); 
+			}
+		    
+			//logger.info(objPropertySetupModel.getStrEmailId());   // receipientsArr[i].toString());
 			logger.info("Subject: " + subject);
 			logger.info("Message: " + message);
         			
@@ -645,12 +653,17 @@ public class clsDayEndController {
         	
         	String filePath = System.getProperty("user.dir");
         	File file = new File(filePath + File.separator + "Reports" + File.separator +" OccupancyReport .xls");
-			helper.setTo("himanshumishra99999@gmail.com,mohite.swapnil23@gmail.com,sachinm555@gmail.com");//receipientsArr[i].toString());
-			helper.setSubject(subject);
-			helper.addAttachment("Excel Report", file);
-			helper.setText(message);
-			mailSender.send(helper.getMimeMessage());
-  
+        	for (int cnt = 0; cnt < arrRecipient.length; cnt++)
+			{
+			    System.out.println(arrRecipient[cnt]);
+			    helper.setTo(new InternetAddress(arrRecipient[cnt]));
+			    helper.setSubject(subject);
+				helper.addAttachment("Excel Report", file);
+				helper.setText(message);
+				mailSender.send(helper.getMimeMessage());
+	        }
+        	//helper.setTo(objPropertySetupModel.getStrEmailId());//receipientsArr[i].toString());
+			
 		}
 		catch (javax.mail.MessagingException e)
 		{

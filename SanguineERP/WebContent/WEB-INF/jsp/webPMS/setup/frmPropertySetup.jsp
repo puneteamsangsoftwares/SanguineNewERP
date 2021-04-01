@@ -1204,11 +1204,18 @@ ul.tabs1 li.active {
 							<s:textarea id="txtBillFooter" path="strBillFooter" value="${billFooter}" type="text" style="height: 57%;width: 177%;"/>
 							<%-- <s:input type="text" class="numeric" id="txtBillFooter" value="${billFooter}" path="strBillFooter"/> --%>
 						</div>
-						
-						<div class="col-md-4"></div><br><br><br>
+					
+						<div class="col-md-2"></div><br><br><br>
 						<div class="col-md-2">		
 							<label>CheckIn Footer</label>
 							<s:textarea id="txtCheckInFooter" path="strCheckInFooter" value="${checkInFooter}" type="text" style="height: 57%;width: 177%;"/>
+							
+						</div>
+						
+						<div class="col-md-2"></div><br><br><br> 
+						<div class="col-md-2">		
+							<label>EmailId</label>
+							<s:textarea id="txtEmailId" path="strEmailId" value="${emailId}" type="text" style="height: 57%;width: 177%;"/>
 							
 						</div>
 						

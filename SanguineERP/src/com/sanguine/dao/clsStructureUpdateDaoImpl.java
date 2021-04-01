@@ -5278,10 +5278,12 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
     	
        funExecutePMSQuery(sql);	 
        
-       sql=" ALTER TABLE `tblhousekeepmaster` ADD COLUMN `strRoomTypeCode` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strUserEdited`;";
-       funExecutePMSQuery(sql);	 
+      
+       sql=" ALTER TABLE `tblpropertysetup` ADD COLUMN `strEmailId` VARCHAR(255) NULL DEFAULT NULL AFTER `strCheckInFooter`;";
+       funExecutePMSQuery(sql);	
        
-        
+      
+       
        /// END ///
 
 		/*----------------WebPMS Forms End---------------------------*/

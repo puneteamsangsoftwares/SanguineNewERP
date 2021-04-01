@@ -116,6 +116,9 @@ public class clsPropertySetupHdModel implements Serializable {
 	@Column(name = "strCheckInFooter")
 	private String strCheckInFooter;
 	
+	@Column(name = "strEmailId")
+	private String strEmailId;
+	
 	
 	
 	// SMS setUp Tab End
@@ -370,6 +373,14 @@ public class clsPropertySetupHdModel implements Serializable {
 
 	public void setStrCheckInFooter(String strCheckInFooter) {
 		this.strCheckInFooter = strCheckInFooter;
+	}
+
+	public String getStrEmailId() {
+		return strEmailId;
+	}
+
+	public void setStrEmailId(String strEmailId) {
+		this.strEmailId = strEmailId;
 	}
 
 	
