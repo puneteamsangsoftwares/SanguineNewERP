@@ -85,6 +85,8 @@ public class clsFolioPrintingController {
 	// Save folio posting
 	@RequestMapping(value = "/rptFolioPrinting", method = RequestMethod.GET)
 	public void funGenerateFolioPrintingReport(@RequestParam("folioNo") String folioNo, HttpServletRequest req, HttpServletResponse resp) {
+		
+		double debitAmountWithoutDisc=0;
 		try {
 			String clientCode = req.getSession().getAttribute("clientCode").toString();
 			String userCode = req.getSession().getAttribute("usercode").toString();
@@ -100,6 +102,7 @@ public class clsFolioPrintingController {
 			
 			double balance=0;
 			List<clsFolioPrintingBean> dataList = new ArrayList<clsFolioPrintingBean>();
+			
 			@SuppressWarnings("rawtypes")
 			HashMap reportParams = new HashMap();
 
@@ -122,7 +125,7 @@ public class clsFolioPrintingController {
 			
 			
 			// get all parameters
-
+			
 			List listOfParametersFromFolio = objFolioService.funGetParametersList(sqlParametersFromFolio);
 			if (listOfParametersFromFolio.size() > 0) {
 				Object[] arr = (Object[]) listOfParametersFromFolio.get(0);
@@ -345,7 +348,7 @@ public class clsFolioPrintingController {
 				// get folio details
 				
 				String sqlFolioDtl = "SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo, CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),"
-						+ " b.dblQuantity,b.dblDebitAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark),d.strRoomDesc,b.strOldFolioNo  " + ""
+						+ " b.dblQuantity,b.dblDebitAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark),d.strRoomDesc,b.strOldFolioNo ,b.dblDebitAmt " + ""
 						+ " FROM tblfoliohd a LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'" + ", tblroom d  "
 						+ " WHERE b.strRevenueCode=d.strRoomCode AND a.strFolioNo='" + folioNo + "' and b.strRevenueType!='Discount'"
 						+ " order by b.dteDocDate ASC";
@@ -355,8 +358,8 @@ public class clsFolioPrintingController {
 					
 					sqlFolioDtl = "SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo,"
 							+ " CONCAT(if(length(b.strOldFolioNo)>1,'Tranfer - ',''),CONCAT(CONCAT(d.strRoomDesc,' - '),CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark)) )  ,"
-							+ " b.dblQuantity,b.dblDebitAmt -ifnull(SUM(c.dblTaxAmt),0),b.dblCreditAmt,b.dblBalanceAmt,"
-							+ " CONCAT(b.strPerticulars,' ',b.strRemark),d.strRoomDesc,b.strOldFolioNo"
+							+ " b.dblQuantity,(b.dblDebitAmt - b.dblDiscAmt - IFNULL(SUM(c.dblTaxAmt),0)),b.dblCreditAmt,b.dblBalanceAmt,"
+							+ " CONCAT(b.strPerticulars,' ',b.strRemark),d.strRoomDesc,b.strOldFolioNo,b.dblDebitAmt"
 							+ " FROM tblfoliohd a"
 							+ " LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo"
 							+ " LEFT OUTER JOIN tblfoliotaxdtl c ON b.strFolioNo=c.strFolioNo and b.strDocNo=c.strDocNo "
@@ -365,11 +368,15 @@ public class clsFolioPrintingController {
 							+ " and b.strPerticulars='Room Tariff'"
 							+ " group by b.dteDocDate,b.strDocNo " 
 							+ " Union All"
-							+ " SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo, CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),b.dblQuantity,b.dblDebitAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark),'',strOldFolioNo  " + " "
+							+ " SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo, CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),"
+							+ " b.dblQuantity,(b.dblDebitAmt - b.dblDiscAmt - IFNULL(SUM(c.dblTaxAmt),0)),b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark),'',strOldFolioNo,b.dblDebitAmt  " + " "
 							+ " FROM tblfoliohd a "
 							+ " LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo "
 							+ " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'" + ""
-							+ " WHERE a.strFolioNo='" + folioNo + "' and b.strRevenueType!='Discount' and  b.strPerticulars<>'Room Tariff' "   ;
+							+ " LEFT OUTER"
+							+ " JOIN tblfoliotaxdtl c ON b.strFolioNo=c.strFolioNo AND b.strDocNo=c.strDocNo AND a.strClientCode='383.001' "
+							+ " WHERE a.strFolioNo='" + folioNo + "' and b.strRevenueType!='Discount' and  b.strPerticulars<>'Room Tariff'"
+							+ " GROUP BY b.dteDocDate,b.strDocNo"   ;
 				
 				}
 				 						
@@ -386,8 +393,9 @@ public class clsFolioPrintingController {
 						double debitAmount = Double.parseDouble(folioArr[4].toString());
 						double creditAmount = Double.parseDouble(folioArr[5].toString());
 						balance += debitAmount - creditAmount;
+						
  						String strCompletePertName = folioArr[7].toString();
-
+ 						debitAmountWithoutDisc += Double.parseDouble(folioArr[10].toString());
 						folioPrintingBean.setDteDocDate(docDate);
 						folioPrintingBean.setStrDocNo(docNo);
 						folioPrintingBean.setStrPerticulars(particulars);
@@ -456,7 +464,9 @@ public class clsFolioPrintingController {
 				}
 				}
 				
-				sqlFolioDtl="SELECT ifnull(sum(b.dblDiscAmt),0)"
+				
+				//Discount Folio wise
+				sqlFolioDtl="SELECT ifnull(ROUND(sum(b.dblDiscAmt)),0),b.strDiscType"
 						+ " FROM tblfoliohd a,tblbilldiscount b"
 						+ " where a.strFolioNo=b.strFolioNo and a.strFolioNo='"+folioNo+"'"
 						+ " group by b.strFolioNo ";
@@ -464,21 +474,15 @@ public class clsFolioPrintingController {
 				if(folioDtlList !=null && folioDtlList.size()>0)
 				{
 				
-					clsFolioPrintingBean folioPrintingBean = new clsFolioPrintingBean();
-        			BigDecimal bgCredit = (BigDecimal)folioDtlList.get(0);
-				
-					balance  += 0 - bgCredit.doubleValue();
-
-					folioPrintingBean.setDteDocDate("");
-					folioPrintingBean.setStrDocNo("");
-					folioPrintingBean.setStrPerticulars("Discount");
-					folioPrintingBean.setDblDebitAmt(0);
-					folioPrintingBean.setDblCreditAmt(bgCredit.doubleValue());
-					folioPrintingBean.setDblBalanceAmt(balance);
-
-					dataList.add(folioPrintingBean);
-				
+					Object obj[]=(Object[]) folioDtlList.get(0);
+					
+					String details="Orginal amount is "+debitAmountWithoutDisc+" And Discount On  "+obj[1].toString()+"  Is "+obj[0].toString()+" Rs  ";
+					reportParams.put("pDiscountDetails",details);
 				}
+				
+				
+				
+				
 				// get payment details
 				/*String sqlPaymentDtl = "Select IFNULL(DATE(b.dteDocDate),''),ifnull(c.strReceiptNo,''),ifnull(e.strSettlementDesc,''),'0.00' AS debitAmt,ifnull(d.dblSettlementAmt,0.0) AS creditAmt,'0.00' AS balance" + " FROM tblfoliohd a LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo " + " left outer join tblreceipthd c on a.strFolioNo=c.strFolioNo and a.strReservationNo=c.strReservationNo "
 						+ " left outer join tblreceiptdtl d on c.strReceiptNo=d.strReceiptNo " + " left outer join tblsettlementmaster e on d.strSettlementCode=e.strSettlementCode " + " WHERE  a.strFolioNo='" + folioNo + "' " + " group by a.strFolioNo ";*/

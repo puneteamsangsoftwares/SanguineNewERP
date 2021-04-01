@@ -2878,6 +2878,7 @@ public class clsBillPrintingController {
 	public void funGenerateBillPrintingReportFormat1(@RequestParam("fromDate") String fromDate,@RequestParam("toDate") String toDate,
 			@RequestParam("billNo") String billNo,@RequestParam("strSelectBill") String strSelectBill, HttpServletRequest req,HttpServletResponse resp) 
 	{
+		double debitAmountWithoutDisc=0;
 		try 
 		{
 			boolean flgBillRecord = false;
@@ -3084,10 +3085,13 @@ public class clsBillPrintingController {
 				reportParams.put("pGuestNo", guestgstNO);
 				reportParams.put("pstrCustNo", strCustNo);
 				String billFooter=objPropertySetupModel.getStrBillFooter();
-				
-				reportParams.put("pBillFooter", billFooter.split(",")[0]);
-				reportParams.put("pBillFooter1",billFooter.split(",")[1]);
 			
+				if(billFooter!=null && billFooter.length()>0)
+				{
+					reportParams.put("pBillFooter", billFooter.split(",")[0]);
+					reportParams.put("pBillFooter1",billFooter.split(",")[1]);				
+				}
+				
 				reportParams.put("strImagePath2",imagePath1);
 				
 				reportParams.put("pChild", childs);
@@ -3122,14 +3126,15 @@ public class clsBillPrintingController {
 				}
 				
 				
+				
 				// get bill details
 				String sqlBillDtl="";
 				if(!(billNames.length()>0))
 				{
 					sqlBillDtl = " SELECT DATE(b.dteDocDate),b.strDocNo,"
-							+ " IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),b.dblDebitAmt,"
+							+ " IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''), b.dblDebitAmt - b.dblDiscAmt,"
 							+ " b.dblCreditAmt,"
-							+ " b.dblBalanceAmt ,ifnull(a.strReservationNo,'') ,b.strPerticulars,if(length(b.strOldFolioNo) >0 , CONCAT('Transfer-',c.strRoomDesc),c.strRoomDesc),d.intNoOfFolios,b.strOldFolioNo  "
+							+ " b.dblBalanceAmt ,ifnull(a.strReservationNo,'') ,b.strPerticulars,if(length(b.strOldFolioNo) >0 , CONCAT('Transfer-',c.strRoomDesc),c.strRoomDesc),d.intNoOfFolios,b.strOldFolioNo , b.dblDebitAmt "
 							+ " FROM tblbillhd a "
 							+ " INNER JOIN tblbilldtl b "
 							+ " ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo,tblroom c ,tblcheckindtl d "
@@ -3139,7 +3144,7 @@ public class clsBillPrintingController {
 							+ " UNION"
 							+ " SELECT DATE(b.dteDocDate),b.strDocNo, "
 							+ " IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),"
-							+ " b.dblDebitAmt, b.dblCreditAmt, b.dblBalanceAmt, IFNULL(a.strReservationNo,''),b.strPerticulars,'','',b.strOldFolioNo "
+							+ "  b.dblDebitAmt - b.dblDiscAmt, b.dblCreditAmt, b.dblBalanceAmt, IFNULL(a.strReservationNo,''),b.strPerticulars,'','',b.strOldFolioNo , b.dblDebitAmt  "
 							+ " FROM tblbillhd a"
 							+ " INNER JOIN tblbilldtl b ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo"
 							+ " WHERE a.strBillNo='"+billNo+"'   AND b.strPerticulars!='Room Tariff'";
@@ -3147,8 +3152,8 @@ public class clsBillPrintingController {
 				else
 				{
 					sqlBillDtl = " SELECT DATE(b.dteDocDate),b.strDocNo,"
-							+ " IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),b.dblDebitAmt,b.dblCreditAmt,"
-							+ " b.dblBalanceAmt ,ifnull(a.strReservationNo,'') ,b.strPerticulars ,if(length(b.strOldFolioNo) >1, CONCAT('Transfer-',c.strRoomDesc),c.strRoomDesc),d.intNoOfFolios,b.strOldFolioNo FROM tblbillhd a INNER JOIN tblbilldtl b "
+							+ " IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''), b.dblDebitAmt - b.dblDiscAmt,b.dblCreditAmt,"
+							+ " b.dblBalanceAmt ,ifnull(a.strReservationNo,'') ,b.strPerticulars ,if(length(b.strOldFolioNo) >1, CONCAT('Transfer-',c.strRoomDesc),c.strRoomDesc),d.intNoOfFolios,b.strOldFolioNo, b.dblDebitAmt FROM tblbillhd a INNER JOIN tblbilldtl b "
 							+ " ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo AND b.strPerticulars IN("+billNames.substring(0, billNames.length()-1)+") "
 							+ " ,tblroom c,tblcheckindtl d "
 							+ " WHERE a.strBillNo='"+billNo+"' AND a.strClientCode='"+clientCode+"'"
@@ -3157,7 +3162,7 @@ public class clsBillPrintingController {
 							+ " UNION"
 							+ " SELECT DATE(b.dteDocDate),b.strDocNo, "
 							+ " IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),"
-							+ " b.dblDebitAmt, b.dblCreditAmt, b.dblBalanceAmt, IFNULL(a.strReservationNo,''),b.strPerticulars,'','',b.strOldFolioNo "
+							+ " b.dblDebitAmt - b.dblDiscAmt, b.dblCreditAmt, b.dblBalanceAmt, IFNULL(a.strReservationNo,''),b.strPerticulars,'','',b.strOldFolioNo , b.dblDebitAmt  "
 							+ " FROM tblbillhd a"
 							+ " INNER JOIN tblbilldtl b ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo"
 							+ " WHERE a.strBillNo='"+billNo+"'   AND b.strPerticulars!='Room Tariff'";
@@ -3176,12 +3181,13 @@ public class clsBillPrintingController {
 					} 
 					else 
 					{
-						dblTotalRoomTarrif=dblTotalRoomTarrif+Double.parseDouble(folioArr[3].toString());
+						dblTotalRoomTarrif = dblTotalRoomTarrif+Double.parseDouble(folioArr[3].toString());
 						clsBillPrintingBean billPrintingBean = new clsBillPrintingBean();
 						String docNo = folioArr[1].toString();
 						String particulars = folioArr[2].toString();
 						strReservationNo = folioArr[6].toString();
 						double debitAmount = Double.parseDouble(folioArr[3].toString());
+						debitAmountWithoutDisc += Double.parseDouble(folioArr[11].toString());
 						BigDecimal taxAmt=new BigDecimal(0);;
 						if(clientCode.equalsIgnoreCase("383.001"))
 						{
@@ -3581,6 +3587,7 @@ public class clsBillPrintingController {
 					{
 						walkIn = listWalkIn.get(i).toString();
 					}
+				
 					String walkInDiscount = "SELECT DATE(a.dtDate),'',CONCAT('Discount ',a.dblDiscount,'%' ),a.dblRoomRate,"
 							+ "a.dblDiscount,'0.00' FROM tblwalkinroomratedtl a "
 							+ "WHERE a.strWalkinNo='"+walkIn+"' AND a.strClientCode='"+clientCode+"' group by a.dblDiscount";
@@ -3617,7 +3624,9 @@ public class clsBillPrintingController {
 						}
 					}
 				}
-				String sqlFolioDisc=" SELECT ifnull(sum(b.dblDiscAmt),0)"
+				
+				//Discount Folio wise
+				String sqlFolioDisc=" SELECT ifnull(ROUND(sum(b.dblDiscAmt)),0),b.strDiscType"
 						+ " FROM tblbillhd a,"
 						+ " tblbilldiscount b"
 						+ " where a.strFolioNo=b.strFolioNo and a.strBillNo='"+billNo+"'"
@@ -3627,20 +3636,12 @@ public class clsBillPrintingController {
 				if(billDiscList!=null && billDiscList.size() >0) {
 					
 
-					clsBillPrintingBean folioPrintingBean = new clsBillPrintingBean();
-
-					double debitAmount =0;
-					double creditAmount = Double.parseDouble(billDiscList.get(0).toString());
-					balance = balance + debitAmount - creditAmount;
-
-					folioPrintingBean.setDteDocDate("");
-					folioPrintingBean.setStrDocNo("");
-					folioPrintingBean.setStrPerticulars("Discount");
-					folioPrintingBean.setDblDebitAmt(debitAmount);
-					folioPrintingBean.setDblCreditAmt(creditAmount);
-					folioPrintingBean.setDblBalanceAmt(balance);
-
-					dataList.add(folioPrintingBean);
+					
+					Object obj[]=(Object[]) billDiscList.get(0);
+					
+					String details="Orginal amount is "+debitAmountWithoutDisc+" And Discount On  "+obj[1].toString()+"  Is "+obj[0].toString()+" Rs  ";
+					reportParams.put("pDiscountDetails",details);
+					
 				}
 				
 			

@@ -4613,37 +4613,8 @@ public class clsReportsController {
 				sqlBuilderHeader = new StringBuilder("SubGroup Name,Product Name ,Qty,Grand Total");
 			}
 			String[] excelHeader = sqlBuilderHeader.toString().split(",");
-			exportList.add(excelHeader);
-			// String
-			// sql="select c.strPName Supplier_Name,a.strGRNCode GRN_No, a.dtGRNDate GRN_Date, a.strAgainst GRN_Type, a.strPONo PO_No,"
-			// +
-			// " a.strBillNo Bill_No, a.dtBillDate Bill_Date, a.dblSubTotal, a.dblTaxAmt,a.dblTotal, "
-			// +
-			// " b.strProdCode P_Code, d.strProdName Product_Name, d.strUOM UOM, SUM(b.dblQty) Qty_Recd, SUM(b.dblRejected) Qty_Rejected, "
-			// +
-			// " b.dblUnitPrice Price, SUM(b.dblTotalPrice) Amount, e.strLocName Location_Name "
-			// + " from tblgrnhd a, tblgrndtl b, tblpartymaster c, "
-			// +
-			// " tblproductmaster d, tbllocationmaster e ,tblsubgroupmaster f  "
-			// + " Where a.strGRNCode = b.strGRNCode "
-			// +
-			// " and a.strSuppCode = c.strPCode and a.strLocCode = e.strLocCode "
-			// +
-			// " and b.strProdCode = d.strProdCode  and d.strSGCode=f.strSGCode  "
-			// + " and a.dtGRNDate >= '"+fromTempDate+"' "
-			// +
-			// " and a.dtGRNDate <= '"+toTempDate+"' and a.strClientCode='"+clientCode+"' "
-			// +
-			// " and b.strClientCode='"+clientCode+"' and c.strClientCode='"+clientCode+"'"
-			// +
-			// " and d.strClientCode='"+clientCode+"' and e.strClientCode='"+clientCode+"'";
-			/*String AmountWithTax="(c.dblCostRM*sum(b.dblQty)) as Amount";
-			if(clientCode.equals("382.000"))
-			{
-				AmountWithTax=" (c.dblCostRM*sum(b.dblQty)) +  b.dblTaxAmt  as Amount";
-			}*/
-			String sql = "";
-		
+			exportList.add(excelHeader);			
+			String sql = "";		
 			if(clientCode.equals("382.000"))
 			{
                  

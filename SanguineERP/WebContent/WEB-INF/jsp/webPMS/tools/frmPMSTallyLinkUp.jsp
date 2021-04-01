@@ -187,7 +187,6 @@
 	<div class="container">
 		<label id="formHeading">Tally Link Up</label>
 		<s:form name="PMSTallyLinkUp" method="POST" action="savePMSTallyLinkUp.html">
-		
 		<div class="row masterTable">
 			<div class="col-md-2">
 				<label>Link up</lable>
@@ -197,8 +196,7 @@
 				    <s:option value="Tax">Tax</s:option>
 				    <s:option value="Guest">Guest</s:option>
 				    <s:option value="Income Head">Income Head</s:option>
-				    <s:option value="Settlement">Settlement</s:option>
-				    
+				    <s:option value="Settlement">Settlement</s:option>				    
 				 </s:select>
 			</div>	
 		</div>

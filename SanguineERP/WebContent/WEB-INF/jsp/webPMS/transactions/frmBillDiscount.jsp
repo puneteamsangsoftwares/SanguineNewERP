@@ -294,6 +294,11 @@ font-size:12px;}
 			return false;
 		}
 		
+		if($("#cmbReason").val()==''){
+			alert("Enter Valied Remark");
+			return false;
+		}
+		
 		if($("#txtRemark").val()==''){
 			alert("Enter Valied Remark");
 			return false;

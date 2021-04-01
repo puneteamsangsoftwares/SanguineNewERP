@@ -662,9 +662,17 @@ public class clsBillDiscountController {
 		Map<String,Double> mapDisc= new HashMap<>();
 		double dblDiscPerDay = 0;
 		double dblTaxAmt=0;
-		String sqlRoomTariffAmt = "select (a.dblDebitAmt),a.strRevenueCode,Date(a.dteDocDate),a.strDocNo from tblfoliodtl a "
-				+ " where a.strPerticulars='Room Tariff' "
-				+ " and a.strFolioNo='"+objBean.getStrBillNo()+"' "
+		String sqlRoomTariffAmt = "select (a.dblDebitAmt),a.strRevenueCode,Date(a.dteDocDate),a.strDocNo,strPerticulars,strRevenueType from tblfoliodtl a ";
+				
+				if(strDiscType.equalsIgnoreCase("All"))
+				{
+					sqlRoomTariffAmt +=" Where (a.strPerticulars='Room Tariff'  OR a.strRevenueType='Income Head' ) ";
+				}
+				else
+				{
+					sqlRoomTariffAmt +="  where a.strPerticulars='Room Tariff' ";
+				}
+				sqlRoomTariffAmt +=" and a.strFolioNo='"+objBean.getStrBillNo()+"' "
 				+ " AND a.strClientCode='"+clientCode+"'";
 				
 		List listRoomTariffAmt = objGlobalFunctionsService.funGetListModuleWise(sqlRoomTariffAmt, "sql");
@@ -674,8 +682,12 @@ public class clsBillDiscountController {
 			{
 				Object[] obj=(Object[])listRoomTariffAmt.get(i);
 				dblSumTariffAmt = dblSumTariffAmt + Double.parseDouble(obj[0].toString());
-				dblRoomTariff = Double.parseDouble(obj[0].toString());
-				mapDisc.put(obj[1].toString()+"#"+obj[2].toString()+"#"+obj[3].toString(),dblRoomTariff);					
+				if(!obj[5].toString().toString().equals("Income Head"))
+				{
+					dblRoomTariff = Double.parseDouble(obj[0].toString());
+					mapDisc.put(obj[1].toString()+"#"+obj[2].toString()+"#"+obj[3].toString(),dblRoomTariff);					
+
+				}
 			}
 		}
 
@@ -683,8 +695,9 @@ public class clsBillDiscountController {
 		{
 			
 			if(objBean.getStrDiscountType().equalsIgnoreCase("Amount"))
-			{					
-				double discPer = (objBean.getDblDiscAmt() / entry.getValue()) * 100;
+			{	
+				
+				double discPer = (objBean.getDblDiscAmt() / dblSumTariffAmt) * 100;
 				dblDiscPerDay = entry.getValue() * (discPer / 100);
 			}
 			else//per
@@ -731,7 +744,7 @@ public class clsBillDiscountController {
 				Object[] obj=(Object[])listRoomTariffAmtDatewise.get(i);
 				if(objBean.getStrDiscountType().equalsIgnoreCase("Amount"))
 				{					
-					double discPer = (objBean.getDblDiscAmt() / Double.parseDouble(obj[0].toString())) * 100;
+					double discPer = (objBean.getDblDiscAmt() /dblSumTariffAmt) * 100;
 					dblDiscPerDay =  Double.parseDouble(obj[0].toString()) * (discPer / 100);
 					objBean.setDblDiscPer(discPer);
 				}
@@ -823,9 +836,19 @@ public class clsBillDiscountController {
 		double dblDiscPerDay = 0;
 		double dblTaxAmt=0;
 		double dblSumIncomeHeadAmt=0;
-		String sqlIncomeHeadAmt = "select (a.dblDebitAmt),a.strRevenueCode,Date(a.dteDocDate),a.strDocNo from tblfoliodtl a "
-				+ " where a.strRevenueType='Income Head' "
-				+ " and a.strFolioNo='"+objBean.getStrBillNo()+"' "
+		String sqlIncomeHeadAmt = "select (a.dblDebitAmt),a.strRevenueCode,Date(a.dteDocDate),a.strDocNo ,strPerticulars,strRevenueType from tblfoliodtl a ";
+				
+			
+				if(strDiscType.equalsIgnoreCase("All"))
+				{
+					sqlIncomeHeadAmt +=" Where (a.strPerticulars='Room Tariff'  OR a.strRevenueType='Income Head' ) ";
+
+				}
+				else
+				{
+					sqlIncomeHeadAmt +="  where a.strRevenueType='Income Head' ";
+				}
+				sqlIncomeHeadAmt +=" and a.strFolioNo='"+objBean.getStrBillNo()+"' "
 				+ " AND a.strClientCode='"+clientCode+"'";
 		List listIncomeHeadAmt = objGlobalFunctionsService.funGetListModuleWise(sqlIncomeHeadAmt, "sql");
 		if(listIncomeHeadAmt!=null && listIncomeHeadAmt.size()>0)
@@ -834,8 +857,12 @@ public class clsBillDiscountController {
 			{
 				Object[] obj=(Object[])listIncomeHeadAmt.get(i);
 				dblSumIncomeHeadAmt = dblSumIncomeHeadAmt + Double.parseDouble(obj[0].toString());
-				double dblIncomeHeadAmt = Double.parseDouble(obj[0].toString());
-				mapDisc.put(obj[1].toString()+"#"+obj[2].toString()+"#"+obj[3].toString(),dblIncomeHeadAmt);					
+				if(!obj[4].toString().equals("Room Tariff"))
+				{
+					double dblIncomeHeadAmt = Double.parseDouble(obj[0].toString());
+					mapDisc.put(obj[1].toString()+"#"+obj[2].toString()+"#"+obj[3].toString(),dblIncomeHeadAmt);
+				}
+									
 
 			}
 		}
@@ -845,7 +872,7 @@ public class clsBillDiscountController {
 			
 			if(objBean.getStrDiscountType().equalsIgnoreCase("Amount"))
 			{					
-				double discPer = (objBean.getDblDiscAmt() / entry.getValue()) * 100;
+				double discPer = (objBean.getDblDiscAmt() / dblSumIncomeHeadAmt) * 100;
 				dblDiscPerDay = entry.getValue() * (discPer / 100);
 			}
 			else//per
@@ -892,7 +919,7 @@ public class clsBillDiscountController {
 				Object[] obj=(Object[])lisIncomeHeadDatewise.get(i);
 				if(objBean.getStrDiscountType().equalsIgnoreCase("Amount"))
 				{					
-					double discPer = (objBean.getDblDiscAmt() / Double.parseDouble(obj[0].toString())) * 100;
+					double discPer = (objBean.getDblDiscAmt() / dblSumIncomeHeadAmt) * 100;
 					dblDiscPerDay =  Double.parseDouble(obj[0].toString()) * (discPer / 100);
 					objBean.setDblDiscPer(discPer);
 				}

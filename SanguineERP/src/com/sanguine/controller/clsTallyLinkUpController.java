@@ -104,7 +104,6 @@ public class clsTallyLinkUpController {
 				String delete = " delete from tbltallylinkup where strGroupCode='" + objModel.getStrGroupCode() + "' and strClientCode='" + clientCode + "' ";
 				objTallyLinkUpService.funExecute(delete);
 				objModel.setDteCreatedDate(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
-				;
 				objModel.setDteLastModified(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 				objModel.setStrUserCreated(userCode);
 				objModel.setStrUserEdited(userCode);
