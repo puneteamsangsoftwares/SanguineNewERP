@@ -29,7 +29,7 @@ public class clsBlockRoomModel implements Serializable {
 
 	
 	@Id
-	@AttributeOverrides({ @AttributeOverride(name = "strRoomCode", column = @Column(name = "strRoomCode")), @AttributeOverride(name = "strClientCode", column = @Column(name = "strClientCode")) })
+	@AttributeOverrides({ @AttributeOverride(name = "strRoomCode", column = @Column(name = "strRoomCode")), @AttributeOverride(name = "strClientCode", column = @Column(name = "strClientCode")), @AttributeOverride(name = "strTransId", column = @Column(name = "strTransId")) })
 	
 	@Column(name = "strRoomCode")
 	private String strRoomCode;
@@ -51,6 +51,9 @@ public class clsBlockRoomModel implements Serializable {
 	
 	@Column(name = "dteValidTo")
 	private String dteValidTo;
+	
+	@Column(name = "strTransId")
+	private String strTransId;
 
 
 	public String getStrRoomCode() {
@@ -109,10 +112,13 @@ public class clsBlockRoomModel implements Serializable {
 		this.dteValidTo = dteValidTo;
 	}
 
-	
-	
-	
-	
-	
+	public String getStrTransId() {
+		return strTransId;
+	}
 
+	public void setStrTransId(String strTransId) {
+		this.strTransId = strTransId;
+	}
+
+	
 }

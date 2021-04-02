@@ -9,6 +9,7 @@ public class clsBlockRoomBean {
 	private String strReason;
 	private String dteValidFrom;
 	private String dteValidTo;
+	private String strTransId;
 	
 	
 	public String getStrRoomCode() {
@@ -52,6 +53,12 @@ public class clsBlockRoomBean {
 	}
 	public void setDteValidTo(String dteValidTo) {
 		this.dteValidTo = dteValidTo;
+	}
+	public String getStrTransId() {
+		return strTransId;
+	}
+	public void setStrTransId(String strTransId) {
+		this.strTransId = strTransId;
 	}
 	
 	

@@ -1865,7 +1865,7 @@ public class clsCheckInController {
 					reportParams.put("pCustomerGST",null);
 					reportParams.put("pgstno", null);
 					reportParams.put("lblTax", null);
-					reportParams.put("plblDaysForAccomodation", "Total Days For Accomodation :");
+					reportParams.put("plblDaysForAccomodation", "Total Days For Accomodation  :");
 					reportParams.put("daysForAccomodation", daysBetween);
 					reportParams.put("pPolicy1", null);
 					reportParams.put("pPolicy2", null); 

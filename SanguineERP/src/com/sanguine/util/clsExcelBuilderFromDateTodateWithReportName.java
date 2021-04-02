@@ -132,16 +132,7 @@ public class clsExcelBuilderFromDateTodateWithReportName extends AbstractXlsView
 
 		}
 		
-		if(reportName.equalsIgnoreCase("OccupancyReport"))
-		{
-			String filePath = System.getProperty("user.dir");
-			File file = new File(filePath + File.separator + "Reports" + File.separator +" OccupancyReport .xls");
-			FileOutputStream fileOut = new FileOutputStream(file);  
-			workbook.write(fileOut);  
-			//closing the Stream  
-			fileOut.close();  
-		}
-
+		
 
 	}
 

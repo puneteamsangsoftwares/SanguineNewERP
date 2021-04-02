@@ -631,13 +631,25 @@ public class clsDayEndController {
 		// takes input from e-mail form
 		try
 		{
-			objCheckInListReportController.funExportOccupancyReport( resp,  request, new clsReportBean());
+			File imgFolder = new File(System.getProperty("user.dir") + "\\Reports");
+			if (!imgFolder.exists()) {
+				if (imgFolder.mkdir()) {
+					System.out.println("Directory is created! " + imgFolder.getAbsolutePath());
+				} else {
+					System.out.println("Failed to create directory!");
+				}
+			}
+			clsReportBean ReportBean=new clsReportBean();
+			ReportBean.setStrReportType("DayEnd Reports");
+			
+			objCheckInListReportController.funExportOccupancyReport( resp,  request, ReportBean);
 		    String subject="PMS Report"	+request.getSession().getAttribute("PMSDate").toString() +" Of "+request.getSession().getAttribute("companyName").toString();
 		    String message="Reports";
 			String clientCode = request.getSession().getAttribute("clientCode").toString();
 			String propertyCode = request.getSession().getAttribute("propertyCode").toString();
 			String userCode = request.getSession().getAttribute("usercode").toString();
 			clsPropertySetupHdModel objPropertySetupModel = objPropertySetupService.funGetPropertySetup(propertyCode, clientCode);
+			
 			String[] arrRecipient = objPropertySetupModel.getStrEmailId().split(",");
 
 			for (int cnt = 0; cnt < arrRecipient.length; cnt++)
@@ -651,14 +663,16 @@ public class clsDayEndController {
         			
         	MimeMessageHelper helper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
         	
+        	
         	String filePath = System.getProperty("user.dir");
+        	
         	File file = new File(filePath + File.separator + "Reports" + File.separator +" OccupancyReport .xls");
         	for (int cnt = 0; cnt < arrRecipient.length; cnt++)
 			{
 			    System.out.println(arrRecipient[cnt]);
 			    helper.setTo(new InternetAddress(arrRecipient[cnt]));
 			    helper.setSubject(subject);
-				helper.addAttachment("Excel Report", file);
+				helper.addAttachment("Occupancy Report.xls", file);
 				helper.setText(message);
 				mailSender.send(helper.getMimeMessage());
 	        }

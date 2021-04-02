@@ -254,10 +254,12 @@
 	
 		
 		<div class="center" style="margin-right:52%;">
-			<a href="#"><button class="btn btn-primary center-block" value="Submit" 
+		   <!--  <input type="submit" value="Submit" tabindex="3" class="btn btn-primary center-block" class="form_button" "/>&nbsp;
+			<input type="reset" value="Reset" class="btn btn-primary center-block" class="form_button" onclick="funResetFields()" /> -->
+			 <a href="#"><button class="btn btn-primary center-block" value="Submit" 
 				class="form_button">Submit</button></a>&nbsp;
 			<a href="#"><button class="btn btn-primary center-block" value="Reset" onclick="funResetFields()"
-				class="form_button">Reset</button></a>
+				class="form_button">Reset</button></a> 
 		</div>
 	</s:form>
 </div>

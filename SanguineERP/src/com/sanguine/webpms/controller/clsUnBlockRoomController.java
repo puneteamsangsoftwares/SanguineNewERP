@@ -115,6 +115,9 @@ public class clsUnBlockRoomController {
 					String sql="UPDATE `tblroom` SET strStatus='Free' WHERE  `strRoomCode` in ("+roomCode+") AND `strClientCode`='"+clientCode+"'";
 					objWebPMSUtility.funExecuteUpdate(sql, "sql");
 					
+					/*String sql="UPDATE tblblockroom a SET a.strIsUnBlocked='Y' WHERE a.strRoomCode='' AND a.strClientCode='' AND a.strTransId='' ";
+					objWebPMSUtility.funExecuteUpdate(sql, "sql");*/
+					
 					String sqlDeletePrevData = "delete from tblblockroom  where strRoomCode in ("+roomCode+") ";
 					objWebPMSUtility.funExecuteUpdate(sqlDeletePrevData, "sql");
 			

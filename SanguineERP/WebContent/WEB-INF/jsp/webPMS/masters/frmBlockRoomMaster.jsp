@@ -312,6 +312,11 @@
 			case 'reasonPMS' : 
 				funSetReasonData(code);
 			break;
+			
+			case 'blockRoom' : 
+				funSetBlockRoomData(code);
+			break;
+			
 		}
 	}
 
@@ -450,7 +455,7 @@
 				        dataType: "json",
 				        success: function(response)
 				        {
-				        	if(response.strReasonCode=='Invalid Code')
+				        	if(response.strTransId=='Invalid Code')
 				        	{
 				        		alert("Invalid Reason Code");
 				        		$("#txtReasonCode").val('');
@@ -481,6 +486,61 @@
 				        }
 			      });
 		}
+		
+		
+		function funSetBlockRoomData(transId)
+		{
+			var searchUrl=getContextPath()+"/loadBlockRoomData.html?transId="+transId;
+			$.ajax({
+				
+				url:searchUrl,
+				type :"GET",
+				dataType: "json",
+		        success: function(response)
+		        {
+		        	if(response[0]=='Invalid Code')
+		        	{
+		        		alert("Invalid Block Code");
+		        		$("#txtTransId").val('');
+		        	}
+		        	else
+		        	{
+		        		
+		        		$("#txtTransId").val(response[0]);
+		        		$("#txtRoomType").val(response[1]);
+		        		$("#lblRoomType").text(response[2]);
+		        		$("#txtRoomCode").val(response[3]);
+		        		$("#txtRoomDesc").val(response[4]);
+		        		$("#txtReason").val(response[5]);
+		        		$("#lblReasonDesc").text(response[6]);
+		        		$("#txtRemarks").text(response[7]);
+		        		$("#dteValidFrom" ).datepicker('setDate', response[8]);
+		        		$("#dteValidTo" ).datepicker('setDate', response[9]);
+		        		//$("#dteValidFrom").text(response[8]);
+		        		//$("#dteValidTo").text(response[9]);
+		        		
+		        	}
+				},
+				error: function(jqXHR, exception) 
+				{
+		            if (jqXHR.status === 0) {
+		                alert('Not connect.n Verify Network.');
+		            } else if (jqXHR.status == 404) {
+		                alert('Requested page not found. [404]');
+		            } else if (jqXHR.status == 500) {
+		                alert('Internal Server Error [500].');
+		            } else if (exception === 'parsererror') {
+		                alert('Requested JSON parse failed.');
+		            } else if (exception === 'timeout') {
+		                alert('Time out error.');
+		            } else if (exception === 'abort') {
+		                alert('Ajax request aborted.');
+		            } else {
+		                alert('Uncaught Error.n' + jqXHR.responseText);
+		            }
+		        }
+			});
+		}
 </script>
 
 </head>
@@ -496,6 +556,15 @@
 			<!-- <div id="tab1" class="tab_content" style="height:400px"> -->
 				
 	    <div class="row">
+	       
+	       <div class="col-md-5"><label>Block Room Code</label>
+		        <div class="row">
+				    <div class="col-md-5">
+						<s:input id="txtTransId" path="strTransId" ondblclick="funHelp('blockRoom')" cssClass="searchTextBox" style="height: 95%;"/>
+					</div>
+				</div></div>
+			<div class="col-md-7"></div>	 
+	    
 		   <div class="col-md-5"><label>Room Type</label>
 		        <div class="row">
 				    <div class="col-md-5">

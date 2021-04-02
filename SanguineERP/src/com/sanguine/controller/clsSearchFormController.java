@@ -3431,6 +3431,18 @@ public class clsSearchFormController {
 			searchFormTitle = "Bill For Payment";
 			break;
 		}
+        
+        case "blockRoom": {
+			
+			columnNames = "  a.strTransId,a.strRoomCode,a.strRoomType,a.strReason,strRemark,a.strIsUnBlocked ";
+			tableName = "from tblblockroom a where a.strClientCode='" + clientCode + "' ";
+            listColumnNames = "TransId,Room Code,Room Type,Reason,Remark,IsUnBlocked ";
+ 			idColumnName = "strTransId";
+ 			flgQuerySelection = true;
+			// criteria = getCriteriaQuery(columnNames,search_with,tableName);
+			searchFormTitle = "Block Room";
+			break;
+		}
 	}
 		mainMap.put("columnNames", columnNames);
 		mainMap.put("tableName", tableName);

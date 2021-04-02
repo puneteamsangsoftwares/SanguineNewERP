@@ -196,6 +196,12 @@ ul.tabs1 li.active {
 		<%
 		}}%>
 
+		var billfooter="${billFooter}";
+		var checkinFooter=  "${checkInFooter}";
+		$('#txtBillFooter').val(billfooter);
+		$('#txtCheckInFooter').val(checkinFooter); 
+		var emailId="${emailId}";
+		$('#txtEmailId').val(emailId); 
 		
 		reservationMessage=value="${ReservationEmail}"
 		$('#txtReservationEmailContent').val(reservationMessage);
