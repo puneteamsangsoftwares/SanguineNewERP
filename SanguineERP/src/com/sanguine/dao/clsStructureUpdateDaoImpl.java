@@ -5282,6 +5282,18 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
        sql=" ALTER TABLE `tblpropertysetup` ADD COLUMN `strEmailId` VARCHAR(255) NULL DEFAULT NULL AFTER `strCheckInFooter`;";
        funExecutePMSQuery(sql);	
        
+       sql="ALTER TABLE `tblblockroom`	ADD COLUMN `strTransId` VARCHAR(50) NOT NULL AFTER `strRoomType`;";
+       funExecutePMSQuery(sql);	  
+       
+       sql="ALTER TABLE `tblblockroom` DROP PRIMARY KEY, ADD PRIMARY KEY (`strClientCode`, `strRoomCode`, `strTransId`) USING BTREE;";
+       funExecutePMSQuery(sql);	     
+     
+       sql="ALTER TABLE `tblblockroom` ADD COLUMN `strIsUnBlocked` VARCHAR(20) NOT NULL DEFAULT 'N' AFTER `strTransId`;";
+       funExecutePMSQuery(sql);
+
+
+       sql=" ALTER TABLE `tblhousekeepmaster` ADD COLUMN `strRoomTypeCode` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strUserEdited`;";
+       funExecutePMSQuery(sql);	 
       
        
        /// END ///
