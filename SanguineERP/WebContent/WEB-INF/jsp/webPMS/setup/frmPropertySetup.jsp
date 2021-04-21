@@ -222,13 +222,13 @@ ul.tabs1 li.active {
 		enableHousekeeping=value="${enableHousekeeping}"
 		$("#txtHouseKeeping").val(enableHousekeeping);
 		if(enableHousekeeping.includes('Y'))
-			{
-			document.getElementById("txtHouseKeeping").checked = true;
-			}
+		{
+		  document.getElementById("txtHouseKeeping").checked = true;
+		}
 		else
-			{
-			
-			}
+		{
+		
+		}
 		
 		enableWebCam=value="${enableHousekeeping}"
 			$("#txtEnableWebCam").val(enableWebCam);

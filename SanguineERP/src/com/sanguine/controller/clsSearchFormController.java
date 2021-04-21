@@ -3408,10 +3408,12 @@ public class clsSearchFormController {
 		}
 		
 		case "refundReceiptNo": {
-			columnNames = "a.strReceiptNo,DATE(a.dteReceiptDate),a.strAgainst,a.strBillNo";
-			tableName = "from tblreceipthd a "
-					+ " WHERE MID(a.strReceiptNo,3,1)='R' ";
-			listColumnNames = "Receipt No,Receipt Date,Against,Bill No";
+			columnNames = "a.strReceiptNo, DATE(a.dteReceiptDate),a.strAgainst,a.strBillNo,a.dblReceiptAmt,CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName)";
+			tableName = " from tblreceipthd a,tblreceiptdtl b,tblguestmaster c "
+					+ " WHERE a.strReceiptNo=b.strReceiptNo and "
+					+ " b.strCustomerCode= c.strGuestCode   and"
+					+ " MID(a.strReceiptNo,3,1)='R' ";
+			listColumnNames = "Receipt No,Receipt Date,Against,Bill No,Amount,Guest Name";
 			idColumnName = "strReceiptNo";
 			flgQuerySelection = true;
 			// criteria = getCriteriaQuery(columnNames,search_with,tableName);

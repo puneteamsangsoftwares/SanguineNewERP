@@ -171,23 +171,7 @@ public class clsBillPrintingController {
 			HashMap reportParams = new HashMap();
 			Map<String,clsBillPrintingBean> hmTax=new HashMap<>();
 			Map<String,clsBillPrintingBean> hmParticulars=new HashMap<>();
-			// get all parameters
-			/*
-			 * String sqlParametersFromBill =
-			 * "SELECT a.strFolioNo,a.strRoomNo,a.strRegistrationNo,a.strReservationNo"
-			 * + " ,b.dteArrivalDate,b.tmeArrivalTime " +
-			 * ",ifnull(b.dteDepartureDate,'NA'),ifnull(b.tmeDepartureTime,'NA') "
-			 * +
-			 * " ,ifnull(d.strGuestPrefix,''),ifnull(d.strFirstName,''),ifnull(d.strMiddleName,''),ifnull(d.strLastName,'') "
-			 * + ",b.intNoOfAdults,b.intNoOfChild" + " ,a.strBillNo " +
-			 * " FROM tblbillhd a LEFT OUTER JOIN tblreservationhd b ON a.strReservationNo=b.strReservationNo "
-			 * +
-			 * " LEFT OUTER JOIN tblreservationdtl c ON b.strReservationNo=c.strReservationNo AND a.strRoomNo=c.strRoomNo "
-			 * +
-			 * " LEFT OUTER JOIN tblguestmaster d ON c.strGuestCode=d.strGuestCode "
-			 * + " where a.strBillNo='" + billNo + "' ";
-			 */
-
+		
 			List<String> listCheckInNo = new ArrayList<>();
 			String checkInNo = "";
 			String sqlParametersFromBill = " SELECT a.strFolioNo,e.strRoomDesc,a.strRegistrationNo,a.strReservationNo ,date(b.dteArrivalDate),b.tmeArrivalTime , "
@@ -287,37 +271,6 @@ public class clsBillPrintingController {
 				}
 				
 				
-				/*//Printing Opening Balance
-				
-				clsBillPrintingBean folioPrintingBean = new clsBillPrintingBean();
-				double debitAmt = Double.parseDouble(arr[16].toString());
-				double creditAmt = 0.00;
-				double bal = debitAmt - creditAmt;
-				
-                
-				folioPrintingBean.setDteDocDate(" ");
-				folioPrintingBean.setStrDocNo(" ");
-				folioPrintingBean.setStrPerticulars("Opening Balance");
-				String sqlguest="select a.dblClosingBalance from tblguestmaster a where a.strGuestCode='"+arr[15].toString()+"'";
-				List guestlist = objFolioService.funGetParametersList(sqlguest);
-				double closingBal=0.00;
-				for(int j=0;j<guestlist.size();j++)
-				{
-					closingBal=Double.parseDouble(guestlist.get(0).toString());
-					if(closingBal>0)
-					{
-						folioPrintingBean.setDblDebitAmt(closingBal);
-						folioPrintingBean.setDblCreditAmt(0.00);
-					}
-					else
-					{
-						folioPrintingBean.setDblCreditAmt(closingBal);
-						folioPrintingBean.setDblDebitAmt(0.00);
-					}
-				}
-				folioPrintingBean.setDblBalanceAmt(bal);
-				dataList.add(folioPrintingBean);
-				*/
 				
 			
 			    String remark="";
@@ -348,8 +301,9 @@ public class clsBillPrintingController {
 				reportParams.put("pbankAcNo", bankAcNo);
 				reportParams.put("pbankIFSC", bankIFSC);
 				reportParams.put("pbranchnName", branchnName);
-				reportParams.put("pCompanyName", companyName);
 				reportParams.put("pGSTNo", GSTNo);
+				reportParams.put("pCompanyName", companyName);
+		
 				reportParams.put("pAddress1", objSetup.getStrAdd1() + ","+ objSetup.getStrAdd2() + "," + objSetup.getStrCity());
 				reportParams.put("pAddress2",objSetup.getStrState() + ","+ objSetup.getStrCountry() + ","+ objSetup.getStrPin());
 				reportParams.put("pContactDetails", "");
@@ -698,7 +652,7 @@ public class clsBillPrintingController {
 								+ " FROM tblreceipthd c, tblreceiptdtl d, tblsettlementmaster e "
 								+ " where c.strReceiptNo=d.strReceiptNo and d.strSettlementCode=e.strSettlementCode "
 								+ " and c.strRegistrationNo='"
-								+ registrationNo
+								+  registrationNo
 								+ "' and c.strAgainst='Check-In' AND c.strClientCode='"+clientCode+"' AND d.strClientCode='"+clientCode+"' AND e.strClientCode='"+clientCode+"'";
 	
 						List checkInReceiptDtl = objFolioService
@@ -763,9 +717,7 @@ public class clsBillPrintingController {
 							double debitAmount = Double.parseDouble(paymentArr[3].toString());
 							double creditAmount = Double.parseDouble(paymentArr[4].toString());
 							balance = balance + debitAmount - creditAmount;
-							// String debitAmount = paymentArr[3].toString();
-							// String creditAmount = paymentArr[4].toString();
-							// String balance = paymentArr[5].toString();
+							
 							folioPrintingBean.setDteDocDate(objGlobal.funGetDate("dd-MM-yyyy", (docDate)));
 							folioPrintingBean.setStrDocNo(docNo);
 							folioPrintingBean.setStrPerticulars(particulars);
@@ -778,68 +730,7 @@ public class clsBillPrintingController {
 					}
 				}
 				
-				
 
-				/*
-				 * String sqlPaymentDtl =
-				 * "SELECT date(b.dteDocDate),c.strReceiptNo,e.strSettlementDesc,'0.00' as debitAmt"
-				 * + " ,d.dblSettlementAmt as creditAmt,'0.00' as balance " +
-				 * " FROM tblbillhd a " +
-				 * "LEFT OUTER JOIN tblbilldtl b ON a.strFolioNo=b.strFolioNo "
-				 * +
-				 * " left outer join tblreceipthd c on a.strFolioNo=c.strFolioNo and a.strReservationNo=c.strReservationNo "
-				 * +
-				 * " left outer join tblreceiptdtl d on c.strReceiptNo=d.strReceiptNo "
-				 * +
-				 * " left outer join tblsettlementmaster e on d.strSettlementCode=e.strSettlementCode "
-				 * + " WHERE a.strBillNo='" + billNo + "' "; //+
-				 * " and DATE(b.dteDocDate) BETWEEN '" + fromDate + "' AND '" +
-				 * toDate + "'"
-				 */
-
-				/*sqlPaymentDtl = "SELECT date(c.dteReceiptDate),c.strReceiptNo,e.strSettlementDesc,'0.00' as debitAmt "
-						+ " ,d.dblSettlementAmt as creditAmt,'0.00' as balance "
-						+ " FROM tblbillhd a,tblreceipthd c, tblreceiptdtl d, tblsettlementmaster e "
-						+ " where a.strBillNo=c.strBillNo and c.strReceiptNo=d.strReceiptNo and d.strSettlementCode=e.strSettlementCode "
-						+ " and a.strBillNo='"
-						+ billNo
-						+ "' and c.strAgainst='Bill' ";
-
-				List billReceitDtl = objFolioService
-						.funGetParametersList(sqlPaymentDtl);
-				for (int i = 0; i < billReceitDtl.size(); i++) {
-					Object[] paymentArr = (Object[]) billReceitDtl.get(i);
-
-					String docDate = paymentArr[0].toString();
-					if (paymentArr[1] == null) {
-						continue;
-					} else {
-						clsBillPrintingBean folioPrintingBean = new clsBillPrintingBean();
-						String docNo = paymentArr[1].toString();
-						String particulars = paymentArr[2].toString();
-
-						double debitAmount = Double.parseDouble(paymentArr[3]
-								.toString());
-						double creditAmount = Double.parseDouble(paymentArr[4]
-								.toString());
-						balance = balance + debitAmount - creditAmount;
-
-						// String debitAmount = paymentArr[3].toString();
-						// String creditAmount = paymentArr[4].toString();
-						// String balance = paymentArr[5].toString();
-
-						folioPrintingBean.setDteDocDate(objGlobal.funGetDate(
-								"dd-MM-yyyy", (docDate)));
-						folioPrintingBean.setStrDocNo(docNo);
-						folioPrintingBean.setStrPerticulars(particulars);
-						folioPrintingBean.setDblDebitAmt(debitAmount);
-						folioPrintingBean.setDblCreditAmt(creditAmount);
-						folioPrintingBean.setDblBalanceAmt(balance);
-
-						dataList.add(folioPrintingBean);
-					}
-				}
-*/
 				String sqlDisc = " select date(a.dteBillDate),'','Discount','0.00',a.dblDiscAmt from  tblbilldiscount a "
 						+ " WHERE a.strBillNo='"
 						+ billNo
@@ -932,6 +823,40 @@ public class clsBillPrintingController {
 				}
 			}
 			
+
+			String sqlDisc = " select  a.strReceiptNo,date(a.dteReceiptDate), a.dblReceiptAmt,b.strRemarks from "
+					+ " tblreceipthd a ,tblreceiptdtl b"
+					+ " where  a.strReceiptNo=b.strReceiptNo and a.strBillNo ='"+billNo+"' and  a.strType='Refund Amt' and a.strClientCode='" + clientCode + "' ";
+
+			List billRefundList = objBaseService.funGetListForWebPMS(new StringBuilder(sqlDisc), "sql");
+			if (billRefundList!= null && billRefundList.size()>0) {
+				
+				for(int i=0;i<billRefundList.size();i++)
+				{
+					Object[] objRefund =(Object[])billRefundList.get(i);
+
+					clsBillPrintingBean folioPrintingBean = new clsBillPrintingBean();
+					String docDate = objRefund[1].toString();
+					String docNo = objRefund[0].toString();
+					String particulars ="(Refund) "+ objRefund[3].toString(); ;
+
+					double creditAmount = 0;
+					double debitAmount  = -1 * Double.parseDouble(objRefund[2].toString());
+					balance = balance + debitAmount - creditAmount;
+					folioPrintingBean.setDteDocDate(objGlobal.funGetDate("dd-MM-yyyy", (docDate)));
+					folioPrintingBean.setStrDocNo(docNo);
+					folioPrintingBean.setStrPerticulars(particulars);
+					folioPrintingBean.setDblDebitAmt(debitAmount);
+					folioPrintingBean.setDblCreditAmt(creditAmount);
+					folioPrintingBean.setDblBalanceAmt(balance);
+
+					dataList.add(folioPrintingBean);
+				}
+				
+			}
+			
+			
+			
 			String sqlCheckSupportVoucher="SELECT a.strPerticulars FROM tblbilldtl a,tblbillhd b WHERE b.strBillNo=a.strBillNo "
 					+ " AND a.strBillNo ='"+billNo+"' AND a.strPerticulars!='Room Tariff' AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'";
 			List list = objFolioService.funGetParametersList(sqlCheckSupportVoucher);
@@ -947,14 +872,18 @@ public class clsBillPrintingController {
 			}
 			
 			pRoomTariff = funGetRoomTariffData(billNo,folio,registrationNo,clientCode,checkInNo);
-			String sql="select a.dblReceiptAmt from tblreceipthd a where a.strType='Refund Amt' and a.strBillNo='"+billNo+"'";
+			String sql="select ifnull(sum(a.dblReceiptAmt),0) from tblreceipthd a where a.strType='Refund Amt' and a.strBillNo='"+billNo+"'";
 			List guestlist =  objGlobalFunctionsService.funGetListModuleWise(sql, "sql");;
 			double refundAmt=0.00;
 			if(guestlist!=null && guestlist.size()>0)
 			{
-				refundAmt=Double.parseDouble(guestlist.get(0).toString());
-				reportParams.put("lblRefund", "Refund Amount");
-				reportParams.put("dblRefund",String.valueOf( refundAmt));
+				if(guestlist.get(0)!=null)
+				{
+					refundAmt=Double.parseDouble(guestlist.get(0).toString());
+					reportParams.put("lblRefund", "Refund Amount");
+					reportParams.put("dblRefund",String.valueOf( refundAmt));
+				}
+				
 			}
 			else
 			{
@@ -2550,15 +2479,14 @@ public class clsBillPrintingController {
 	{
 		List<clsVoidBillBean> listVoidDtl=new ArrayList();
 		String clientCode = req.getSession().getAttribute("clientCode").toString();
-		String sql=" select a.strBillNo,a.strFolioNo,a.dteBillDate,a.dblGrandTotal ," //3
-				+ " ifnull(b.strPerticulars,''),ifnull(sum(b.dblDebitAmt),0),ifnull(sum(b.dblCreditAmt),0),ifnull(b.dblBalanceAmt,0),"
-				+ " c.strGuestCode,IFNULL(d.strFirstName,''),IFNULL(d.strLastName,''),e.strRoomDesc ,IFNULL(b.strDocNo,''),a.strRoomNo,IFNULL(b.strRevenueCode,'')"
-				+ " from tblbillhd a left outer join tblbilldtl b on a.strBillNo=b.strBillNo "
-				+ " left outer join tblcheckindtl c on a.strCheckInNo=c.strCheckInNo "
-				+ " left outer join tblguestmaster d on c.strGuestCode=d.strGuestCode "
-				+ " left outer join tblroom e on c.strRoomNo=e.strRoomCode "
-				+ " where a.strBillNo='"+strBillNo+"' and a.strRoomNo=e.strRoomCode "
-				+ " group by b.strDocNo;";
+		String sql="SELECT a.strBillNo,a.strFolioNo,a.dteBillDate,a.dblGrandTotal, "
+				+ " IFNULL(b.strPerticulars,''), IFNULL(SUM(b.dblDebitAmt),0), IFNULL(SUM(b.dblCreditAmt),0), "
+				+ " IFNULL(b.dblBalanceAmt,0),  a.strGuestCode, IFNULL(d.strFirstName,''), IFNULL(d.strLastName,''),"
+				+ " e.strRoomDesc, IFNULL(b.strDocNo,''),a.strRoomNo, IFNULL(b.strRevenueCode,'')"
+				+ " FROM  tblbillhd a,tblbilldtl b ,tblguestmaster d,tblroom e"
+				+ " where  a.strBillNo=b.strBillNo  and a.strRoomNo=e.strRoomCode   and  a.strGuestCode=d.strGuestCode"
+				+ " and a.strBillNo='"+strBillNo+"' "
+				+ " GROUP BY b.strDocNo;";
 		
 		List listBillDetails = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 		if(null!=listBillDetails){
@@ -3134,7 +3062,7 @@ public class clsBillPrintingController {
 					sqlBillDtl = " SELECT DATE(b.dteDocDate),b.strDocNo,"
 							+ " IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''), b.dblDebitAmt - b.dblDiscAmt,"
 							+ " b.dblCreditAmt,"
-							+ " b.dblBalanceAmt ,ifnull(a.strReservationNo,'') ,b.strPerticulars,if(length(b.strOldFolioNo) >0 , CONCAT('Transfer-',c.strRoomDesc),c.strRoomDesc),d.intNoOfFolios,b.strOldFolioNo , b.dblDebitAmt "
+							+ " b.dblBalanceAmt ,ifnull(a.strReservationNo,'') ,b.strPerticulars,if(length(b.strOldFolioNo) >1 , CONCAT('Transfer-',c.strRoomDesc),c.strRoomDesc),d.intNoOfFolios,b.strOldFolioNo , b.dblDebitAmt "
 							+ " FROM tblbillhd a "
 							+ " INNER JOIN tblbilldtl b "
 							+ " ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo,tblroom c ,tblcheckindtl d "
@@ -3639,7 +3567,7 @@ public class clsBillPrintingController {
 					
 					Object obj[]=(Object[]) billDiscList.get(0);
 					
-					String details="Orginal amount is "+debitAmountWithoutDisc+" And Discount On  "+obj[1].toString()+"  Is "+obj[0].toString()+" Rs  ";
+					String details="Orginal amount was "+debitAmountWithoutDisc+" And Discount On  "+obj[1].toString()+"  - "+obj[0].toString()+" Rs  ";
 					reportParams.put("pDiscountDetails",details);
 					
 				}

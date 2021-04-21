@@ -149,8 +149,16 @@ public class clsGuestMasterController {
 		List listGuestData = objGuestMasterDao.funGetGuestMaster(guestCode, clientCode);
 		clsGuestMasterHdModel objGuestMasterModel = (clsGuestMasterHdModel) listGuestData.get(0);
 		objGuestMasterModel.setDteDOB(objGlobal.funGetDate("dd-MM-yyyy", objGuestMasterModel.getDteDOB()));
-		objGuestMasterModel.setDtePassportExpiryDate(objGlobal.funGetDate("dd-MM-yyyy", objGuestMasterModel.getDtePassportExpiryDate()));
-		objGuestMasterModel.setDtePassportIssueDate(objGlobal.funGetDate("dd-MM-yyyy", objGuestMasterModel.getDtePassportIssueDate()));
+	    if(objGuestMasterModel.getDtePassportExpiryDate().length()>0)
+	    {
+			objGuestMasterModel.setDtePassportExpiryDate(objGlobal.funGetDate("dd-MM-yyyy", objGuestMasterModel.getDtePassportExpiryDate()));
+
+	    }
+	    if(objGuestMasterModel.getDtePassportIssueDate().length()>0)
+	    {
+			objGuestMasterModel.setDtePassportIssueDate(objGlobal.funGetDate("dd-MM-yyyy", objGuestMasterModel.getDtePassportIssueDate()));
+
+	    }
 		objGuestMasterModel.setDteAnniversaryDate(objGlobal.funGetDate("dd-MM-yyyy", objGuestMasterModel.getDteAnniversaryDate()));
 
 		return objGuestMasterModel;

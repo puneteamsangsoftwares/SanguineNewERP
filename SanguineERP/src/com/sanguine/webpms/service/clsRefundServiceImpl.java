@@ -65,7 +65,7 @@ public class clsRefundServiceImpl implements clsRefundService {
 		}
 		objModel.setStrAgainst("Bill");
 		objModel.setDblPaidAmt(0.00);
-		objModel.setDblReceiptAmt(objRefundBean.getDblReceiptAmt());
+		objModel.setDblReceiptAmt(-1 * objRefundBean.getDblReceiptAmt());
         objModel.setDteReceiptDate(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 		objModel.setStrCheckInNo(" ");
 		objModel.setStrBillNo(objRefundBean.getStrDocNo());
@@ -81,7 +81,7 @@ public class clsRefundServiceImpl implements clsRefundService {
 
 		List<clsPMSPaymentReceiptDtl> listPaymentReceiptDtlModel = new ArrayList<clsPMSPaymentReceiptDtl>();
 		clsPMSPaymentReceiptDtl objPaymentReceiptDtlModel = new clsPMSPaymentReceiptDtl();
-		objPaymentReceiptDtlModel.setDblSettlementAmt(objRefundBean.getDblReceiptAmt());
+		objPaymentReceiptDtlModel.setDblSettlementAmt(-1 * objRefundBean.getDblReceiptAmt());
 
 		objPaymentReceiptDtlModel.setDteExpiryDate(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 		objPaymentReceiptDtlModel.setStrCardNo(objRefundBean.getStrCardNo());

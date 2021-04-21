@@ -1,6 +1,9 @@
 package com.sanguine.controller;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +91,7 @@ public class clsExportTallyFileController {
 		if (objBean.getStrDocType().equals("Purchase")) {
 			// funPurchaseXMLFile(objBean,clientCode );
 
-			funPurchaseXMLFileFormate1(objBean, clientCode, req);
+			funPurchaseXMLFileFormate1(objBean, clientCode, req,resp);
 
 			funSupplierLedgerXMLFile(objBean, clientCode);
 		} else {
@@ -680,7 +683,7 @@ public class clsExportTallyFileController {
 
 	// ///// Sales Xml Functions End//////////
 
-	private void funPurchaseXMLFileFormate1(clsReportBean objBean, String clientCode, HttpServletRequest req) {
+	private void funPurchaseXMLFileFormate1(clsReportBean objBean, String clientCode, HttpServletRequest req,HttpServletResponse resp) {
 
 		DecimalFormat df = new DecimalFormat("0.00");
 		;
@@ -800,78 +803,6 @@ public class clsExportTallyFileController {
 			tallyMessage2Element.appendChild(companyElement);
 			requestDataElement.appendChild(tallyMessage2Element);
 
-			// bodyElement.appendChild(getDes(doc, "")); //For Desc body
-			//
-			//
-			// Element data =doc.createElement("DATA");
-			// //append root element to document
-			// bodyElement.appendChild(data);
-			//
-			// Element tallyMessage =doc.createElement("TALLYMESSAGE");
-			//
-			// data.appendChild(tallyMessage);
-
-			// String
-			// sql=" select a.strGRNCode,a.strSuppCode,c.strPName,a.strAgainst,a.strBillNo,Date(a.dtGRNDate) , a.dblTotal,d.strTallyCode  "
-			// +
-			// " from tblgrnhd a ,tblgrntaxdtl b ,tblpartymaster c ,tbltallylinkup d"
-			// +
-			// " where a.strGRNCode=b.strGRNCode and a.strSuppCode=c.strPCode and d.strGroupCode=a.strSuppCode "
-			// +
-			// " and date(a.dtGRNDate) between  '"+objBean.getDteFromDate()+"' and '"+objBean.getDteToDate()+"' "
-			// + " and a.strClientCode='"+clientCode+"' "
-			// + " and b.strClientCode='"+clientCode+"' "
-			// + " and c.strClientCode='"+clientCode+"' "
-			// + " group by a.strGRNCode ";
-
-			// String
-			// sql=" select a.strGRNCode,a.strSuppCode,c.strPName,a.strAgainst,a.strBillNo,Date(a.dtGRNDate) , a.dblTotal,ifnull(d.strTallyCode,'')   "
-			// + " from tblgrnhd a "
-			// +
-			// " left outer join tblgrntaxdtl b on a.strGRNCode=b.strGRNCode  and b.strClientCode='"+clientCode+"' "
-			// +
-			// " left outer join tblpartymaster c on a.strSuppCode=c.strPCode and c.strClientCode='"+clientCode+"' "
-			// +
-			// " left outer join tbltallylinkup d on d.strGroupCode=a.strSuppCode "
-			// +
-			// " where  date(a.dtGRNDate) between  '"+objBean.getDteFromDate()+"' and '"+objBean.getDteToDate()+"'  "
-			// + " and a.strClientCode='"+clientCode+"' "
-			// + " group by a.strGRNCode  ";
-			//
-			// System.out.println("mainData="+sql);
-			// List list=objGlobalService.funGetList(sql);
-			// for(int cnt=0;cnt<list.size();cnt++)
-			// {
-			// Object[] arrObj=(Object[])list.get(cnt);
-			// String grnNo=arrObj[0].toString();
-			// String strSuppCode=arrObj[1].toString();
-			// String strPName=arrObj[2].toString();
-			// String PNameAndCode = strPName+"  ("+strSuppCode+")";
-			// String strAgainst=arrObj[3].toString();
-			// String strBillNo=arrObj[4].toString();
-			// String dtGRNDate=arrObj[5].toString();
-			// String
-			// grnDate=dtGRNDate.split("-")[0]+dtGRNDate.split("-")[1]+dtGRNDate.split("-")[2];
-			//
-			// String dblTotal =arrObj[6].toString();
-			// String pNameAlise = arrObj[7].toString();
-			// int vNo=cnt+1;
-
-			// tallyMessage.appendChild(getData(doc, String.valueOf(vNo),
-			// grnDate, strBillNo, "No", String.valueOf(vNo) ,grnNo,
-			// pNameAlise,"No",dblTotal,objBean,clientCode ));
-
-			// }
-
-			// append first child element to root element
-			// tallyMessage.appendChild(getData(doc, "1", "20160710",
-			// "Bill No 1012ee", "NO", "01" ,"01GRAG000043",
-			// "VIRCHAND KHIMJI  AND CO. (S000049)","No","2055.00" ));
-
-			// //append second child
-			// tallyMessage.appendChild(getData(doc, "2", "20160710",
-			// "Bill No 101215", "Yes", "02" ,"01GRAG000049",
-			// "VIN VIN ENTERPRISES. (S000053)","No","1075.2000" ));
 
 			// for output to file, console
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -885,10 +816,20 @@ public class clsExportTallyFileController {
 			System.out.println(System.getProperty("user.dir") + "\\PURNEW" + clientCode + ".xml");
 
 			StreamResult file = new StreamResult(new File("PURNEW" + clientCode + ".xml").getAbsolutePath());
-
 			// write data
 			transformer.transform(source, console);
 			transformer.transform(source, file);
+
+			String downloadFolder ="Libraries\\Downloads";
+			Path filePath = Paths.get(downloadFolder, "PURNEW" + clientCode + ".xml");
+			
+			
+			resp.setContentType("application/xml");
+			resp.setHeader("Content-Disposition", "attachment; filename=(PURNEW" + clientCode + ".xml");
+			Files.copy(filePath, resp.getOutputStream());
+			// flushes output stream
+			resp.getOutputStream().flush();
+	        
 			System.out.println("DONE");
 
 		} catch (Exception e) {

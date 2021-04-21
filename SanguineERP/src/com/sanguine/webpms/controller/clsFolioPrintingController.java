@@ -41,7 +41,9 @@ import com.sanguine.service.clsGlobalFunctionsService;
 import com.sanguine.service.clsSetupMasterService;
 import com.sanguine.webpms.bean.clsFolioPrintingBean;
 import com.sanguine.webpms.dao.clsWebPMSDBUtilityDao;
+import com.sanguine.webpms.model.clsPropertySetupHdModel;
 import com.sanguine.webpms.service.clsFolioService;
+import com.sanguine.webpms.service.clsPropertySetupService;
 
 @Controller
 public class clsFolioPrintingController {
@@ -62,6 +64,14 @@ public class clsFolioPrintingController {
 
 	@Autowired
 	private clsWebPMSDBUtilityDao objWebPMSUtility;
+	
+
+	@Autowired
+	clsPMSUtilityFunctions objPMSUtilityFunctions;
+	
+	@Autowired
+	private clsPropertySetupService objPropertySetupService;
+	
 
 	// Open Folio Printing
 	@RequestMapping(value = "/frmFolioPrinting", method = RequestMethod.GET)
@@ -97,6 +107,11 @@ public class clsFolioPrintingController {
 				objSetup = new clsPropertySetupModel();
 			}
 			String reportName = servletContext.getRealPath("/WEB-INF/reports/webpms/rptFolioPrinting.jrxml");
+			if(clientCode.equals("378.001"))
+			{
+				reportName = servletContext.getRealPath("/WEB-INF/reports/webpms/rptFolioPrinting1.jrxml");
+			}
+			
 			String imagePath = servletContext.getRealPath("/resources/images/company_Logo.png");
 			String imagePath1 = servletContext.getRealPath("/resources/images/company_Logo1.png");
 			
@@ -266,29 +281,36 @@ public class clsFolioPrintingController {
 					folioBean.setDteDocDate(" ");
 					folioBean.setStrDocNo(" ");
 					folioBean.setStrPerticulars("Opening Balance");
-					String sql="select a.dblClosingBalance from tblguestmaster a where a.strGuestCode='"+guestCode+"'";
-					List guestlist = objFolioService.funGetParametersList(sql);
-					double closingBal=0.00;
-					for(int j=0;j<guestlist.size();j++)
+					double openingBalance=objPMSUtilityFunctions.funGetOpeningBalanceForOneGuest(guestCode);;
+					if(openingBalance>0)
 					{
-						closingBal=Double.parseDouble(guestlist.get(0).toString());
-						if(closingBal>0)
-						{
-							folioBean.setDblDebitAmt(closingBal);
-							folioBean.setDblCreditAmt(0.00);
-						}
-						else
-						{
-							folioBean.setDblCreditAmt(closingBal);
-							folioBean.setDblDebitAmt(0.00);
-						}
+						folioBean.setDblDebitAmt(openingBalance);
+						folioBean.setDblCreditAmt(0.00);
 					}
-					folioBean.setDblBalanceAmt(bal);
+					else
+					{
+						folioBean.setDblCreditAmt(openingBalance);
+						folioBean.setDblDebitAmt(0.00);
+					}					
+					folioBean.setDblBalanceAmt(openingBalance);
 					folioBean.setDblQuantity(0.00);
 					dataList.add(folioBean);
 				}
 				
-
+			
+				clsPropertySetupHdModel objPropertySetupModel = objPropertySetupService.funGetPropertySetup(propertyCode, clientCode);
+//				String noOfRoom = objPropertySetupModel.getStrRoomLimit();.
+				
+				
+				reportParams.put("phsnCode", objPropertySetupModel.getStrHscCode());
+				reportParams.put("ppanno",  objPropertySetupModel.getStrPanNo());
+				reportParams.put("pbankDtl", objPropertySetupModel.getStrBankAcName());
+				reportParams.put("pbankAcNo", objPropertySetupModel.getStrBankAcNumber());
+				reportParams.put("pbankIFSC",  objPropertySetupModel.getStrBankIFSC());
+				reportParams.put("pbranchnName", objPropertySetupModel.getStBranchName());
+				reportParams.put("pGSTNo", objPropertySetupModel.getStrGSTNo());
+				
+				
 				reportParams.put("pCompanyName", companyName);
 				reportParams.put("pAddress1", objSetup.getStrAdd1() + "," + objSetup.getStrAdd2() + "," + objSetup.getStrCity());
 				reportParams.put("pAddress2", objSetup.getStrState() + "," + objSetup.getStrCountry() + "," + objSetup.getStrPin());
@@ -348,9 +370,9 @@ public class clsFolioPrintingController {
 				// get folio details
 				
 				String sqlFolioDtl = "SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo, CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),"
-						+ " b.dblQuantity,b.dblDebitAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark),d.strRoomDesc,b.strOldFolioNo ,b.dblDebitAmt " + ""
+						+ " b.dblQuantity,b.dblDebitAmt - b.dblDiscAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark),d.strRoomDesc,b.strOldFolioNo ,b.dblDebitAmt " + ""
 						+ " FROM tblfoliohd a LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'" + ", tblroom d  "
-						+ " WHERE b.strRevenueCode=d.strRoomCode AND a.strFolioNo='" + folioNo + "' and b.strRevenueType!='Discount'"
+						+ " WHERE b.strRevenueCode=d.strRoomCode AND a.strFolioNo='" + folioNo + "' and b.strRevenueType!='Discount' and b.dblDebitAmt > 0 "
 						+ " order by b.dteDocDate ASC";
 
 				if(clientCode.equalsIgnoreCase("383.001"))
@@ -476,7 +498,7 @@ public class clsFolioPrintingController {
 				
 					Object obj[]=(Object[]) folioDtlList.get(0);
 					
-					String details="Orginal amount is "+debitAmountWithoutDisc+" And Discount On  "+obj[1].toString()+"  Is "+obj[0].toString()+" Rs  ";
+					String details="Orginal amount was "+debitAmountWithoutDisc+" And Discount On  "+obj[1].toString()+"  - "+obj[0].toString()+" Rs  ";
 					reportParams.put("pDiscountDetails",details);
 				}
 				

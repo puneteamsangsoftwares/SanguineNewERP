@@ -185,18 +185,21 @@ public class clsGuestMasterServiceImpl implements clsGuestMasterService {
 		objGuestMasterModel.setStrUserEdited(userCode);
 		objGuestMasterModel.setDteDateEdited(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 		objGuestMasterModel.setStrProceedingTo(objGlobal.funIfNull(objGuestMasterBean.getStrProceedingTo(), "NA", objGuestMasterBean.getStrProceedingTo()));
-
-		if (null == objGuestMasterBean.getDtePassportExpiryDate()) {
-			objGuestMasterModel.setDtePassportExpiryDate("1900-01-01");
-		} else {
+		
+		objGuestMasterModel.setDtePassportExpiryDate(objGlobal.funIfNull(objGuestMasterBean.getDtePassportExpiryDate(),"",objGuestMasterBean.getDtePassportExpiryDate()));
+	   
+		if(objGuestMasterModel.getDtePassportExpiryDate().length()>0)
+		{
 			objGuestMasterModel.setDtePassportExpiryDate(objGlobal.funGetDate("yyyy-MM-dd", objGuestMasterBean.getDtePassportExpiryDate()));
 		}
-
-		if (null == objGuestMasterBean.getDtePassportIssueDate()) {
-			objGuestMasterModel.setDtePassportIssueDate("1900-01-01");
-		} else {
-			objGuestMasterModel.setDtePassportIssueDate(objGlobal.funGetDate("yyyy-MM-dd", objGuestMasterBean.getDtePassportIssueDate()));
+		
+		objGuestMasterModel.setDtePassportIssueDate(objGlobal.funIfNull(objGuestMasterBean.getDtePassportIssueDate(),"",objGuestMasterBean.getDtePassportIssueDate()));
+		
+		if(objGuestMasterBean.getDtePassportIssueDate().length()>0)
+		{
+			objGuestMasterModel.setDtePassportExpiryDate(objGlobal.funGetDate("yyyy-MM-dd", objGuestMasterBean.getDtePassportIssueDate()));
 		}
+	
 
 		objGuestMasterModel.setStrGSTNo(objGuestMasterBean.getStrGSTNo());
 		objGuestMasterModel.setStrUIDNo(objGuestMasterBean.getStrUIDNo());

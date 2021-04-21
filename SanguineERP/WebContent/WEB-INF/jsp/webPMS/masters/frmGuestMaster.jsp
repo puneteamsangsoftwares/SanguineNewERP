@@ -43,11 +43,11 @@ $(function()
 			
 			
 					
-			$("#txtPassportExpiryDate").datepicker({ dateFormat: 'dd-mm-yy' });
+			/* $("#txtPassportExpiryDate").datepicker({ dateFormat: 'dd-mm-yy' });
 			$("#txtPassportExpiryDate").datepicker('setDate', pmsDate);
 			
 			$("#txtPassportIssueDate").datepicker({ dateFormat: 'dd-mm-yy' });
-			$("#txtPassportIssueDate").datepicker('setDate', pmsDate);
+			$("#txtPassportIssueDate").datepicker('setDate', pmsDate); */
 			
 			$("#txtAnniversaryDte").datepicker({ dateFormat: 'dd-mm-yy' });
 			$("#txtAnniversaryDte").datepicker('setDate', pmsDate);

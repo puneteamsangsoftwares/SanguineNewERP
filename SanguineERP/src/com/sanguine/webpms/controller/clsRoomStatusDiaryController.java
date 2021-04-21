@@ -618,7 +618,8 @@ public class clsRoomStatusDiaryController {
 			//Checked Out
 			else if(strSelection.equalsIgnoreCase("Checked Out"))
 			{					
-				sql= "SELECT e.strBillNo,d.strRoomCode,d.strRoomDesc, CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName),'Checked Out', DATE_FORMAT(DATE(a.dteArrivalDate),'%d-%m-%Y'), DATE_FORMAT(DATE(a.dteDepartureDate),'%d-%m-%Y'), DATEDIFF('"+PMSDate+"', DATE(a.dteDepartureDate)),"
+				sql= "SELECT e.strBillNo,d.strRoomCode,d.strRoomDesc, CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName),'Checked Out', DATE_FORMAT(DATE(a.dteArrivalDate),'%d-%m-%Y'),"
+						+ " DATE_FORMAT(DATE(a.dteDepartureDate),'%d-%m-%Y'), DATEDIFF('"+PMSDate+"', DATE(a.dteDepartureDate)),"
 						+ "LEFT(TIMEDIFF(a.tmeDepartureTime,(SELECT a.tmeCheckOutTime "
 						+ "FROM tblpropertysetup a)),6),"
 						+ "LEFT(TIMEDIFF(a.tmeArrivalTime,("
@@ -634,40 +635,61 @@ public class clsRoomStatusDiaryController {
 			{
 				sql=" SELECT IF(a.strCheckInNo='','',a.strCheckInNo),d.strRoomCode,d.strRoomDesc, CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName),d.strStatus, "
 						+ "DATE_FORMAT(DATE(a.dteArrivalDate),'%d-%m-%Y'), DATE_FORMAT(DATE(a.dteDepartureDate),'%d-%m-%Y'), "
-						+ "DATEDIFF('"+PMSDate+"',DATE(a.dteDepartureDate)),LEFT(TIMEDIFF(a.tmeDepartureTime,(select a.tmeCheckOutTime from tblpropertysetup a )),6), "
-						+ "LEFT(TIMEDIFF(a.tmeArrivalTime,(select a.tmeCheckInTime from tblpropertysetup a )),6),a.tmeArrivalTime,a.tmeDepartureTime , DATEDIFF(DATE(a.dteArrivalDate),'"+PMSDate+"'), DATEDIFF(DATE(a.dteDepartureDate),'"+PMSDate+"')"
+						+ "DATEDIFF(DATE(a.dteDepartureDate),'"+viewDate+"') as arrDipDiff,LEFT(TIMEDIFF(a.tmeDepartureTime,(select a.tmeCheckOutTime from tblpropertysetup a )),6), "
+						+ "LEFT(TIMEDIFF(a.tmeArrivalTime,(select a.tmeCheckInTime from tblpropertysetup a )),6),a.tmeArrivalTime,a.tmeDepartureTime  "
+						+ " ,DATEDIFF(DATE(a.dteDepartureDate),'"+viewDate+"')"
 						+ "FROM tblcheckinhd a,tblcheckindtl b,tblguestmaster c,tblroom d,tblfoliohd e "
 						+ "WHERE a.strCheckInNo=b.strCheckInNo AND b.strGuestCode=c.strGuestCode AND b.strRoomNo=d.strRoomCode "
-						+ "AND  '"+viewDate+"'  BETWEEN DATE(a.dteArrivalDate) AND DATE(a.dteDepartureDate) AND b.strRoomNo='"+arrObjRooms[0].toString()+"' AND a.strCheckInNo=e.strCheckInNo "
-						+ "AND a.strCheckInNo NOT IN (SELECT strCheckInNo FROM tblbillhd) AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' AND c.strClientCode='"+clientCode+"' AND d.strClientCode='"+clientCode+"' AND e.strClientCode='"+clientCode+"' "
-						+ "UNION "
+						+ "AND  '"+viewDate+"'  BETWEEN DATE(a.dteArrivalDate) AND DATE(a.dteDepartureDate) AND b.strRoomNo='"+arrObjRooms[0].toString()+"' "
+						+ " AND a.strCheckInNo=e.strCheckInNo "
+						+ "AND a.strCheckInNo NOT IN (SELECT strCheckInNo FROM tblbillhd) AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' "
+						+ " AND c.strClientCode='"+clientCode+"' AND d.strClientCode='"+clientCode+"' AND e.strClientCode='"+clientCode+"' "
+						+ " "
+						+ " UNION "
+						+ " "
 						+ "SELECT a.strReservationNo,d.strRoomCode,d.strRoomDesc, CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName), "
 						+ "'RESERVATION', DATE_FORMAT(DATE(a.dteArrivalDate),'%d-%m-%Y'), DATE_FORMAT(DATE(a.dteDepartureDate),'%d-%m-%Y'), "
-						+ "DATEDIFF(DATE(a.dteDepartureDate),DATE(a.dteArrivalDate)),LEFT(TIMEDIFF(a.tmeDepartureTime,(select a.tmeCheckOutTime from tblpropertysetup a )),6), "
-						+ "LEFT(TIMEDIFF(a.tmeArrivalTime,(select a.tmeCheckInTime from tblpropertysetup a )),6),a.tmeArrivalTime,a.tmeDepartureTime , DATEDIFF(DATE(a.dteArrivalDate),'"+viewDate+"'),DATEDIFF(DATE(a.dteDepartureDate),'"+viewDate+"')"
+						+ "DATEDIFF(DATE(a.dteDepartureDate),DATE(a.dteArrivalDate)) as arrDipDiff,LEFT(TIMEDIFF(a.tmeDepartureTime,"
+						+ " (select a.tmeCheckOutTime from tblpropertysetup a )),6), "
+						+ "LEFT(TIMEDIFF(a.tmeArrivalTime,(select a.tmeCheckInTime from tblpropertysetup a )),6),a.tmeArrivalTime,a.tmeDepartureTime  "
+						+ " , DATEDIFF(DATE(a.dteDepartureDate),'"+viewDate+"') "
 						+ "FROM tblreservationhd a,tblreservationdtl b,tblguestmaster c,tblroom d,tblbookingtype e "
 						+ "WHERE a.strReservationNo=b.strReservationNo AND b.strGuestCode=c.strGuestCode AND b.strRoomNo=d.strRoomCode "
-						+ "AND a.strBookingTypeCode=e.strBookingTypeCode AND  '"+viewDate+"'  BETWEEN DATE(a.dteArrivalDate) AND DATE(a.dteDepartureDate) AND b.strRoomNo='"+arrObjRooms[0].toString()+"' "
-						+ "AND a.strReservationNo NOT IN (SELECT strReservationNo FROM tblcheckinhd) AND a.strCancelReservation='N' AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' AND c.strClientCode='"+clientCode+"' AND d.strClientCode='"+clientCode+"' AND e.strClientCode='"+clientCode+"'"
-						+ "UNION "
+						+ "AND a.strBookingTypeCode=e.strBookingTypeCode AND  '"+viewDate+"'  BETWEEN DATE(a.dteArrivalDate) AND DATE(a.dteDepartureDate)"
+						+ "  AND b.strRoomNo='"+arrObjRooms[0].toString()+"' "
+						+ " AND a.strReservationNo NOT IN (SELECT strReservationNo FROM tblcheckinhd) AND a.strCancelReservation='N' "
+						+ " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' AND c.strClientCode='"+clientCode+"' "
+						+ " AND d.strClientCode='"+clientCode+"' AND e.strClientCode='"+clientCode+"'"
+						+ " "
+						+ " UNION "
+						+ " "
 						+ "SELECT a.strWalkinNo,d.strRoomCode,d.strRoomDesc, CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName),'Waiting', "
 						+ "DATE_FORMAT(DATE(a.dteWalkinDate),'%d-%m-%Y'), DATE_FORMAT(DATE(a.dteCheckOutDate),'%d-%m-%Y'), "
-						+ "DATEDIFF('"+viewDate+"',DATE(a.dteCheckOutDate)),LEFT(TIMEDIFF(a.tmeCheckOutTime,(select a.tmeCheckOutTime from tblpropertysetup a )),6), "
-						+ "LEFT(TIMEDIFF(a.tmeWalkInTime,(select a.tmeCheckInTime from tblpropertysetup a )),6),a.tmeWalkInTime,a.tmeCheckOutTime , DATEDIFF(DATE(a.dteWalkinDate),'"+viewDate+"'),DATEDIFF(DATE(a.dteCheckOutDate),'"+viewDate+"')"
+						+ "DATEDIFF(DATE(a.dteCheckOutDate),'"+viewDate+"') as arrDipDiff ,LEFT(TIMEDIFF(a.tmeCheckOutTime,(select a.tmeCheckOutTime "
+						+ " from tblpropertysetup a )),6), "
+						+ "LEFT(TIMEDIFF(a.tmeWalkInTime,(select a.tmeCheckInTime from tblpropertysetup a )),6),a.tmeWalkInTime,a.tmeCheckOutTime  "
+						+ " ,DATEDIFF(DATE(a.dteCheckOutDate),'"+viewDate+"') "
 						+ "FROM tblwalkinhd a,tblwalkindtl b,tblguestmaster c,tblroom d "
 						+ "WHERE a.strWalkinNo=b.strWalkinNo AND b.strGuestCode=c.strGuestCode AND b.strRoomNo=d.strRoomCode "
-						+ "AND '"+viewDate+"' BETWEEN  DATE(a.dteWalkinDate) AND DATE(a.dteCheckOutDate)  AND b.strRoomNo='"+arrObjRooms[0].toString()+"' AND a.strWalkinNo NOT IN (SELECT strWalkinNo FROM tblcheckinhd) AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' AND c.strClientCode='"+clientCode+"' AND d.strClientCode='"+clientCode+"'"
+						+ "AND '"+viewDate+"' BETWEEN  DATE(a.dteWalkinDate) AND DATE(a.dteCheckOutDate)  AND b.strRoomNo='"+arrObjRooms[0].toString()+"'"
+						+ "  AND a.strWalkinNo NOT IN (SELECT strWalkinNo FROM tblcheckinhd) AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' AND c.strClientCode='"+clientCode+"' AND d.strClientCode='"+clientCode+"'"
+						+ " "
 						+ "UNION "
-						+ "SELECT e.strBillNo,d.strRoomCode,d.strRoomDesc, CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName),'Checked Out', DATE_FORMAT(DATE(a.dteArrivalDate),'%d-%m-%Y'), DATE_FORMAT(DATE(a.dteDepartureDate),'%d-%m-%Y'), DATEDIFF('"+PMSDate+"', DATE(a.dteDepartureDate)),"
+						+ "  "
+						+ "SELECT e.strBillNo,d.strRoomCode,d.strRoomDesc, CONCAT(c.strFirstName,' ',c.strMiddleName,' ',c.strLastName),'Checked Out', "
+						+ " DATE_FORMAT(DATE(a.dteArrivalDate),'%d-%m-%Y'), DATE_FORMAT(DATE(a.dteDepartureDate),'%d-%m-%Y'), "
+						+ " DATEDIFF( DATE(a.dteDepartureDate),'"+viewDate+"') as arrDipDiff ,"
 						+ "LEFT(TIMEDIFF(a.tmeDepartureTime,(SELECT a.tmeCheckOutTime "
 						+ "FROM tblpropertysetup a)),6),"
 						+ "LEFT(TIMEDIFF(a.tmeArrivalTime,("
 						+ "SELECT a.tmeCheckInTime "
-						+ "FROM tblpropertysetup a)),6),a.tmeArrivalTime,a.tmeDepartureTime,"
-						+ "DATEDIFF(DATE(a.dteArrivalDate),'"+viewDate+"'), DATEDIFF(DATE(a.dteDepartureDate),'"+viewDate+"') "
+						+ "FROM tblpropertysetup a)),6),a.tmeArrivalTime,a.tmeDepartureTime"
+						+ ", DATEDIFF(DATE(a.dteDepartureDate),'"+viewDate+"') "
 						+ "FROM tblcheckinhd a,tblcheckindtl b,tblguestmaster c,tblroom d,tblbillhd e "
-						+ "WHERE a.strCheckInNo=b.strCheckInNo AND b.strGuestCode=c.strGuestCode AND b.strRoomNo=d.strRoomCode AND '"+viewDate+"'  BETWEEN DATE(a.dteArrivalDate) AND DATE(a.dteDepartureDate) "
-						+ "	AND b.strRoomNo='"+arrObjRooms[0].toString()+"' AND a.dteDepartureDate NOT IN ('"+PMSDate+"') AND a.strCheckInNo=e.strCheckInNo  AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' "
+						+ "WHERE a.strCheckInNo=b.strCheckInNo AND b.strGuestCode=c.strGuestCode AND b.strRoomNo=d.strRoomCode AND '"+viewDate+"' "
+						+ "  BETWEEN DATE(a.dteArrivalDate) AND DATE(a.dteDepartureDate) "
+						+ "	AND b.strRoomNo='"+arrObjRooms[0].toString()+"' AND a.dteDepartureDate NOT IN ('"+PMSDate+"') "
+						+ " AND a.strCheckInNo=e.strCheckInNo  AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' "
 						+ "AND c.strClientCode='"+clientCode+"' AND d.strClientCode='"+clientCode+"' group by d.strRoomDesc ;";
 			}			
 				
@@ -734,31 +756,31 @@ public class clsRoomStatusDiaryController {
 						if(arrObjRoomDtl[4].toString().equals("Occupied")){
 						objRoomStatusDtl.setDblRemainingAmt(funGetDblRemainingAmt(strFolioNo,clientCode,arrObjRoomDtl[0].toString()));
 						}
-						intArrivalCnt=Integer.parseInt(arrObjRoomDtl[12].toString());
-						intDepartureCnt=Integer.parseInt(arrObjRoomDtl[13].toString());
+					//	intArrivalCnt=Integer.parseInt(arrObjRoomDtl[12].toString());
+						intDepartureCnt=Integer.parseInt(arrObjRoomDtl[12].toString());
 						
-						if (intArrivalCnt<=0 && 0<=intDepartureCnt) 							
+						if ( 0<=intDepartureCnt) 							
 						{							
 							 objRoomStatusDtl.setStrDay1(" "+objRoomStatusDtl.getStrGuestName());
 						} 
-						if (intArrivalCnt<=1 && 1<=intDepartureCnt) 
+						if (1<=intDepartureCnt) 
 						{
 							
 							 objRoomStatusDtl.setStrDay2(" "+objRoomStatusDtl.getStrGuestName());
 						} 
-						if (intArrivalCnt<=2 && 2<=intDepartureCnt) 
+						if ( 2<=intDepartureCnt) 
 						{							
 							 objRoomStatusDtl.setStrDay3(" "+objRoomStatusDtl.getStrGuestName());
-						} if (intArrivalCnt<=3 && 3<=intDepartureCnt) {
+						} if ( 3<=intDepartureCnt) {
 							
 							 objRoomStatusDtl.setStrDay4(" "+objRoomStatusDtl.getStrGuestName());
-						} if (intArrivalCnt<=4 && 4<=intDepartureCnt) {
+						} if ( 4<=intDepartureCnt) {
 							
 							 objRoomStatusDtl.setStrDay5(" "+objRoomStatusDtl.getStrGuestName());
-						} if (intArrivalCnt<=5 && 5<=intDepartureCnt) {
+						} if ( 5<=intDepartureCnt) {
 							
 							 objRoomStatusDtl.setStrDay6(" "+objRoomStatusDtl.getStrGuestName());
-						} if (intArrivalCnt<=6 && 6<=intDepartureCnt) {
+						} if ( 6<=intDepartureCnt) {
 							
 							 objRoomStatusDtl.setStrDay7(" "+objRoomStatusDtl.getStrGuestName());
 						}
@@ -1648,68 +1670,41 @@ public class clsRoomStatusDiaryController {
 		}
 	
 	private double funGetDblRemainingAmt(String strFolioNo,String clintCode,String strCheckInNo) {		
-		NumberFormat decformat = new DecimalFormat("#0.00");
-		double dblTotalRemainingAmt = 0;
-		//for Folio Amt
-		String sqlFolioAmt = "select sum(ifnull(a.dblDebitAmt,0)) from tblfoliodtl a where a.strFolioNo='"+strFolioNo+"' and a.strClientCode='"+clintCode+"' ";
-		List listFolioAmt = objGlobalFunctionsService.funGetListModuleWise(sqlFolioAmt, "sql");
-		if (!listFolioAmt.isEmpty() && listFolioAmt!=null) {
-			for(int i = 0; i<listFolioAmt.size(); i++)
-			{
-				if(listFolioAmt.get(i)!=null)
-				{
-				double dblFolioAmt = 0;
-				dblFolioAmt = Double.parseDouble(listFolioAmt.get(i).toString());
-				dblTotalRemainingAmt = dblTotalRemainingAmt + dblFolioAmt;
-				}
-			}
-		}
-		//For Walkin Discount
-		String sqlWalkinNo = "select a.strWalkInNo from tblcheckinhd a where a.strCheckInNo='"+strCheckInNo+"' and a.strClientCode='"+clintCode+"'";
-		List listWalkinNo = objGlobalFunctionsService.funGetListModuleWise(sqlWalkinNo, "sql");
-		if(listWalkinNo.size()>0 && listWalkinNo!=null)
+		
+		String sqlRecipt="SELECT b.BillAmount - a.receiptamt +c.taxAmt"
+				+ " FROM "
+				+ "( SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) + IFNULL(c.recieptFolioAmt,0)  AS receiptamt"
+				+ " FROM "
+				+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt"
+				+ " FROM tblreceipthd a, tblfoliohd b"
+				+ " WHERE a.strReservationNo = b.strReservationNo AND b.strFolioNo='"+strFolioNo+"' AND b.strRoom='Y' "
+				+ " AND a.strFlagOfAdvAmt='Y' AND LENGTH(b.strWalkInNo)=0  )  AS a , "//Advance payment,group reservation,reservation,Group leeader payee
+				+ " ( SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1"
+				+ " FROM tblreceipthd a, tblfoliohd b"
+				+ " WHERE a.strFolioNo = b.strFolioNo AND a.strCheckInNo = b.strCheckInNo AND a.strFolioNo = '"+strFolioNo+"'"
+				+ " AND a.strReservationNo = '') AS b, " //Folio payment ,walk in 
+				+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS recieptFolioAmt"
+				+ " FROM tblreceipthd a, tblfoliohd b"
+				+ " WHERE a.strReservationNo = b.strReservationNo  AND a.strFolioNo=b.strFolioNo"
+				+ " AND b.strFolioNo='"+strFolioNo+"' "
+				+ " AND a.strFlagOfAdvAmt='N' AND LENGTH(b.strWalkInNo)=0 ) AS c )  AS a, "//Folio payment ,group reservation,reservation,Non Group leeader payee
+				+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0) - IFNULL(SUM(a.dblDiscAmt ),0)   AS BillAmount"
+				+ " FROM tblfoliodtl a"
+				+ " WHERE a.strFolioNo='"+strFolioNo+"') AS b,"//total Folio Amount
+				+ " (SELECT IFNULL(SUM(a.dblTaxAmt),0) AS taxAmt"
+				+ " FROM tblfoliotaxdtl a,tbltaxmaster b"
+				+ " WHERE a.strTaxCode=b.strTaxCode AND b.strTaxCalculation='Forward' AND a.strFolioNo='"+strFolioNo+"') AS c ;" ;////total FolioTax  Amount
+	
+	
+		
+		List listRecipt = objGlobalFunctionsService.funGetListModuleWise(sqlRecipt, "sql");
+		double reciptAmt=0.0;
+		if(listRecipt.size()>0)
 		{
-			String strWalkinNo = listWalkinNo.get(0).toString();
-			String sqlWalkinDiscount = "select a.dblDiscount from tblwalkinroomratedtl a where a.strWalkinNo='"+strWalkinNo+"' and a.strClientCode='"+clintCode+"'";
-			List listWalkinDisc = objGlobalFunctionsService.funGetListModuleWise(sqlWalkinDiscount, "sql");
-			if(listWalkinDisc.size()>0 && listWalkinDisc!=null)
-			{
-				double dblWalkinDisc = Double.parseDouble(listWalkinDisc.get(0).toString());
-				dblTotalRemainingAmt = dblTotalRemainingAmt-((dblTotalRemainingAmt*dblWalkinDisc)/100);
-			}
+			reciptAmt=Double.parseDouble(listRecipt.get(0).toString());	
+			
 		}
-		
-		//For Folio Tax Amt
-		String sqlFolioTaxAmt = "select sum(ifnull(a.dblTaxAmt,0)) from tblfoliotaxdtl a where a.strFolioNo='"+strFolioNo+"' and a.strDocNo like 'RM%' and a.strClientCode='"+clintCode+"';";
-		List listFolioTaxAmt = objGlobalFunctionsService.funGetListModuleWise(sqlFolioTaxAmt, "sql");
-
-		if (listFolioTaxAmt!=null && listFolioTaxAmt.size()>0) {
-			for(int i = 0; i<listFolioTaxAmt.size(); i++)
-			{
-				if(listFolioTaxAmt.get(i)!=null)
-				{
-				double dblFolioTaxAmt = 0;
-				dblFolioTaxAmt = Double.parseDouble(listFolioTaxAmt.get(i).toString());
-				dblTotalRemainingAmt = dblTotalRemainingAmt + dblFolioTaxAmt;
-				}
-			}
-		}
-		
-		//For Advance Amt 
-		String sqlAdvanceAmt = "select a.dblPaidAmt from tblreceipthd a where a.strCheckInNo='"+strCheckInNo+"' and a.strAgainst='Check-In' and a.strClientCode='"+clintCode+"'";
-		List listAdvanceAmt = objGlobalFunctionsService.funGetListModuleWise(sqlAdvanceAmt, "sql");
-
-		if (!listAdvanceAmt.isEmpty() && listAdvanceAmt!=null) {
-			for(int i = 0; i<listAdvanceAmt.size(); i++)
-			{
-				double dblAdvanceAmt = 0;
-				dblAdvanceAmt = Double.parseDouble(listAdvanceAmt.get(i).toString());
-				dblTotalRemainingAmt = dblTotalRemainingAmt - dblAdvanceAmt;
-			}
-		}
-		
-		dblTotalRemainingAmt=Double.parseDouble(decformat.format(dblTotalRemainingAmt));
-		return dblTotalRemainingAmt;
+		return reciptAmt;
 	}
 
 	private String funGetDayOfWeek(int day) {

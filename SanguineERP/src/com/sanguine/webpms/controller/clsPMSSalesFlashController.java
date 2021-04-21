@@ -12,7 +12,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,20 +44,48 @@ import com.ibm.icu.util.Calendar;
 import com.sanguine.controller.clsGlobalFunctions;
 import com.sanguine.crm.bean.clsSalesReturnBean;
 import com.sanguine.model.clsCompanyMasterModel;
+import com.sanguine.model.clsPropertySetupModel;
 import com.sanguine.service.clsGlobalFunctionsService;
+import com.sanguine.service.clsSetupMasterService;
+import com.sanguine.webpms.bean.clsFolioPrintingBean;
 import com.sanguine.webpms.bean.clsPMSSalesFlashBean;
 import com.sanguine.webpms.bean.clsRevenueHeadReportBean;
+import com.sanguine.webpms.dao.clsGuestMasterDao;
+import com.sanguine.webpms.model.clsGuestMasterHdModel;
+import com.sanguine.webpms.model.clsPropertySetupHdModel;
+import com.sanguine.webpms.service.clsFolioService;
+import com.sanguine.webpms.service.clsPropertySetupService;
 
 @Controller
 public class clsPMSSalesFlashController {
 	@Autowired
 	private clsGlobalFunctionsService objGlobalService;
+	
+	@Autowired
+	private ServletContext servletContext;
+
+	@Autowired
+	private clsFolioService objFolioService;
 
 	private HashMap<String, clsPMSSalesFlashBean> mapIncomeHeads;
 
 	@Autowired
 	private clsGlobalFunctions objGlobal;
+	
+	@Autowired
+	private clsPropertySetupService objPropertySetupService;
 
+	@Autowired
+	private clsSetupMasterService objSetupMasterService;
+	
+	@Autowired
+	private clsGuestMasterDao objGuestMasterDao;
+	
+	@Autowired
+	clsPMSUtilityFunctions objPMSUtilityFunctions;
+	
+	static double  balance=0;
+	
 	@RequestMapping(value = "/frmPMSSalesFlash", method = RequestMethod.GET)
 	public ModelAndView funOpenForm(Map<String, Object> model,
 			HttpServletRequest request) {
@@ -88,7 +131,7 @@ public class clsPMSSalesFlashController {
 				+ "' and '"
 				+ toDte
 				+ "' "
-				+ " and b.strSettlementCode=c.strSettlementCode"
+				+ " and  b.strSettlementCode=c.strSettlementCode   AND a.strType='Payment' "
 				+ " and a.strClientCode=b.strClientCode and b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"'"
 				+ " group by b.strSettlementCode;";
 
@@ -125,59 +168,19 @@ public class clsPMSSalesFlashController {
 		HashMap<String,clsPMSSalesFlashBean> hmRevenueType = new HashMap<String,clsPMSSalesFlashBean >();
 		
 		
-		/*String sql=" select * from  "
-                  +" (select a.strRevenueType AS strRevenueType,sum(a.Amount),sum(b.TAXAMT) from (SELECT a.strBillNo,b.strDocNo ,b.strRevenueType AS strRevenueType, sum(b.dblDebitAmt) AS Amount "
-                  +" FROM tblbillhd a, tblbilldtl b "
-                  +" WHERE a.strBillNo=b.strBillNo  AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-                  +" GROUP BY a.strBillNo ,b.strDocNo) a, "
-                  +" (select a.strBillNo,b.strDocNo,sum(b.dblTaxAmt) AS TAXAMT  "
-                  +" from tblbillhd a , tblbilltaxdtl b "
-                  +" WHERE a.strBillNo=b.strBillNo  AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-                  +" GROUP BY a.strBillNo,b.strDocNo) b "
-                  +" where a.strBillNo=b.strBillNo AND a.strDocNo=b.strDocNo group by  a.strRevenueType)  c "
-                  +" UNION select * from  "
-                  +" (select a.strRevenueType AS strRevenueType,sum(a.Amount),sum(b.TAXAMT) from (SELECT a.strFolioNo,b.strDocNo,b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount "
-                  +" FROM tblfoliohd a,tblfoliodtl b "
-                  +" WHERE a.strFolioNo=b.strFolioNo     AND DATE(b.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-                  +" GROUP BY b.strRevenueType)  a , "
-                  +" (select a.strFolioNo,b.strDocNo,sum(b.dblTaxAmt) AS TAXAMT from tblfoliodtl a ,tblfoliotaxdtl b "
-                  +" where a.strFolioNo=b.strFolioNo AND a.strDocNo = b.strDocNo and DATE(a.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-                  +" GROUP BY a.strFolioNo,b.strDocNo) b "
-                  +" where a.strFolioNo=b.strFolioNo and a.strDocNo=b.strDocNo group by a.strRevenueType )  d ; ";
-		*/
-		String sql=" SELECT * "
-				+ " FROM ( "
-				+ " SELECT a.strRevenueType AS strRevenueType, SUM(a.Amount), SUM(b.TAXAMT) "
-				+ " FROM ( "
-				+ " SELECT a.strBillNo,b.strDocNo,b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount "
-				+ " FROM tblbillhd a, tblbilldtl b "
-				+ " WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
-				+ " GROUP BY a.strBillNo,b.strDocNo) a, ( "
-				+ " SELECT a.strBillNo,c.strDocNo, SUM(c.dblTaxAmt) AS TAXAMT "
-				+ " FROM tblbillhd a, tblbilldtl b, tblbilltaxdtl c "
-				+ " WHERE a.strBillNo=b.strBillNo AND a.strBillNo = c.strBillNo "
-				+ " AND b.strDocNo = c.strDocNo "
-				+ " AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
-				+ " AND c.strClientCode='"+strClientCode+"' "
-				+ " GROUP BY a.strBillNo, b.strRevenueType) b "
-				+ " WHERE a.strBillNo=b.strBillNo AND a.strDocNo=b.strDocNo "
-				+ " GROUP BY a.strRevenueType) c UNION "
-				+ " SELECT * "
-				+ " FROM ( "
-				+ " SELECT a.strRevenueType AS strRevenueType, SUM(a.Amount), SUM(b.TAXAMT) "
-				+ " FROM ( "
-				+ " SELECT a.strFolioNo,b.strDocNo,b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount "
-				+ " FROM tblfoliohd a,tblfoliodtl b "
-				+ " WHERE a.strFolioNo=b.strFolioNo AND DATE(b.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-				+ " GROUP BY b.strRevenueType) a, ("
-				+ " SELECT a.strFolioNo, b.strDocNo, SUM(b.dblTaxAmt) AS TAXAMT "
-				+ " FROM tblfoliodtl a,tblfoliotaxdtl b "
-				+ " WHERE a.strFolioNo=b.strFolioNo "
-				+ " AND a.strDocNo = b.strDocNo AND DATE(a.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' "
+//Do the revenue wise querry by sachin sir
+		
+		String sql=" SELECT 'Bill Revenue', b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount"
+				+ " FROM tblbillhd a, tblbilldtl b"
+				+ " WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN  '"+fromDte+"'  AND '"+toDte+"'  "
+				+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='378.001' GROUP BY b.strRevenueType"
+				+ " UNION ALL"
+				+ " SELECT 'Folio Revenue', b.strRevenueType AS strRevenueType, "
+				+ " SUM(b.dblDebitAmt) AS Amount"
+				+ " FROM tblfoliohd a,tblfoliodtl b"
+				+ " WHERE a.strFolioNo=b.strFolioNo AND DATE(b.dteDocDate) BETWEEN '"+fromDte+"'  AND '"+toDte+"'  "
 				+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-				+ " GROUP BY a.strFolioNo, a.strRevenueType) b "
-				+ " WHERE a.strFolioNo=b.strFolioNo AND a.strDocNo=b.strDocNo "
-				+ " GROUP BY a.strRevenueType) d ;";
+				+ " GROUP BY b.strRevenueType";
 		List listRevenueDtl=objGlobalService.funGetListModuleWise(sql, "sql");
 	
 		if(!listRevenueDtl.isEmpty())
@@ -186,40 +189,14 @@ public class clsPMSSalesFlashController {
 			{
 				Object[] arr2=(Object[]) listRevenueDtl.get(i);
 				clsPMSSalesFlashBean objBean=new clsPMSSalesFlashBean();
+				objBean.setStrRevenueType(arr2[0].toString()+"#"+arr2[1].toString());
+				objBean.setDblAmount(Double.parseDouble(arr2[2].toString()));
+				dblTotalValue = new BigDecimal(Double.parseDouble(arr2[2].toString())).add(dblTotalValue);
+				listofRevenueDtl.add(objBean);
 				
-				if(hmRevenueType.containsKey(arr2[0].toString()))
-				{
-					objBean=hmRevenueType.get(arr2[0].toString());
-			        double newAmount=objBean.getDblAmount() + Double.parseDouble(arr2[1].toString());
-			        objBean.setDblAmount(newAmount);
-			        double newTaxAmt=objBean.getDblTaxAmount() + Double.parseDouble(arr2[2].toString());
-			        objBean.setDblTaxAmount(newTaxAmt);
-			        hmRevenueType.put(arr2[0].toString(), objBean);
-				}
-				else
-				{
-					objBean.setDblAmount(Double.parseDouble(arr2[1].toString()));
-					objBean.setDblTaxAmount(Double.parseDouble(arr2[2].toString()));
-					hmRevenueType.put(arr2[0].toString(),objBean);
-				}
-				dblTotalValue = new BigDecimal(Double.parseDouble(arr2[1].toString())).add(dblTotalValue);
-				
-				dblTaxTotalValue =  new BigDecimal(Double.parseDouble(arr2[2].toString())).add(dblTaxTotalValue);
 			}
 		}
-		
-		for(HashMap.Entry<String,clsPMSSalesFlashBean> hmRevenue : hmRevenueType.entrySet() )
-		{
-			clsPMSSalesFlashBean objBean=new clsPMSSalesFlashBean();
-			objBean.setStrRevenueType(hmRevenue.getKey());
-		    clsPMSSalesFlashBean obj=hmRevenue.getValue();
-		    double amount=obj.getDblAmount();
-		    objBean.setDblAmount(amount);
-		    double taxAmount=obj.getDblTaxAmount();
-		    objBean.setDblTaxAmount(taxAmount);
-			listofRevenueDtl.add(objBean);
-		    
-		}
+	
 		listofRevenueHeadTotal.add(listofRevenueDtl);
 		listofRevenueHeadTotal.add(dblTotalValue);
 		listofRevenueHeadTotal.add(dblTaxTotalValue);
@@ -292,14 +269,14 @@ public class clsPMSSalesFlashController {
 		List listofExpectedArrTotal = new ArrayList<>();
 		
         String sql = "SELECT a.strReservationNo, DATE_FORMAT(a.dteDateCreated,'%d-%m-%Y'), "
-				+ " CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName), "
-				+ " DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'), DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'), "
-				+ " IFNULL(d.dblReceiptAmt,0) "
-				+ " FROM tblreservationhd a LEFT OUTER JOIN tblreceipthd d ON a.strReservationNo=d.strReservationNo,"
-				+ " tblguestmaster e,tblbookingtype c"
-				+ " WHERE DATE(a.dteArrivalDate) BETWEEN '"+fromDte+"'  AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND "
-				+ " e.strGuestCode=a.strGuestCode AND a.strBookingTypeCode=c.strBookingTypeCode "
-				+ " AND a.strReservationNo NOT IN ( SELECT strReservationNo FROM tblcheckinhd) ;";
+        		+ " CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName),DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'), DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'),"
+        		+ "  IFNULL(d.dblReceiptAmt,0),a.strBookingTypeCode"
+        		+ " FROM   tblreservationhd a"
+        		+ " LEFT OUTER JOIN tblreceipthd d ON a.strReservationNo=d.strReservationNo and d.strFlagOfAdvAmt='Y'"
+        		+ " LEFT OUTER JOIN tblguestmaster e ON e.strGuestCode=a.strGuestCode "
+        		+ " LEFT OUTER JOIN tblbookingtype c ON a.strBookingTypeCode=c.strBookingTypeCode "
+        		+ " WHERE  "
+        		+ "  a.strClientCode='"+strClientCode+"'  AND a.strReservationNo NOT IN ( SELECT strReservationNo FROM tblcheckinhd) ;";
 
 		
 		List listArrivalDtl = objGlobalService.funGetListModuleWise(sql, "sql");
@@ -586,6 +563,7 @@ public class clsPMSSalesFlashController {
 	public @ResponseBody List funPaymentDtl(HttpServletRequest request) {
 		String strClientCode = request.getSession().getAttribute("clientCode").toString();
 		String fromDate = request.getParameter("frmDte").toString();
+		String type = request.getParameter("type").toString();
 		String[] arr = fromDate.split("-");
 		String fromDte = arr[2] + "-" + arr[1] + "-" + arr[0];
 		String toDate = request.getParameter("toDte").toString();
@@ -601,7 +579,15 @@ public class clsPMSSalesFlashController {
 				+ " and b.strCustomerCode = d.strGuestCode"
 				+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
 				+ " AND d.strClientCode='"+strClientCode+"' AND e.strClientCode='"+strClientCode+"'"
-				+ " AND DATE(a.dteReceiptDate) BETWEEN '"+fromDte+"' AND '"+toDte+"';";
+				+ " AND DATE(a.dteReceiptDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' ";
+		if(type.equals("Payment"))
+		{
+			sql +=	 " and a.strType='Payment' ;";
+		}else if(type.equals("Refund"))
+		{
+			sql +=	 " and a.strType='Refund Amt' ;";
+		}
+		
 		
 		List listVoidBill = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listVoidBill.isEmpty()) {
@@ -636,11 +622,12 @@ public class clsPMSSalesFlashController {
 
 		List<clsPMSSalesFlashBean> listPayment = new ArrayList<clsPMSSalesFlashBean>();
 		String sql = "SELECT a.strBillNo, DATE(a.dteBillDate),c.strRoomDesc, CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName),"
-				+ "a.dblGrandTotal,f.strCheckInNo "
-				+ "FROM tblbillhd a,tblbilldtl b,tblroom c,tblcheckindtl d,tblguestmaster e,tblcheckinhd f "
-				+ "WHERE a.strBillNo=b.strBillNo AND a.strRoomNo=c.strRoomCode AND a.strCheckInNo=d.strCheckInNo AND d.strGuestCode=e.strGuestCode  "
-				+ "AND d.strCheckInNo=f.strCheckInNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' "
-				+ "AND a.strClientCode='"+strClientCode+"' AND a.dblGrandTotal>0 GROUP BY a.strBillNo";
+				+ " a.dblGrandTotal,f.strCheckInNo,f.strType "
+				+ " FROM tblbillhd a,tblbilldtl b,tblroom c,tblcheckindtl d,tblguestmaster e,tblcheckinhd f "
+				+ " WHERE a.strBillNo=b.strBillNo AND a.strRoomNo=c.strRoomCode AND a.strCheckInNo=d.strCheckInNo AND d.strGuestCode=e.strGuestCode  "
+				+ " AND d.strCheckInNo=f.strCheckInNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' "
+				+ " AND a.strClientCode='"+strClientCode+"'"
+				+ "  GROUP BY a.strBillNo ";
 		
 		
 		List listVoidBill = objGlobalService.funGetListModuleWise(sql, "sql");
@@ -657,6 +644,8 @@ public class clsPMSSalesFlashController {
 				objBean.setDblGrndTotal(Double.parseDouble(arr2[4].toString()));
 				//objBean.setDblDiscount(Double.parseDouble(arr2[5].toString()));
 				objBean.setStrCheckInNo(arr2[5].toString());
+				objBean.setStrType(arr2[6].toString());
+				
 				
 				String sqlDisc = "select sum(a.dblDebitAmt) from tblbilldtl a where a.strBillNo='"+arr2[0].toString()+"' and a.strPerticulars='Room Tariff' and a.strClientCode='"+strClientCode+"'";
 				List listDisc = objGlobalService.funGetListModuleWise(sqlDisc, "sql");
@@ -964,6 +953,7 @@ public class clsPMSSalesFlashController {
 				+ toDte
 				+ "' "
 				+ " and b.strSettlementCode=c.strSettlementCode"
+				+ "   AND a.strType='Payment' "
 				+ " and a.strClientCode=b.strClientCode and b.strClientCode=c.strClientCode AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"'"
 				+ " group by b.strSettlementCode;";
 
@@ -1025,6 +1015,7 @@ public class clsPMSSalesFlashController {
 		List headerList = new ArrayList();
 		List totalsList = new ArrayList();
 		totalsList.add("Total");
+		totalsList.add("");
 		
 		String fromDate = request.getParameter("frmDte").toString();
 		String[] arr = fromDate.split("-");
@@ -1043,39 +1034,18 @@ public class clsPMSSalesFlashController {
 		HashMap<String,clsPMSSalesFlashBean> hmRevenueType = new HashMap<String,clsPMSSalesFlashBean >();
 		
 		
-		/*String sql=" select * from  "
-                  +" (select a.strRevenueType AS strRevenueType,sum(a.Amount),sum(b.TAXAMT) from (SELECT a.strBillNo,b.strDocNo ,b.strRevenueType AS strRevenueType, sum(b.dblDebitAmt) AS Amount "
-                  +" FROM tblbillhd a, tblbilldtl b "
-                  +" WHERE a.strBillNo=b.strBillNo  AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-                  +" GROUP BY a.strBillNo ,b.strDocNo) a, "
-                  +" (select a.strBillNo,b.strDocNo,sum(b.dblTaxAmt) AS TAXAMT  "
-                  +" from tblbillhd a , tblbilltaxdtl b "
-                  +" WHERE a.strBillNo=b.strBillNo  AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-                  +" GROUP BY a.strBillNo,b.strDocNo) b "
-                  +" where a.strBillNo=b.strBillNo AND a.strDocNo=b.strDocNo group by  a.strRevenueType)  c "
-                  +" UNION select * from  "
-                  +" (select a.strRevenueType AS strRevenueType,sum(a.Amount),sum(b.TAXAMT) from (SELECT a.strFolioNo,b.strDocNo,b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount "
-                  +" FROM tblfoliohd a,tblfoliodtl b "
-                  +" WHERE a.strFolioNo=b.strFolioNo     AND DATE(b.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-                  +" GROUP BY b.strRevenueType)  a , "
-                  +" (select a.strFolioNo,b.strDocNo,sum(b.dblTaxAmt) AS TAXAMT from tblfoliodtl a ,tblfoliotaxdtl b "
-                  +" where a.strFolioNo=b.strFolioNo and DATE(a.dteDocDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
-                  +" GROUP BY a.strFolioNo,b.strDocNo) b "
-                  +" where a.strFolioNo=b.strFolioNo and a.strDocNo=b.strDocNo group by a.strRevenueType )  d ; ";
-		*/
 		
-		String sql=" SELECT * FROM (SELECT a.strRevenueType AS strRevenueType, SUM(a.Amount), SUM(b.TAXAMT) "
-                +" FROM "
-                +" ( SELECT a.strBillNo,b.strDocNo,b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount "
-				+" FROM tblbillhd a, tblbilldtl b "
-				+" WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
-				+" GROUP BY a.strBillNo,b.strDocNo) a, "
-				+" ( SELECT a.strBillNo,b.strDocNo, SUM(b.dblTaxAmt) AS TAXAMT "
-				+" FROM tblbillhd a, tblbilltaxdtl b "
-				+" WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
-				+" GROUP BY a.strBillNo,b.strDocNo) b "
-				+" WHERE a.strBillNo=b.strBillNo AND a.strDocNo=b.strDocNo "
-				+" GROUP BY a.strRevenueType) c ; ";
+		String sql="SELECT 'Bill Revenue', b.strRevenueType AS strRevenueType, SUM(b.dblDebitAmt) AS Amount"
+				+ " FROM tblbillhd a, tblbilldtl b"
+				+ " WHERE a.strBillNo=b.strBillNo AND DATE(a.dteBillDate) BETWEEN  '"+fromDte+"'  AND '"+toDte+"'  "
+				+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='378.001' GROUP BY b.strRevenueType"
+				+ " UNION ALL"
+				+ " SELECT 'Folio Revenue', b.strRevenueType AS strRevenueType, "
+				+ " SUM(b.dblDebitAmt) AS Amount"
+				+ " FROM tblfoliohd a,tblfoliodtl b"
+				+ " WHERE a.strFolioNo=b.strFolioNo AND DATE(b.dteDocDate) BETWEEN '"+fromDte+"'  AND '"+toDte+"'  "
+				+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"'"
+				+ " GROUP BY b.strRevenueType";
 		
 		List listRevenueDtl=objGlobalService.funGetListModuleWise(sql, "sql");
 	
@@ -1084,49 +1054,19 @@ public class clsPMSSalesFlashController {
 			for(int i=0;i< listRevenueDtl.size();i++)
 			{
 				Object[] arr2=(Object[]) listRevenueDtl.get(i);
-				clsPMSSalesFlashBean objBean=new clsPMSSalesFlashBean();
+				List DataList = new ArrayList<>();
+				  DataList.add(arr2[0].toString());
+			    DataList.add(arr2[1].toString());
+			    DataList.add(Double.parseDouble(arr2[2].toString()));						   
+			    detailList.add(DataList);
+				dblTotalValue = new BigDecimal(Double.parseDouble(arr2[2].toString())).add(dblTotalValue);
+
 				
-				if(hmRevenueType.containsKey(arr2[0].toString()))
-				{
-					objBean=hmRevenueType.get(arr2[0].toString());
-			        double newAmount=objBean.getDblAmount() + Double.parseDouble(arr2[1].toString());
-			        objBean.setDblAmount(newAmount);
-			        double newTaxAmt=objBean.getDblTaxAmount() + Double.parseDouble(arr2[2].toString());
-			        objBean.setDblTaxAmount(newTaxAmt);
-			        hmRevenueType.put(arr2[0].toString(), objBean);
-				}
-				else
-				{
-					objBean.setDblAmount(Double.parseDouble(arr2[1].toString()));
-					objBean.setDblTaxAmount(Double.parseDouble(arr2[2].toString()));
-					hmRevenueType.put(arr2[0].toString(),objBean);
-				}
-				dblTotalValue = new BigDecimal(df.format(Double.parseDouble(arr2[1].toString()))).add(dblTotalValue);
-				
-				dblTaxTotalValue =  new BigDecimal(df.format(Double.parseDouble(arr2[2].toString()))).add(dblTaxTotalValue);
-			
 			}
 		}
 		
-		for(HashMap.Entry<String,clsPMSSalesFlashBean> hmRevenue : hmRevenueType.entrySet() )
-		{
-			
-		   List DataList = new ArrayList<>();
-		   DataList.add(hmRevenue.getKey());
-		   clsPMSSalesFlashBean obj=hmRevenue.getValue();
-		   double amount=obj.getDblAmount();
-		   DataList.add(amount);
-		  
-		   double taxAmount=obj.getDblTaxAmount();
-		   DataList.add(df.format(taxAmount));
-		  
-		   detailList.add(DataList);
-		    
-			
-		}
 		
 		totalsList.add(dblTotalValue);
-		totalsList.add(dblTaxTotalValue);
 		retList.add("RevenueHeadWisePMSSalesFlashData_" + fromDte + "to" + toDte + "_" + userCode);
 		List titleData = new ArrayList<>();
 		titleData.add("Revenue Head Wise Report");
@@ -1138,10 +1078,10 @@ public class clsPMSSalesFlashController {
 		filterData.add("To Date");
 		filterData.add(toDate);
 		retList.add(filterData); 
-
+		headerList.add("Revenue");
 		headerList.add("Revenue Type");
 		headerList.add("Amount");
-		headerList.add("Tax Amount");
+	
 		Object[] objHeader = (Object[]) headerList.toArray();
 
 		String[] ExcelHeader = new String[objHeader.length];
@@ -1150,7 +1090,9 @@ public class clsPMSSalesFlashController {
 		}
 		
 		List blankList = new ArrayList();
-	    detailList.add(blankList);// Blank Row at Bottom
+	    detailList.add(blankList);
+	  
+	 
 	    detailList.add(totalsList);
 	    
 		
@@ -1264,15 +1206,17 @@ public class clsPMSSalesFlashController {
 		
 		BigDecimal dblTotalValue = new BigDecimal(0);
 		DecimalFormat df = new DecimalFormat("#.##");
-		 String sql = "SELECT a.strReservationNo, DATE_FORMAT(a.dteDateCreated,'%d-%m-%Y'), "
-					+ " CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName), "
-					+ " DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'), DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'), "
-					+ " IFNULL(d.dblReceiptAmt,0) "
-					+ " FROM tblreservationhd a LEFT OUTER JOIN tblreceipthd d ON a.strReservationNo=d.strReservationNo,"
-					+ " tblguestmaster e,tblbookingtype c"
-					+ " WHERE DATE(a.dteArrivalDate) BETWEEN '"+fromDte+"'  AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' AND "
-					+ " e.strGuestCode=a.strGuestCode AND a.strBookingTypeCode=c.strBookingTypeCode "
-					+ " AND a.strReservationNo NOT IN ( SELECT strReservationNo FROM tblcheckinhd) ;";
+		String sql = "SELECT a.strReservationNo, DATE_FORMAT(a.dteDateCreated,'%d-%m-%Y'), "
+        		+ " CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName),"
+        		+ " DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'), DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'), IFNULL(d.dblReceiptAmt,0),a.strBookingTypeCode"
+        		+ " FROM   tblreservationhd a"
+        		+ " LEFT OUTER JOIN tblreceipthd d ON a.strReservationNo=d.strReservationNo and d.strFlagOfAdvAmt='Y'"
+        		+ " LEFT OUTER JOIN tblguestmaster e ON e.strGuestCode=a.strGuestCode "
+        		+ " LEFT OUTER JOIN tblbookingtype c ON a.strBookingTypeCode=c.strBookingTypeCode "
+        		+ " WHERE "
+        		+ "  a.strClientCode='"+strClientCode+"'  AND a.strReservationNo NOT IN ( SELECT strReservationNo FROM tblcheckinhd) ;";
+
+		
 		
 		List listArrivalDtl = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listArrivalDtl.isEmpty()) {
@@ -1756,6 +1700,7 @@ public class clsPMSSalesFlashController {
 		String toDate = request.getParameter("toDte").toString();
 		String[] arr1 = toDate.split("-");
 		String toDte = arr1[2] + "-" + arr1[1] + "-" + arr1[0];
+		String type = request.getParameter("type").toString();
 		
 		String sql = "SELECT a.strReceiptNo, DATE(a.dteReceiptDate), CONCAT(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName),"
 				+ " a.strAgainst,e.strSettlementDesc,a.dblReceiptAmt"
@@ -1765,7 +1710,18 @@ public class clsPMSSalesFlashController {
 				+ " and b.strCustomerCode = d.strGuestCode"
 				+ " AND a.strClientCode='"+strClientCode+"' AND b.strClientCode='"+strClientCode+"' "
 				+ " AND d.strClientCode='"+strClientCode+"' AND e.strClientCode='"+strClientCode+"'"
-				+ " AND DATE(a.dteReceiptDate) BETWEEN '"+fromDte+"' AND '"+toDte+"';";
+				+ " AND DATE(a.dteReceiptDate) BETWEEN '"+fromDte+"' AND '"+toDte+"'  ";
+	
+		if(type.equals("Payment"))
+		{
+			sql +=	 " and a.strType='Payment' ;";
+		}else if(type.equals("Refund"))
+		{
+			sql +=	 " and a.strType='Refund Amt' ;";
+		}
+						
+		
+		
 		
 		List listVoidBill = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listVoidBill.isEmpty()) {
@@ -1787,9 +1743,19 @@ public class clsPMSSalesFlashController {
 		totalsList.add("");
 		totalsList.add("");
 		totalsList.add(dblTotalValue);
-		retList.add("PMSPaymentSlip_" + fromDte + "to" + toDte + "_" + userCode);
 		List titleData = new ArrayList<>();
-		titleData.add("PMS Payment");
+		if(type.equals("Payment"))
+		{
+			retList.add("PMSPaymentSlip_" + fromDte + "to" + toDte + "_" + userCode);
+			
+			titleData.add("PMS Payment");
+		}else if(type.equals("Refund"))
+		{
+			retList.add("PMSRefundSlip_" + fromDte + "to" + toDte + "_" + userCode);			
+			titleData.add("PMS Refund");
+		}
+			
+		
 		retList.add(titleData);
 		
 		
@@ -1860,7 +1826,7 @@ public class clsPMSSalesFlashController {
 					+ " AND d.strGuestCode=e.strGuestCode AND d.strCheckInNo=f.strCheckInNo "
 					+ " AND DATE(a.dteBillDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' AND a.strClientCode='"+strClientCode+"' " 
 					+ " AND b.strClientCode='"+strClientCode+"' AND c.strClientCode='"+strClientCode+"' AND d.strClientCode='"+strClientCode+"' " 
-					+ " AND e.strClientCode='"+strClientCode+"' AND f.strClientCode='"+strClientCode+"'  AND a.dblGrandTotal>0 "
+					+ " AND e.strClientCode='"+strClientCode+"' AND f.strClientCode='"+strClientCode+"'   "
 					+ " GROUP BY a.strBillNo";
 		List listVoidBill = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listVoidBill.isEmpty()) {
@@ -2289,8 +2255,23 @@ public class clsPMSSalesFlashController {
 		
 		clsPMSSalesFlashBean objBean = null;
 		
-		String sqlData ="SELECT a.strGuestCode,concat(a.strFirstName,' ',a.strMiddleName,' ',a.strLastName) as GuestName,a.dblClosingBalance "
-                       + " FROM tblguestmaster a WHERE a.dblClosingBalance <> 0   AND a.strClientCode='"+strClientCode+"' ; ";
+	
+		
+		String sqlData ="select b.billGuestCode,concat(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName) as GuestName,ifnull(b.totalDebitAmt + c.TotalFolioDebitAmt  - a.totalCreditAmt,0) as guestOpeningBalance from "
+				+ " tblguestmaster d "
+				+ " "
+				+ " left outer join "
+				+ " (select ifnull(sum(a.dblSettlementAmt),0) as totalCreditAmt ,a.strCustomerCode as PaymentGuestCode   from tblreceiptdtl a,tblreceipthd b"
+				+ " where  a.strReceiptNo=b.strReceiptNo"
+				+ " group by a.strCustomerCode) as a on a.PaymentGuestCode=d.strGuestCode "
+				+ " "
+				+ " left outer join ( Select ifnull(sum(a.dblGrandTotal),0) as totalDebitAmt,a.strGuestCode as billGuestCode from tblbillhd a "
+				+ " group by a.strGuestCode) as b  on  b.billGuestCode=d.strGuestCode  "
+				+ " "
+				+ " left outer join  (select ifnull(sum(a.dblDebitAmt),0) As TotalFolioDebitAmt  , b.strGuestCode as folioGuestCode"
+				+ " from tblfoliodtl a, tblfoliohd b where a.strFolioNo=b.strFolioNo "
+				+ " group by b.strGuestCode ) as c  on c.folioGuestCode=d.strGuestCode"
+				+ " having guestOpeningBalance>0 ";
 
 		List<clsPMSSalesFlashBean> listMain = new ArrayList<clsPMSSalesFlashBean>();
 		List listGuestData= objGlobalService.funGetListModuleWise(sqlData, "sql");
@@ -2333,9 +2314,22 @@ public class clsPMSSalesFlashController {
 			
 			BigDecimal dblTotalValue = new BigDecimal(0);
 			DecimalFormat df = new DecimalFormat("#.##");
-			String sqlData = "SELECT a.strGuestCode,concat(a.strFirstName,' ',a.strMiddleName,' ',a.strLastName) as GuestName,a.dblClosingBalance "
-                       + " FROM tblguestmaster a WHERE a.dblClosingBalance <> 0   AND a.strClientCode='"+strClientCode+"' ; ";
 			
+			String sqlData ="select b.billGuestCode,concat(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName) as GuestName,ifnull(b.totalDebitAmt - a.totalCreditAmt,0) as guestOpeningBalance from "
+					+ " tblguestmaster d "
+					+ " "
+					+ " left outer join "
+					+ " (select ifnull(sum(a.dblSettlementAmt),0) as totalCreditAmt ,a.strCustomerCode as PaymentGuestCode   from tblreceiptdtl a,tblreceipthd b"
+					+ " where  a.strReceiptNo=b.strReceiptNo"
+					+ " group by a.strCustomerCode) as a on a.PaymentGuestCode=d.strGuestCode "
+					+ " "
+					+ " left outer join ( Select ifnull(sum(a.dblGrandTotal),0) as totalDebitAmt,a.strGuestCode as billGuestCode from tblbillhd a "
+					+ " group by a.strGuestCode) as b  on  b.billGuestCode=d.strGuestCode  "
+					+ " "
+					+ " left outer join  (select ifnull(sum(a.dblDebitAmt),0) , b.strGuestCode as folioGuestCode"
+					+ " from tblfoliodtl a, tblfoliohd b where a.strFolioNo=b.strFolioNo "
+					+ " group by b.strGuestCode ) as c  on c.folioGuestCode=d.strGuestCode"
+					+ " having guestOpeningBalance>0 ";
 		  List listGuestData = objGlobalService.funGetListModuleWise(sqlData, "sql");
 
 		   if(listGuestData!=null && listGuestData.size()>0)
@@ -2500,6 +2494,269 @@ public class clsPMSSalesFlashController {
 		
 		return new ModelAndView("excelViewFromToDteReportName", "listFromToDateReportName", retList);
     }
+
+	
+	@RequestMapping(value = "/rptGuestLedgerPrinting", method = RequestMethod.GET)
+	public   void funGenerateGuestLedgerPrintingReport(@RequestParam("GuestCode") String strGuestCode, HttpServletRequest req, HttpServletResponse resp) 
+	{
+		balance=0;
+		String clientCode = req.getSession().getAttribute("clientCode").toString();
+		String userCode = req.getSession().getAttribute("usercode").toString();
+		String propertyCode = req.getSession().getAttribute("propertyCode").toString();
+		String companyName = req.getSession().getAttribute("companyName").toString();
+		clsPropertySetupModel objSetup = objSetupMasterService.funGetObjectPropertySetup(propertyCode, clientCode);
+		
+	
+		List<clsFolioPrintingBean> dataList = new ArrayList<clsFolioPrintingBean>();
+		
+		@SuppressWarnings("rawtypes")
+		HashMap reportParams = new HashMap();
+		
+		
+		String reportName =  servletContext.getRealPath("/WEB-INF/reports/webpms/rptGuestLedgerPrinting.jrxml");
+		
+		
+		String imagePath =  servletContext.getRealPath("/resources/images/company_Logo.png");
+		clsFolioPrintingBean folioBean = new clsFolioPrintingBean();
+	
+		
+        
+		/*folioBean.setDteDocDate(" ");
+		folioBean.setStrDocNo(" ");
+		folioBean.setStrPerticulars("Opening Balance");
+		double openingBalance=objPMSUtilityFunctions.funGetOpeningBalanceForOneGuest(strGuestCode);;
+		if(openingBalance>0)
+		{
+			folioBean.setDblDebitAmt(openingBalance);
+			folioBean.setDblCreditAmt(0.00);
+		}
+		else
+		{
+			folioBean.setDblCreditAmt(openingBalance);
+			folioBean.setDblDebitAmt(0.00);
+		}					
+		folioBean.setDblBalanceAmt(openingBalance);
+		folioBean.setDblQuantity(0.00);
+		dataList.add(folioBean);*/
+		
+	String sql="	select  a.docNo,a.docDate,a.settlementName, a.modeOfOperation  ,a.totalAmt,a.GuestCode"
+			+ " from"
+			+ " (SELECT a.strReceiptNo as docNo, Date(dteReceiptDate ) as docDate ,  c.strSettlementDesc as settlementName,"
+			+ " 'Payment' as modeOfOperation,"
+			+ " IFNULL((a.dblSettlementAmt),0) AS totalAmt,a.strCustomerCode AS GuestCode"
+			+ " FROM tblreceiptdtl a,tblreceipthd b,tblsettlementmaster c"
+			+ " WHERE a.strReceiptNo=b.strReceiptNo and a.strSettlementCode=c.strSettlementCode"
+			+ " and a.strCustomerCode='"+strGuestCode+"' and a.dblSettlementAmt>0 and strType='Payment'"
+			+ " union"
+			+ " SELECT a.strReceiptNo as docNo , Date(dteReceiptDate ) as docDate , c.strSettlementDesc as settlementName"
+			+ " ,'Refund Amt' as modeOfOperation,"
+			+ " IFNULL((a.dblSettlementAmt),0) AS totalAmt,a.strCustomerCode AS GuestCode"
+			+ " FROM tblreceiptdtl a,tblreceipthd b,tblsettlementmaster c"
+			+ " WHERE a.strReceiptNo=b.strReceiptNo and a.strSettlementCode=c.strSettlementCode"
+			+ " and a.strCustomerCode='"+strGuestCode+"' and a.dblSettlementAmt>0 and strType='Refund Amt'"
+			+ " union "
+			+ " SELECT a.strBillNo as docNo ,Date(a.dteBillDate) as docDate   ,  'Bill' as settlementName  ,"
+			+ " 'Bill' as modeOfOperation  ,"
+			+ " IFNULL((a.dblGrandTotal),0) AS totalAmt,a.strGuestCode "
+			+ " AS GuestCode"
+			+ " FROM tblbillhd a"
+			+ " where a.strGuestCode='"+strGuestCode+"'  and a.dblGrandTotal>0"
+			+ " union"
+			+ " SELECT a.strFolioNo as docNo , Date(a.dteDocDate) as docDate , 'Folio' as settlementName ,"
+			+ " 'Folio' as modeOfOperation ,"
+			+ " IFNULL((a.dblDebitAmt),0) AS totalAmt , b.strGuestCode AS GuestCode"
+			+ " FROM tblfoliodtl a, tblfoliohd b"
+			+ " WHERE a.strFolioNo=b.strFolioNo"
+			+ " and b.strGuestCode='"+strGuestCode+"' and a.dblDebitAmt >0 ) a"
+			+ " order by a.docDate ASC; ";
+	
+	List folioDtlList = objFolioService.funGetParametersList(sql);
+	
+	folioDtlList.stream().forEach (folioArr -> {
+	clsFolioPrintingBean folioPrintingBean = new clsFolioPrintingBean();
+	folioPrintingBean.setStrDocNo(((Object[])folioArr)[0].toString());	
+	folioPrintingBean.setDteDocDate(((Object[])folioArr)[1].toString());
+	String particulars = ((Object[])folioArr)[2].toString();
+	folioPrintingBean.setStrPerticulars(particulars);
+	double debitAmount =0;
+	double creditAmount=0;
+	if(((Object[])folioArr)[3].toString().equals("Refund Amt") || ((Object[])folioArr)[3].toString().equals("Bill") || ((Object[])folioArr)[3].toString().equals("Folio"))
+	{
+		debitAmount = Double.parseDouble(((Object[])folioArr)[4].toString());
+		balance += debitAmount - creditAmount;
+	}
+	else
+	{
+		creditAmount = Double.parseDouble(((Object[])folioArr)[4].toString());
+		balance += debitAmount - creditAmount;
+	}	
+	folioPrintingBean.setDblDebitAmt(debitAmount);
+	folioPrintingBean.setDblCreditAmt(creditAmount);
+	folioPrintingBean.setDblBalanceAmt(balance);	
+	dataList.add(folioPrintingBean); }  );
+	
+	
+
+	clsPropertySetupHdModel objPropertySetupModel = objPropertySetupService.funGetPropertySetup(propertyCode, clientCode);
+
+	reportParams.put("pCompanyName", companyName);
+	reportParams.put("pAddress1", objSetup.getStrAdd1() + "," + objSetup.getStrAdd2() + "," + objSetup.getStrCity());
+	reportParams.put("pAddress2", objSetup.getStrState() + "," + objSetup.getStrCountry() + "," + objSetup.getStrPin());
+	reportParams.put("pContactDetails", "");
+	reportParams.put("strImagePath", imagePath);
+	
+	List listGuestData = objGuestMasterDao.funGetGuestMaster(strGuestCode, clientCode);
+	clsGuestMasterHdModel objGuestMasterModel = (clsGuestMasterHdModel) listGuestData.get(0);
+	reportParams.put("pGuestName", objGuestMasterModel.getStrGuestPrefix() + " " + objGuestMasterModel.getStrFirstName()  + " " +objGuestMasterModel.getStrMiddleName() + " " + objGuestMasterModel.getStrLastName() );
+	
+	
+	
+	String guestAddr = "";
+	String sqlAddr	="SELECT IFNULL(d.strDefaultAddr,''), IFNULL(d.strAddressLocal,''), "
+			+ "IFNULL(d.strCityLocal,''), IFNULL(d.strStateLocal,''), "
+			+ "IFNULL(d.strCountryLocal,''), IFNULL(d.intPinCodeLocal,''), "
+			+ "IFNULL(d.strAddrPermanent,''), IFNULL(d.strCityPermanent,''), "
+			+ "IFNULL(d.strStatePermanent,''), IFNULL(d.strCountryPermanent,''), "
+			+ "IFNULL(d.intPinCodePermanent,''), IFNULL(d.strAddressOfc,''), "
+			+ "IFNULL(d.strCityOfc,''), IFNULL(d.strStateOfc,''), "
+			+ "IFNULL(d.strCountryOfc,''), IFNULL(d.intPinCodeOfc,''), "
+			+ "IFNULL(d.strGSTNo,'') FROM tblguestmaster d "
+			+ "WHERE d.strGuestCode= '"+strGuestCode+"' AND d.strClientCode='"+clientCode+"'";
+	
+	List listguest = objFolioService.funGetParametersList(sqlAddr);
+	
+	if (listguest.size() > 0) {
+		Object[] arrGuest = (Object[]) listguest.get(0);
+		if (arrGuest[0].toString().equalsIgnoreCase("Permanent")) { // check
+																	// default
+																	// addr
+			/*guestAddr = arrGuest[6].toString() + ","
+					+ arrGuest[7].toString() + ","
+					+ arrGuest[8].toString() + ","
+					+ arrGuest[9].toString() + ","
+					+ arrGuest[10].toString();*/
+			guestAddr= arrGuest[6].toString() ;
+			if(!arrGuest[6].toString().equalsIgnoreCase(""))
+			{
+				guestAddr="," + arrGuest[6].toString();
+			}
+			else if(!arrGuest[7].toString().equalsIgnoreCase(""))
+			{
+				guestAddr="," + arrGuest[7].toString();
+			}
+			else if(!arrGuest[8].toString().equalsIgnoreCase(""))
+			{
+				guestAddr="," + arrGuest[8].toString();
+			}
+			else if(!arrGuest[9].toString().equalsIgnoreCase(""))
+			{
+				guestAddr="," + arrGuest[9].toString();
+			}
+			else if(!arrGuest[10].toString().equalsIgnoreCase("0"))
+			{
+				guestAddr="," + arrGuest[10].toString();
+			}
+			else
+			{
+				guestAddr=guestAddr;
+			}
+		} else if (arrGuest[0].toString()
+				.equalsIgnoreCase("Office")) {
+			/*guestAddr = arrGuest[11].toString() + ","
+					+ arrGuest[12].toString() + ","
+					+ arrGuest[13].toString() + ","
+					+ arrGuest[14].toString() + ","
+					+ arrGuest[15].toString();*/
+			guestAddr= arrGuest[11].toString() ;
+			if(!arrGuest[12].toString().equalsIgnoreCase(""))
+			{
+				guestAddr="," + arrGuest[12].toString();
+			}
+			else if(!arrGuest[13].toString().equalsIgnoreCase(""))
+			{
+				guestAddr="," + arrGuest[13].toString();
+			}
+			else if(!arrGuest[14].toString().equalsIgnoreCase(""))
+			{
+				guestAddr="," + arrGuest[14].toString();
+			}
+			else if(!arrGuest[15].toString().equalsIgnoreCase("0"))
+			{
+				guestAddr="," + arrGuest[15].toString();
+			}
+			else
+			{
+				guestAddr=guestAddr;
+			}
+		} else { // Local
+			/*guestAddr = arrGuest[1].toString() + ","
+					+ arrGuest[2].toString() + ","
+					+ arrGuest[3].toString() + ","
+					+ arrGuest[4].toString() + ","
+					+ arrGuest[5].toString();*/
+			guestAddr= arrGuest[1].toString() ;
+			if(!arrGuest[2].toString().equalsIgnoreCase(""))
+			{
+				guestAddr="," + arrGuest[2].toString();
+			}
+			else if(!arrGuest[3].toString().equalsIgnoreCase(""))
+			{
+				guestAddr="," + arrGuest[3].toString();
+			}
+			else if(!arrGuest[4].toString().equalsIgnoreCase(""))
+			{
+				guestAddr="," + arrGuest[4].toString();
+			}
+			else if(!arrGuest[5].toString().equalsIgnoreCase("0"))
+			{
+				guestAddr="," + arrGuest[5].toString();
+			}
+			else
+			{
+				guestAddr=guestAddr;
+			}
+		}
+	}
+	
+	reportParams.put("pGuestAddress", guestAddr);
+	
+	
+	try
+	{
+		JRDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(dataList);
+		JasperDesign jd = JRXmlLoader.load(reportName);
+		JasperReport jr = JasperCompileManager.compileReport(jd);
+		JasperPrint jp = JasperFillManager.fillReport(jr, reportParams, beanCollectionDataSource);
+		List<JasperPrint> jprintlist = new ArrayList<JasperPrint>();
+		if (jp != null) {
+			jprintlist.add(jp);
+			ServletOutputStream servletOutputStream = resp.getOutputStream();
+			JRExporter exporter = new JRPdfExporter();
+			resp.setContentType("application/pdf");
+			exporter.setParameter(JRPdfExporterParameter.JASPER_PRINT_LIST, jprintlist);
+			exporter.setParameter(JRPdfExporterParameter.OUTPUT_STREAM, servletOutputStream);
+			exporter.setParameter(JRPdfExporterParameter.IGNORE_PAGE_MARGINS, Boolean.TRUE);
+			resp.setHeader("Content-Disposition", "inline;filename=GuestLedger.pdf");
+			exporter.exportReport();
+			servletOutputStream.flush();
+			servletOutputStream.close();
+		}
+	}
+	catch(Exception ex)
+	{
+		ex.printStackTrace();
+	}
+	
+
+
+	
+	}
+	
+	
+	
+	
+	
+	 
 	
 	
 	

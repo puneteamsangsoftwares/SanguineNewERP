@@ -106,6 +106,7 @@ function funShowTableGUI(divID)
 	document.all["divMonthWiseSale"].style.display = 'none';
 	document.all["divGuestLedger"].style.display = 'none';
 	document.all["divAvailableRooms"].style.display = 'none';
+	document.all["divRefund"].style.display = 'none';
 	
 	
 	// for show Table GUI
@@ -194,7 +195,7 @@ function funOnClckRevenueHeadWiseBtn( divId)
 		    {
 		    	funRevenueHeadWiseDetail(response[0]);
 		    	$("#txtTotValue").val(parseFloat(response[1]).toFixed(maxQuantityDecimalPlaceLimit));
-		        $("#txtTaxTotValue").val(parseFloat(response[2]).toFixed(maxQuantityDecimalPlaceLimit));
+		    //    $("#txtTaxTotValue").val(parseFloat(response[2]).toFixed(maxQuantityDecimalPlaceLimit));
 		        	
 		    	
 		    	
@@ -232,9 +233,11 @@ function funRevenueHeadWiseDetail(ProdDtl)
     var rowCount = table.rows.length;
     var row = table.insertRow(rowCount);
    
-    row.insertCell(0).innerHTML= "<input name=\"strRevenueType["+(rowCount)+"]\" readonly=\"readonly\"  class=\"Box\" size=\"25%\" id=\"strRevenueType."+(rowCount)+"\" value='"+data.strRevenueType+"'>";		    
-    row.insertCell(1).innerHTML= "<input name=\"dblAmount["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" style=\"text-align: right;\" size=\"57%\" id=\"dblAmount."+(rowCount)+"\" value='"+data.dblAmount+"'>";
-    row.insertCell(2).innerHTML= "<input name=\"dblTaxAmountt["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\"  style=\"text-align: right;\" size=\"27%\" id=\"dblTaxAmount."+(rowCount)+"\" value='"+data.dblTaxAmount+"'>";
+    row.insertCell(0).innerHTML= "<input name=\"strRevenue["+(rowCount)+"]\" readonly=\"readonly\"  class=\"Box\" size=\"25%\" id=\"strRevenue."+(rowCount)+"\" value='"+data.strRevenueType.split("#")[0]+"'>";		    
+    row.insertCell(1).innerHTML= "<input name=\"strRevenueType["+(rowCount)+"]\" readonly=\"readonly\"  class=\"Box\" size=\"25%\" id=\"strRevenueType."+(rowCount)+"\" value='"+data.strRevenueType.split("#")[1]+"'>";		    
+
+    row.insertCell(2).innerHTML= "<input name=\"dblAmount["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" style=\"text-align: right;\" size=\"57%\" id=\"dblAmount."+(rowCount)+"\" value='"+data.dblAmount+"'>";
+  //  row.insertCell(2).innerHTML= "<input name=\"dblTaxAmountt["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\"  style=\"text-align: right;\" size=\"27%\" id=\"dblTaxAmount."+(rowCount)+"\" value='"+data.dblTaxAmount+"'>";
 	
     funApplyNumberValidation();
 	}	
@@ -343,9 +346,9 @@ function funExpectedArrDetail(ProdDtl)
     
 	    row.insertCell(0).innerHTML= "<input name=\"strReservationNo["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"25%\" id=\"strReservationNo."+(rowCount)+"\" value='"+data.strReservationNo+"'>";		    
 	    row.insertCell(1).innerHTML= "<input name=\"dteReservationDate["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"20%\" id=\"dteReservationDate."+(rowCount)+"\" value='"+data.dteReservationDate+"'>";
-	    row.insertCell(2).innerHTML= "<input name=\"strGuestName["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"15%\" id=\"strGuestName."+(rowCount)+"\" value='"+data.strGuestName+"'>";
-	    row.insertCell(3).innerHTML= "<input name=\"dteDepartureDate["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"12%\" id=\"dteDepartureDatet."+(rowCount)+"\" value='"+data.dteDepartureDate+"'>";
-	    row.insertCell(4).innerHTML= "<input name=\"dteArrivalDate["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"15%\" id=\"dteArrivalDate."+(rowCount)+"\" value='"+data.dteArrivalDate+"'>";
+	    row.insertCell(2).innerHTML= "<input name=\"strGuestName["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"37%\" id=\"strGuestName."+(rowCount)+"\" value='"+data.strGuestName+"'>";
+	    row.insertCell(3).innerHTML= "<input name=\"dteDepartureDate["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"19%\" id=\"dteDepartureDatet."+(rowCount)+"\" value='"+data.dteDepartureDate+"'>";
+	    row.insertCell(4).innerHTML= "<input name=\"dteArrivalDate["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"30%\" id=\"dteArrivalDate."+(rowCount)+"\" value='"+data.dteArrivalDate+"'>";
 	    row.insertCell(5).innerHTML= "<input name=\"dblReceiptAmt["+(rowCount)+"]\" id=\"dblReceiptAmt."+(rowCount)+"\" readonly=\"readonly\"   size=\"14%\" class=\"Box\" value="+data.dblReceiptAmt+">";
 	    
 	funApplyNumberValidation();
@@ -766,14 +769,29 @@ function funVoidBillDetail(ProdDtl)
 	    funApplyNumberValidation();
 	}
 }
-function funSetPaymentDetail(ProdDtl)
+function funSetPaymentDetail(ProdDtl,divId)
 {
-	$('#tblPayment tbody').empty();
+	var tableRefPay="";
+	var type="";
+	if(divId=="divRefund")
+	{
+		$('#tblRefund tbody').empty();
+		tableRefPay="tblRefund";
+		type="Refund";
+		
+	}else if(divId=="divPayment")
+	{
+		$('#tblPayment tbody').empty();
+		tableRefPay="tblPayment";
+		type="Payment";
+	}
+	
+	
 	for(var i=0;i<ProdDtl.length;i++)
 	{
 	 var data=ProdDtl[i];
 	 data.dblTotalAmt=parseFloat(data.dblTotalAmt).toFixed(maxQuantityDecimalPlaceLimit);
-     var table = document.getElementById("tblPayment");
+     var table = document.getElementById(tableRefPay);
      var rowCount = table.rows.length;
      var row = table.insertRow(rowCount);
      
@@ -785,7 +803,7 @@ function funSetPaymentDetail(ProdDtl)
      var amt = data.dblAmount;
      
     
-        row.insertCell(0).innerHTML= "<input name=\"strReceiptNo["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"15%\" id=\"strBillNo."+(rowCount)+"\" value='"+receiptNo+"' onclick=\"funOpenSlip(this,'"+against+"')\" >";		    
+        row.insertCell(0).innerHTML= "<input name=\"strReceiptNo["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"15%\" id=\"strBillNo."+(rowCount)+"\" value='"+receiptNo+"' onclick=\"funOpenSlip(this,'"+against+"','"+type+"')\" >";	 	    
 	    row.insertCell(1).innerHTML= "<input name=\"dteReceiptDate["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"10%\" id=\"dteBillDate."+(rowCount)+"\" value='"+date+"'>";
 	    row.insertCell(2).innerHTML= "<input name=\"strGuestName["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"40%\" id=\"strAgainst."+(rowCount)+"\" value='"+guestName+"'>";
 	    row.insertCell(3).innerHTML= "<input name=\"strType["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"07%\" id=\"strGuestName."+(rowCount)+"\" value='"+against+"'>";
@@ -798,10 +816,21 @@ function funSetPaymentDetail(ProdDtl)
 	}
 }
 
-function funOpenSlip(data,against)
+function funOpenSlip(data,against,type)
 {
 	var receiptNumber = data.value;
-	window.open(getContextPath()+"/rptReservationPaymentRecipt.html?reciptNo="+receiptNumber+"&checkAgainst="+against+ "");
+	if(type=="Refund")
+	{
+		against='Bill';
+		window.open(getContextPath()+"/rptRefundRecipt.html?reciptNo="+receiptNumber+"&checkAgainst="+against,'_blank');
+		
+	}else if(type=="Payment")
+	{
+		window.open(getContextPath()+"/rptReservationPaymentRecipt.html?reciptNo="+receiptNumber+"&checkAgainst="+against+ "");
+
+	}
+	
+	
 }
 
 function funSetBillPrintingDetail(ProdDtl)
@@ -829,8 +858,9 @@ function funSetBillPrintingDetail(ProdDtl)
      var dblAdvanceAmount = data.dblAdvanceAmount
      dblAdvanceAmount=dblAdvanceAmount.toFixed(2);
      var perticular = data.strPerticular;
+     var type = data.strType;
      
-     	row.insertCell(0).innerHTML= "<input name=\"strBillNo["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"15%\" id=\"strBillNo."+(rowCount)+"\" value='"+strBillNo+"' onclick=\"funOpenBillPrintingSlip(this,'"+perticular+"')\">";
+     	row.insertCell(0).innerHTML= "<input name=\"strBillNo["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"15%\" id=\"strBillNo."+(rowCount)+"\" value='"+strBillNo+"' onclick=\"funOpenBillPrintingSlip(this,'"+perticular+"','"+type+"','"+strCheckInNo+"')\">";
 	    row.insertCell(1).innerHTML= "<input name=\"dteBillDate["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" style=\"text-align: center;\" size=\"15%\" id=\"dteBillDate."+(rowCount)+"\" value='"+dteBillDate+"'>";
 	    row.insertCell(2).innerHTML= "<input name=\"strRoomDesc["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"15%\" id=\"strRoomDesc."+(rowCount)+"\" value='"+strRoomDesc+"'>";
 	    row.insertCell(3).innerHTML= "<input name=\"strGuestName["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"26%\" id=\"strGuestName."+(rowCount)+"\" value='"+strGuestName+"'>";
@@ -848,12 +878,14 @@ function funSetBillPrintingDetail(ProdDtl)
 	    funApplyNumberValidation();
 	}
 }
-function funOpenBillPrintingSlip(data,pericular)
+function funOpenBillPrintingSlip(data,pericular,type,strCheckInNo)
 {
 	var receiptNumber = data.value;
 	var frmDte1=$('#dteFromDate').val();
     var toDte1=$('#dteToDate').val();
 	window.open(getContextPath()+"/rptBillPrinting.html?fromDate="+frmDte1+"&toDate="+toDte1+"&billNo="+receiptNumber+"&strSelectBill="+pericular+ "");
+	window.open(getContextPath() + "/rptCheckInSlip.html?checkInNo=" +strCheckInNo+"&cmbAgainst="+type,'_blank');			
+
 }
 function funExportReport()
 	{
@@ -901,7 +933,8 @@ function funExportReport()
 	 }
 	else if(hidReportName=='divPayment')
 	 {
-		window.location.href = getContextPath()+"/exportPMSPaymentFlash.html?frmDte="+frmDte1+"&toDte="+toDte1;
+		var type="Payment";
+		window.location.href = getContextPath()+"/exportPMSPaymentFlash.html?frmDte="+frmDte1+"&toDte="+toDte1+"&type="+type;
 	 }
 	else if(hidReportName=='divBillPrinting')
 	 {
@@ -920,12 +953,18 @@ function funExportReport()
 	 }
 	 else if(hidReportName=='divGuestLedger')
 	 {
-			window.location.href = getContextPath()+"/exportGuestLedgerData.html?frmDte="+frmDte1+"&toDte="+toDte1;
+		 window.location.href = getContextPath()+"/exportGuestLedgerData.html?frmDte="+frmDte1+"&toDte="+toDte1;
 	 }
 	 else if(hidReportName=='divAvailableRooms')
 	 {
-		window.location.href = getContextPath()+"/exportAvailableRoom.html?frmDte="+frmDte1+"&toDte="+toDte1;
+		 window.location.href = getContextPath()+"/exportAvailableRoom.html?frmDte="+frmDte1+"&toDte="+toDte1;
      }
+	 else if(hidReportName=='divRefund')
+	 {
+		 var type="Refund";
+		 window.location.href = getContextPath()+"/exportPMSPaymentFlash.html?frmDte="+frmDte1+"&toDte="+toDte1+"&type="+type;
+	 }
+	
 
 	
 	
@@ -968,17 +1007,30 @@ function funGetBillPerticular(billNo)
 function funOnClickPayment( divId)
 {
 	funShowTableGUI(divId)
-	$('#lblButton').text("Payment");
+	var type="";
+	if(divId=="divRefund")
+	{
+		$('#lblButton').text("Refund");
+		type="Refund";
+		
+	}else if(divId=="divPayment")
+	{
+		$('#lblButton').text("Payment");
+		type="Payment";
+	}
+	  
+	  
+	
 	var frmDte1=$('#dteFromDate').val();
     var toDte1=$('#dteToDate').val();
-	var searchUrl=getContextPath()+"/loadPaymentForSalesFlash.html?frmDte="+frmDte1+"&toDte="+toDte1;
+	var searchUrl=getContextPath()+"/loadPaymentForSalesFlash.html?frmDte="+frmDte1+"&toDte="+toDte1+"&type="+type;
 	$.ajax({
 	        type: "GET",
 	        url: searchUrl,
 		    dataType: "json",
 		    success: function(response)
 		    {
-		    	funSetPaymentDetail(response);
+		    	funSetPaymentDetail(response,divId);
 		    	funCalculateTotal(response)
 		    	
 		    },
@@ -1385,6 +1437,15 @@ function funClick(obj)
 	
 }
 
+function funGuestLedgerPrinting(data)
+{
+	
+	var GuestCode = data.value;
+    window.open(getContextPath()+"/rptGuestLedgerPrinting.html?GuestCode="+GuestCode);
+	
+}
+ 
+
 function funOnClickGuestLedger( divId)
 {
 	$('#tblGuestData tbody').empty();
@@ -1441,7 +1502,7 @@ function funSetGuestData(item)
 	 dblTotalSale=dblTotalSale+item.dblAmount;
          
     	 
-    	 row.insertCell(0).innerHTML= "<td><input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100px;\" value='"+item.strGuestCode+"' ></td>";	 
+    	 row.insertCell(0).innerHTML= "<td><input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100px;\" value='"+item.strGuestCode+"'  onclick=\"funGuestLedgerPrinting(this)\"  ></td>";	 
     	 row.insertCell(1).innerHTML= "<td><input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100px;text-align: right;\" value='"+item.strGuestName+"' ></td>"; 
     	 row.insertCell(2).innerHTML= "<td><input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100px;text-align: right;\" value='"+item.dblAmount+"' ></td>";	 
     	 
@@ -1612,17 +1673,18 @@ function funSetAvailableRooms(item)
 		<div id="divRevenueHeadWise" class="dynamicTableContainer" style="height: 400px;">
 			<table style="width: 100%; border: #0F0; table-layout: fixed;" class="transTablex col15-center">
 				<tr bgcolor="#c0c0c0">
-					<td width="7.4%">Revenue Type</td>
-					<td width="9.3%">Amount </td>
-					<td id="idRevenueTaxAmt" width="4.5%">Tax Amount</td>
+					<td width="11.4%">Revenue</td>
+					<td width="14.4%">Revenue Type </td>
+					<td width="9.3%"> Amount</td>
 				</tr>
 			</table>
 			<div style="background-color: #fbfafa; border: 1px solid #ccc; display: block; height: 330px; margin: auto; overflow-x: hidden; overflow-y: scroll; width: 100%;">
 				<table id="tblRevenueHeadDet" style="width: 100%; border: #0F0; table-layout: fixed;" class="transTablex col15-center">
 					<tbody>
 						<col style="width: 7.2%">
+						<col style="width: 7.2%">
 						<col style="width: 9.2%">
-						<col style="width: 4.5%">
+						
 					</tbody>
 				</table>
 			</div>
@@ -1657,8 +1719,8 @@ function funSetAvailableRooms(item)
 					<td width="7.4%">Reservation No</td>
 					<td width="4.5%">Reservation Date </td>
 					<td width="9.3%">Guest Name</td>
-					<td width="4.8%">Departure Date</td>
 					<td width="7.6%">Arrival Date</td>
+					<td width="4.8%">Departure Date</td>					
 					<td width="5.1%">Receipt Amount</td>
 				</tr>
 			</table>
@@ -1934,6 +1996,31 @@ function funSetAvailableRooms(item)
 					</tbody>
 				</table>
 			</div>
+		</div>
+		
+		<div id="divRefund" class="dynamicTableContainer" style="height: 400px;">
+			<table style="width: 100%; border: #0F0; table-layout: fixed;" class="transTablex col15-center">
+				<tr bgcolor="#c0c0c0">
+					<td width="2%">Receipt No </td>
+					<td width="2%">Receipt Date</td>
+					<td width="4%">Name</td>
+					<td width="2%">Type</td>
+					<td width="2%">Settlement</td>
+					<td width="2%">Amount</td>
+				</tr>
+			</table>
+			<div style="background-color: #fbfafa; border: 1px solid #ccc; display: block; height: 330px; margin: auto; overflow-x: hidden; overflow-y: scroll; width: 100%;">
+				<table id="tblRefund" style="width: 100%; border: #0F0; table-layout: fixed;" class="transTablex col15-center">
+					<tbody>
+						<col style="width: 2%">
+						<col style="width: 2%">
+						<col style="width: 4%">
+						<col style="width: 2%">
+						<col style="width: 2%">
+						<col style="width: 2%">
+					</tbody>
+				</table>
+			</div>
 		</div> 
 		
 		
@@ -2000,7 +2087,7 @@ function funSetAvailableRooms(item)
 				<td><input id="btnPayment" type="button"
 					class="btn btn-primary center-block form_button" value="Payment"  onclick="funOnClickPayment('divPayment')" style="background-size: 140px 24px; width: 150px; color:#000;" /></td>	
 			    
-			    
+			  
 		 	</tr>
 			</table>
 		</div>
@@ -2038,6 +2125,9 @@ function funSetAvailableRooms(item)
 			
 			            <td><input id="btnCheckAvailableRoom" type="button"
 						class="btn btn-primary center-block" value="Available Rooms"  onclick="funOnClickAvailableRooms('divAvailableRooms')" style="background-size: 140px 24px; width: 150px; color:#000;" /></td>	
+			           
+			           <td><input id="btnRefund" type="button"
+						class="btn btn-primary center-block" value="Refund"  onclick="funOnClickPayment('divRefund')" style="background-size: 140px 24px; width: 150px; color:#000;" /></td>	
 			
 			            
 				 </tr>

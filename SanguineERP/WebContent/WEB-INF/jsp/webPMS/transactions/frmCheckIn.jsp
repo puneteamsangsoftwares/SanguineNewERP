@@ -81,16 +81,24 @@ overflow-x: hidden;
 			window.open('attachDoc.html?transName=frmCheckIN.jsp&formName=CheckIn &code='+$('#txtCheckInNo').val(),"mywindow","directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=600,left=400px");
 		});
 			
-		var Warmessage='';
+		var Warmessage='',editCheckInNo='',editAgainst='';
 		<%
 		if(session.getAttribute("WarningMsg") != null){%>
 	     Warmessage='<%=session.getAttribute("WarningMsg").toString()%>';
+	     editCheckInNo='<%=session.getAttribute("editCheckInNo").toString()%>';	 
+	     editAgainst='<%=session.getAttribute("editType").toString()%>';
 	    <%
 	    	session.removeAttribute("WarningMsg");
 	    }%>	
 	    if(Warmessage!='')
     	{
 	      alert(Warmessage);
+	      var isCheckOk=confirm("Do You Want to Generate Check-In Slip ?");
+	      
+			if(isCheckOk)
+			{				
+				window.open(getContextPath() + "/rptCheckInSlip.html?checkInNo=" +editCheckInNo+"&cmbAgainst="+editAgainst,'_blank');			
+			}
     	}
 		
 		var checkInNo='';
@@ -659,7 +667,7 @@ overflow-x: hidden;
 				    	}
 				    		
 				    } 			    
-			    row.insertCell(7).innerHTML= "<input class=\"Box\" size=\"2%\" style=\"margin-left: -150%;\" name=\"listCheckInDetailsBean["+(rowCount)+"].intNoOfFolios\" id=\"intNoOfFolios."+(rowCount)+"\" value='1' />";
+			    row.insertCell(7).innerHTML= "<input class=\"Box\" size=\"2%\" style=\"margin-left: -150%;\" name=\"listCheckInDetailsBean["+(rowCount)+"].intNoOfFolios\" id=\"intNoOfFolios."+(rowCount)+"\"   onblur=\"Javacsript:funUpdateTotalGuest()\" value='1' />";
 			    row.insertCell(8).innerHTML= "<input type=\"button\" class=\"deletebutton\" size=\"6%\" value = \"\" onClick=\"Javacsript:funDeleteRow(this)\"/>";
 			    row.insertCell(9).innerHTML= "<input size=\"1%\" name=\"listCheckInDetailsBean["+(rowCount)+"].strGuestCode\" id=\"strGuestCode."+(rowCount)+"\" value='"+guestCode+"' type='hidden' />";
 			    row.insertCell(10).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"2%\" id=\"strExtraBedDesc."+(rowCount)+"\" value='"+extraBedDesc+"' />";
@@ -699,9 +707,11 @@ overflow-x: hidden;
 								globalNoOfGuest.set(name,name);
 							}
 					}
-					 
+					
+					funUpdateTotalGuest();
 				    $("#txttotrooms").val(globalRoomNo.size);
-				  	$("#txttotguest").val(globalNoOfGuest.size);
+				  	//$("#txttotguest").val(globalNoOfGuest.size);
+				  
 			    
 	    }
 //	}
@@ -1482,7 +1492,7 @@ overflow-x: hidden;
 					 
 					 function funValidateForm()
 					 {
-						 var table = document.getElementById("tblCheckInDetails");
+						    var table = document.getElementById("tblCheckInDetails");
 							var rowCount = table.rows.length;	
 							var TotalPaxNo=0;
 							for(var i=0;i<rowCount;i++)
@@ -2180,6 +2190,21 @@ overflow-x: hidden;
 								table.deleteRow(i);
 							}
 					    }
+						
+						function funUpdateTotalGuest()
+						{
+							var table = document.getElementById("tblCheckInDetails");
+							var rowCount = table.rows.length;	
+							var TotalPaxNo=0;
+							for(var i=0;i<rowCount;i++)
+							{
+									
+								TotalPaxNo=TotalPaxNo + parseInt(table.rows[i].cells[7].children[0].value);
+																
+							}
+							$("#txttotguest").val(TotalPaxNo);
+							
+						}
 			</script>
 			</head>
 <body>

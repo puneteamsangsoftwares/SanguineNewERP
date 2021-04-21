@@ -201,13 +201,11 @@ public class clsCheckInController {
 	@RequestMapping(value = "/frmCheckIn", method = RequestMethod.GET)
 	public ModelAndView funOpenForm(Map<String, Object> model, HttpServletRequest request) {
 		String urlHits = "1";
-		try {
-			
+		
+		if(request.getParameter("saddr")!=null)
+		{
 			urlHits = request.getParameter("saddr").toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			urlHits = "1";
-		}
+		}		
 		model.put("urlHits", urlHits);
 		if ("2".equalsIgnoreCase(urlHits)) {
 			return new ModelAndView("frmCheckIn_1", "command", new clsCheckInBean());
@@ -453,10 +451,23 @@ public class clsCheckInController {
 						}
 					}
 				    
+					for (clsRoomPackageDtl objPkgDtlBean : objBean.getListRoomPackageDtl()) 
+					{
+												
+						String sqlPackage="	UPDATE tblroompackagedtl a SET a.dblIncomeHeadAmt='"+objPkgDtlBean.getDblIncomeHeadAmt()+"' WHERE a.strCheckInNo='"+objBean.getStrCheckInNo()+"' ";
+						objWebPMSUtility.funExecuteUpdate(sqlPackage, "sql"); 																	
+						String sqlFolioPackage=" UPDATE tblfoliodtl a SET a.dblDebitAmt='"+objPkgDtlBean.getDblIncomeHeadAmt()+"' WHERE a.strFolioNo='"+strFolioNo+"' and  a.strPerticulars='Package' ";
+						objWebPMSUtility.funExecuteUpdate(sqlFolioPackage, "sql"); 
+					}
+					
+					
+					
 					String sqlCheckIn="	UPDATE tblcheckinhd a SET a.dteDepartureDate='"+objGlobal.funGetDate("yyyy-MM-dd", objBean.getDteDepartureDate())+"' WHERE a.strCheckInNo='"+objBean.getStrCheckInNo()+"' ";
 					objWebPMSUtility.funExecuteUpdate(sqlCheckIn, "sql"); 
-					
 					req.getSession().setAttribute("WarningMsg", "checkin Departure Date  has been edited Successfully");
+					req.getSession().setAttribute("editCheckInNo", objBean.getStrCheckInNo());
+					req.getSession().setAttribute("editType",objBean.getStrType());
+					
 
 					
 				}
@@ -1818,7 +1829,7 @@ public class clsCheckInController {
 				reportParams.put("userName", userName);
 				reportParams.put("pGuestName", gFirstName + " "+ gMiddleName + " " + gLastName);
 				//reportParams.put("pguestCompanyAddr", guestCompanyAddr);
-				reportParams.put("pguestCompanyAddr", arrObjRoomData[24].toString());
+				reportParams.put("pguestCompanyAddr", guestCompanyAddr);
 				reportParams.put("pstrMobileNo", strMobileNo);
 				
 				
@@ -1925,7 +1936,7 @@ public class clsCheckInController {
 				{
 					String sqlReservation ="SELECT a.strCheckInNo,a.strGuestCode,"
 							+ "f.strRoomDesc, IFNULL(a.strExtraBedCode,''),"
-							+ "b.strRoomTypeDesc,b.dblRoomTerrif,d.intNoOfAdults, "
+							+ "b.strRoomTypeDesc,h.dblRoomRate as RoomRate,d.intNoOfAdults, "
 							+ "DATE_FORMAT(d.dteCheckInDate,'%d-%m-%Y'),e.strGSTNo,"
 							+ "e.strPANNo, d.tmeArrivalTime, IFNULL(g.dblChargePerBed,0), "
 							+ "e.strFirstName,e.strMiddleName,e.strLastName, "
@@ -2093,7 +2104,7 @@ public class clsCheckInController {
 					reportParams.put("userName", userName);
 					reportParams.put("pGuestName", gFirstName + " "+ gMiddleName + " " + gLastName);
 					//reportParams.put("pguestCompanyAddr", guestCompanyAddr);
-					reportParams.put("pguestCompanyAddr", arrObjRoomData[25].toString());
+					reportParams.put("pguestCompanyAddr", guestCompanyAddr);
 					reportParams.put("pstrMobileNo", strMobileNo);
 					
 					if(clientCode.equalsIgnoreCase("378.001"))

@@ -247,52 +247,76 @@ public class clsPMSPaymentController {
 		
 		if (docName.equals("Bill")) 
 		{
-			sql = "SELECT a.strBillNo,c.strFirstName,c.strMiddleName,c.strLastName,  (a.dblGrandTotal- IFNULL(SUM(d.dblPaidAmt),0)) AS RemainingAmt,a.strFolioNo,"
-					+ " a.strRegistrationNo,a.strReservationNo"
-					+ " FROM tblbillhd a"
-					+ " LEFT OUTER"
-					+ " JOIN tblreceipthd d ON a.strCheckInNo=d.strCheckInNo AND a.strFolioNo = d.strFolioNo"
-					+ " AND a.strBillNo=d.strBillNo,tblcheckindtl b,tblguestmaster c"
-					+ " WHERE a.strClientCode='"+clientCode+"' AND a.strCheckInNo=b.strCheckInNo AND a.strBillSettled='N'"
-					+ " and a.strBillNo='"+docCode+"'"
-					+ " AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' AND c.strClientCode='"+clientCode+"'"
-				    + " AND b.strGuestCode=c.strGuestCode AND b.strPayee='Y'"
-					+ " GROUP BY a.strBillNo";
+			sql = " SELECT c.strGuestCode,c.strFirstName,c.strMiddleName,c.strLastName FROM tblbillhd a,tblguestmaster c "
+				+ " WHERE a.strGuestCode=c.strGuestCode AND a.strBillNo='"+docCode+"'; ";
 			List listBillData = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 			
 			if(listBillData.size()>0)
 			{  
 				for(int i=0;i<listBillData.size();i++)
 				{
-				Object[] obj = (Object[])listBillData.get(i);
-				clsPaymentReciptBean objPaymentReciptBean = new clsPaymentReciptBean();
-				objPaymentReciptBean.setStrGuestCode(obj[0].toString());
-				objPaymentReciptBean.setStrFirstName(obj[1].toString());
-				objPaymentReciptBean.setStrMiddleName(obj[2].toString());
-				objPaymentReciptBean.setStrLastName(obj[3].toString());
-				objPaymentReciptBean.setDblBalanceAmount(Double.parseDouble(obj[4].toString()));
-				listGuestDataDtl.add(objPaymentReciptBean);
+					Object[] obj = (Object[])listBillData.get(i);
+					clsPaymentReciptBean objPaymentReciptBean = new clsPaymentReciptBean();
+					objPaymentReciptBean.setStrGuestCode(obj[0].toString());
+					objPaymentReciptBean.setStrFirstName(obj[1].toString());
+					objPaymentReciptBean.setStrMiddleName(obj[2].toString());
+					objPaymentReciptBean.setStrLastName(obj[3].toString());		
+					
+					
+					
+					String sqlPayment="SELECT b.BillAmount - a.receiptamt +c.taxAmt "
+							+ " FROM "
+							+ " ("
+							+ " "
+							+ " SELECT IFNULL(a.receiptAmt,0)+ IFNULL(b.receiptAmt1,0) + "
+							+ " IFNULL(c.recieptFolioAmt,0) + ifnull(recieptBillAmt,0) + ifnull(e.recieptRefundAmt,0) AS receiptamt FROM "
+							+ " "
+							+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt"
+							+ " FROM tblreceipthd a, tblbillhd b"
+							+ " WHERE a.strReservationNo = b.strReservationNo"
+							+ " AND b.strBillNo='"+docCode+"' "
+							+ " AND a.strFlagOfAdvAmt='Y' ) AS a,"
+							+ " "
+							+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS receiptAmt1"
+							+ "  FROM tblreceipthd a, tblbillhd b"
+							+ "  WHERE a.strFolioNo = b.strFolioNo"
+							+ " AND a.strCheckInNo = b.strCheckInNo  AND a.strBillNo='"+docCode+"' "
+							+ " AND a.strReservationNo = '') AS b,"
+							+ " "
+							+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS recieptFolioAmt"
+							+ " FROM tblreceipthd a, tblbillhd b"
+							+ " WHERE a.strReservationNo = b.strReservationNo AND a.strFolioNo=b.strFolioNo "
+							+ " and a.strBillNo='' AND b.strBillNo='"+docCode+"'  AND a.strFlagOfAdvAmt='N') AS c ,"
+							+ " "
+							+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS recieptBillAmt"
+							+ " FROM tblreceipthd a, tblbillhd b"
+							+ " WHERE a.strReservationNo = b.strReservationNo AND a.strFolioNo=b.strFolioNo "
+							+ " and a.strBillNo=b.strBillNo"
+							+ " AND b.strBillNo='"+docCode+"' AND a.strFlagOfAdvAmt='N' ) AS d,"
+							+ " "
+							+ " (SELECT IFNULL(SUM(a.dblReceiptAmt),0) AS recieptRefundAmt"
+							+ " FROM tblreceipthd a, tblbillhd b"
+							+ " WHERE a.strBillNo=b.strBillNo AND b.strBillNo='"+docCode+"'  "
+							+ " AND a.strType='Refund Amt' ) as e  ) AS a, "
+							+ " "
+							+ " (SELECT IFNULL(SUM(a.dblDebitAmt),0) - IFNULL(SUM(a.dblDiscAmt),0) AS BillAmount"
+							+ " FROM tblbilldtl a"
+							+ " WHERE a.strBillNo='"+docCode+"'  ) AS b,"
+							+ " "
+							+ " (SELECT IFNULL(SUM(a.dblTaxAmt),0) AS taxAmt"
+							+ " FROM tblbilltaxdtl a,tbltaxmaster b"
+							+ " WHERE a.strTaxCode=b.strTaxCode AND b.strTaxCalculation='Forward' "
+							+ " AND a.strBillNo='"+docCode+"'  )  AS c ;";
+					List listBillPaymentData = objGlobalFunctionsService.funGetListModuleWise(sqlPayment, "sql");
+					
+					if(listBillPaymentData!=null &&  listBillPaymentData.size()>0)
+					{  
+						objPaymentReciptBean.setDblBalanceAmount(Double.parseDouble(listBillPaymentData.get(0).toString()));
+					}
+					listGuestDataDtl.add(objPaymentReciptBean);
 				}
 			}
-		 else 
-		 {
-			sql = " select c.strGuestCode,c.strFirstName,c.strMiddleName,c.strLastName " + " from tblcheckindtl a,tblguestmaster c " + " where a.strGuestCode=c.strGuestCode " + " and a.strCheckInNo='" + docCode + "' and a.strPayee='Y' AND a.strClientCode='"+clientCode+"' AND  c.strClientCode='"+clientCode+"'";
-			List listData = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-			if(listData.size()>0)
-			{
-				for(int i=0;i<listData.size();i++)
-				{
-				Object[] obj = (Object[])listData.get(i);
-				clsPaymentReciptBean objPaymentReciptBean = new clsPaymentReciptBean();
-				objPaymentReciptBean.setStrGuestCode(obj[0].toString());
-				objPaymentReciptBean.setStrFirstName(obj[1].toString());
-				objPaymentReciptBean.setStrMiddleName(obj[2].toString());
-				objPaymentReciptBean.setStrLastName(obj[3].toString());
-				objPaymentReciptBean.setDblBalanceAmount(0);
-				listGuestDataDtl.add(objPaymentReciptBean);
-				}
-			}
-		}
+		 
 	}
 
 

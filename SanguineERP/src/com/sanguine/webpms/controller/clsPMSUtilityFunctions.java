@@ -384,5 +384,56 @@ public class clsPMSUtilityFunctions {
 			}*/
 		}
 	}
+	
+	
+	public double funGetOpeningBalanceForOneGuest(String strGuestCode)
+	{
+		double openingBal=0;
+		
+		String sql="select b.totalDebitAmt - a.totalCreditAmt as guestOpeningBalance from"
+				+ "  (select ifnull(sum(a.dblSettlementAmt),0) as totalCreditAmt   from tblreceiptdtl a,tblreceipthd b"
+				+ " where  a.strReceiptNo=b.strReceiptNo and a.strCustomerCode ='"+strGuestCode+"'"
+				+ "  and b.strFolioNo not in (  select a.strFolioNo from tblfoliohd a )"
+				+ " and b.strReservationNo not in (  select a.strReservationNo from tblfoliohd a ) ) as a ,"
+				+ " ( Select ifnull(sum(a.dblGrandTotal),0) as totalDebitAmt from tblbillhd a where a.strGuestCode='"+strGuestCode+"') "
+				+ " as b" ;
+		
+		List listOpeningBalnce = objGlobalFunService.funGetListModuleWise(sql, "sql");
+	    if(listOpeningBalnce!=null && listOpeningBalnce.size()>0)
+	    {
+	    	openingBal=Double.parseDouble(listOpeningBalnce.get(0).toString());
+	    }
+		return openingBal;
+				
+				
+	}
+	
+
+	
+	
+	
+	//All guest closing balance
+/*	select ifnull(b.totalDebitAmt - a.totalCreditAmt,0) as guestOpeningBalance, b.billGuestCode,d.strFirstName from 
+	tblguestmaster d 
+	left outer join 
+	(select ifnull(sum(a.dblSettlementAmt),0) as totalCreditAmt ,a.strCustomerCode as PaymentGuestCode   from tblreceiptdtl a,tblreceipthd b
+	where  a.strReceiptNo=b.strReceiptNo
+	group by a.strCustomerCode) as a on a.PaymentGuestCode=d.strGuestCode 
+
+	left outer join ( Select ifnull(sum(a.dblGrandTotal),0) as totalDebitAmt,a.strGuestCode as billGuestCode from tblbillhd a 
+	group by a.strGuestCode) 
+	as b  on  b.billGuestCode=d.strGuestCode  
+
+	left outer join 
+	(select ifnull(sum(a.dblDebitAmt),0) , b.strGuestCode as folioGuestCode
+	from tblfoliodtl a, tblfoliohd b 
+	where a.strFolioNo=b.strFolioNo 
+	group by b.strGuestCode ) as c  on c.folioGuestCode=d.strGuestCode
+
+	having guestOpeningBalance>0*/
+	
+	
+	
+
 
 }
