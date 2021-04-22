@@ -626,6 +626,7 @@ public class clsGRNController {
 						{
 							dblDiscount=ob.getDblTotalPrice()/dblDisPercent;
 						}
+						
 						double taxableAmt = 0.0,taxAmt = 0.0;						
 						String prdDetailForTax = ob.getStrProdCode() + "," + ob.getDblUnitPrice() + ","
 								+ objHdModel.getStrSuppCode() + "," + ob.getDblQty() + "," + dblDiscount;

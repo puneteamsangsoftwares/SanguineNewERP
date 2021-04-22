@@ -68,6 +68,7 @@
 			$(".tab_content").hide();
 			var activeTab = $(this).attr("data-state");
 			$("#" + activeTab).fadeIn();
+			
 		});
 		
 		if(clientCode=='382.000')
