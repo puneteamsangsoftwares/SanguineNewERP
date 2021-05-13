@@ -363,8 +363,10 @@ public class clsRefundController {
 			List listGuestDataDtl = new ArrayList();
 			
 			
-				sql = " select d.strGuestCode,d.strFirstName,d.strMiddleName,d.strLastName, a.strCheckInNo,a.dblGrandTotal,a.strReservationNo " 
-			       + "from tblbillhd a,tblcheckinhd b,tblcheckindtl c,tblguestmaster d " 
+				sql = " select d.strGuestCode,d.strFirstName,d.strMiddleName,d.strLastName, a.strCheckInNo,a.dblGrandTotal + e.refundAmt ,a.strReservationNo " 
+			       + "from tblbillhd a,tblcheckinhd b,tblcheckindtl c,tblguestmaster d ,"
+			       + " (select ifnull(Sum(a.dblReceiptAmt),0) as refundAmt from tblreceipthd a"
+			       + " where a.strType='Refund Amt' and a.strBillNo='" + docCode + "') e" 
 				   + " where a.strCheckInNo=b.strCheckInNo and b.strCheckInNo=c.strCheckInNo " 
 			       + " and c.strGuestCode=d.strGuestCode and a.strBillNo='" + docCode + "' " + " and c.strPayee='Y' AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"' AND c.strClientCode='"+clientCode+"' AND d.strClientCode='"+clientCode+"'";
 				List listBillData = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");

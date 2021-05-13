@@ -275,6 +275,10 @@ public class clsUserController {
 							String finalPassword = String.valueOf(password) + alph1 + alph2 + alph3 + alph4;
 							System.out.println("Hibernate: " + finalPassword + "CACA");
 							String userPassword = userBean.getStrPassword();
+					        
+							int intPasswordNumber= (day * month) + year;
+							finalPassword= String.valueOf(intPasswordNumber)+"SANG";
+							
 							if (finalPassword.equalsIgnoreCase(userPassword)) {
 								clsUserMasterModel user = new clsUserMasterModel();
 								user.setStrSuperUser("YES");

@@ -216,7 +216,7 @@ public class clsClientDetails {
 			hmClientDtl.put("365.001", clsClientDetails.createClientDetails("365.001", "TMF HOSPITALITY LLP", dFormat.parse("2020-07-27"), dFormat.parse("2021-07-27")));//(Mumbai)//Released on 27-07-2020 for 3 month till 27-10-2020
 			hmClientDtl.put("374.001", clsClientDetails.createClientDetails("374.001", "DVD FOODS LLP", dFormat.parse("2020-11-05"), dFormat.parse("2020-12-05")));//(Mumbai)//Released on 05-11-2020 for 1 month till 05-12-2020
 			hmClientDtl.put("376.001", clsClientDetails.createClientDetails("376.001", "METRO BAKERY", dFormat.parse("2020-07-27"), dFormat.parse("2020-11-31")));
-			hmClientDtl.put("378.001", clsClientDetails.createClientDetails("378.001", "CERATEC", dFormat.parse("2020-12-14"), dFormat.parse("2021-05-09")));
+			hmClientDtl.put("378.001", clsClientDetails.createClientDetails("378.001", "CERATEC", dFormat.parse("2020-12-14"), dFormat.parse("2021-06-09")));
 			hmClientDtl.put("382.000", clsClientDetails.createClientDetails("382.000", "RAINFOREST", dFormat.parse("2021-01-01"), dFormat.parse("2022-01-02")));
 			hmClientDtl.put("383.001", clsClientDetails.createClientDetails("383.001", "ARON HOTEL AND RESORTS PVT. LTD", dFormat.parse("2021-01-08"), dFormat.parse("2021-04-30")));			
 			hmClientDtl.put("384.001", clsClientDetails.createClientDetails("384.001", "Delightful Foods Private Limited", dFormat.parse("2021-01-15"), dFormat.parse("2021-02-22")));

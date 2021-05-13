@@ -4177,8 +4177,17 @@ public class clsSearchFormController {
 		case "salesorder": {
 			// columnNames =
 			// "a.strSOCode,a.dteSODate,a.strCustPONo,strCustCode,strLocCode";
-			columnNames = "a.strSOCode,a.dteSODate,a.strCustPONo,b.strPName,c.strLocName,a.strStatus ";
-			tableName = "clsSalesOrderHdModel a,clsPartyMasterModel b,clsLocationMasterModel c " + "where a.strCustCode=b.strPCode and a.strLocCode=c.strLocCode and a.strClientCode='" + clientCode + "' " + "and a.strClientCode=b.strClientCode and a.strClientCode=c.strClientCode and c.strPropertyCode='" + propCode + "'   ";
+			
+            String strFinYear = req.getSession().getAttribute("financialYear").toString();			
+			String[] strFineArray=strFinYear.split("-");
+			String startDate=strFineArray[0]+"-04-01";
+			String endDate=strFineArray[1]+"-03-31";
+			
+			columnNames = " a.strSOCode,a.dteSODate,a.strCustPONo,b.strPName,c.strLocName,a.strStatus ";
+			tableName = " from tblsalesorderhd a,tblpartymaster b,tbllocationmaster c " + 
+			 " where a.strCustCode=b.strPCode and a.strLocCode=c.strLocCode and a.strClientCode='" + clientCode + "' " + "and "
+			 + " a.strClientCode=b.strClientCode and a.strClientCode=c.strClientCode and c.strPropertyCode='" + propCode + "'  "
+			 + " and date(a.dteSODate) between '"+startDate+"' And '"+endDate+"'   ";
 			
 			boolean flgAuth = false;
 			if (null != req.getSession().getAttribute("hmAuthorization")) {
@@ -4192,7 +4201,7 @@ public class clsSearchFormController {
 			}
 			listColumnNames = "SO Code,So Date, CustomerPONo,Customer Name,Location Name,Order Type";
 			idColumnName = "strSOCode";
-			// flgQuerySelection=true;
+			 flgQuerySelection=true;
 			searchFormTitle = "Sales Order";
 			break;
 		}
@@ -4436,9 +4445,15 @@ public class clsSearchFormController {
 		}
 
 		case "invoice": {
-
-			columnNames = "a.strInvCode,a.strSOCode,a.dteInvDate,b.strPName,c.strLocName,a.strAuthorise";
-			tableName = " clsInvoiceHdModel a, clsPartyMasterModel b,clsLocationMasterModel c " + " where a.strCustCode=b.strPCode and a.strLocCode=c.strLocCode and a.strClientCode='" + clientCode + "' " + "and a.strClientCode=b.strClientCode and b.strClientCode=c.strClientCode " + "and a.strInvCode like '%IV%'  and  c.strPropertyCode='" + propCode + "'    ";
+            
+			String strFinYear = req.getSession().getAttribute("financialYear").toString();
+			String[] strFineArray=strFinYear.split("-");
+			String startDate=strFineArray[0]+"-04-01";
+			String endDate=strFineArray[1]+"-03-31";
+			
+			columnNames = " a.strInvCode,a.strSOCode,a.dteInvDate,b.strPName,c.strLocName,a.strAuthorise";
+			tableName = " from tblinvoicehd a, tblpartymaster b,tbllocationmaster c " + " where a.strCustCode=b.strPCode and a.strLocCode=c.strLocCode and a.strClientCode='" + clientCode + "' " + "and a.strClientCode=b.strClientCode and b.strClientCode=c.strClientCode " + "and a.strInvCode like '%IV%' "
+					+ " and  c.strPropertyCode='" + propCode + "'  and date(a.dteInvDate) between '"+startDate+"' And '"+endDate+"'  ";
 			if (showPrptyWiseProdDoc.equalsIgnoreCase("Y")) {
 				tableName += " and a.strInvCode like '" + propertyCode + "%' ";
 			}
@@ -4454,8 +4469,9 @@ public class clsSearchFormController {
 			}
 			listColumnNames = "InvoiceCode,SO Code,DC Date,Party Name,Location Name, Authorise";
 			idColumnName = "a.strInvCode";
-			criteria = getCriteriaQuery(columnNames, search_with, tableName);
+			//criteria = getCriteriaQuery(columnNames, search_with, tableName);
 			searchFormTitle = "Invoice";
+			flgQuerySelection = true;
 			break;
 		}
 
