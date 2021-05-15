@@ -63,8 +63,7 @@ public class clsClientLoginController {
 							Date systemDate = dFormat.parse(dFormat.format(new Date()));
 							Date WebStockExpiryDate = dFormat.parse(dFormat.format(clsClientDetails.hmClientDtl.get(objClientBean.getStrClientCode().trim()).expiryDate));
 							if (systemDate.compareTo(WebStockExpiryDate) <= 0) {
-								BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-								if (passwordEncoder.matches(objClientBean.getStrPassword(), objclsCompanyMasterModel.getStrPassword())) {
+								if (objClientBean.getStrPassword().equals(objclsCompanyMasterModel.getStrPassword())) {
 									String startDate = objclsCompanyMasterModel.getDtStart();
 									String[] spDate = startDate.split("-");
 									String year = spDate[0];
