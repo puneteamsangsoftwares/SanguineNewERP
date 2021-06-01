@@ -912,10 +912,10 @@ $(document).ready(function(){
 			</div>
 			<div class="col-md-2">
 				<label>Location</label>
-				<s:input id="strLocCode" path="strLocCode" value="${locationCode}"/>
+				<s:input id="strLocCode" path="strLocCode" ondblclick="funHelp('locationmaster')" value="${locationCode}"/>
 			</div>
 			<div class="col-md-2">	
-				<label id="strLocName"  class="namelabel"  required="required"  ondblclick="funHelp('locationmaster')" cssClass="searchTextBox" style="background-color:#dcdada94; width: 100%; height: 52%;margin-top:27px; text-align:center;">${locationName} </label>
+				<label id="strLocName"  class="namelabel"  required="required"   cssClass="searchTextBox" style="background-color:#dcdada94; width: 100%; height: 52%;margin-top:27px; text-align:center;">${locationName} </label>
 			</div>
 			<div class="col-md-4"></div>
 			<div class="col-md-2">	
@@ -1052,7 +1052,7 @@ $(document).ready(function(){
 		<br>
 		<div class="center" style="text-align:center">
 			<a href="#"><button class="btn btn-primary center-block" id="formsubmit"  tabindex="3" value="Submit" onclick="return funCallFormAction('submit',this)">Submit</button></a>&nbsp
-			<a href="#"><button class="btn btn-primary center-block"  value="Reset" onclick="funResetFields();">Reset</button></a>
+			<input type="button"  class="btn btn-primary center-block"  value="Reset" onclick="funResetFields();" />
 		</div>
 		<br><br>
 		<div id="wait" style="display:none;width:60px;height:60px;border:0px solid black;position:absolute;top:60%;left:55%;padding:2px;">

@@ -553,6 +553,14 @@
 	function funValidateFields(actionName,object)
 	{
 		var flg=true;
+		if($("#cmbAgainst").val()=='Deposit'){
+			if($("#txtCreditName").val().trim().length==0)
+			{
+				alert("Please Enter Guest Name !!");
+				 flg=false;
+			}
+			
+		}
 		
 		if($("#txtSettlementCode").val().trim().length==0)
 		{
@@ -626,10 +634,11 @@ function funCreateNewGuest(){
 			</div>
 		
 	   	    <div class="col-md-3"><label>Against</label>
-	   	       <div class="row">
+	   	       <div class="row"> 
 			     <div class="col-md-6"><s:select id="cmbAgainst" items="${listAgainst}" name="cmbAgainst" path="strAgainst"></s:select></div>
 			     <div class="col-md-6"><s:input id="txtDocCode" path="strDocNo" readonly="readonly" ondblclick="funOpenAgainst()" style="height: 95%;" class="searchTextBox" ></s:input></div>
-		    </div></div>
+		    </div>
+		    </div>
 		  
 	  	    <div class="col-md-2"><label id="lblGuestName"></label>
 		          <label id="lblGuestFullName" style=" width: 100%; height: 45%;"></label>

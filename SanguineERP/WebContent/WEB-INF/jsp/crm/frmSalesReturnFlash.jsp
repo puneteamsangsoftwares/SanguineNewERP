@@ -609,10 +609,10 @@
 				</div>
 			</div>
 			<div class="center" style="text-align:right; margin-right:47%;">
-				<a href="#"><button class="btn btn-primary center-block" id="btnExport" value="EXPORT" onclick="funExportReport()" 
-						 class="form_button1">EXPORT</button></a>
-				<a href="#"><button class="btn btn-primary center-block" id="btnExport" value="PRINT" onclick="funPrintReport()"
-						class="form_button1">PRINT</button></a>
+				<input class="btn btn-primary center-block" id="btnExport" type="button"  value="EXPORT" onclick="funExportReport()" />
+						
+				<input  class="btn btn-primary center-block" id="btnExport" type="button" value="PRINT" onclick="funPrintReport()" />
+						
 			</div>
 	
 		<div id="divRegionWise" class="dynamicTableContainer"

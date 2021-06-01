@@ -1457,8 +1457,8 @@ var fieldName,strLocationType,listRow=0,showReqVal="",showReqStk="";
 		<p align="center">
 			<input type="submit" value="Submit"
 							onclick="return funCallFormAction('submit',this)"
-				class="form_button" /> <input type="button" value="Reset"
-				onclick="funResetFields();" class="form_button" />
+				class="form_button" /> 
+				<input type="button" value="Reset" onclick="funResetFields();" class="form_button" />
 		</p>
 <br><br>
 	<div id="wait" style="display:none;width:60px;height:60px;border:0px solid black;position:absolute;top:60%;left:55%;padding:2px;">

@@ -782,4 +782,4 @@ public class clsProductMasterBean {
 		this.strHSNCode = strHSNCode;
 	}
 
-}
+	}

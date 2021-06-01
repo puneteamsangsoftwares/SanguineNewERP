@@ -212,7 +212,7 @@ public class clsProductWiseFlashController {
 		{
 			sqlInvoiceFlash = sqlInvoiceFlash + " and  a.strCurrencyCode='" + currencyCode + "' ";
 		}
-		sqlInvoiceFlash += " d.strPropCode='"+propertyCode+"' group by b.strProdCode,a.strCustCode,e.strRegionDesc ";
+		sqlInvoiceFlash += " and d.strPropCode='"+propertyCode+"' group by b.strProdCode,a.strCustCode,e.strRegionDesc ";
 
 		DecimalFormat df = new DecimalFormat("#.##");
 
@@ -316,7 +316,7 @@ public class clsProductWiseFlashController {
 		{
 			sqlInvoiceFlash = sqlInvoiceFlash + " and  a.strCurrencyCode='" + currencyCode + "' ";
 		}
-		sqlInvoiceFlash += " d.strPropCode='"+propertyCode+"' group by b.strProdCode,a.strCustCode,e.strRegionDesc ";
+		sqlInvoiceFlash += " and d.strPropCode='"+propertyCode+"' group by b.strProdCode,a.strCustCode,e.strRegionDesc ";
 
 		DecimalFormat df = new DecimalFormat("#.##");
 		double floatingPoint = 0.0;

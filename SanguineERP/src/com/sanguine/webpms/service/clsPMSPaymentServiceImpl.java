@@ -159,7 +159,7 @@ public class clsPMSPaymentServiceImpl implements clsPMSPaymentService {
 					
 			}
 
-			else {
+			else if(objPaymentBean.getStrAgainst().equals("Bill")){
 				String sql = " select a.strCheckInNo,a.strRegistrationNo,a.strReservationNo,a.strFolioNo,b.strGuestCode " + " from tblbillhd a,tblcheckindtl b  " + " where a.strCheckInNo=b.strCheckInNo AND a.strBillNo='" + objPaymentBean.getStrDocNo() + "'";
 				List list = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 				if (list.size() > 0) {
@@ -209,7 +209,16 @@ public class clsPMSPaymentServiceImpl implements clsPMSPaymentService {
 					}
 				}
 			}
+			else if (objPaymentBean.getStrAgainst().equals("Deposit")) {
+				
+				
+				checkInNo = "";
+				registrationNo = "";
+				reservationNo = "";
+				folioNo = "";
+				billNo = "";
 			
+	       }
 			
 
 		    objModel.setDteReceiptDate(PMSDate);
@@ -224,6 +233,10 @@ public class clsPMSPaymentServiceImpl implements clsPMSPaymentService {
 			objModel.setStrClientCode(clientCode);
 			objModel.setStrFlagOfAdvAmt(objPaymentBean.getStrFlagOfAdvAmt());
 			objModel.setStrType("Payment");
+		   if (objPaymentBean.getStrAgainst().equals("Deposit")) {
+			   objModel.setStrType("Deposit");
+		   }
+			
 
 			List<clsPMSPaymentReceiptDtl> listPaymentReceiptDtlModel = new ArrayList<clsPMSPaymentReceiptDtl>();
 			clsPMSPaymentReceiptDtl objPaymentReceiptDtlModel = new clsPMSPaymentReceiptDtl();

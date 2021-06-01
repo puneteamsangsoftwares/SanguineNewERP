@@ -370,9 +370,12 @@ public class clsFolioPrintingController {
 				// get folio details
 				
 				String sqlFolioDtl = "SELECT DATE_FORMAT(b.dteDocDate,'%d-%m-%Y'),b.strDocNo, CONCAT(IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),' ',b.strRemark),"
-						+ " b.dblQuantity,b.dblDebitAmt - b.dblDiscAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark),d.strRoomDesc,b.strOldFolioNo ,b.dblDebitAmt " + ""
-						+ " FROM tblfoliohd a LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo AND a.strClientCode='"+clientCode+"' AND b.strClientCode='"+clientCode+"'" + ", tblroom d  "
-						+ " WHERE b.strRevenueCode=d.strRoomCode AND a.strFolioNo='" + folioNo + "' and b.strRevenueType!='Discount' and b.dblDebitAmt > 0 "
+						+ " b.dblQuantity,b.dblDebitAmt - b.dblDiscAmt,b.dblCreditAmt,b.dblBalanceAmt ,CONCAT(b.strPerticulars,' ',b.strRemark),ifnull(d.strRoomDesc,''),b.strOldFolioNo ,b.dblDebitAmt " + ""
+						+ " FROM tblfoliohd a "
+						+ " LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo AND a.strClientCode='"+clientCode+"' "
+						+ " AND b.strClientCode='"+clientCode+"'" + ""
+						+ " LEFT OUTER JOIN tblroom d  on  b.strRevenueCode=d.strRoomCode "
+						+ " WHERE a.strFolioNo='" + folioNo + "' and b.strRevenueType!='Discount' and b.dblDebitAmt > 0 "
 						+ " order by b.dteDocDate ASC";
 
 				if(clientCode.equalsIgnoreCase("383.001"))
@@ -519,49 +522,7 @@ public class clsFolioPrintingController {
 						+ " GROUP BY d.strReceiptNo,d.strSettlementCode ";*/
 				
 				balance=Math.round(balance); 
-				String sqlPaymentDtl = "SELECT DATE_FORMAT(date(b.dteDocDate),'%d-%m-%Y'),c.strReceiptNo,e.strSettlementDesc,'0.00' as debitAmt,d.dblSettlementAmt as creditAmt" + " ,'0.00' as "
-						+ " balance " + " FROM tblfoliohd a LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo AND a.strClientCode='"+clientCode+"' "
-						+ " AND b.strClientCode='"+clientCode+"'" + " left outer join tblreceipthd c on a.strFolioNo=c.strFolioNo  "
-						+ " AND c.strClientCode='"+clientCode+"'"
-						+ " left outer join tblreceiptdtl d on c.strReceiptNo=d.strReceiptNo AND d.strClientCode='"+clientCode+"'" + " left outer join"
-						+ "  tblsettlementmaster e on d.strSettlementCode=e.strSettlementCode AND e.strClientCode='"+clientCode+"'" + " "
-						+ " WHERE a.strFolioNo='" + folioNo + "'  AND c.strAgainst='Folio-No'  "  + ""
-						+ " GROUP BY d.strReceiptNo,d.strSettlementCode ";
 				
-				List paymentDtlList = objFolioService.funGetParametersList(sqlPaymentDtl);
-				if(paymentDtlList!=null && paymentDtlList.size()>0){
-				
-					for (int i = 0; i < paymentDtlList.size(); i++) {
-						Object[] paymentArr = (Object[]) paymentDtlList.get(i);
-
-						String docDate = paymentArr[0].toString();
-						if (paymentArr[1] == null) {
-							continue;
-						} else {
-							clsFolioPrintingBean folioPrintingBean = new clsFolioPrintingBean();
-
-							String docNo = paymentArr[1].toString();
-							String particulars = paymentArr[2].toString();
-							double debitAmount = Double.parseDouble(paymentArr[3].toString());
-							double creditAmount = Double.parseDouble(paymentArr[4].toString());
-							
-							balance += debitAmount - creditAmount;
-
-							folioPrintingBean.setDteDocDate(objGlobal.funGetDate("dd-mm-yyyy", docDate));
-							folioPrintingBean.setStrDocNo(docNo);
-							folioPrintingBean.setStrPerticulars(particulars);
-							folioPrintingBean.setDblDebitAmt(debitAmount);
-							folioPrintingBean.setDblCreditAmt(creditAmount);
-							folioPrintingBean.setDblBalanceAmt(balance);
-
-							dataList.add(folioPrintingBean);
-						}
-					}
-
-				}
-				
-				
-
 				String sqlPayDtlAgainstRes = "SELECT DATE_FORMAT(DATE(a.dteReceiptDate),'%d-%m-%Y'),a.strReceiptNo,c.strSettlementDesc,'0.00' AS debitAmt,"
 						+ " b.dblSettlementAmt AS creditAmt,'0.00' AS balance"
 						+ " FROM tblreceipthd a"
@@ -648,6 +609,49 @@ public class clsFolioPrintingController {
 				}
 				
 				}
+			String sqlPaymentDtl = "SELECT DATE_FORMAT(date(c.dteReceiptDate),'%d-%m-%Y'),c.strReceiptNo,e.strSettlementDesc,'0.00' as debitAmt,d.dblSettlementAmt as creditAmt" + " ,'0.00' as "
+					+ " balance " + " FROM tblfoliohd a LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo AND a.strClientCode='"+clientCode+"' "
+					+ " AND b.strClientCode='"+clientCode+"'" + " left outer join tblreceipthd c on a.strFolioNo=c.strFolioNo  "
+					+ " AND c.strClientCode='"+clientCode+"'"
+					+ " left outer join tblreceiptdtl d on c.strReceiptNo=d.strReceiptNo AND d.strClientCode='"+clientCode+"'" + " left outer join"
+					+ "  tblsettlementmaster e on d.strSettlementCode=e.strSettlementCode AND e.strClientCode='"+clientCode+"'" + " "
+					+ " WHERE a.strFolioNo='" + folioNo + "'  AND c.strAgainst='Folio-No'  "  + ""
+					+ " GROUP BY d.strReceiptNo,d.strSettlementCode ";
+			
+			List paymentDtlList = objFolioService.funGetParametersList(sqlPaymentDtl);
+			if(paymentDtlList!=null && paymentDtlList.size()>0){
+			
+				for (int i = 0; i < paymentDtlList.size(); i++) {
+					Object[] paymentArr = (Object[]) paymentDtlList.get(i);
+
+					String docDate = paymentArr[0].toString();
+					if (paymentArr[1] == null) {
+						continue;
+					} else {
+						clsFolioPrintingBean folioPrintingBean = new clsFolioPrintingBean();
+
+						String docNo = paymentArr[1].toString();
+						String particulars = paymentArr[2].toString();
+						double debitAmount = Double.parseDouble(paymentArr[3].toString());
+						double creditAmount = Double.parseDouble(paymentArr[4].toString());
+						
+						balance += debitAmount - creditAmount;
+
+						folioPrintingBean.setDteDocDate(objGlobal.funGetDate("dd-mm-yyyy", docDate));
+						folioPrintingBean.setStrDocNo(docNo);
+						folioPrintingBean.setStrPerticulars(particulars);
+						folioPrintingBean.setDblDebitAmt(debitAmount);
+						folioPrintingBean.setDblCreditAmt(creditAmount);
+						folioPrintingBean.setDblBalanceAmt(balance);
+
+						dataList.add(folioPrintingBean);
+					}
+				}
+
+			}
+			
+			
+
 			List<clsFolioPrintingBean> listTax=new ArrayList<>();
 			for(clsFolioPrintingBean folioPrintingBean :dataList){
 				if(folioPrintingBean.isTax()){

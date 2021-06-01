@@ -399,7 +399,7 @@ sqlAdvOrd = " select i.strSGName,   g.strProdCode,g.strProdName,b.dblQty AS dblQ
 								}
 							}
 							File fileUserImage = new File(System.getProperty("user.dir") + "\\ProductImageIcon\\" + objProdBean.getStrPName() + "_" + objProdBean.getStrRemark() + "_" + objProdBean.getStrProdCode() + "_" + objProdBean.getDblWeight() + ".jpg");
-							prodImage = System.getProperty("user.dir") + "\\ProductImageIcon\\" + objProdBean.getStrPName() + "_" + objProdBean.getStrRemark() + "_" + objProdBean.getStrProdCode() + "_" + objProdBean.getDblWeight() + ".jpg";
+							prodImage = System.getProperty("user.dir") + "\\ProductImageIcon\\"+ objProdBean.getStrPName() + "_" + objProdBean.getStrRemark() + "_" + objProdBean.getStrProdCode() + "_" + objProdBean.getDblWeight() + ".jpg";   //AAYUSH FOODS_AB00071_P0000215_0.0.png"; 
 							if (fileUserImage.exists()) {
 								fileUserImage.delete();
 							}

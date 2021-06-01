@@ -1160,7 +1160,7 @@ $(document).ready(function()
 				    	else
 				    		document.getElementById("chkComesaRegionItem").checked=false;
 				    	
-				    	
+				    	z
 				    	funGetImage(code);
 				    	funSetProdSupplierData(code);
 				    	funSetProdAttributeData(code);

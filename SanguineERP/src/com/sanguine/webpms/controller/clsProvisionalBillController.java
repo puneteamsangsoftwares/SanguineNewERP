@@ -286,6 +286,7 @@ public class clsProvisionalBillController
 				
 				String sqlBillDtl="";
 				int roomCount=0;
+				Object[] arrObj=null;
 				String sql = "select a.strReservationNo,a.strWalkInNo,count(b.strRoomNo) "
 						+ " from tblcheckinhd a,tblcheckindtl b "
 						+ " where a.strCheckInNo=b.strCheckInNo "
@@ -296,12 +297,12 @@ public class clsProvisionalBillController
 				{
 					for (int cnt = 0; cnt < list.size(); cnt++) 
 					{
-						Object[] arrObj = (Object[]) list.get(cnt);
+						 arrObj = (Object[]) list.get(cnt);
 						roomCount=Integer.valueOf(arrObj[2].toString());
 						if(!arrObj[0].toString().isEmpty())
 						{
 							sqlBillDtl= " SELECT a.strCheckInNo,0,b.strRoomNo, DATEDIFF(a.dteDepartureDate, a.dteArrivalDate),"
-									+ " a.dteCheckInDate,d.strRoomDesc,b.strFolioNo, CONCAT(f.strFirstName,' ',f.strMiddleName,' ',f.strLastName), IFNULL((g.dblIncomeHeadAmt),0),e.dtDate,h.strPackageName "
+									+ " a.dteCheckInDate,d.strRoomDesc,b.strFolioNo, CONCAT(f.strFirstName,' ',f.strMiddleName,' ',f.strLastName), IFNULL((g.dblIncomeHeadAmt),0),e.dtDate,h.strPackageName,ifnull(f.lngMobileNo,''),ifnull(f.strAddressLocal,'') "
 									+ " FROM tblcheckinhd a"
 									+ " LEFT OUTER JOIN tblroompackagedtl g ON a.strCheckInNo=g.strCheckInNo AND g.strRoomNo='', tblfoliohd b,tblroom d,"
 									+ " tblreservationroomratedtl e,tblguestmaster f,tblpackagemasterhd h"
@@ -310,7 +311,7 @@ public class clsProvisionalBillController
 									+ " AND DATE(a.dteDepartureDate)>='"+toDateForQuery+"'  and g.strType='IncomeHead'"
 									+ " GROUP BY g.strType"
 									+ " Union All "
-									+ " SELECT a.strCheckInNo,e.dblRoomRate,b.strRoomNo, DATEDIFF(a.dteDepartureDate, a.dteArrivalDate),a.dteCheckInDate,d.strRoomDesc,b.strFolioNo, CONCAT(f.strFirstName,' ',f.strMiddleName,' ',f.strLastName),0,e.dtDate,''"
+									+ " SELECT a.strCheckInNo,e.dblRoomRate,b.strRoomNo, DATEDIFF(a.dteDepartureDate, a.dteArrivalDate),a.dteCheckInDate,d.strRoomDesc,b.strFolioNo, CONCAT(f.strFirstName,' ',f.strMiddleName,' ',f.strLastName),0,e.dtDate,'',ifnull(f.lngMobileNo,''),ifnull(f.strAddressLocal,'')"
 									+ " FROM tblcheckinhd a left outer join tblroompackagedtl g on a.strCheckInNo=g.strCheckInNo ,tblfoliohd b,tblroom d,tblreservationroomratedtl e,tblguestmaster f"
 									+ " WHERE a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=d.strRoomCode AND a.strReservationNo=e.strReservationNo"
 									+ " AND d.strRoomTypeCode=e.strRoomType AND b.strGuestCode=f.strGuestCode AND a.strCheckInNo='"+docNo+"' "
@@ -319,7 +320,7 @@ public class clsProvisionalBillController
 						}
 						else
 						{
-							sqlBillDtl= " SELECT a.strCheckInNo,e.dblRoomRate,b.strRoomNo, DATEDIFF(a.dteDepartureDate, a.dteArrivalDate),a.dteCheckInDate,d.strRoomDesc,b.strFolioNo, CONCAT(f.strFirstName,' ',f.strMiddleName,' ',f.strLastName),ifnull(sum(g.dblIncomeHeadAmt),0),e.dtDate"
+							sqlBillDtl= " SELECT a.strCheckInNo,e.dblRoomRate,b.strRoomNo, DATEDIFF(a.dteDepartureDate, a.dteArrivalDate),a.dteCheckInDate,d.strRoomDesc,b.strFolioNo, CONCAT(f.strFirstName,' ',f.strMiddleName,' ',f.strLastName),ifnull(sum(g.dblIncomeHeadAmt),0),e.dtDate,ifnull(f.lngMobileNo,''),ifnull(f.strAddressLocal,'')"
 									+ " FROM tblcheckinhd a left outer join tblroompackagedtl g on a.strCheckInNo=g.strCheckInNo and g.strRoomNo='' AND a.strClientCode='"+clientCode+"' AND g.strClientCode='"+clientCode+"' ,tblfoliohd b,tblroom d,tblwalkinroomratedtl e,tblguestmaster f"
 									+ " WHERE a.strCheckInNo=b.strCheckInNo AND b.strRoomNo=d.strRoomCode AND a.strWalkInNo=e.strWalkInNo"
 									+ " AND d.strRoomTypeCode=e.strRoomType AND b.strGuestCode=f.strGuestCode AND a.strCheckInNo='"+docNo+"' "
@@ -345,6 +346,16 @@ public class clsProvisionalBillController
 	                {
 	                	noOfNights=1;
 	                }
+	                if(!arrObj[0].toString().isEmpty()){
+	                	reportParams.put("mobileNo",billArr[11].toString());
+	 					reportParams.put("guestAdd",billArr[12].toString());
+	                }
+	                else
+	                {
+	                	 reportParams.put("mobileNo",billArr[10].toString());
+	 					 reportParams.put("guestAdd",billArr[11].toString());
+	                }
+	               
 	                String []spDocDate=billArr[9].toString().split("-");
 					billPrintingBean.setDteDocDate(spDocDate[2]+"-"+spDocDate[1]+"-"+spDocDate[0]);
 					
@@ -372,7 +383,9 @@ public class clsProvisionalBillController
 						billPrintingBean.setStrBillIncluded(billArr[10] + " Package");
 						billPrintingBean.setDblBalanceAmt((Double.parseDouble(billArr[1].toString()))+Double.parseDouble(billArr[8].toString())/roomCount);
 						billAmount += (Double.parseDouble(billArr[1].toString()))+Double.parseDouble(billArr[8].toString())/roomCount;
-						
+						billPrintingBean.setStrGuestName(billArr[7].toString());
+						billPrintingBean.setStrRoomNo(roomNo);
+						billPrintingBean.setStrRoomName(billArr[5].toString());
 						dataList.add(billPrintingBean);
 					}
 					else
@@ -381,6 +394,9 @@ public class clsProvisionalBillController
 						billAmount += Double.parseDouble(billArr[1].toString());
 						dblTerrifAmount +=Double.parseDouble(billArr[1].toString());
 						billPrintingBean.setDblBalanceAmt(dblTerrifAmount);
+						billPrintingBean.setStrGuestName(billArr[7].toString());
+						billPrintingBean.setStrRoomNo(roomNo);
+						billPrintingBean.setStrRoomName(billArr[5].toString());
 						if(sizelist==i)
 						{
 							dataList.add(billPrintingBean);
@@ -437,7 +453,7 @@ public class clsProvisionalBillController
 			
 				
 				Map<String,clsBillPrintingBean> mapForAdvancePayment = new HashMap<>();
-				String sqlPaymentDtl = "SELECT DATE_FORMAT(date(b.dteDocDate),'%d-%m-%Y'),c.strReceiptNo,e.strSettlementDesc,'0.00' as debitAmt,d.dblSettlementAmt as creditAmt" + " ,'0.00' as "
+				String sqlPaymentDtl = "SELECT DATE_FORMAT(date(b.dteDocDate),'%d-%m-%Y'),c.strReceiptNo,CONCAT(e.strSettlementDesc,'   ','(', DATE_FORMAT(DATE(c.dteReceiptDate),'%d-%m-%Y'),')'),'0.00' as debitAmt,d.dblSettlementAmt as creditAmt" + " ,'0.00' as "
 						+ " balance " + " FROM tblfoliohd a LEFT OUTER JOIN tblfoliodtl b ON a.strFolioNo=b.strFolioNo AND a.strClientCode='"+clientCode+"' "
 						+ " AND b.strClientCode='"+clientCode+"'" + " left outer join tblreceipthd c on a.strFolioNo=c.strFolioNo OR a.strReservationNo=c.strReservationNo "
 						+ " AND c.strClientCode='"+clientCode+"'"

@@ -318,8 +318,8 @@ public class clsCRMSecurityShellController {
 				if (null != arrOb[10]) {
 					objTree.setStrPrint(arrOb[10].toString());
 				}
-				if (null != arrOb[12]) {
-					objTree.setStrAuthorise(arrOb[12].toString());
+				if (null != arrOb[11]) {
+					objTree.setStrAuthorise(arrOb[11].toString());
 				}
 				objTransactions.add(objTree);
 

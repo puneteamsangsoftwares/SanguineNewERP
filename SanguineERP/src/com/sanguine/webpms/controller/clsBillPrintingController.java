@@ -824,7 +824,7 @@ public class clsBillPrintingController {
 			}
 			
 
-			String sqlDisc = " select  a.strReceiptNo,date(a.dteReceiptDate), a.dblReceiptAmt,b.strRemarks from "
+			/*String sqlDisc = " select  a.strReceiptNo,date(a.dteReceiptDate), a.dblReceiptAmt,b.strRemarks from "
 					+ " tblreceipthd a ,tblreceiptdtl b"
 					+ " where  a.strReceiptNo=b.strReceiptNo and a.strBillNo ='"+billNo+"' and  a.strType='Refund Amt' and a.strClientCode='" + clientCode + "' ";
 
@@ -852,8 +852,8 @@ public class clsBillPrintingController {
 
 					dataList.add(folioPrintingBean);
 				}
-				
-			}
+			
+			}*/	
 			
 			
 			
@@ -871,7 +871,7 @@ public class clsBillPrintingController {
 				/*pSupportVoucherTextFielf = "";*/
 			}
 			
-			pRoomTariff = funGetRoomTariffData(billNo,folio,registrationNo,clientCode,checkInNo);
+		/*	pRoomTariff = funGetRoomTariffData(billNo,folio,registrationNo,clientCode,checkInNo);
 			String sql="select ifnull(sum(a.dblReceiptAmt),0) from tblreceipthd a where a.strType='Refund Amt' and a.strBillNo='"+billNo+"'";
 			List guestlist =  objGlobalFunctionsService.funGetListModuleWise(sql, "sql");;
 			double refundAmt=0.00;
@@ -886,10 +886,10 @@ public class clsBillPrintingController {
 				
 			}
 			else
-			{
+			{*/
 				reportParams.put("lblRefund", null);
 				reportParams.put("dblRefund", null);
-			}
+			//}
 			
 			reportParams.put("listtax", listtax);
 			reportParams.put("pSupportVoucher", pSupportVoucher);
@@ -3572,7 +3572,7 @@ public class clsBillPrintingController {
 					
 				}
 				
-			
+			/*
 				String sqlRefund="select DATE_FORMAT(a.dteReceiptDate,'%d-%m-%Y'),a.strReceiptNo,a.dblReceiptAmt from tblreceipthd a where a.strType='Refund Amt' and a.strBillNo='"+billNo+"'";
 				List guestlist =  objGlobalFunctionsService.funGetListModuleWise(sqlRefund, "sql");;
 				for (int i = 0; i < guestlist.size(); i++) {
@@ -3588,7 +3588,7 @@ public class clsBillPrintingController {
 							
 					dataList.add(folioPrintingBean);
 					
-				}
+				}*/
 				
 				
 

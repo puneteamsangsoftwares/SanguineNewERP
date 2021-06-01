@@ -582,13 +582,13 @@ public class clsPMSSalesFlashController {
 				+ " AND DATE(a.dteReceiptDate) BETWEEN '"+fromDte+"' AND '"+toDte+"' ";
 		if(type.equals("Payment"))
 		{
-			sql +=	 " and a.strType='Payment' ;";
+			sql +=	 " and a.strType in ('Payment','Deposit') ";
 		}else if(type.equals("Refund"))
 		{
-			sql +=	 " and a.strType='Refund Amt' ;";
+			sql +=	 " and a.strType='Refund Amt' ";
 		}
 		
-		
+		sql +=	 " Order by DATE(a.dteReceiptDate) asc ";
 		List listVoidBill = objGlobalService.funGetListModuleWise(sql, "sql");
 		if (!listVoidBill.isEmpty()) {
 			for (int i = 0; i < listVoidBill.size(); i++) {
@@ -1714,12 +1714,13 @@ public class clsPMSSalesFlashController {
 	
 		if(type.equals("Payment"))
 		{
-			sql +=	 " and a.strType='Payment' ;";
+			sql +=	 " and a.strType in ('Payment','Deposit') ";
 		}else if(type.equals("Refund"))
 		{
-			sql +=	 " and a.strType='Refund Amt' ;";
+			sql +=	 " and a.strType='Refund Amt' ";
 		}
-						
+		
+		sql +=	 " Order by DATE(a.dteReceiptDate) asc ";		
 		
 		
 		
@@ -2257,7 +2258,7 @@ public class clsPMSSalesFlashController {
 		
 	
 		
-		String sqlData ="select b.billGuestCode,concat(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName) as GuestName,ifnull(b.totalDebitAmt + c.TotalFolioDebitAmt  - a.totalCreditAmt,0) as guestOpeningBalance from "
+		String sqlData ="select d.strGuestCode,concat(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName) as GuestName,IFNULL(IFNULL(b.totalDebitAmt,0) + IFNULL(c.TotalFolioDebitAmt,0) - IFNULL(a.totalCreditAmt,0),0) as guestOpeningBalance from "
 				+ " tblguestmaster d "
 				+ " "
 				+ " left outer join "
@@ -2315,7 +2316,7 @@ public class clsPMSSalesFlashController {
 			BigDecimal dblTotalValue = new BigDecimal(0);
 			DecimalFormat df = new DecimalFormat("#.##");
 			
-			String sqlData ="select b.billGuestCode,concat(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName) as GuestName,ifnull(b.totalDebitAmt - a.totalCreditAmt,0) as guestOpeningBalance from "
+			String sqlData ="select d.strGuestCode,concat(d.strFirstName,' ',d.strMiddleName,' ',d.strLastName) as GuestName,IFNULL(IFNULL(b.totalDebitAmt,0) + IFNULL(c.TotalFolioDebitAmt,0) - IFNULL(a.totalCreditAmt,0),0) as guestOpeningBalance from "
 					+ " tblguestmaster d "
 					+ " "
 					+ " left outer join "
@@ -2326,10 +2327,11 @@ public class clsPMSSalesFlashController {
 					+ " left outer join ( Select ifnull(sum(a.dblGrandTotal),0) as totalDebitAmt,a.strGuestCode as billGuestCode from tblbillhd a "
 					+ " group by a.strGuestCode) as b  on  b.billGuestCode=d.strGuestCode  "
 					+ " "
-					+ " left outer join  (select ifnull(sum(a.dblDebitAmt),0) , b.strGuestCode as folioGuestCode"
+					+ " left outer join  (select ifnull(sum(a.dblDebitAmt),0) As TotalFolioDebitAmt  , b.strGuestCode as folioGuestCode"
 					+ " from tblfoliodtl a, tblfoliohd b where a.strFolioNo=b.strFolioNo "
 					+ " group by b.strGuestCode ) as c  on c.folioGuestCode=d.strGuestCode"
 					+ " having guestOpeningBalance>0 ";
+
 		  List listGuestData = objGlobalService.funGetListModuleWise(sqlData, "sql");
 
 		   if(listGuestData!=null && listGuestData.size()>0)

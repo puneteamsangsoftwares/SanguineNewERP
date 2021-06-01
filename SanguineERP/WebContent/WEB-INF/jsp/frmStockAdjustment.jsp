@@ -1195,7 +1195,7 @@ $(document).ready(function(){
 		</div>
 		<div class="center" style="text-align:center">
 			<a href="#"><button class="btn btn-primary center-block" id="btnStkPost" value="Submit" onclick="return funValidateFields()">Submit</button></a>&nbsp
-			<a href="frmStockAdjustment.html?saddr=${urlHits}"><button id="btnReset" class="btn btn-primary center-block"  value="Reset" onclick="funResetFields();">Reset</button></a>
+			<input type="button"  id="btnReset" class="btn btn-primary center-block"  value="Reset" onclick="funResetFields();" />
 		</div>
 		
 		<br><br>

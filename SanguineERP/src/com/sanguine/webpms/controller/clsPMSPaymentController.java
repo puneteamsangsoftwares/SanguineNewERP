@@ -138,6 +138,7 @@ public class clsPMSPaymentController {
 		//listAgainst.add("Check-In");
 		listAgainst.add("Folio-No");
 		listAgainst.add("Bill");
+		listAgainst.add("Deposit");
 		model.put("listAgainst", listAgainst);
 		
 		List<String> listSettlement = new ArrayList<>();
@@ -220,6 +221,7 @@ public class clsPMSPaymentController {
 	// Save or Update Payment
 	@RequestMapping(value = "/savePMSPayment", method = RequestMethod.GET)
 	public ModelAndView funAddUpdate(@ModelAttribute("command") @Valid clsPMSPaymentBean objBean, BindingResult result, HttpServletRequest req) {
+		
 		if (!result.hasErrors()) {
 			String clientCode = req.getSession().getAttribute("clientCode").toString();
 			String userCode = req.getSession().getAttribute("usercode").toString();
@@ -780,6 +782,83 @@ public class clsPMSPaymentController {
 					datalist.add(objPaymentReciptBean);
 				}
 			}
+			else if(checkAgainst.equalsIgnoreCase("Deposit"))
+			{
+
+ 				reportName = servletContext.getRealPath("/WEB-INF/reports/webpms/rptDepositPaymentRecipt.jrxml");
+
+ 				String sqlPayment = "SELECT a.strReceiptNo, IFNULL(c.intNoOfAdults,''), IFNULL(c.intNoOfChild,''),"
+ 						+ " IFNULL(a.strReservationNo,''),IFNULL(c.strCheckInNo,''), IFNULL(g.strRoomTypeDesc,''),"
+ 						+ " IFNULL(DATE_FORMAT(c.dteArrivalDate,'%d-%m-%Y'),''),IFNULL( DATE_FORMAT(c.dteDepartureDate,'%d-%m-%Y'),''), "
+ 						+ " IFNULL(f.strFirstName,''), IFNULL(f.strMiddleName,''), IFNULL(f.strLastName,''),IFNULL(d.strSettlementDesc,''),a.dblPaidAmt,IFNULL( b.strRemarks,''),"
+ 						+ " IFNULL(DATE_FORMAT(a.dteReceiptDate,'%d-%m-%Y'),''), IFNULL(h.strRoomDesc,'')"
+ 						+ " FROM tblreceipthd a"
+ 						+ " LEFT OUTER"
+ 						+ " JOIN tblreceiptdtl b ON a.strReceiptNo=b.strReceiptNo AND a.strClientCode='"+clientCode+"'"
+ 						+ " LEFT OUTER"
+ 						+ " JOIN tblguestmaster f ON f.strGuestCode=b.strCustomerCode "
+ 						+ " LEFT OUTER"
+ 						+ " JOIN tblcheckinhd c ON a.strRegistrationNo=c.strRegistrationNo AND b.strClientCode='"+clientCode+"'"
+ 						+ " LEFT OUTER"
+ 						+ " JOIN tblcheckindtl e ON a.strCheckInNo=e.strCheckInNo AND c.strClientCode='"+clientCode+"'"
+ 						+ " LEFT OUTER"
+ 						+ " JOIN tblroomtypemaster g ON g.strRoomTypeCode=e.strRoomType AND e.strClientCode='"+clientCode+"'"
+ 						+ "  LEFT OUTER"
+ 						+ " JOIN tblroom h ON e.strRoomNo=h.strRoomCode AND g.strClientCode='"+clientCode+"'"
+ 						+ " LEFT OUTER"
+ 						+ " JOIN tblsettlementmaster d ON b.strSettlementCode=d.strSettlementCode AND f.strClientCode='"+clientCode+"'"
+ 						+ " AND d.strClientCode='"+clientCode+"'"
+ 						+ " WHERE a.strReceiptNo='"+reciptNo+"' and a.strType='Deposit' "
+ 						+ " GROUP BY a.strReceiptNo";
+				List listOfPayment = objGlobalFunctionsService.funGetDataList(sqlPayment, "sql");
+
+				for (int i = 0; i < listOfPayment.size(); i++) {
+					Object PaymentData[] = (Object[]) listOfPayment.get(i);
+					
+					String strCGS;
+					String strSGST;
+					String strReceiptNo = PaymentData[0].toString();
+					String intNoOfAdults = PaymentData[1].toString();
+					String intNoOfChild = PaymentData[2].toString();
+					String strReservationNo = PaymentData[3].toString();
+					String strCheckInNo = PaymentData[4].toString();
+					String strRoomType = PaymentData[5].toString();
+					String dteArrivalDate = PaymentData[6].toString();
+					String dteDepartureDate = PaymentData[7].toString();
+					String strFirstName = PaymentData[8].toString();
+					String strMiddleName = PaymentData[9].toString();
+					String strLastName = PaymentData[10].toString();
+					String strSettlementDesc = PaymentData[11].toString();
+					String dblPaidAmt = PaymentData[12].toString();
+					String strRemarks = PaymentData[13].toString();
+					String dteReciptDate = PaymentData[14].toString();
+					String dteModifiedDate = PaymentData[14].toString();
+					String strRoomDesc = PaymentData[15].toString();
+					
+					reportParams.put("pstrRoomDesc", strRoomDesc);
+					
+					clsPaymentReciptBean objPaymentReciptBean = new clsPaymentReciptBean();
+					objPaymentReciptBean.setStrReceiptNo(strReceiptNo);
+					objPaymentReciptBean.setIntNoOfAdults(intNoOfAdults);
+					objPaymentReciptBean.setIntNoOfChild(intNoOfChild);
+					objPaymentReciptBean.setStrReservationNo(strReservationNo);
+					objPaymentReciptBean.setStrRoomType(strRoomType);
+					objPaymentReciptBean.setDteArrivalDate(dteArrivalDate);
+					objPaymentReciptBean.setDteDepartureDate(dteDepartureDate);
+					objPaymentReciptBean.setStrFirstName(strFirstName+" ");
+					objPaymentReciptBean.setStrMiddleName(strMiddleName+" ");
+					objPaymentReciptBean.setStrLastName(strLastName);
+					objPaymentReciptBean.setStrSettlementDesc(strSettlementDesc);
+					objPaymentReciptBean.setDblPaidAmt(dblPaidAmt);
+					objPaymentReciptBean.setStrRemarks(strRemarks);
+					objPaymentReciptBean.setDteReciptDate(dteReciptDate);
+					objPaymentReciptBean.setDteModifiedDate(dteModifiedDate);
+					objPaymentReciptBean.setStrCheckInNo(strCheckInNo);
+					datalist.add(objPaymentReciptBean);
+				}
+			
+			}
+			
 			else {
  				reportName = servletContext.getRealPath("/WEB-INF/reports/webpms/rptCheckInPaymentRecipt.jrxml");
 

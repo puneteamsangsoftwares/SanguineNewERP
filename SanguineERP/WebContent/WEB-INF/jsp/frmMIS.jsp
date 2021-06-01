@@ -1901,7 +1901,7 @@
 		
 		<div class="center" style="text-align:center">
 			<a href="#"><button class="btn btn-primary center-block" tabindex="3" value="Submit" onclick="return funCallFormAction('submit',this)">Submit</button></a>&nbsp
-			<a href="#"><button class="btn btn-primary center-block"  value="Reset" onclick="funResetFields();">Reset</button></a>
+		<input type="button" class="btn btn-primary center-block"  value="Reset" onclick="funResetFields();" />
 		</div>
 <%-- 		<s:input type="hidden" id="hidReqClose" path="strCloseReq"></s:input> --%>
 			<br><br>

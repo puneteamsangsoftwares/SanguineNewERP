@@ -1503,7 +1503,7 @@ function funSetGuestData(item)
          
     	 
     	 row.insertCell(0).innerHTML= "<td><input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100px;\" value='"+item.strGuestCode+"'  onclick=\"funGuestLedgerPrinting(this)\"  ></td>";	 
-    	 row.insertCell(1).innerHTML= "<td><input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100px;text-align: right;\" value='"+item.strGuestName+"' ></td>"; 
+    	 row.insertCell(1).innerHTML= "<td><input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 195px;text-align: left;\" value='"+item.strGuestName+"' ></td>"; 
     	 row.insertCell(2).innerHTML= "<td><input readonly=\"readonly\" class=\"Box \"  style=\"padding-left: 5px;width: 100px;text-align: right;\" value='"+item.dblAmount+"' ></td>";	 
     	 
     	 $("#txtTotValue").val(dblTotalSale);

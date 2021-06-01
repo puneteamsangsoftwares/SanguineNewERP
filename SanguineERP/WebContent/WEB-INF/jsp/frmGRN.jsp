@@ -4188,9 +4188,9 @@ function funCalculateOtherChargesTotal()
 			<div class="center" style="text-align: center">
 				<a href="#"><button class="btn btn-primary center-block"
 						value="Submit" id="btnSaveGRN"
-						onclick="return funValidateFields();">Submit</button></a> &nbsp; <a
-					href="#"><button class="btn btn-primary center-block"
-						id="btnReset" value="Reset" onclick="funResetFields()">Reset</button></a>
+						onclick="return funValidateFields();">Submit</button></a> &nbsp; 
+					<input type="button"  class="btn btn-primary center-block"
+						id="btnReset" value="Reset" onclick="funResetFields()" />
 			</div>
 
 			<div id="wait"

@@ -177,16 +177,42 @@ public class clsBulkInvoiceController {
 		
 		clsSalesOrderBean objSoBean=null;
 		
+		String strSupplierCode="";
 		for(int i=0;i<StrSuppCode.length;i++)
 		{
-			String strSupplierCode=StrSuppCode[i];
-			String sqlSO=" SELECT a.strSOCode,a.dteSODate,a.strCustCode,a.dblSubTotal,c.strPName,a.strStatus "
+			if(strSupplierCode.isEmpty())
+			{
+				strSupplierCode="'"+StrSuppCode[i]+"'";
+			}
+			else
+			{	
+				strSupplierCode=strSupplierCode+ ",'"+StrSuppCode[i]+"'";
+			}
+			
+		}
+			
+			
+			
+		/*	String sqlSO=" SELECT a.strSOCode,a.dteSODate,a.strCustCode,a.dblSubTotal,c.strPName,a.strStatus "
 				+" FROM tblsalesorderhd a,tbllocationmaster b,tblpartymaster c " 
 				+" WHERE a.strLocCode=b.strLocCode AND a.strCustCode=c.strPCode "
-				+"  AND c.strPType='cust' AND a.strSOCode NOT IN( "
-				+" SELECT strSOCode FROM tblinvsalesorderdtl)  "
-				+" AND a.strClientCode='"+clientCode+"' AND a.strCustCode='"+strSupplierCode+"' " 
-				+" AND a.strLocCode='"+strLocCode+"' AND date(a.dteFulmtDate) BETWEEN '"+dteFrmDateSql+"' AND '"+dteToDateSql+"' and a.dblSubTotal>0   and b.strPropertyCode='"+propCode+"'  ";
+				+"  AND c.strPType='cust'  AND date(a.dteFulmtDate) BETWEEN '"+dteFrmDateSql+"' AND '"+dteToDateSql+"'  AND a.strSOCode NOT IN( "
+				+" SELECT strSOCode FROM tblinvsalesorderdtl a where date(a.dteInvDate)  BETWEEN '"+dteFrmDateSql+"' AND '"+dteToDateSql+"'  )  "
+				+" AND a.strClientCode='"+clientCode+"' AND a.strCustCode in ("+strSupplierCode+ ") " 
+				+" AND a.strLocCode='"+strLocCode+"' and a.dblSubTotal>0   and b.strPropertyCode='"+propCode+"'  ";*/
+			
+			String sqlSO="SELECT a.strSOCode,a.dteSODate,a.strCustCode,a.dblTotal,c.strPName,a.strStatus"
+					+ " FROM tblsalesorderhd a,tbllocationmaster b,tblpartymaster c"
+					+ " WHERE a.strLocCode=b.strLocCode AND a.strCustCode=c.strPCode AND c.strPType='cust' "
+					+ " AND a.strLocCode='"+strLocCode+"' "
+					+ " AND DATE(a.dteSODate) BETWEEN '"+dteFrmDateSql+"' AND '"+dteToDateSql+"'  "
+					+ " AND a.dblSubTotal>0 AND b.strPropertyCode='"+propCode+"' "
+					+ " AND a.strSOCode NOT IN(SELECT a.strSOCode FROM tblinvsalesorderdtl a, tblsalesorderhd b  "
+					+ " where a.strSOCode = b.strSOCode and DATE(b.dteSODate) BETWEEN '"+dteFrmDateSql+"' AND '"+dteToDateSql+"' )"
+					+ " AND a.strClientCode='"+clientCode+"' AND a.strCustCode IN  ("+strSupplierCode+ ") " ;
+			
+			 
+
 				
 			List listSO = objGlobalFunctionsService.funGetList(sqlSO,"sql");
 			if (!listSO.isEmpty())
@@ -203,7 +229,7 @@ public class clsBulkInvoiceController {
 					objSoBean.setStrCustName(objSo[4].toString());
 					listSo.add(objSoBean);
 				}			
-			}
+			
 
 		
 	}

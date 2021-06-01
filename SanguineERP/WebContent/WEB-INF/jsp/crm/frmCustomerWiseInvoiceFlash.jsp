@@ -329,6 +329,7 @@
 				        type: "GET",
 				        url: searchUrl,
 					    dataType: "json",
+					    async:false,
 					    success: function(response)
 					    {
 					    	funBillWiseProductDetail(response[0])
@@ -487,12 +488,12 @@
 			     </div>
 				 </div>
 					<p class="center" style="margin-right:63%;">
-						<a href="#"><button class="btn btn-primary center-block" id="btnExecute" value="EXECUTE" onclick=" funOnExecuteBtn('divInvoiceWise')" 
-							class="form_button">EXECUTE</button></a>
-						<a href="#"><button class="btn btn-primary center-block" id="btnExport" value="EXPORT" onclick="funExportReport()" 
-							class="form_button">EXPORT</button></a>
-						<a href="#"><button class="btn btn-primary center-block" value="RESET" onclick="funResetCustomer()"
-							class="form_button">RESET</button></a>
+						<input class="btn btn-primary center-block" id="btnExecute"   type="button"  value="EXECUTE" onclick="funOnExecuteBtn('divInvoiceWise')" />
+							
+						<input class="btn btn-primary center-block" id="btnExport"   type="button"  value="EXPORT" onclick="funExportReport()"  />
+							
+						<input class="btn btn-primary center-block" value="RESET"  type="button"  onclick="funResetCustomer()" />
+							
 					</p>
 				
 			

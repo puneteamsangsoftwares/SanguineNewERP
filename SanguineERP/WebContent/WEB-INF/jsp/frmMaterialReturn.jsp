@@ -888,7 +888,7 @@ var mreditable;
 			</div>
 			<div class="center" style="text-align:center">
 				<a href="#"><button class="btn btn-primary center-block" tabindex="3" value="Submit" onclick="return funCallFormAction('submit',this)">Submit</button></a>
-				<a href="#"><button class="btn btn-primary center-block"  value="Reset" onclick="funResetFields();">Reset</button></a>
+				<input type="button"  class="btn btn-primary center-block"  value="Reset" onclick="funResetFields();" />
 			</div>
 		<br><br>	
 		<div id="wait" style="display:none;width:60px;height:60px;border:0px solid black;position:absolute;top:60%;left:55%;padding:2px;">

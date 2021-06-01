@@ -200,7 +200,9 @@ public class clsProductMasterModel implements Serializable {
 
 	@Column(name = "strExciseable", columnDefinition = "VARCHAR(1) default 'N'")
 	private String strExciseable;
-
+	
+	
+	
 	@Transient
 	private String strPosItemCode;
 
@@ -258,6 +260,8 @@ public class clsProductMasterModel implements Serializable {
 	@Column(name = "strHSNCode" , columnDefinition = "VARCHAR(50) default ''")
 	private String strHSNCode;
 
+	
+	
 	public String getStrSelectedPOSItem() {
 		return strSelectedPOSItem;
 	}
@@ -847,6 +851,8 @@ public class clsProductMasterModel implements Serializable {
 	public void setStrHSNCode(String strHSNCode) {
 		this.strHSNCode = (String) setDefaultValue(strHSNCode, "");
 	}
+
+	
 
 	
 

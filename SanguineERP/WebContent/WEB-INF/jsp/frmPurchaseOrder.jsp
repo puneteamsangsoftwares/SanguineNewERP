@@ -2829,7 +2829,7 @@
 		<br>
 		<div class="center" style="text-align:center">
 			<a href="#"><button class="btn btn-primary center-block" value="Submit" onclick="return funCallFormAction('submit',this)">Submit</button></a> &nbsp;
-			<a href="frmPurchaseOrder.html?saddr=${urlHits}"><button class="btn btn-primary center-block"  id="reset" value="Reset" onclick="funResetFields();">Reset</button></a>
+			<input type="button"  class="btn btn-primary center-block"  id="reset" value="Reset" onclick="funResetFields();" />
 		</div>
 		<br>
 		

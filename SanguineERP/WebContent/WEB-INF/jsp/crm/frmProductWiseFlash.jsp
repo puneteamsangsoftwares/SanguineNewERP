@@ -641,12 +641,12 @@
 				</div>
 			</div>
 					<p class="center" style="margin-right:7%;">
-						<a href="#"><button class="btn btn-primary center-block" id="btnExecute" value="EXECUTE" onclick="funOnExecuteBtn('divSKUWise')" 
-							class="form_button">EXECUTE</button></a>
-						<a href="#"><button class="btn btn-primary center-block" id="btnExport" value="EXPORT" onclick="funExportReport()" 
-							class="form_button">EXPORT</button></a>
-						<a href="#"><button class="btn btn-primary center-block" value="RESET" onclick="funResetCustomer()"
-							class="form_button">RESET</button></a>
+						<input id="btnExecute" class="btn btn-primary center-block" type="button"  value="EXECUTE" onclick="funOnExecuteBtn('divSKUWise')" />
+							
+						<input class="btn btn-primary center-block" id="btnExport" type="button"   value="EXPORT" onclick="funExportReport()" />
+							
+						<input  id="btnReset" class="btn btn-primary center-block"  type="button"   value="RESET" onclick="funResetCustomer()" />
+							
 					</p>
 			
 
