@@ -76,6 +76,7 @@ public class clsFolioPostingController {
 	// Save folio posting
 	@RequestMapping(value = "/saveFolioPosting", method = RequestMethod.POST)
 	public ModelAndView funAddUpdate(@ModelAttribute("command") @Valid clsFolioDtlBean objBean, BindingResult result, HttpServletRequest req) {
+		
 		/*String urlHits = "1";
 		try {
 			urlHits = req.getParameter("saddr").toString();
@@ -94,10 +95,10 @@ public class clsFolioPostingController {
 			List<clsFolioDtlModel> listFolioDtlModels = objFolioHdModel.getListFolioDtlModel();
 			List<clsFolioTaxDtl> listFolioTaxDtl = objFolioHdModel.getListFolioTaxDtlModel();
 			List<clsIncomeHeadMasterBean> listIncomeHeadBeans = objBean.getListIncomeHeadBeans();
-
+			String docNo="";
 			// generate doc No.
 			String transaDate = objGlobal.funGetCurrentDateTime("dd-MM-yyyy").split(" ")[0];
-
+			
 			for (int ih = 0; ih < listIncomeHeadBeans.size(); ih++) {
 				// long
 				// nextDocNo=objGlobalFunctionsService.funGetNextNo("tblfoliodtl",
@@ -105,7 +106,7 @@ public class clsFolioPostingController {
 				// "and left(strDocNo,2)='IN'");
 				// String docNo="IN"+String.format("%06d", nextDocNo);
 				long doc = objPMSUtility.funGenerateFolioDocForIncomeHead("IncomeHeadFolio");
-				String docNo = "IN" + String.format("%06d", doc);
+				 docNo = "IN" + String.format("%06d", doc);
 
 				clsFolioDtlModel objFolioDtlModel = new clsFolioDtlModel();
 				objFolioDtlModel.setDteDocDate(PMSDate);
@@ -158,7 +159,7 @@ public class clsFolioPostingController {
 			objFolioHdModel.setListFolioTaxDtlModel(listFolioTaxDtl);
 			objFolioService.funAddUpdateFolioHd(objFolioHdModel);
 			req.getSession().setAttribute("success", true);
-			req.getSession().setAttribute("successMessage", "Folio No. : ".concat(objFolioHdModel.getStrFolioNo()));
+			req.getSession().setAttribute("successMessage", "Folio No. :".concat(objFolioHdModel.getStrFolioNo())+":"+docNo);
 			req.getSession().setAttribute("AdvanceAmount", objFolioHdModel.getStrReservationNo());
 			
 			return new ModelAndView("redirect:/frmFolioPosting.html");

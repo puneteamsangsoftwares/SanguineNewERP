@@ -2272,7 +2272,7 @@ public class clsPMSSalesFlashController {
 				+ " left outer join  (select ifnull(sum(a.dblDebitAmt),0) As TotalFolioDebitAmt  , b.strGuestCode as folioGuestCode"
 				+ " from tblfoliodtl a, tblfoliohd b where a.strFolioNo=b.strFolioNo "
 				+ " group by b.strGuestCode ) as c  on c.folioGuestCode=d.strGuestCode"
-				+ " having guestOpeningBalance>0 ";
+				+ " having guestOpeningBalance <>0 ";
 
 		List<clsPMSSalesFlashBean> listMain = new ArrayList<clsPMSSalesFlashBean>();
 		List listGuestData= objGlobalService.funGetListModuleWise(sqlData, "sql");
@@ -2330,7 +2330,7 @@ public class clsPMSSalesFlashController {
 					+ " left outer join  (select ifnull(sum(a.dblDebitAmt),0) As TotalFolioDebitAmt  , b.strGuestCode as folioGuestCode"
 					+ " from tblfoliodtl a, tblfoliohd b where a.strFolioNo=b.strFolioNo "
 					+ " group by b.strGuestCode ) as c  on c.folioGuestCode=d.strGuestCode"
-					+ " having guestOpeningBalance>0 ";
+					+ " having guestOpeningBalance <>0 ";
 
 		  List listGuestData = objGlobalService.funGetListModuleWise(sqlData, "sql");
 
@@ -2543,33 +2543,33 @@ public class clsPMSSalesFlashController {
 		
 	String sql="	select  a.docNo,a.docDate,a.settlementName, a.modeOfOperation  ,a.totalAmt,a.GuestCode"
 			+ " from"
-			+ " (SELECT a.strReceiptNo as docNo, Date(dteReceiptDate ) as docDate ,  c.strSettlementDesc as settlementName,"
+			+ " (SELECT a.strReceiptNo as docNo, Date(dteReceiptDate ) as docDate ,  CONCAT(c.strSettlementDesc,' - ',b.strAgainst) as settlementName,"
 			+ " 'Payment' as modeOfOperation,"
 			+ " IFNULL((a.dblSettlementAmt),0) AS totalAmt,a.strCustomerCode AS GuestCode"
 			+ " FROM tblreceiptdtl a,tblreceipthd b,tblsettlementmaster c"
 			+ " WHERE a.strReceiptNo=b.strReceiptNo and a.strSettlementCode=c.strSettlementCode"
-			+ " and a.strCustomerCode='"+strGuestCode+"' and a.dblSettlementAmt>0 and strType='Payment'"
-			+ " union"
-			+ " SELECT a.strReceiptNo as docNo , Date(dteReceiptDate ) as docDate , c.strSettlementDesc as settlementName"
+			+ " and a.strCustomerCode='"+strGuestCode+"' and a.dblSettlementAmt <>0 and strType in ('Payment','Deposit') "
+			+ " union All "
+			+ " SELECT a.strReceiptNo as docNo , Date(dteReceiptDate ) as docDate , CONCAT(c.strSettlementDesc,' - ',b.strType) as settlementName"
 			+ " ,'Refund Amt' as modeOfOperation,"
 			+ " IFNULL((a.dblSettlementAmt),0) AS totalAmt,a.strCustomerCode AS GuestCode"
 			+ " FROM tblreceiptdtl a,tblreceipthd b,tblsettlementmaster c"
 			+ " WHERE a.strReceiptNo=b.strReceiptNo and a.strSettlementCode=c.strSettlementCode"
-			+ " and a.strCustomerCode='"+strGuestCode+"' and a.dblSettlementAmt>0 and strType='Refund Amt'"
-			+ " union "
+			+ " and a.strCustomerCode='"+strGuestCode+"' and a.dblSettlementAmt <> 0 and strType='Refund Amt'"
+			+ " union All "
 			+ " SELECT a.strBillNo as docNo ,Date(a.dteBillDate) as docDate   ,  'Bill' as settlementName  ,"
 			+ " 'Bill' as modeOfOperation  ,"
 			+ " IFNULL((a.dblGrandTotal),0) AS totalAmt,a.strGuestCode "
 			+ " AS GuestCode"
 			+ " FROM tblbillhd a"
-			+ " where a.strGuestCode='"+strGuestCode+"'  and a.dblGrandTotal>0"
-			+ " union"
+			+ " where a.strGuestCode='"+strGuestCode+"'  and a.dblGrandTotal <> 0"
+			+ " union All"
 			+ " SELECT a.strFolioNo as docNo , Date(a.dteDocDate) as docDate , 'Folio' as settlementName ,"
 			+ " 'Folio' as modeOfOperation ,"
 			+ " IFNULL((a.dblDebitAmt),0) AS totalAmt , b.strGuestCode AS GuestCode"
 			+ " FROM tblfoliodtl a, tblfoliohd b"
 			+ " WHERE a.strFolioNo=b.strFolioNo"
-			+ " and b.strGuestCode='"+strGuestCode+"' and a.dblDebitAmt >0 ) a"
+			+ " and b.strGuestCode='"+strGuestCode+"' and a.dblDebitAmt <>0 ) a"
 			+ " order by a.docDate ASC; ";
 	
 	List folioDtlList = objFolioService.funGetParametersList(sql);
@@ -2584,8 +2584,25 @@ public class clsPMSSalesFlashController {
 	double creditAmount=0;
 	if(((Object[])folioArr)[3].toString().equals("Refund Amt") || ((Object[])folioArr)[3].toString().equals("Bill") || ((Object[])folioArr)[3].toString().equals("Folio"))
 	{
+		boolean isBlanceNeg=false;
+		if(((Object[])folioArr)[3].toString().equals("Refund Amt"))
+		{
+			if(balance<0)
+			{
+				isBlanceNeg=true;
+				balance=balance * - 1;
+				
+			}
+		}
+		
 		debitAmount = Double.parseDouble(((Object[])folioArr)[4].toString());
 		balance += debitAmount - creditAmount;
+		if(isBlanceNeg)
+		{
+			balance=balance * - 1;
+		}
+		
+		
 	}
 	else
 	{

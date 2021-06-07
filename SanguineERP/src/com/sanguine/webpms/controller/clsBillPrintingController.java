@@ -611,7 +611,7 @@ public class clsBillPrintingController {
 
 				if(strSelectBill.contains("Room Tariff"))
 				{
-					 sqlPaymentDtl = "SELECT date(c.dteReceiptDate),c.strReceiptNo,IF(c.strAgainst='Bill',e.strSettlementDesc,CONCAT('ADVANCE ',e.strSettlementDesc)),'0.00' as debitAmt "
+					 sqlPaymentDtl = "SELECT date(c.dteReceiptDate),c.strReceiptNo,CONCAT(e.strSettlementDesc,' - ',c.strAgainst),'0.00' as debitAmt "
 							+ " ,d.dblSettlementAmt as creditAmt,'0.00' as balance "
 							+ " FROM tblreceipthd c, tblreceiptdtl d, tblsettlementmaster e "
 							+ " where c.strReceiptNo=d.strReceiptNo and d.strSettlementCode=e.strSettlementCode AND c.strFolioNo='"+folio+"' and d.strClientCode='"+clientCode+"'";
@@ -647,7 +647,7 @@ public class clsBillPrintingController {
 					}
 					
 					if (!(paymentDtlList.size() > 0)) {
-						sqlPaymentDtl = "SELECT date(c.dteReceiptDate),c.strReceiptNo,e.strSettlementDesc,'0.00' as debitAmt "
+						sqlPaymentDtl = "SELECT date(c.dteReceiptDate),c.strReceiptNo,CONCAT(e.strSettlementDesc,' - ',c.strAgainst),'0.00' as debitAmt "
 								+ " ,d.dblSettlementAmt as creditAmt,'0.00' as balance "
 								+ " FROM tblreceipthd c, tblreceiptdtl d, tblsettlementmaster e "
 								+ " where c.strReceiptNo=d.strReceiptNo and d.strSettlementCode=e.strSettlementCode "
@@ -695,7 +695,7 @@ public class clsBillPrintingController {
 				String sqlResPayment = "";
 				if(strResNo.length()>0)
 				{
-					sqlResPayment="SELECT DATE(c.dteReceiptDate),c.strReceiptNo, CONCAT('ADVANCE ',e.strSettlementDesc),'0.00' AS debitAmt, "
+					sqlResPayment="SELECT DATE(c.dteReceiptDate),c.strReceiptNo,CONCAT(e.strSettlementDesc,' - ',c.strAgainst),'0.00' AS debitAmt, "
 							+ "d.dblSettlementAmt AS creditAmt,'0.00' AS balance "
 							+ "FROM tblreceipthd c, tblreceiptdtl d, tblsettlementmaster e "
 							+ "WHERE c.strReceiptNo=d.strReceiptNo AND d.strSettlementCode=e.strSettlementCode "

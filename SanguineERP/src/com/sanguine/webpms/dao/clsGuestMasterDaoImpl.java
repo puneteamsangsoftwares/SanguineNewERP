@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sanguine.model.clsSupplierMasterModel;
 import com.sanguine.webpms.model.clsGuestMasterHdModel;
 
 @Repository("clsGuestMasterDao")
@@ -43,5 +44,24 @@ public class clsGuestMasterDaoImpl implements clsGuestMasterDao {
 		}
 		return list;
 	}
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false,value="WebPMSTransactionManager")
+	@Override
+	public List<clsGuestMasterHdModel> funGetAllGuestMaster( String clientCode) {
+
+		List<clsGuestMasterHdModel> list = null;
+		clsGuestMasterHdModel objModel = null;
+		try {
+			Criteria cr = webPMSSessionFactory.getCurrentSession().createCriteria(clsGuestMasterHdModel.class);
+			cr.add(Restrictions.eq("strClientCode", clientCode));
+			list =(List<clsGuestMasterHdModel>) cr.list();
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	
 
 }

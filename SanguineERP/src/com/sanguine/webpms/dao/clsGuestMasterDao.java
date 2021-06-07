@@ -9,5 +9,6 @@ public interface clsGuestMasterDao {
 	public void funAddUpdateGuestMaster(clsGuestMasterHdModel objGuestMasterModel);
 
 	public List funGetGuestMaster(String roomCode, String clientCode);
+	public List<clsGuestMasterHdModel> funGetAllGuestMaster( String clientCode);
 
 }

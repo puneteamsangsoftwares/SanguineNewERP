@@ -163,6 +163,12 @@ public class clsPMSTallyLinkUp {
 						+ " left outer join "+dbWebStock+".tbltallylinkup b  ON a.strSettlementCode=b.strGroupCode"
 						+ " where a.strClientCode='"+clientCode+"';";
 			}
+			if (objBean.getStrLinkup().equals("Room No")){
+				sql = "SELECT a.strRoomCode,a.strRoomDesc, IFNULL(b.strGDes,''), IFNULL(b.strTallyCode,'')"
+					+ " FROM tblroom a"
+					+ " LEFT OUTER JOIN "+dbWebStock+".tbltallylinkup b ON a.strRoomCode=b.strGroupCode"
+					+ " WHERE a.strClientCode='"+clientCode+"';";
+			}
 
 			ArrayList list = (ArrayList) objGlobalFunctionsService.funGetDataList(sql, "sql");
 			List listTallyLinkUp = new ArrayList<clsTallyLinkUpModel>();

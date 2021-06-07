@@ -400,6 +400,15 @@ public class clsGuestMasterController {
 			}
 			return bi;
 		}
+		
+		@RequestMapping(value = "/loadAllGuestData", method = RequestMethod.GET)
+		public @ResponseBody List<clsGuestMasterHdModel> funAllFetchGuestMasterData( HttpServletRequest req) {
+			
+			String clientCode = req.getSession().getAttribute("clientCode").toString();
+			List<clsGuestMasterHdModel> listGuestData = objGuestMasterDao.funGetAllGuestMaster(clientCode);
+			
+			return listGuestData;
+		}
 
 
 }

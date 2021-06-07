@@ -192,11 +192,13 @@
 				<label>Link up</lable>
 				<s:select id="cmbLinkup" path="strLinkup" onchange="funLinkupData(this.value)">
 				    <s:option value="Room Type">Room Type</s:option>
-				     <s:option value="Package">Package</s:option>
+				    <s:option value="Package">Package</s:option>
 				    <s:option value="Tax">Tax</s:option>
 				    <s:option value="Guest">Guest</s:option>
 				    <s:option value="Income Head">Income Head</s:option>
-				    <s:option value="Settlement">Settlement</s:option>				    
+				    <s:option value="Settlement">Settlement</s:option>
+				    <s:option value="Room No"> Room No</s:option>	
+				   			    
 				 </s:select>
 			</div>	
 		</div>

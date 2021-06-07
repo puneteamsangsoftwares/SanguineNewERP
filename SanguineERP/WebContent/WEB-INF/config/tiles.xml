@@ -5397,6 +5397,17 @@
 		<put-attribute name="title" value="UnBlock Room"></put-attribute>
 		<put-attribute name="body" value="/WEB-INF/jsp/webPMS/transactions/frmUnBlockRoomMaster.jsp"></put-attribute>
 	</definition>
+	
+	<definition name="frmPMSExportTallyFile" extends="base.definition">
+			<put-attribute name="title" value="Export PMS Tally File" />
+			<put-attribute name="body" value="/WEB-INF/jsp/webPMS/tools/frmPMSExportTallyFile.jsp" />
+		</definition>
+		
+	<definition name="frmPMSExportTallyFile_1" extends="base.definition4">
+			<put-attribute name="title" value="Export PMS Tally File" />
+			<put-attribute name="body" value="/WEB-INF/jsp/webPMS/tools/frmPMSExportTallyFile.jsp" />
+	</definition>
+		
   	
   	
 <!-- 	End Of WebPMS Tiles Entry -->

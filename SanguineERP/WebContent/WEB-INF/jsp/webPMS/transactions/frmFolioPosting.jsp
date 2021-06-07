@@ -295,7 +295,10 @@
 			session.removeAttribute("success");
 			if (test) {
 			%>
-				alert("Data Save successfully\n\n"+message);
+				alert("Data Save successfully\n\n"+message);		
+
+
+				window.open(getContextPath()+"/rptFolioFostingPrinting.html?folioNo="+message.split(":")[1]+"&folioDocNo="+message.split(":")[2] );
 				<%-- var AdvAmount='';
 				var isOk=confirm("Do You Want to pay Advance Amount ?");
 				if(isOk)
