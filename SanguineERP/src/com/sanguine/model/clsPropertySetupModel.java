@@ -262,6 +262,9 @@ public class clsPropertySetupModel extends clsBaseModel implements Serializable 
 	@Column(name = "strShowAllProducts", columnDefinition = "VARCHAR(1) default 'N'")
 	private String strShowAllProducts;
 	
+	@Column(name = "strLocationWiseValuation", columnDefinition = "VARCHAR(1) default 'N'")
+	private String strLocationWiseValuation;
+	
 	
 	// SMS setUp Tab End
 
@@ -1307,6 +1310,14 @@ public class clsPropertySetupModel extends clsBaseModel implements Serializable 
 
 	public void setStrShowAllProducts(String strShowAllProducts) {
 		this.strShowAllProducts = strShowAllProducts;
+	}
+
+	public String getStrLocationWiseValuation() {
+		return strLocationWiseValuation;
+	}
+
+	public void setStrLocationWiseValuation(String strLocationWiseValuation) {
+		this.strLocationWiseValuation = strLocationWiseValuation;
 	}
 	
 

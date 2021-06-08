@@ -88,11 +88,15 @@ public class clsSupplierTaxWiseGRNReportController
                            +" WHERE a.strGRNCode=c.strGRNCode AND c.strTaxCode=d.strTaxCode and date(a.dtGRNDate) between '"+fromDate+"' and '"+toDate+"' "
                            +" GROUP BY c.strTaxCode,a.strGRNCode ORDER BY a.strGRNCode; ";
         List listheader = objGlobalFunctionsService.funGetList(sqltaxheader.toString(), "sql");
-		for (int k = 0; k < listheader.size(); k++)
-		{
-	        String taxName= listheader.get(k).toString();
-	        HmTaxNameTaxIndex.put(taxName, k);
-		}
+        if (!listheader.isEmpty())
+        {
+        	for (int k = 0; k < listheader.size(); k++)
+    		{
+    	        String taxName= listheader.get(k).toString();
+    	        HmTaxNameTaxIndex.put(taxName, k);
+    		}	
+        }
+        
 		List headerList = new ArrayList();
 		headerList.add("Supplier Code");
 		headerList.add("Supplier Name");
@@ -152,11 +156,17 @@ public class clsSupplierTaxWiseGRNReportController
 				}
 				
 			    
-		String sql1="select b.strPName,d.strTaxDesc,c.strTaxCode ,sum(c.strTaxAmt) "
+		/*String sql1="select b.strPName,d.strTaxDesc,c.strTaxCode ,sum(c.strTaxAmt) "
                    +" from tblgrnhd a,tblpartymaster b,tblgrntaxdtl c,tbltaxhd d "
                    +" where a.strSuppCode='"+suppCode+"' and a.strSuppCode=b.strPCode  and a.strGRNCode=c.strGRNCode and c.strTaxCode=d.strTaxCode "
                    +" group by c.strTaxCode"
-                   +" order by a.strGRNCode ";
+                   +" order by a.strGRNCode ";*/
+		String sql1="select b.strPName,d.strTaxDesc,c.strTaxCode ,sum(c.strTaxAmt) "
+		                   +" from tblgrnhd a,tblpartymaster b,tblgrntaxdtl c,tbltaxhd d "
+		                   +" where a.strSuppCode='"+suppCode+"' and a.strSuppCode=b.strPCode  and a.strGRNCode=c.strGRNCode and c.strTaxCode=d.strTaxCode "
+		                   +" and date(a.dtGRNDate) between '"+fromDate+"' and '"+toDate+"' "
+		                   +" group by c.strTaxCode"
+		                   +" order by a.strGRNCode ";
 		
 		List listTax = objGlobalFunctionsService.funGetList(sql1.toString(), "sql");
 		

@@ -12,7 +12,7 @@
 <script>
 
 		$(document).ready(function(){
-			var startDate="${startDate}";
+			/* var startDate="${startDate}";
 			var arr = startDate.split("/");
 			Date1=arr[2]+"-"+arr[1]+"-"+arr[0];
 			var startDateOfMonth="${startDateOfMonth}";
@@ -21,8 +21,14 @@
 			$("#dtFromDate").datepicker({
 				dateFormat : 'dd-mm-yy'
 			});
-			$("#dtFromDate").datepicker('setDate', Dat);	
+			$("#dtFromDate").datepicker('setDate', Dat); */	
 			
+			var date = new Date(); 
+			var month=date.getMonth()+1;
+            Dat= 1 +"-"+month+"-"+date.getFullYear();
+			
+			$("#dtFromDate").datepicker({ dateFormat: 'dd-mm-yy' });
+			$("#dtFromDate").datepicker('setDate',Dat);
 			
 			$("#dtToDate").datepicker({
 				dateFormat : 'dd-mm-yy'

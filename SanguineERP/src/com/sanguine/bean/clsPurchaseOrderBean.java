@@ -59,6 +59,8 @@ public class clsPurchaseOrderBean {
 	private double dblClearingAgentCharges;
 	private double dblVATClaim;
 	private String StrPORateEditableYN;
+	private String strLocCode;
+	private String strLocName;
 
 	private List<clsTCMasterModel> listTCMaster;
 
@@ -492,5 +494,21 @@ public class clsPurchaseOrderBean {
 
 	public void setStrPORateEditableYN(String strPORateEditableYN) {
 		StrPORateEditableYN = strPORateEditableYN;
+	}
+
+	public String getStrLocCode() {
+		return strLocCode;
+	}
+
+	public void setStrLocCode(String strLocCode) {
+		this.strLocCode = strLocCode;
+	}
+
+	public String getStrLocName() {
+		return strLocName;
+	}
+
+	public void setStrLocName(String strLocName) {
+		this.strLocName = strLocName;
 	}
 }

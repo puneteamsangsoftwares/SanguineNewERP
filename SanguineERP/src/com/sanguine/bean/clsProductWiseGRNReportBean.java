@@ -39,6 +39,7 @@ public class clsProductWiseGRNReportBean {
 	private double dblGRNRate;
 	
 	private double dblVarianceInRate;
+	
 
 	public String getStrCatCode() {
 		return strCatCode;
@@ -191,5 +192,7 @@ public class clsProductWiseGRNReportBean {
 	public void setDblVarianceInRate(double dblVarianceInRate) {
 		this.dblVarianceInRate = dblVarianceInRate;
 	}
+
+	
 
 }

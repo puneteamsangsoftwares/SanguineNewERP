@@ -86,6 +86,7 @@ public class clsSupplierWiseProductGRNReportController {
 		String toDate = objBean.getDteToDate();
 		String strSGCode = "";
 		String pCode = "";
+		
 		clsPropertySetupModel objSetup = objSetupMasterService.funGetObjectPropertySetup(propertyCode, clientCode);
 		if (objSetup == null) {
 			objSetup = new clsPropertySetupModel();
@@ -128,7 +129,15 @@ public class clsSupplierWiseProductGRNReportController {
 		String sqlQuery = "select c.strSGName,e.strPName,d.strProdName,sum(b.dblQty) ,sum(b.dblTotalPrice),d.strUOM ,f.dblLastCost  " + " from tblgrnhd a,tblgrndtl b ,tblsubgroupmaster c,tblproductmaster d,tblpartymaster e ,tblprodsuppmaster f " + " where a.strGRNCode=b.strGRNCode and b.strProdCode=d.strProdCode "
 				+ " and d.strSGCode=c.strSGCode and a.strSuppCode =e.strPCode and a.strSuppCode=f.strSuppCode and b.strProdCode=f.strProdCode " + " and a.dtGRNDate between '" + dteFromDate + "' and '" + dteToDate + "'  " + " and (" + pCode + ")  " + " and (" + strSGCode + " ) ";
 
-		sqlQuery = sqlQuery + " group by a.strSuppCode, d.strSGCode, b.strProdCode order by a.strSuppCode, d.strSGCode, b.strProdCode ";
+		if(objBean.getStrLocCode()!="")
+		{
+			sqlQuery = sqlQuery + " AND a.strLocCode='"+objBean.getStrLocCode()+ "'  group by a.strSuppCode, d.strSGCode, b.strProdCode order by a.strSuppCode, d.strSGCode, b.strProdCode ";
+		}
+		else
+		{
+			sqlQuery = sqlQuery + " group by a.strSuppCode, d.strSGCode, b.strProdCode order by a.strSuppCode, d.strSGCode, b.strProdCode ";
+		}
+		
 
 		List listProdDtl = objGlobalFunctionsService.funGetDataList(sqlQuery, "sql");
 

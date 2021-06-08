@@ -211,7 +211,7 @@ public class clsBillPassingController {
 		List<clsBillPassDtlModel> listBillPassDtl = new ArrayList<clsBillPassDtlModel>();
 
 		for (int cnt = 0; cnt < listclsBillPassDtlModel.size(); cnt++) {
-			clsBillPassDtlModel objBillPassDtl = (clsBillPassDtlModel) listclsBillPassDtlModel.get(0);
+			clsBillPassDtlModel objBillPassDtl = (clsBillPassDtlModel) listclsBillPassDtlModel.get(cnt);
 			objBillPassDtl.setDtGRNDate(objGlobal.funGetDate("yyyy/MM/dd", objBillPassDtl.getDtGRNDate()));
 			listBillPassDtl.add(objBillPassDtl);
 		}

@@ -1491,6 +1491,11 @@
 										<s:checkbox path="strShowAllProducts" value="Y"/>
 									</div>
 									
+									<div class="col-md-2"></div>
+									<div class="col-md-2">	
+										<label>Location Wise Valuation</label>
+										<s:checkbox path="strLocationWiseValuation" value="Y"/>
+									</div>
 									
 								</div>
 							</div>

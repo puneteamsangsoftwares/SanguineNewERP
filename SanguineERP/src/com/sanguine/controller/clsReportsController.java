@@ -2772,7 +2772,8 @@ public class clsReportsController {
 			if (objSetup == null) {
 				objSetup = new clsPropertySetupModel();
 			}
-			String hql = "select a.strSuppCode, b.strPName,sum(a.dblSubTotal) as SubTotal,sum(a.dblTaxAmt) TaxAmt, sum(dblTotal) Value " + " from tblgrnhd a, tblpartymaster b " + " where a.strSuppCode = b.strPCode " + " and date(a.dtGRNDate) >= '" + fromDate + "' and date(a.dtGRNDate) <= '" + toDate + "' " + " and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "'";
+			
+			String hql = "select a.strSuppCode, b.strPName,sum(a.dblSubTotal) as SubTotal,sum(a.dblTaxAmt) TaxAmt, sum(dblTotal) Value ,SUM(a.dblExtra) AS ExtraCharges,SUM(a.dblFreight) AS Freight " + " from tblgrnhd a, tblpartymaster b " + " where a.strSuppCode = b.strPCode " + " and date(a.dtGRNDate) >= '" + fromDate + "' and date(a.dtGRNDate) <= '" + toDate + "' " + " and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "'";
 			String strlocCode = "";
 			String LocCodes[] = fromlocation.split(",");
 			for (int i = 0; i < LocCodes.length; i++) {
@@ -5146,7 +5147,8 @@ public class clsReportsController {
 			if (showZeroItems.equals("No")) {
 				sql += "and (a.dblOpeningStk >0 or a.dblGRN >0 or dblSCGRN >0 or a.dblStkTransIn >0 or a.dblStkAdjIn >0 " + "or a.dblMISIn >0 or a.dblQtyProduced >0 or a.dblMaterialReturnIn>0 or a.dblStkTransOut >0 " + "or a.dblStkAdjOut >0 or a.dblMISOut >0 or a.dblQtyConsumed  >0 or a.dblSales  >0 " + "or a.dblMaterialReturnOut  >0 or a.dblDeliveryNote > 0)";
 			}
-			sql +=" and a.dblClosingStk <>0";
+			sql +=" and a.dblClosingStk <>0   "
+				+ " ORDER BY d.strGName,c.strSGName ";
 			
 			clsLocationMasterModel objLocCode = objLocationMasterService.funGetObject(locCode, clientCode);
 			// System.out.println(sql);
@@ -6851,11 +6853,12 @@ public class clsReportsController {
 
 		listLOCWiseData.add("rptMISLocationWiseReport_" + dteFromDate + "to" + dteToDate + "_" + userCode);
 
-		String sqlQuery = " select  a.strLocTo,d.strLocName, b.strProdCode,c.strProdName,c.strIssueUOM,sum(b.dblQty),sum(b.dblTotalPrice) " + " from tblmishd a ,tblmisdtl b,tblproductmaster c ,tbllocationmaster d " + " where a.strMISCode=b.strMISCode  and a.strLocFrom='" + fromLoc + "' and b.strProdCode=c.strProdCode " + " and a.strLocTo=d.strLocCode  and date(a.dtMISDate) between '" + fromDate
-				+ "' and '" + toDate + "' " + " and " + " ( " + strToLocCodes + ") "
+		String sqlQuery = " select  a.strLocTo,d.strLocName, b.strProdCode,c.strProdName,c.strIssueUOM,sum(b.dblQty),sum(b.dblTotalPrice) " + " from tblmishd a ,tblmisdtl b,tblproductmaster c ,tbllocationmaster d " + " where a.strMISCode=b.strMISCode  and a.strLocFrom='" + fromLoc + "' and b.strProdCode=c.strProdCode " + " and a.strLocTo=d.strLocCode  and date(a.dtMISDate) between '" + dteFromDate
+				+ "' and '" + dteToDate + "' " + " and " + " ( " + strToLocCodes + ") "
 
 				+ "  group by b.strProdCode,a.strLocTo  order by a.strLocTo,c.strProdName ";
-
+       
+		
 		List listProdDtl = objGlobalFunctionsService.funGetDataList(sqlQuery, "sql");
 		for (int j = 0; j < listProdDtl.size(); j++) {
 			clsReportBean objProdBean = new clsReportBean();
@@ -7259,7 +7262,7 @@ public class clsReportsController {
 		String propertyCode = req.getSession().getAttribute("propertyCode").toString();
 		clsPropertySetupModel objSetup = objSetupMasterService.funGetObjectPropertySetup(propertyCode, clientCode);
 		
-		String dateTime[] = objGlobal.funGetCurrentDateTime("dd-MM-yyyy").split(" ");
+		String dateTime[] = objGlobalFunctions.funGetCurrentDateTime("dd-MM-yyyy").split(" ");
 		List footer = new ArrayList<>();
 		if (objSetup == null)
 		{
@@ -7283,16 +7286,16 @@ public class clsReportsController {
 		String strSuppliearCode=objBean.getStrDocCode();
 		String strtypeOfBill=objBean.getStrBillType();
 		
-		String fd = dteFromDateTime.split("-")[2];
+		String fy = dteFromDateTime.split("-")[2];
 		String fm = dteFromDateTime.split("-")[1];
-		String fy = dteFromDateTime.split("-")[0];
+		String fd = dteFromDateTime.split("-")[0];
 
-		String td = dtrToDateTime.split("-")[2];
+		String ty = dtrToDateTime.split("-")[2];
 		String tm = dtrToDateTime.split("-")[1];
-		String ty = dtrToDateTime.split("-")[0];
+		String td = dtrToDateTime.split("-")[0];
 
-		String dteFromDate = fd + "-" + fm + "-" + fy;
-		String dteToDate = td + "-" + tm + "-" + ty;
+		String dteFromDate = fy + "-" + fm + "-" + fd;
+		String dteToDate = ty + "-" + tm + "-" + td;
 		
 		ArrayList fieldList = new ArrayList();
 		List listBillExl = new ArrayList();
@@ -7309,7 +7312,7 @@ public class clsReportsController {
 				sqlQuery = sqlQuery + " and a.strSuppCode='" + strSuppliearCode+ "' ";
 			}
 
-			sqlQuery = sqlQuery + " and DATE(c.dtPassDate) between  '" + dteFromDateTime + "' and '" + dtrToDateTime + "' and  a.strClientCode='"+clientCode+"' ";
+			sqlQuery = sqlQuery + " and DATE(c.dtPassDate) between  '" + dteFromDate + "' and '" + dteToDate + "' and  a.strClientCode='"+clientCode+"' ";
 			sqlQuery = sqlQuery + "ORDER BY  c.dtPassDate ";
 		}
 		else
@@ -7327,7 +7330,7 @@ public class clsReportsController {
 
 				
 
-				sqlQuery = sqlQuery + " and DATE(a.dtGRNDate) between  '" + dteFromDateTime + "' and '" + dtrToDateTime + "' and  a.strClientCode='"+clientCode+"' ";
+				sqlQuery = sqlQuery + " and DATE(a.dtGRNDate) between  '" + dteFromDate + "' and '" + dteToDate + "' and  a.strClientCode='"+clientCode+"' ";
 				sqlQuery = sqlQuery + "ORDER BY  a.dtGRNDate ";
 		}
 		
@@ -7572,18 +7575,18 @@ public class clsReportsController {
 				sqlQuery = sqlQuery + " and a.strSuppCode='" + strSuppliearCode+ "' ";
 			}
 
-			/*String fd = fromDateTime.split("-")[2];
+			String fy = fromDateTime.split("-")[2];
 			String fm = fromDateTime.split("-")[1];
-			String fy = fromDateTime.split("-")[0];
+			String fd = fromDateTime.split("-")[0];
 
-			String td = toDateTime.split("-")[2];
+			String ty = toDateTime.split("-")[2];
 			String tm = toDateTime.split("-")[1];
-			String ty = toDateTime.split("-")[0];
+			String td = toDateTime.split("-")[0];
 
-			String dteFromDate = fd + "-" + fm + "-" + fy;
-			String dteToDate = td + "-" + tm + "-" + ty;*/
+			String dteFromDate = fy + "-" + fm + "-" + fd;
+			String dteToDate = ty + "-" + tm + "-" + td;
 
-			sqlQuery = sqlQuery + " and DATE(c.dtPassDate) between  '" + fromDateTime + "' and '" + toDateTime + "' and  a.strClientCode='"+clientCode+"' ";
+			sqlQuery = sqlQuery + " and DATE(c.dtPassDate) between  '" + dteFromDate + "' and '" + dteToDate + "' and  a.strClientCode='"+clientCode+"' ";
 			sqlQuery = sqlQuery + "ORDER BY  c.dtPassDate ";
 		}
 		else
@@ -7599,18 +7602,18 @@ public class clsReportsController {
 					sqlQuery = sqlQuery + " and a.strSuppCode='" + strSuppliearCode+ "' ";
 				}
 
-				/*String fd = fromDateTime.split("-")[2];
+				String fy = fromDateTime.split("-")[2];
 				String fm = fromDateTime.split("-")[1];
-				String fy = fromDateTime.split("-")[0];
+				String fd = fromDateTime.split("-")[0];
 
-				String td = toDateTime.split("-")[2];
+				String ty = toDateTime.split("-")[2];
 				String tm = toDateTime.split("-")[1];
-				String ty = toDateTime.split("-")[0];
+				String td = toDateTime.split("-")[0];
 
-				String dteFromDate = fd + "-" + fm + "-" + fy;
-				String dteToDate = td + "-" + tm + "-" + ty;*/
+				String dteFromDate = fy + "-" + fm + "-" + fd;
+				String dteToDate = ty + "-" + tm + "-" + td;
 
-				sqlQuery = sqlQuery + " and DATE(a.dtGRNDate) between  '" + fromDateTime + "' and '" + toDateTime + "' and  a.strClientCode='"+clientCode+"' ";
+				sqlQuery = sqlQuery + " and DATE(a.dtGRNDate) between  '" + dteFromDate + "' and '" + dteToDate + "' and  a.strClientCode='"+clientCode+"' ";
 				sqlQuery = sqlQuery + "ORDER BY  DATE(a.dtGRNDate) ";
 		}
 		

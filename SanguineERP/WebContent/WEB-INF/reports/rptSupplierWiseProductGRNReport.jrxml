@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-08-30T16:46:35 -->
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="742ef197-00f2-4607-abe0-b4afc8718546">
 	<property name="ireport.zoom" value="1.3310000000000008"/>
 	<property name="ireport.x" value="0"/>
@@ -241,6 +240,12 @@
 		<variableExpression><![CDATA[$F{dblAmount}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Double(0.0)]]></initialValueExpression>
 	</variable>
+	<variable name="vTotalRate" class="java.lang.Double" resetType="Group" resetGroup="Group2" calculation="Sum">
+		<variableExpression><![CDATA[$F{dblUnitPrice}]]></variableExpression>
+	</variable>
+	<variable name="vTotalRateLocation" class="java.lang.Double" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{dblUnitPrice}]]></variableExpression>
+	</variable>
 	<group name="Group1">
 		<groupExpression><![CDATA[$F{strSuppName}]]></groupExpression>
 		<groupHeader>
@@ -264,27 +269,34 @@
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="18">
+			<band height="20">
 				<staticText>
-					<reportElement x="245" y="1" width="91" height="14" forecolor="#5C38FC" uuid="54298e2d-32b5-48cb-9c52-e984d8b4e5d3"/>
+					<reportElement x="218" y="1" width="91" height="14" forecolor="#5C38FC" uuid="54298e2d-32b5-48cb-9c52-e984d8b4e5d3"/>
 					<textElement textAlignment="Right">
 						<font isBold="true"/>
 					</textElement>
 					<text><![CDATA[Total :]]></text>
 				</staticText>
 				<textField pattern="#,##0.##">
-					<reportElement x="340" y="3" width="85" height="14" forecolor="#5C38FC" uuid="1ead8eb8-b8fd-40aa-9b00-02de7b10e39d"/>
+					<reportElement x="310" y="3" width="70" height="14" forecolor="#5C38FC" uuid="1ead8eb8-b8fd-40aa-9b00-02de7b10e39d"/>
 					<textElement textAlignment="Right">
 						<font fontName="Serif"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{vTotalQtyLocation}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.##">
-					<reportElement x="439" y="3" width="106" height="14" forecolor="#5C38FC" uuid="f8f09d03-467b-48ce-96a5-768c002b673e"/>
+					<reportElement x="467" y="3" width="78" height="14" forecolor="#5C38FC" uuid="f8f09d03-467b-48ce-96a5-768c002b673e"/>
 					<textElement textAlignment="Right">
 						<font fontName="Serif"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{vTotalAmtLocation}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.##">
+					<reportElement x="388" y="3" width="72" height="14" uuid="355210fa-2e13-489b-a9f2-49ef7ca3b89a"/>
+					<textElement textAlignment="Right">
+						<font fontName="Serif"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vTotalRateLocation}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -312,28 +324,35 @@
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="18">
+			<band height="20">
 				<textField pattern="#,##0.##">
-					<reportElement x="340" y="3" width="85" height="14" forecolor="#35BF2E" uuid="27f1037b-8a89-403d-9092-15cce07fc6d4"/>
+					<reportElement x="310" y="5" width="70" height="14" forecolor="#35BF2E" uuid="27f1037b-8a89-403d-9092-15cce07fc6d4"/>
 					<textElement textAlignment="Right">
 						<font fontName="Serif"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{vTotalQty}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.##">
-					<reportElement x="439" y="3" width="106" height="14" forecolor="#35BF2E" uuid="5b1c037a-6e17-48c8-a815-fad83ea69e63"/>
+					<reportElement x="467" y="3" width="78" height="14" forecolor="#35BF2E" uuid="5b1c037a-6e17-48c8-a815-fad83ea69e63"/>
 					<textElement textAlignment="Right">
 						<font fontName="Serif"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{vTotalAmt}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="245" y="3" width="91" height="14" forecolor="#35BF2E" uuid="0d0fe9d1-a153-4fcb-832f-5137dac57f5f"/>
+					<reportElement x="239" y="3" width="69" height="14" forecolor="#35BF2E" uuid="0d0fe9d1-a153-4fcb-832f-5137dac57f5f"/>
 					<textElement textAlignment="Right">
 						<font isBold="true"/>
 					</textElement>
 					<text><![CDATA[Total :]]></text>
 				</staticText>
+				<textField pattern="#,##0.##">
+					<reportElement x="388" y="3" width="72" height="14" uuid="d789d387-7701-4cf1-836b-9293bb60f5ca"/>
+					<textElement textAlignment="Right">
+						<font fontName="Serif"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{vTotalRate}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupFooter>
 	</group>
@@ -416,21 +435,21 @@
 	<columnHeader>
 		<band height="27" splitType="Stretch">
 			<staticText>
-				<reportElement x="6" y="4" width="264" height="14" uuid="4796c866-01df-4e95-8fb8-b8c2d21c33d7"/>
+				<reportElement x="6" y="4" width="204" height="14" uuid="4796c866-01df-4e95-8fb8-b8c2d21c33d7"/>
 				<textElement textAlignment="Left">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Product Name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="439" y="5" width="114" height="14" uuid="76bc0959-f140-4dfd-866a-33706d2c3ada"/>
+				<reportElement x="467" y="5" width="86" height="14" uuid="76bc0959-f140-4dfd-866a-33706d2c3ada"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="340" y="4" width="80" height="14" uuid="1bab90b5-d401-45b9-a5de-88df44f45d0d"/>
+				<reportElement x="310" y="4" width="70" height="14" uuid="1bab90b5-d401-45b9-a5de-88df44f45d0d"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
@@ -449,18 +468,23 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="271" y="3" width="69" height="14" uuid="7e76993e-c98e-481d-b3af-524eef4f9f96"/>
+				<reportElement x="241" y="4" width="69" height="14" uuid="7e76993e-c98e-481d-b3af-524eef4f9f96"/>
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[UOM]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="390" y="4" width="70" height="14" uuid="7aa9178b-13e2-4431-be5c-afbec0ec76fb"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Rate]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="23" splitType="Stretch">
+		<band height="25" splitType="Stretch">
 			<textField>
-				<reportElement x="2" y="3" width="268" height="17" uuid="e2183f83-b899-4dab-bf27-ecda260fc096">
+				<reportElement x="2" y="3" width="208" height="17" uuid="e2183f83-b899-4dab-bf27-ecda260fc096">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement>
@@ -469,25 +493,32 @@
 				<textFieldExpression><![CDATA[$F{strProductName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="340" y="3" width="85" height="17" uuid="8dd6d5a2-3544-46f5-a23d-d2b98146a507"/>
+				<reportElement x="310" y="3" width="70" height="17" uuid="8dd6d5a2-3544-46f5-a23d-d2b98146a507"/>
 				<textElement textAlignment="Right">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dblQty}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.##">
-				<reportElement x="439" y="3" width="106" height="17" uuid="f0d6d8b8-6eb1-473a-8feb-c059a2a9edf2"/>
+				<reportElement x="467" y="3" width="78" height="17" uuid="f0d6d8b8-6eb1-473a-8feb-c059a2a9edf2"/>
 				<textElement textAlignment="Right">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dblAmount}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="275" y="2" width="61" height="17" uuid="baa5c426-7ae0-40f4-b055-a371f1f8148e"/>
+				<reportElement x="241" y="3" width="67" height="17" uuid="baa5c426-7ae0-40f4-b055-a371f1f8148e"/>
 				<textElement textAlignment="Center">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{strUOM}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.##">
+				<reportElement x="388" y="3" width="72" height="17" uuid="e20a69a0-6e01-4122-ae1d-7ae04d7b265c"/>
+				<textElement textAlignment="Right">
+					<font fontName="Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dblUnitPrice}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -539,7 +570,7 @@
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="HH:mm">
-				<reportElement x="189" y="8" width="56" height="15" uuid="ef830073-fc2e-49e2-8b9b-a0e417ccced5"/>
+				<reportElement x="185" y="8" width="56" height="15" uuid="ef830073-fc2e-49e2-8b9b-a0e417ccced5"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>

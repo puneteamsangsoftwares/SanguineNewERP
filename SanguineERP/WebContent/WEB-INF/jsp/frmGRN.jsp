@@ -1427,6 +1427,8 @@
 				        	funAddTaxRow1(taxCode,taxDesc,taxableAmt,taxAmt);
 				    	}
 				    });
+			    	funCalTaxTotal();
+			    	
 				},
 				error: function(jqXHR, exception) {
 		            if (jqXHR.status === 0) {

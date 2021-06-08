@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptReceiptRegister" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c4ff44ab-368d-45e8-8f2f-2aaea1711927">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="WebRoot\WEB-INF\reports\NEW_DATAADAPTER.xml"/>
 	<style name="Title" fontName="Serif" fontSize="26" isBold="true" pdfFontName="Serif-Bold"/>
@@ -110,11 +110,11 @@ Order By Supplier_Name, a.strGRNCode]]>
 					<textFieldExpression><![CDATA["GRN NO.:"+$F{GRN_No}+"    #GRN DATE :"+$F{GRN_Date}+"     #Type :"+$F{GRN_Type}+" "+$F{PO_No}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="-1" y="19" width="280" height="15" uuid="390db18a-d3af-4a17-86eb-a25b4c090c9b"/>
+					<reportElement x="-1" y="19" width="498" height="15" uuid="390db18a-d3af-4a17-86eb-a25b4c090c9b"/>
 					<textElement>
 						<font fontName="Serif" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[" Bill No."+$F{Bill_No}+"          #BillDate :"+$F{Bill_Date}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[" Bill No."+$F{Bill_No}+"          #BillDate :"+$F{Bill_Date}+"        #Location Name :"+$F{Location_Name}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>

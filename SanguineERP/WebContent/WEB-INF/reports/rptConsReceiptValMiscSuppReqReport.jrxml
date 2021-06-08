@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptConsReceiptValMiscSuppReqReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7a266b78-f2bf-443c-80e4-b8b99bfb93a6">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="WebRoot\WEB-INF\reports\NEW_DATAADAPTER.xml"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
@@ -43,8 +43,10 @@ Group By a.strSuppCode, b.strPName]]>
 		<field name="strSuppCode" class="java.lang.String"/>
 		<field name="strPName" class="java.lang.String"/>
 		<field name="Value" class="java.math.BigDecimal"/>
-		<field name="TaxAmt" class="java.math.BigDecimal"/>
-		<field name="SubTotal" class="java.math.BigDecimal"/>
+		<field name="TaxAmt" class="java.lang.Double"/>
+		<field name="SubTotal" class="java.lang.Double"/>
+		<field name="ExtraCharges" class="java.lang.Double"/>
+		<field name="Freight" class="java.lang.Double"/>
 		<variable name="dblGrandTotal" class="java.lang.Double" calculation="Sum">
 			<variableExpression><![CDATA[$F{Value}]]></variableExpression>
 			<initialValueExpression><![CDATA[new Double(0.00)]]></initialValueExpression>
@@ -57,6 +59,15 @@ Group By a.strSuppCode, b.strPName]]>
 			<variableExpression><![CDATA[$F{SubTotal}]]></variableExpression>
 			<initialValueExpression><![CDATA[new Double(0.00)]]></initialValueExpression>
 		</variable>
+		<variable name="dblExtraCharges" class="java.lang.Double">
+			<variableExpression><![CDATA[$F{ExtraCharges}]]></variableExpression>
+			<initialValueExpression><![CDATA[new Double(0.00)]]></initialValueExpression>
+		</variable>
+		<variable name="dblFreight" class="java.lang.Double" calculation="StandardDeviation">
+			<variableExpression><![CDATA[$F{Freight}]]></variableExpression>
+			<initialValueExpression><![CDATA[new Double(0.00)]]></initialValueExpression>
+		</variable>
+		<variable name="dblValue" class="java.math.BigDecimal"/>
 		<group name="strSuppCode">
 			<groupExpression><![CDATA[$F{strSuppCode}]]></groupExpression>
 		</group>
@@ -156,12 +167,12 @@ Group By a.strSuppCode, b.strPName]]>
 					<datasetRun subDataset="Dataset" uuid="5e1afe49-3adb-48f8-af0b-6b4d83ecb555">
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="100" uuid="7464b26d-ec38-4d70-a310-486ae472d324">
+					<jr:column width="90" uuid="7464b26d-ec38-4d70-a310-486ae472d324">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:columnHeader height="20" rowSpan="1">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<staticText>
-								<reportElement x="0" y="0" width="100" height="20" uuid="9988f1ca-ba0b-4f32-8065-df26927b1b49"/>
+								<reportElement x="0" y="0" width="90" height="20" uuid="9988f1ca-ba0b-4f32-8065-df26927b1b49"/>
 								<text><![CDATA[Supplier Code]]></text>
 							</staticText>
 						</jr:columnHeader>
@@ -171,41 +182,41 @@ Group By a.strSuppCode, b.strPName]]>
 						<jr:detailCell height="20">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<textField>
-								<reportElement x="0" y="0" width="100" height="20" uuid="4186ba7f-261f-476e-86f7-3cce697ffffd"/>
+								<reportElement x="0" y="0" width="90" height="20" uuid="4186ba7f-261f-476e-86f7-3cce697ffffd"/>
 								<textFieldExpression><![CDATA[$F{strSuppCode}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="260" uuid="fccfa743-48f9-431b-9a36-200efe0b790b">
+					<jr:column width="188" uuid="fccfa743-48f9-431b-9a36-200efe0b790b">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader height="20" rowSpan="1">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<staticText>
-								<reportElement x="2" y="0" width="238" height="20" uuid="2bbf150e-ec6a-426d-9372-0ca40d47b012"/>
+								<reportElement x="2" y="0" width="186" height="20" uuid="2bbf150e-ec6a-426d-9372-0ca40d47b012"/>
 								<text><![CDATA[Supplier Name]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="20" rowSpan="1">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<staticText>
-								<reportElement x="152" y="0" width="100" height="20" uuid="f24868ab-3989-42c0-a8b9-196f5f0e5438"/>
+								<reportElement x="86" y="0" width="98" height="20" uuid="f24868ab-3989-42c0-a8b9-196f5f0e5438"/>
 								<text><![CDATA[Grand Total]]></text>
 							</staticText>
 						</jr:columnFooter>
 						<jr:detailCell height="20">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<textField>
-								<reportElement x="2" y="0" width="238" height="20" uuid="3e85fbe4-a68b-47da-944c-8060b3055f8a"/>
+								<reportElement x="2" y="0" width="186" height="20" isPrintWhenDetailOverflows="true" uuid="3e85fbe4-a68b-47da-944c-8060b3055f8a"/>
 								<textFieldExpression><![CDATA[$F{strPName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="78cc655c-6c45-47c2-90d3-9965f01a8aee">
+					<jr:column width="73" uuid="78cc655c-6c45-47c2-90d3-9965f01a8aee">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:columnHeader height="20" rowSpan="1">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<staticText>
-								<reportElement x="0" y="0" width="59" height="20" uuid="deec1e96-746e-48bc-9a22-068b1f770725"/>
+								<reportElement x="14" y="0" width="59" height="20" uuid="f98460dd-f9ce-4cb4-96a9-fb97a38c98e6"/>
 								<textElement textAlignment="Right"/>
 								<text><![CDATA[SubTotal]]></text>
 							</staticText>
@@ -213,7 +224,7 @@ Group By a.strSuppCode, b.strPName]]>
 						<jr:columnFooter height="20" rowSpan="1">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<textField pattern="#,##0.00#">
-								<reportElement x="1" y="0" width="57" height="20" uuid="63c86d3d-e366-4d74-afaa-a3c319ccf4d5"/>
+								<reportElement x="0" y="1" width="72" height="18" uuid="56b9827f-bbc3-448b-9dda-1f4bc3caeca2"/>
 								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$V{dblTotSubTotal}]]></textFieldExpression>
 							</textField>
@@ -221,18 +232,20 @@ Group By a.strSuppCode, b.strPName]]>
 						<jr:detailCell height="20">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<textField pattern="#,##0.00#">
-								<reportElement x="1" y="0" width="58" height="20" uuid="0389755a-209d-469c-99fb-005a43ef4906"/>
+								<reportElement x="14" y="0" width="58" height="20" uuid="a513e128-4216-4f23-8f48-36abe5a49ed0"/>
 								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$F{SubTotal}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="dced39d5-d850-4944-8dc0-d6e24ad0ec59">
+					<jr:column width="56" uuid="dced39d5-d850-4944-8dc0-d6e24ad0ec59">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:columnHeader height="20" rowSpan="1">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<staticText>
-								<reportElement x="0" y="0" width="59" height="20" uuid="90a33bfe-fdd0-4937-94bd-c92bdd9d1f37"/>
+								<reportElement x="2" y="0" width="50" height="20" uuid="fdd2220e-6d98-43c9-8fda-c921066f7a20">
+									<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								</reportElement>
 								<textElement textAlignment="Right"/>
 								<text><![CDATA[Tax Amt]]></text>
 							</staticText>
@@ -240,7 +253,7 @@ Group By a.strSuppCode, b.strPName]]>
 						<jr:columnFooter height="20" rowSpan="1">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<textField pattern="#,##0.00#">
-								<reportElement x="1" y="0" width="57" height="20" uuid="80713972-7fef-4cde-a761-4bb3d644cb8a"/>
+								<reportElement x="2" y="1" width="50" height="17" uuid="8e311a32-e0ae-43de-a2f3-807c5c1eea88"/>
 								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$V{dblTotTaxAmt}]]></textFieldExpression>
 							</textField>
@@ -248,35 +261,83 @@ Group By a.strSuppCode, b.strPName]]>
 						<jr:detailCell height="20">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<textField pattern="#,##0.00#">
-								<reportElement x="1" y="0" width="58" height="20" uuid="457a7abd-9cb3-408a-8475-702c4d27dfe4"/>
+								<reportElement x="1" y="0" width="50" height="20" uuid="cbba7ef6-0f20-44ff-82d5-bdb854f9573c"/>
 								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$F{TaxAmt}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="74" uuid="b6f5017f-b76f-4a86-a38e-4e4eb8edca9d">
+					<jr:column width="53" uuid="b6f5017f-b76f-4a86-a38e-4e4eb8edca9d">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:columnHeader height="20" rowSpan="1">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="20" uuid="b93866af-8526-4bb1-a156-115cf6055a23"/>
+								<reportElement x="3" y="0" width="50" height="20" uuid="4d539dd0-be4a-4fe2-ba99-2d1d3ffd8346"/>
+								<textElement textAlignment="Right"/>
+								<text><![CDATA[Freight]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter height="20" rowSpan="1">
+							<textField pattern="#,##0.00#">
+								<reportElement x="0" y="0" width="53" height="20" uuid="576bd2a8-f48a-4698-998b-bd425b589515"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$V{dblFreight}]]></textFieldExpression>
+							</textField>
+						</jr:columnFooter>
+						<jr:detailCell height="20">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+							<textField pattern="#,##0.00#">
+								<reportElement x="2" y="1" width="50" height="17" uuid="04fa99f4-37f1-4b11-9cac-a6cc216dd5ef"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{Freight}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="50" uuid="38c09c06-ab54-4b9a-a9d8-5e335b4c3bde">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<jr:columnHeader height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="50" height="20" uuid="1cef601a-6209-43e7-a1c1-07eac781b30b"/>
+								<textElement textAlignment="Right"/>
+								<text><![CDATA[Extra Charges]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter height="20" rowSpan="1">
+							<textField pattern="#,##0.00#">
+								<reportElement x="0" y="0" width="50" height="20" uuid="5f7062f4-64ce-4392-864f-3b3dfb555de0"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$V{dblExtraCharges}]]></textFieldExpression>
+							</textField>
+						</jr:columnFooter>
+						<jr:detailCell height="20">
+							<textField pattern="#,##0.00#">
+								<reportElement x="0" y="0" width="50" height="20" uuid="576da022-c802-4d8c-9672-bc84fbdb4059"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{ExtraCharges}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="61" uuid="6a3fc5d6-1766-4bdb-9f50-dad25e6056bf">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+						<jr:columnHeader height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="61" height="20" uuid="c07bd8d9-cac7-4e61-8c19-69337cba2823"/>
 								<textElement textAlignment="Right"/>
 								<text><![CDATA[Value]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="20" rowSpan="1">
 							<textField pattern="#,##0.00#">
-								<reportElement x="0" y="0" width="74" height="20" uuid="e938f5a7-d897-4d6e-85fc-8b72fcca42ca"/>
+								<reportElement x="0" y="0" width="61" height="20" uuid="2b8d5d7c-fb43-48c4-82bd-af8fa56d3478"/>
 								<textElement textAlignment="Right"/>
-								<textFieldExpression><![CDATA[$V{dblGrandTotal}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{dblTotSubTotal} + $V{dblTotTaxAmt} + $V{dblFreight} + $V{dblExtraCharges}]]></textFieldExpression>
 							</textField>
 						</jr:columnFooter>
 						<jr:detailCell height="20">
-							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<textField pattern="#,##0.00#">
-								<reportElement x="0" y="0" width="70" height="20" uuid="b83ce74a-d06c-43b1-8889-0df2bc191161"/>
+								<reportElement x="0" y="0" width="61" height="20" uuid="718f3f1f-2f32-4393-acda-cebdd23961df"/>
 								<textElement textAlignment="Right"/>
-								<textFieldExpression><![CDATA[$F{Value}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{SubTotal} + $F{TaxAmt} + $F{ExtraCharges} + $F{Freight}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

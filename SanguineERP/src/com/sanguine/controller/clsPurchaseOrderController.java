@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mysql.jdbc.Connection;
+import com.sanguine.bean.clsGRNBean;
 import com.sanguine.bean.clsPurchaseOrderBean;
 import com.sanguine.model.clsAuditDtlModel;
 import com.sanguine.model.clsAuditHdModel;
@@ -147,7 +148,11 @@ public class clsPurchaseOrderController {
 		if (flagOpenFromAuthorization) {
 			model.put("authorizationPOCode", authorizationPOCode);
 		}
-
+        
+		clsPurchaseOrderBean objBean = new clsPurchaseOrderBean();
+		objBean.setStrLocCode(request.getSession().getAttribute("locationCode")
+				.toString());
+		
 		Map<String, String> hmCurrency = objCurrencyMasterService.funCurrencyListToDisplay(clientCode);
 		if (hmCurrency.isEmpty()) {
 			hmCurrency.put("", "");
@@ -221,10 +226,18 @@ public class clsPurchaseOrderController {
 			}
 		}
 
-		if ("2".equalsIgnoreCase(urlHits)) {
+		/*if ("2".equalsIgnoreCase(urlHits)) {
 			return new ModelAndView("frmPurchaseOrder_1");
 		} else if ("1".equalsIgnoreCase(urlHits)) {
 			return new ModelAndView("frmPurchaseOrder");
+		} else {
+			return null;
+		}*/
+		
+		if ("2".equalsIgnoreCase(urlHits)) {
+			return new ModelAndView("frmPurchaseOrder_1", "command", objBean);
+		} else if ("1".equalsIgnoreCase(urlHits)) {
+			return new ModelAndView("frmPurchaseOrder", "command", objBean);
 		} else {
 			return null;
 		}
@@ -354,7 +367,8 @@ public class clsPurchaseOrderController {
 			bean.setDblCIF(objPurchaseOrderHdModel.getDblCIF()/currConversion);
 			bean.setDblClearingAgentCharges(objPurchaseOrderHdModel.getDblClearingAgentCharges()/currConversion);
 			bean.setDblVATClaim(objPurchaseOrderHdModel.getDblVATClaim()/currConversion);
-			bean.setDblConversion(currConversion); 
+			bean.setDblConversion(currConversion);
+			bean.setStrLocCode(objPurchaseOrderHdModel.getStrLocCode());
 			List<clsPurchaseOrderDtlModel> listPurchaseOrderDtl = new ArrayList<clsPurchaseOrderDtlModel>();
 			List listPODtl = objPurchaseOrderService.funGetDtlList(code, clientCode);
 			for (int cnt = 0; cnt < listPODtl.size(); cnt++) {
@@ -961,6 +975,7 @@ public class clsPurchaseOrderController {
 		objPurchaseOrderHdModel.setDtPayDate(objGlobal.funGetDate("yyyy-MM-dd", objBean.getDtPayDate()));
 		objPurchaseOrderHdModel.setDblConversion(currConversion);
 		objPurchaseOrderHdModel.setDblExchangeRate(0.00);
+		objPurchaseOrderHdModel.setStrLocCode(objBean.getStrLocCode());
 
 		if (clientCode.equals("226.001")) {
 			double vatAmt = 0;
@@ -1615,6 +1630,16 @@ public class clsPurchaseOrderController {
 
 			JasperReport jr = JasperCompileManager.compileReport(jd);
 
+			String sqlLoc=" SELECT b.strLocName FROM tblpurchaseorderhd a,tbllocationmaster b WHERE a.strPOCode='"+POcode+"' "
+				     + "  AND a.strLocCode=b.strLocCode ";
+       
+			List listLocName  = objGlobalFunctionsService.funGetList(sqlLoc, "sql");
+			String locName="";
+			if (listLocName != null && !listLocName.isEmpty()) {
+				locName =  (String) listLocName.get(0);
+				
+			}
+			
 			HashMap hm = new HashMap();
 			hm.put("strCompanyName", companyName);
 			hm.put("strUserCode", userCode.toUpperCase());
@@ -1634,7 +1659,7 @@ public class clsPurchaseOrderController {
 			hm.put("strCST", objSetup.getStrCST());
 			hm.put("strSAdd", shippingAddress);
 			hm.put("strBAdd", billAddress.toUpperCase());
-
+			hm.put("location", locName);
 
 			if (strPartyType.equalsIgnoreCase("Foreign") && clientCode.equals("226.001")) {
 

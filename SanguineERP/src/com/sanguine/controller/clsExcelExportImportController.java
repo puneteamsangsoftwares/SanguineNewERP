@@ -278,7 +278,7 @@ public class clsExcelExportImportController {
 			}
 			else if (!sgCode.equals("") || !sgCode.isEmpty()) 
 			{
-				hql += "and a.strSGCode="+strBuilder.toString();
+				hql += "and a.strSGCode='"+sgCode+"' ";
 			}
 			strBuilder.setLength(0);
 			if(gCode.contains(","))

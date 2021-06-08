@@ -685,6 +685,8 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
 		
 		sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strShowAllTaxesOnTransaction` VARCHAR(1) NOT NULL DEFAULT 'Y' AFTER `strShowAllPartyToAllLoc`;";
 		funExecuteQuery(sql);
+		
+		
 
 		sql = "ALTER TABLE `tblgrnhd` "
 				+"	ADD COLUMN `strAuthLevel1` VARCHAR(10) NOT NULL DEFAULT '' AFTER `dblRoundOff`, "
@@ -1162,6 +1164,13 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
 				+ " CHANGE COLUMN `dblCStock` `dblCStock` DECIMAL(18,5) NOT NULL DEFAULT '0.00000' AFTER `strProdCode`,"
 				+ " CHANGE COLUMN `dblPStock` `dblPStock` DECIMAL(18,5) NOT NULL DEFAULT '0.00000' AFTER `dblCStock`;";
 		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpurchaseorderhd` ADD COLUMN `strLocCode` VARCHAR(15) NOT NULL DEFAULT '' AFTER `strAuthLevel5`;";
+		funExecuteQuery(sql);
+		
+		sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strLocationWiseValuation` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strShowAllProducts`; ";
+		funExecuteQuery(sql);
+		
 		/*----------------WebStock Forms only---------------------------*/
 		String strIndustryType = "",strWebStockModule="";
 		List<clsCompanyMasterModel> listClsCompanyMasterModel = objSetupMasterService.funGetListCompanyMasterModel();

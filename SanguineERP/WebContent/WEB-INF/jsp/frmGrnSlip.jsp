@@ -292,7 +292,7 @@
 		<p align="center" style="margin-right:12%;">
 			<input type="submit" value="Submit" onclick="return funCallFormAction('submit',this)" class="btn btn-primary center-block" class="form_button"/>
 			&nbsp;
-		    <input type="button" value="Reset" class="btn btn-primary center-block" class="form_button" />
+		    <input type="button" value="Reset" class="btn btn-primary center-block" class="form_button" onclick="funResetFields()" />
 		</p>
     <s:input type="hidden" id="hidSuppCode" path="strSuppCode"></s:input>
      </s:form>

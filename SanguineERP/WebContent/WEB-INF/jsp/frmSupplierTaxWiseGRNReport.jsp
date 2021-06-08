@@ -19,10 +19,7 @@
 
 <script type="text/javascript">
 
-function funResetFields()
-{
-	$("#txtSuppCode").focus();
-}
+
 $(document).ready(function() 
 		{		
 		
@@ -49,11 +46,11 @@ function formSubmit()
 	var FromDate= new Date(spFromDate[2],spFromDate[1]-1,spFromDate[0]);
 	var ToDate = new Date(spToDate[2],spToDate[1]-1,spToDate[0]);
 	
-	if($("#txtSuppCode").val()=='')
+	/* if($("#txtSuppCode").val()=='')
 	{
 		 alert("Select Supplier Code");
 		 return false;  
-	}
+	} */
 	if(!fun_isDate($("#txtFromDate").val())) 
     {
 		 alert('Invalid From Date');
@@ -125,6 +122,14 @@ function funSetData(code)
 	});
 		
 	}
+
+/**
+ * Reset from
+**/
+function funResetFields()
+{
+	location.reload(true); 
+}
 </script>
 
 <body>
@@ -167,7 +172,7 @@ function funSetData(code)
 			<p align="center" style="margin-right: 45%;">
 				 <input type="button" value="Submit" onclick="return formSubmit();" class="btn btn-primary center-block" class="form_button" />
 				 &nbsp;
-				 <input type="button" value="Reset" class="btn btn-primary center-block" class="form_button" onclick="funResetFields()"/>			     
+				 <input type="reset" value="Reset" class="btn btn-primary center-block" class="form_button" onclick="funResetFields()"/>			     
 			</p>
 		</s:form>
 		</div>

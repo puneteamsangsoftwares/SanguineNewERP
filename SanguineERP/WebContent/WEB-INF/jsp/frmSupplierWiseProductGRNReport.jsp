@@ -94,6 +94,10 @@ function funSetData(code)
 	case 'suppcode':
     	funSetSupplier(code);
         break;
+        
+	case 'locationmaster':
+	    	funSetLocation(code);
+	        break;
 	}
 	
 }
@@ -316,6 +320,55 @@ function btnSubmit_Onclick()
 	    	document.forms["SupplierwiseGRNReport"].submit();
 	
  }
+ 
+/**
+ * Reset from
+**/
+function funResetFields()
+{
+	location.reload(true); 
+}
+
+//Get and Set location data
+function funSetLocation(code) {
+	var searchUrl = "";
+	searchUrl = getContextPath()+ "/loadLocationMasterData.html?locCode=" + code;
+	$.ajax({
+		type : "GET",
+		url : searchUrl,
+		dataType : "json",
+		success : function(response) {
+			if (response.strLocCode == 'Invalid Code') {
+				alert("Invalid Location Code");
+				$("#txtLocCode").val('');
+				$("#lblLocName").text("");
+				$("#txtLocCode").focus();
+			} else {
+				$("#txtLocCode").val(response.strLocCode);						
+				$("#lblLocName").text(response.strLocName);
+				$("#txtProdCode").focus();
+			}
+		},
+		error : function(jqXHR, exception) {
+			if (jqXHR.status === 0) {
+				alert('Not connect.n Verify Network.');
+			} else if (jqXHR.status == 404) {
+				alert('Requested page not found. [404]');
+			} else if (jqXHR.status == 500) {
+				alert('Internal Server Error [500].');
+			} else if (exception === 'parsererror') {
+				alert('Requested JSON parse failed.');
+			} else if (exception === 'timeout') {
+				alert('Time out error.');
+			} else if (exception === 'abort') {
+				alert('Ajax request aborted.');
+			} else {
+				alert('Uncaught Error.n' + jqXHR.responseText);
+			}
+		}
+	});
+}
+
 </script>
 <body>
 	<div  class="container transTable">
@@ -347,13 +400,23 @@ function btnSubmit_Onclick()
 				    		<s:option value="CSV">CSV</s:option>
 				    	</s:select>
 				</div>
-				<div class="col-md-10"></div>
 				
-			   <div class="col-md-6"><label>Supplier</label>
-			          <input style="width: 35%;" type="text" id="txtSuppCode" 
-			            Class="searchTextBox" placeholder="Type to search" style="width: 35%;"></input>
-			              <label id="lblSuppName"></label>
-			   </div>
+				<div class="col-md-2">
+							<label id="lblLocation">Location</label>
+							<s:input id="txtLocCode" path="strLocCode" required="required"
+								ondblclick="funHelp('locationmaster')"
+								cssClass="searchTextBox" />
+				</div>
+				<div class="col-md-2">
+							<s:label id="lblLocName" path="strLocName"
+								style="background-color:#dcdada94; width: 100%; height:51%;margin-top: 27px;padding:4px;" />
+				</div>
+				<div class="col-md-10"></div>
+			
+			  <div class="col-md-6"><label>Supplier</label><br>
+				 <input id="txtSuppCode"  ondblclick="funHelp('suppcode')" Class="searchTextBox" style="width: 35%;"/>
+				 <!--  <label id="lblSuppName"></label> -->
+			 </div>
 			
 			  <div class="col-md-6"><label>Category</label>
 			          <input style="width: 35%;" type="text" id="txtSuppCode" 
@@ -417,11 +480,9 @@ function btnSubmit_Onclick()
 			
 			<br>
 			<p align="center">
-				 <!-- <input type="submit" value="Submit"  class="btn btn-primary center-block"  class="form_button"  onclick="btnSubmit_Onclick()"  id="btnSubmit" /> -->
 				 <button type="button" class="btn btn-primary center-block" id="btnSubmit" value="Submit" onclick="btnSubmit_Onclick()">Submit</button>
 				 &nbsp;
-				 <!-- <input type="button" value="Reset" class="btn btn-primary center-block" class="form_button" onclick="funResetFields()"/> -->			     
-			     <button type="button" class="btn btn-primary center-block" id="btnReset" value="Reset" onclick="funResetFields()">Reset</button>
+				 <button type="reset" class="btn btn-primary center-block" id="btnReset" value="Reset" onclick="funResetFields()">Reset</button>
 			</p>
 		
 			<div id="wait" style="display: none; width: 60px; height: 60px; border: 0px solid black; position: absolute; top: 60%; left: 55%; padding: 2px;">

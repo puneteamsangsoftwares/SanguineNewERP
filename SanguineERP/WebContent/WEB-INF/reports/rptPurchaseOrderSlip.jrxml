@@ -230,6 +230,7 @@ from tbltcmaster tc inner join tbltctransdtl tcDtl on tc.strTCCode=tcDtl.strTCCo
 	<parameter name="strBAdd" class="java.lang.String"/>
 	<parameter name="strSAdd" class="java.lang.String"/>
 	<parameter name="imgQualityPolicy" class="java.lang.String"/>
+	<parameter name="location" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT po.strPOCode,date(po.dtPODate) as dtPODate,po.strSuppCode,po.strAgainst,po.strSOCode,po.dblTotal, po.strVAddress1,
 po.strVAddress2,po.strVCity,po.strVState,po.strVCountry,po.strVPin,po.strSAddress1, po.strSAddress2,po.strSCity,po.strSState,
@@ -298,9 +299,9 @@ WHERE (po.strPOCode = '01POAA000001' and po.strClientCode='024.001' )]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="303" splitType="Stretch">
+		<band height="298" splitType="Stretch">
 			<rectangle>
-				<reportElement x="283" y="201" width="268" height="88" uuid="433bee92-128c-4740-9225-986c8b834772"/>
+				<reportElement x="283" y="209" width="268" height="88" uuid="433bee92-128c-4740-9225-986c8b834772"/>
 			</rectangle>
 			<rectangle>
 				<reportElement x="2" y="200" width="263" height="98" uuid="a12d61a6-2637-44de-9e0b-78f2040641eb"/>
@@ -413,10 +414,10 @@ WHERE (po.strPOCode = '01POAA000001' and po.strClientCode='024.001' )]]>
 				<textFieldExpression><![CDATA[$F{strVState}+", "+$F{strVCountry}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="283" y="223" width="268" height="1" uuid="3922db23-6474-4034-96d1-4b9a0866352f"/>
+				<reportElement x="283" y="230" width="268" height="1" uuid="3922db23-6474-4034-96d1-4b9a0866352f"/>
 			</line>
 			<textField pattern="dd-MM-yyyy" isBlankWhenNull="true">
-				<reportElement x="380" y="224" width="171" height="20" uuid="a1ac969c-39f7-4fab-8d66-64b6a92ac9a9"/>
+				<reportElement x="380" y="231" width="171" height="20" uuid="a1ac969c-39f7-4fab-8d66-64b6a92ac9a9"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
@@ -454,14 +455,14 @@ WHERE (po.strPOCode = '01POAA000001' and po.strClientCode='024.001' )]]>
 				<textFieldExpression><![CDATA["Phone : " + $F{strPhone}+ "  Fax : " + $F{strFax}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="285" y="224" width="94" height="20" uuid="6c6c2df2-0d59-4b23-ae7a-6e353ac0e7bd"/>
+				<reportElement x="285" y="231" width="94" height="20" uuid="6c6c2df2-0d59-4b23-ae7a-6e353ac0e7bd"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<text><![CDATA[Date]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="380" y="247" width="80" height="20" isRemoveLineWhenBlank="true" uuid="bf85b267-acba-46d0-9c4a-06df08197ce7">
+				<reportElement x="380" y="254" width="80" height="20" isRemoveLineWhenBlank="true" uuid="bf85b267-acba-46d0-9c4a-06df08197ce7">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<printWhenExpression><![CDATA[!$F{strAmntNO}.isEmpty()]]></printWhenExpression>
@@ -472,7 +473,7 @@ WHERE (po.strPOCode = '01POAA000001' and po.strClientCode='024.001' )]]>
 				<textFieldExpression><![CDATA[$F{strAmntNO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="285" y="247" width="94" height="20" uuid="d99a0e87-4ea0-454c-825c-8aee4644e92c"/>
+				<reportElement x="285" y="254" width="94" height="20" uuid="d99a0e87-4ea0-454c-825c-8aee4644e92c"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
@@ -486,14 +487,14 @@ WHERE (po.strPOCode = '01POAA000001' and po.strClientCode='024.001' )]]>
 				<textFieldExpression><![CDATA[$F{strMCity}+ "-" + $F{strMPin}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="285" y="202" width="94" height="20" uuid="d3fa8974-56cf-4bd8-9838-accbdc7bf1dd"/>
+				<reportElement x="285" y="209" width="94" height="20" uuid="d3fa8974-56cf-4bd8-9838-accbdc7bf1dd"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<text><![CDATA[P.O No.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="461" y="224" width="21" height="20" uuid="45a7d8b0-a84a-4fe3-8467-291238888b8c">
+				<reportElement x="461" y="231" width="21" height="20" uuid="45a7d8b0-a84a-4fe3-8467-291238888b8c">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -506,7 +507,7 @@ WHERE (po.strPOCode = '01POAA000001' and po.strClientCode='024.001' )]]>
 				<reportElement x="4" y="264" width="260" height="1" uuid="2097b9d4-84eb-4f01-babf-8ee2701ed3e6"/>
 			</line>
 			<staticText>
-				<reportElement x="285" y="270" width="94" height="20" uuid="371950df-8b51-4056-b6e5-d5cb3bd35145"/>
+				<reportElement x="285" y="277" width="94" height="20" uuid="371950df-8b51-4056-b6e5-d5cb3bd35145"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
@@ -524,7 +525,7 @@ WHERE (po.strPOCode = '01POAA000001' and po.strClientCode='024.001' )]]>
 				</graphicElement>
 			</line>
 			<textField pattern="dd-MM-yyyy" isBlankWhenNull="true">
-				<reportElement x="484" y="226" width="65" height="19" uuid="9881f238-eed3-47a1-bea4-d3da2804a347"/>
+				<reportElement x="484" y="233" width="65" height="19" uuid="9881f238-eed3-47a1-bea4-d3da2804a347"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
@@ -538,27 +539,27 @@ WHERE (po.strPOCode = '01POAA000001' and po.strClientCode='024.001' )]]>
 				<textFieldExpression><![CDATA["Contact Person  : " + $F{strContact} + "  Mobile : " + $F{strMobile}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="283" y="269" width="268" height="1" uuid="3922db23-6474-4034-96d1-4b9a0866352f"/>
+				<reportElement x="283" y="276" width="268" height="1" uuid="3922db23-6474-4034-96d1-4b9a0866352f"/>
 			</line>
 			<textField isBlankWhenNull="true">
-				<reportElement x="380" y="270" width="171" height="20" uuid="bd3cb9cf-6606-4f64-ac5e-a2dfb39e708e"/>
+				<reportElement x="380" y="277" width="171" height="20" uuid="bd3cb9cf-6606-4f64-ac5e-a2dfb39e708e"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{strCode}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="283" y="246" width="268" height="1" uuid="3922db23-6474-4034-96d1-4b9a0866352f"/>
+				<reportElement x="283" y="253" width="268" height="1" uuid="3922db23-6474-4034-96d1-4b9a0866352f"/>
 			</line>
 			<textField isBlankWhenNull="true">
-				<reportElement x="380" y="202" width="171" height="20" uuid="5492d420-0654-4d3d-be69-217b202571aa"/>
+				<reportElement x="380" y="209" width="171" height="20" uuid="5492d420-0654-4d3d-be69-217b202571aa"/>
 				<textElement>
 					<font fontName="Serif" size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{strPOCode}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="2" y="193" width="552" height="1" forecolor="#969696" uuid="d18a969a-ecd4-4f9d-86b3-351ed3e6a5f3">
+				<reportElement x="2" y="191" width="552" height="1" forecolor="#969696" uuid="d18a969a-ecd4-4f9d-86b3-351ed3e6a5f3">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -576,6 +577,14 @@ WHERE (po.strPOCode = '01POAA000001' and po.strClientCode='024.001' )]]>
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA["VAT: "+($P{strVAT}==null ?" ":$P{strVAT}) +"        GST: "+($P{strCST}==null ?" ":$P{strCST})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="283" y="192" width="96" height="17" uuid="6961f835-d0dd-475d-9ee4-6e3bc722d4a1"/>
+				<text><![CDATA[Location Name:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="381" y="192" width="132" height="17" uuid="eeb34872-9731-4384-9d1a-6105eaf79a7b"/>
+				<textFieldExpression><![CDATA[$P{location}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -1185,7 +1194,7 @@ WHERE (po.strPOCode = '01POAA000001' and po.strClientCode='024.001' )]]>
 					</jr:column>
 					<jr:column width="346" uuid="b140358f-7783-46da-9c91-2f3f897c6534">
 						<jr:detailCell style="table 3_TD" height="16" rowSpan="1">
-							<textField isBlankWhenNull="true">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement x="6" y="0" width="340" height="15" uuid="ed01a134-9ff8-4d39-b557-60d897675188"/>
 								<textElement verticalAlignment="Middle">
 									<font size="8"/>

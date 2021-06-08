@@ -186,6 +186,9 @@ public class clsPurchaseOrderHdModel implements Serializable {
 	
 	@Column(name = "dblExchangeRate", columnDefinition = "DECIMAL(18,4) NOT NULL default '0.0000'")
 	private double dblExchangeRate;
+	
+	@Column(name = "strLocCode", columnDefinition = "VARCHAR(255) NOT NULL default ''")
+	private String strLocCode;
 
 	public String getStrClientCode() {
 		return strClientCode;
@@ -643,6 +646,14 @@ public class clsPurchaseOrderHdModel implements Serializable {
 
 	public void setDblExchangeRate(double dblExchangeRate) {
 		this.dblExchangeRate = (Double) setDefaultValue(dblExchangeRate, 0.00);
+	}
+
+	public String getStrLocCode() {
+		return strLocCode;
+	}
+
+	public void setStrLocCode(String strLocCode) {
+		this.strLocCode = strLocCode;
 	}
 	
 	

@@ -235,7 +235,7 @@ public class clsSetupMasterDaoImpl implements clsSetupMasterDao {
 		}
 		String sql3 = "SELECT a.strBatchMethod,a.strTPostingType,a.strAudit,a.strAutoDC,a.strUserCreated,a.dtCreatedDate,a.strUserModified,a.dtLastModified,a.strClientCode,a.intqtydec,a.strRatePickUpFrom, " + " a.strShowReqVal,a.strShowStkReq,a.strShowValMISSlip,a.strChangeUOMTrans,a.strShowProdMaster,a.strAuditFrom,a.strShowProdDoc, "
 				+ " a.strAllowDateChangeInMIS,a.strShowTransAsc_Desc,a.strNameChangeProdMast,a.strStkAdjReason,a.intNotificationTimeinterval, " + " a.strMonthEnd,a.strShowAllProdToAllLoc,a.strLocWiseProductionOrder,a.strShowStockInOP,a.strShowAvgQtyInOP, " + "a.strShowStockInSO,a.strShowAvgQtyInSO,a.strDivisionAdd,a.strEffectOfDiscOnPO,a.strInvFormat,a.strECCNo,  "
-				+ "a.strSMSProvider,a.strSMSAPI,a.strSMSContent,strInvNote,strCurrencyCode,strShowAllPropCustomer ," + " strEffectOfInvoice,strEffectOfGRNWebBook , strMultiCurrency ,strShowAllPartyToAllLoc,a.strFifo,strCheckPOSSales,strShowAllProducts " + " FROM clsPropertySetupModel a where a.strPropertyCode='" + propertyCode + "' and  a.strClientCode ='" + clientCode + "' ";
+				+ "a.strSMSProvider,a.strSMSAPI,a.strSMSContent,strInvNote,strCurrencyCode,strShowAllPropCustomer ," + " strEffectOfInvoice,strEffectOfGRNWebBook , strMultiCurrency ,strShowAllPartyToAllLoc,a.strFifo,strCheckPOSSales,strShowAllProducts,strLocationWiseValuation " + " FROM clsPropertySetupModel a where a.strPropertyCode='" + propertyCode + "' and  a.strClientCode ='" + clientCode + "' ";
 
 		Query query3 = sessionFactory.getCurrentSession().createQuery(sql3);
 		// query.setParameter("propertyCode", propertyCode);
@@ -304,6 +304,7 @@ public class clsSetupMasterDaoImpl implements clsSetupMasterDao {
 			objSetUpModel.setStrFifo(objPropSetUp3[44].toString());
 			objSetUpModel.setStrCheckPOSSales(objPropSetUp3[45].toString());
 			objSetUpModel.setStrShowAllProducts(objPropSetUp3[46].toString());
+			objSetUpModel.setStrLocationWiseValuation(objPropSetUp3[46].toString());
 
 		}
 		String sql4 = "SELECT a.strRateHistoryFormat,a.strPOSlipFormat,a.strSRSlipFormat,a.strWeightedAvgCal,a.strGRNRateEditable,a.strInvoiceRateEditable,	a.strSORateEditable,a.strSettlementWiseInvSer,a.strGRNProdPOWise , a.strPORateEditable,a.strCurrentDateForTransaction,a.strRoundOffFinalAmtOnTransaction ,a.strPOSTRoundOffAmtToWebBooks,a.strRecipeListPrice,a.strIncludeTaxInWeightAvgPrice"

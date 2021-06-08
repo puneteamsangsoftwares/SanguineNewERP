@@ -374,6 +374,16 @@ function funHelp(transactionName)
 			
 			<div class="col-md-2"><label id="lblLocName" style="background-color:#dcdada94; width: 100%; height:51%;margin-top: 27px;padding:4px;"></label>
 			</div>
+			
+			<%-- <div class="col-md-2">     
+			     <label>Report Type</label>
+				<s:select path="strReportType" id="cmbReportType" cssClass="BoxW124px" onchange="funAddExportType();">
+					<option value="Detail">Detail</option>
+					<option value="Summary">Summary</option>
+					
+				</s:select>
+			</div>
+ --%>			
 		   <div class="col-md-8"></div>
 		    <div class="col-md-12"></div>
 		   <br>

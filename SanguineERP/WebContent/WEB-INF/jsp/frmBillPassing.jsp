@@ -542,7 +542,7 @@
 			var totalTax=parseFloat($("#lblGRNTaxTotal").text());
 			var grandTotal=subTotal+totalTax;
 			$("#lblGRNGrandTotal").text(grandTotal);
-			$("#lblGRNGrandTotal1").text(grandTotal);
+			//$("#lblGRNGrandTotal1").text(grandTotal);
 		}
 		
 		
@@ -887,13 +887,14 @@
 						<div class="row transtable" id="tblGRNTotal">
 								<div class="col-md-2">
 									<label>Sub Total</label>
-									<input id="lblGRNSubTotal" type="text"></input>
+									<label id="lblGRNSubTotal" style="background-color: #dcdada94; width: 100%; height: 55%; text-align: center;"></label>
+									
 <!-- 								<td width="100px"><label>Tax</label></td> -->
 <!-- 								<td><label id="lblGRNTaxTotal">0</label></td> -->
 								</div>
 								<div class="col-md-2">
 									<label>Grand Total</label>
-									<input id="lblGRNGrandTotal" type="text"></input>
+									<label id="lblGRNGrandTotal" style="background-color: #dcdada94; width: 100%; height: 55%; text-align: center;"></label>
 								</div>
 							</div>
 						</div>

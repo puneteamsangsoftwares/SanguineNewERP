@@ -593,6 +593,9 @@
 			    	funSetTax(code);
 			    	break;
 			    	
+			    case 'locationmaster':
+			    	funSetLocation(code);
+			        break;
 			}
 		}
 		
@@ -664,6 +667,8 @@
 					    	$("#txtVATClaim").val(response.dblVATClaim);
 					    	$("#cmbCurrency").val(response.strCurrency);
 					    	$("#txtDblConversion").val(response.dblConversion);
+					    	$("#txtLocCode").val(response.strLocCode);
+							
 					    	
 					    	funGetProdData1(response.listPODtlModel);
 					    	funGetTC(response.listTCMaster);
@@ -2329,6 +2334,54 @@
 	}
 	
 	
+	/**
+	 * Reset from
+	**/
+	function funResetFields()
+	{
+		location.reload(true); 
+	}
+	
+	
+	//Get and Set location data
+	function funSetLocation(code) {
+		var searchUrl = "";
+		searchUrl = getContextPath()+ "/loadLocationMasterData.html?locCode=" + code;
+		$.ajax({
+			type : "GET",
+			url : searchUrl,
+			dataType : "json",
+			success : function(response) {
+				if (response.strLocCode == 'Invalid Code') {
+					alert("Invalid Location Code");
+					$("#txtLocCode").val('');
+					$("#lblLocName").text("");
+					$("#txtLocCode").focus();
+				} else {
+					$("#txtLocCode").val(response.strLocCode);						
+					$("#lblLocName").text(response.strLocName);
+					$("#txtProdCode").focus();
+				}
+			},
+			error : function(jqXHR, exception) {
+				if (jqXHR.status === 0) {
+					alert('Not connect.n Verify Network.');
+				} else if (jqXHR.status == 404) {
+					alert('Requested page not found. [404]');
+				} else if (jqXHR.status == 500) {
+					alert('Internal Server Error [500].');
+				} else if (exception === 'parsererror') {
+					alert('Requested JSON parse failed.');
+				} else if (exception === 'timeout') {
+					alert('Time out error.');
+				} else if (exception === 'abort') {
+					alert('Ajax request aborted.');
+				} else {
+					alert('Uncaught Error.n' + jqXHR.responseText);
+				}
+			}
+		});
+	}
 	
 </script>
 
@@ -2412,6 +2465,17 @@
 						</div>
 						<div class="col-md-2">
 							<input type="button" value="Fill" class="btn btn-primary center-block" onclick="funSetPurchaseIndent();" id="btnFill" style="margin-top:20px;" />
+						</div>
+						
+						<div class="col-md-2">
+							<label id="lblLocation">Location</label>
+							<s:input id="txtLocCode" path="strLocCode" required="required"
+								value="${locationCode}" ondblclick="funHelp('locationmaster')"
+								cssClass="searchTextBox" />
+						</div>
+						<div class="col-md-2">
+							<s:label id="lblLocName" path="strLocName"
+								style="background-color:#dcdada94; width: 100%; height:51%;margin-top: 27px;padding:4px;" />
 						</div>
 					</div>
 					<div class="row transTable">
@@ -2828,8 +2892,10 @@
 	
 		<br>
 		<div class="center" style="text-align:center">
-			<a href="#"><button class="btn btn-primary center-block" value="Submit" onclick="return funCallFormAction('submit',this)">Submit</button></a> &nbsp;
-			<input type="button"  class="btn btn-primary center-block"  id="reset" value="Reset" onclick="funResetFields();" />
+			<input type="submit" value="Submit" tabindex="3" class="btn btn-primary center-block" class="form_button" onclick="return funCallFormAction('submit',this)"/>
+			&nbsp;
+			<input type="reset" value="Reset" class="btn btn-primary center-block" class="form_button" onclick="funResetFields()"/>
+		
 		</div>
 		<br>
 		

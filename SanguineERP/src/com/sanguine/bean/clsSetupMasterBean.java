@@ -182,6 +182,8 @@ public class clsSetupMasterBean {
 	private String strFifo;
 	private String strCheckPOSSales;
 	private String strShowAllProducts;
+	
+	private String strLocationWiseValuation;
 
 
     public String getStrRateHistoryFormat() {
@@ -1449,6 +1451,14 @@ public class clsSetupMasterBean {
 
 	public void setStrShowAllProducts(String strShowAllProducts) {
 		this.strShowAllProducts = strShowAllProducts;
+	}
+
+	public String getStrLocationWiseValuation() {
+		return strLocationWiseValuation;
+	}
+
+	public void setStrLocationWiseValuation(String strLocationWiseValuation) {
+		this.strLocationWiseValuation = strLocationWiseValuation;
 	}
 
 
