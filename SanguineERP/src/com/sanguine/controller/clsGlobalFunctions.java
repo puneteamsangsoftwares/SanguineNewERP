@@ -331,22 +331,19 @@ public class clsGlobalFunctions {
 	 * @return
 	 */
 
-	public String funGenerateDocumentCode(String strTransType,
-			String dtTransDate, HttpServletRequest req) {
-		String clientCode = req.getSession().getAttribute("clientCode")
-				.toString();
-		String propCode = req.getSession().getAttribute("propertyCode")
-				.toString();
+	public String funGenerateDocumentCode(String strTransType,String dtTransDate, HttpServletRequest req) {
+        
+		
+		String clientCode = req.getSession().getAttribute("clientCode").toString();
+		String propCode = req.getSession().getAttribute("propertyCode").toString();
 		String[] spDate = dtTransDate.split("-");
 		Date dt = new Date();
 		// String
 		// years=String.valueOf((dt.getYear()+1900)-Integer.parseInt(spDate[2]));
 		String transYear = "A";
-		List<clsCompanyMasterModel> listClsCompanyMasterModel = objSetupMasterService
-				.funGetListCompanyMasterModel();
+		List<clsCompanyMasterModel> listClsCompanyMasterModel = objSetupMasterService.funGetListCompanyMasterModel();
 		if (listClsCompanyMasterModel.size() > 0) {
-			clsCompanyMasterModel objCompanyMasterModel = listClsCompanyMasterModel
-					.get(listClsCompanyMasterModel.size() - 1);
+			clsCompanyMasterModel objCompanyMasterModel = listClsCompanyMasterModel.get(listClsCompanyMasterModel.size() - 1);
 			transYear = objCompanyMasterModel.getStrYear();
 		}
 
@@ -363,16 +360,14 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "GR";
 			sql = "select ifnull(max(MID(a.strGRNCode,7,6)),'' )as strGRNCode "
-					+ " from tblgrnhd a where MID(a.strGRNCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strGRNCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strGRNCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblgrnhd a where MID(a.strGRNCode,5,1) = '"+ transYear + "' " + " "
+					//+ " and MID(a.strGRNCode,6,1) = '"+ transMonth + "' " + " "
+					+ " and MID(a.strGRNCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + " "
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + "" 
+					+ "  and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='GRN(Good Receiving Note)' ;  ";
 
 			break;
@@ -381,21 +376,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "MR";
 			sql = "select ifnull(max(MID(a.strMRetCode,7,6)),'' ) as strMRetCode"
-					+ " from tblmaterialreturnhd a where MID(a.strMRetCode,5,1) = '"
-					+ transYear
-					+ "' "
-					+ " and MID(a.strMRetCode,6,1) = '"
-					+ transMonth
-					+ "' "
-					+ " and MID(a.strMRetCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblmaterialreturnhd a where MID(a.strMRetCode,5,1) = '"+ transYear+ "' "
+					//+ " and MID(a.strMRetCode,6,1) = '"+ transMonth + "' "
+					+ " and MID(a.strMRetCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
-					+ "and a.strTransType='Material Return' ;  ";
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + " "
+				//	+ " and MID(a.strTransCode,6,1) = '" + transMonth + "' " + ""
+					+ "  and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " and a.strTransType='Material Return' ;  ";
 
 			break;
 
@@ -403,21 +392,16 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "OP";
 			sql = "select ifnull(max(MID(a.strOpStkCode,7,6)),'' ) as strOpStkCode"
-					+ " from tblinitialinventory a where MID(a.strOpStkCode,5,1) = '"
-					+ transYear
-					+ "' "
-					+ " and MID(a.strOpStkCode,6,1) = '"
-					+ transMonth
-					+ "' "
-					+ " and MID(a.strOpStkCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblinitialinventory a where MID(a.strOpStkCode,5,1) = '"+ transYear+ "' "
+					//+ " and MID(a.strOpStkCode,6,1) = '"+ transMonth+ "' "
+					+ " and MID(a.strOpStkCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
-					+ "and a.strTransType='Opening Stock' ;  ";
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + " "
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + " "
+					+ " and MID(a.strTransCode,1,2) = '"+ propCode + "' "
+					+ " and strClientCode='" + clientCode + "' "
+					+ " and a.strTransType='Opening Stock' ;  ";
 
 			break;
 
@@ -425,17 +409,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "PS";
 			sql = "select ifnull(max(MID(a.strPSCode,7,6)),'' ) "
-					+ " from tblstockpostinghd a where MID(a.strPSCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strPSCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strPSCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblstockpostinghd a where MID(a.strPSCode,5,1) = '"+ transYear + "' " + " "
+				   // + " and MID(a.strPSCode,6,1) = '"+ transMonth + "' " + ""
+				    + "  and MID(a.strPSCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
-					+ "and a.strTransType='Physical Stk Posting' ;  ";
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ "  and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ "  and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " and a.strTransType='Physical Stk Posting' ;  ";
 
 			break;
 
@@ -443,17 +425,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "PI";
 			sql = "select ifnull(max(MID(a.strPIcode,7,6)),'' ) "
-					+ " from tblpurchaseindendhd a where MID(a.strPIcode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strPIcode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strPIcode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblpurchaseindendhd a where MID(a.strPIcode,5,1) = '"+ transYear + "' " + ""
+					//+ "  and MID(a.strPIcode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strPIcode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
-					+ "and a.strTransType='Purchase Indent' ;  ";
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ "  and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ "  and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " and a.strTransType='Purchase Indent' ;  ";
 
 			break;
 
@@ -461,17 +441,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "PO";
 			sql = "select ifnull(max(MID(a.strPOCode,7,6)),'' ) "
-					+ " from tblpurchaseorderhd a where MID(a.strPOCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strPOCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strPOCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblpurchaseorderhd a where MID(a.strPOCode,5,1) = '"+ transYear + "' " + ""
+				//	+ "  and MID(a.strPOCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strPOCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
-					+ "and a.strTransType='Purchase Order' ;  ";
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+				//	+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + " "
+					+ " and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " and a.strTransType='Purchase Order' ;  ";
 
 			break;
 
@@ -479,17 +457,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "PR";
 			sql = "select ifnull(max(MID(a.strPRCode,7,6)),'' ) "
-					+ " from tblpurchasereturnhd a where MID(a.strPRCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strPRCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strPRCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblpurchasereturnhd a where MID(a.strPRCode,5,1) = '"+ transYear + "' " + ""
+				//	+ "  and MID(a.strPRCode,6,1) = '"+ transMonth + "' " + " "
+				    + " and MID(a.strPRCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
-					+ "and a.strTransType='Purchase Return' ;  ";
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ "  and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ "  and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " and a.strTransType='Purchase Return' ;  ";
 
 			break;
 
@@ -497,17 +473,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "SA";
 			sql = "select ifnull(max(MID(a.strSACode,7,6)),'' ) "
-					+ " from tblstockadjustmenthd a where MID(a.strSACode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strSACode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strSACode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblstockadjustmenthd a where MID(a.strSACode,5,1) = '"+ transYear + "' " + ""
+					//+ "  and MID(a.strSACode,6,1) = '"+ transMonth + "' " + ""
+					+ "  and MID(a.strSACode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
-					+ "and a.strTransType='Stock Adjustment' ;  ";
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+				//	+ "  and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ "  and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " and a.strTransType='Stock Adjustment' ;  ";
 
 			break;
 
@@ -515,17 +489,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "WO";
 			sql = "select ifnull(max(MID(a.strWOCode,7,6)),'' ) "
-					+ " from tblworkorderhd a where MID(a.strWOCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strWOCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strWOCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblworkorderhd a where MID(a.strWOCode,5,1) = '"+ transYear + "' " + ""
+					//+ "  and MID(a.strWOCode,6,1) = '"+ transMonth + "' " + ""
+					+ "  and MID(a.strWOCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
-					+ "and a.strTransType='Work Order' ;  ";
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ "  and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ "  and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " and a.strTransType='Work Order' ;  ";
 
 			break;
 
@@ -533,17 +505,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "ST";
 			sql = "select ifnull(max(MID(a.strSTCode,7,6)),'' ) "
-					+ " from tblstocktransferhd a where MID(a.strSTCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strSTCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strSTCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblstocktransferhd a where MID(a.strSTCode,5,1) = '"+ transYear + "' " + ""
+				//    + "  and MID(a.strSTCode,6,1) = '"+ transMonth + "' " + ""
+				    + "  and MID(a.strSTCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
-					+ "and a.strTransType='Stock Transfer' ;  ";
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " and a.strTransType='Stock Transfer' ;  ";
 
 			break;
 
@@ -551,17 +521,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "MI";
 			sql = "select ifnull(max(MID(a.strMISCode,7,6)),'' ) "
-					+ " from tblmishd a where MID(a.strMISCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strMISCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strMISCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblmishd a where MID(a.strMISCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strMISCode,6,1) = '"+ transMonth + "' " + ""
+					+ "  and MID(a.strMISCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
-					+ "and a.strTransType='Material Issue Slip' ;  ";
+			        + " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+			        //+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+			        + " and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " and a.strTransType='Material Issue Slip' ;  ";
 
 			break;
 
@@ -569,16 +537,14 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "RE";
 			sql = "select ifnull(max(MID(a.strReqCode,7,6)),'' ) "
-					+ " from tblreqhd a where MID(a.strReqCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strReqCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strReqCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblreqhd a where MID(a.strReqCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strReqCode,6,1) = '"+ transMonth + "' " + ""
+				    + "  and MID(a.strReqCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
+			       + " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+			   //    + " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+			       + " and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Material Requisition' ;  ";
 
 			break;
@@ -587,16 +553,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "PD";
 			sql = "select ifnull(max(MID(a.strPDCode,7,6)),'' ) "
-					+ " from tblproductionhd a where MID(a.strPDCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strPDCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strPDCode,1,2) = '"
+					+ " from tblproductionhd a where MID(a.strPDCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strPDCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strPDCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"	+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Material Production' ;  ";
 			break;
 
@@ -604,16 +569,14 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "BP";
 			sql = "select ifnull(max(MID(a.strBillPassNo,7,6)),'' ) "
-					+ " from tblbillpasshd a where MID(a.strBillPassNo,5,1) = '"
-					+ transYear + "' " + " and MID(a.strBillPassNo,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strBillPassNo,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblbillpasshd a where MID(a.strBillPassNo,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strBillPassNo,6,1) = '"	+ transMonth + "' " + ""
+					+ " and MID(a.strBillPassNo,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Bill Passing' ;  ";
 			break;
 
@@ -621,15 +584,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "MP";
 			sql = "select ifnull(max(MID(a.strOPCode,7,6)),'' ) "
-					+ " from tblproductionorderhd a where MID(a.strOPCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strOPCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strOPCode,1,2) = '"
+					+ " from tblproductionorderhd a where MID(a.strOPCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strOPCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strOPCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Production Order' ;  ";
 			break;
@@ -638,15 +601,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "JV";
 			sql = "select ifnull(max(MID(a.strVouchNo,7,6)),'' ) "
-					+ " from tbljvhd a where MID(a.strVouchNo,5,1) = '"
-					+ transYear + "' " + " and MID(a.strVouchNo,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strVouchNo,1,2) = '"
+					+ " from tbljvhd a where MID(a.strVouchNo,5,1) = '"	+ transYear + "' " + ""
+					//+ " and MID(a.strVouchNo,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strVouchNo,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='JV' ;  ";
 
@@ -656,15 +619,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "DN";
 			sql = "select ifnull(max(MID(a.strDNCode,7,6)),'' ) "
-					+ " from tbldeliverynotehd a where MID(a.strDNCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strDNCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strDNCode,1,2) = '"
+					+ " from tbldeliverynotehd a where MID(a.strDNCode,5,1) = '"+ transYear + "' " + ""
+				    //+ " and MID(a.strDNCode,6,1) = '"+ transMonth + "' " + ""
+				    + " and MID(a.strDNCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+				    //+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+				    + " and MID(a.strTransCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='DN' ;  ";
 			break;
@@ -673,15 +636,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "EX";
 			sql = "select ifnull(max(MID(a.strBillNo,7,6)),'' )as strGRNCode "
-					+ " from tblgrnhd a where MID(a.strBillNo,5,1) = '"
-					+ transYear + "' " + " and MID(a.strBillNo,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strBillNo,1,2) = '"
+					+ " from tblgrnhd a where MID(a.strBillNo,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strBillNo,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strBillNo,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='ExciseBillGeneration' ;  ";
 
@@ -691,15 +654,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "SR";
 			sql = "select ifnull(max(MID(a.strSRCode,7,6)),'' ) "
-					+ " from tblsalesreturnhd a where MID(a.strSRCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strSRCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strSRCode,1,2) = '"
+					+ " from tblsalesreturnhd a where MID(a.strSRCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strSRCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strSRCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Sales Return' ;  ";
 
@@ -709,15 +672,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "IV";
 			sql = "select ifnull(max(MID(a.strInvCode,8,7)),'' ) "
-					+ " from tblinvoicehd a where MID(a.strInvCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strInvCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strInvCode,1,2) = '"
+					+ " from tblinvoicehd a where MID(a.strInvCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strInvCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strInvCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,8,7)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Invoice' ;  ";
 			break;
@@ -726,16 +689,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "RV";
 			sql = "select ifnull(max(MID(a.strVouchNo,7,6)),'' ) "
-					+ " from tblreceipthd a where MID(a.strVouchNo,5,1) = '"
-					+ transYear + "' " + " and MID(a.strVouchNo,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strVouchNo,1,2) = '"
+					+ " from tblreceipthd a where MID(a.strVouchNo,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strVouchNo,6,1) = '"+ transMonth + "' " + ""
+				    + " and MID(a.strVouchNo,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+				    //+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+				    + " and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Recipt' ;  ";
 			break;
 
@@ -743,16 +705,14 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "SC";
 			sql = "select ifnull(max(MID(a.strVoucherNo,7,6)),'' ) "
-					+ " from tblscbillhd a where MID(a.strVoucherNo,5,1) = '"
-					+ transYear + "' " + " and MID(a.strVoucherNo,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strVoucherNo,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblscbillhd a where MID(a.strVoucherNo,5,1) = '"+ transYear + "' " + ""
+				    //+ " and MID(a.strVoucherNo,6,1) = '"+ transMonth + "' " + ""
+				    + " and MID(a.strVoucherNo,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Sub Contracted' ;  ";
 			break;
 
@@ -760,16 +720,15 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "RB";
 			sql = "select ifnull(max(MID(a.strInvCode,7,6)),'' ) "
-					+ " from tblinvoicehd a where MID(a.strInvCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strInvCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strInvCode,1,2) = '"
+					+ " from tblinvoicehd a where MID(a.strInvCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strInvCode,6,1) = '"+ transMonth + "' " + ""
+				    + " and MID(a.strInvCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+				//	+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Invoice' ;  ";
 			break;
 
@@ -777,16 +736,14 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "DS";
 			sql = "select ifnull(max(MID(a.strDSCode,7,6)),'' ) "
-					+ " from tbldeliveryschedulehd a where MID(a.strDSCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strDSCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strDSCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tbldeliveryschedulehd a where MID(a.strDSCode,5,1) = '"+ transYear + "' " + ""
+				    //+ " and MID(a.strDSCode,6,1) = '"+ transMonth + "' " + ""
+				    + " and MID(a.strDSCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+				//	+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Invoice' ;  ";
 			break;
 
@@ -794,15 +751,14 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "BM";
 			sql = "select ifnull(max(MID(a.strBudgetCode,7,6)),'' ) "
-					+ " from tblbudgetmasterhd a where MID(a.strBudgetCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strBudgetCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strBudgetCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblbudgetmasterhd a where MID(a.strBudgetCode,5,1) = '"+ transYear + "' " + ""
+				   // + " and MID(a.strBudgetCode,6,1) = '"+ transMonth + "' " + ""
+				    + " and MID(a.strBudgetCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + " "
+					+ " and MID(a.strTransCode,1,2) = '"
 					+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Invoice' ;  ";
 			break;
@@ -811,15 +767,13 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "PIV";
 			sql = "select ifnull(max(MID(a.strInvCode,7,6)),'' ) "
-					+ " from tblproformainvoicehd a where MID(a.strInvCode,6,1) = '"
-					+ transYear + "' " + " and MID(a.strInvCode,7,1) = '"
-					+ transMonth + "' " + " and MID(a.strInvCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblproformainvoicehd a where MID(a.strInvCode,6,1) = '"+ transYear + "' " + ""
+				//	+ " and MID(a.strInvCode,7,1) = '"+ transMonth + "' " + ""
+				    + " and MID(a.strInvCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,6,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,7,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " from tblaudithd a where MID(a.strTransCode,6,1) = '"+ transYear + "' " + ""
+					//+ " and MID(a.strTransCode,7,1) = '"+ transMonth + "' " + ""
+					+ " and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Invoice' ;  ";
 			break;
 
@@ -827,16 +781,14 @@ public class clsGlobalFunctions {
 
 			strDocLiteral = "SO";
 			sql = "select ifnull(max(MID(a.strSOCode,7,6)),'' )as strSOCode "
-					+ " from tblsalesorderhd a where MID(a.strSOCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strSOCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strSOCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' ";
+					+ " from tblsalesorderhd a where MID(a.strSOCode,5,1) = '"+ transYear + "' " + ""
+					//+ "  and MID(a.strSOCode,6,1) = '"+ transMonth + "' " + ""
+				    + " and MID(a.strSOCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' ";
 
 			sqlAudit = " select ifnull(max(MID(a.strTransCode,7,6)),'' ) "
-					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"
-					+ transYear + "' " + " and MID(a.strTransCode,6,1) = '"
-					+ transMonth + "' " + " and MID(a.strTransCode,1,2) = '"
-					+ propCode + "' and strClientCode='" + clientCode + "' "
+					+ " from tblaudithd a where MID(a.strTransCode,5,1) = '"+ transYear + "' " + ""
+				//	+ " and MID(a.strTransCode,6,1) = '"+ transMonth + "' " + ""
+				    + " and MID(a.strTransCode,1,2) = '"+ propCode + "' and strClientCode='" + clientCode + "' "
 					+ "and a.strTransType='Sales Order' ;  ";
 
 			break;
@@ -1695,8 +1647,7 @@ public class clsGlobalFunctions {
 		return date.split("/");
 	}
 
-	public String funIfNull(String input, String defaultValue,
-			String assignedValue) {
+	public String funIfNull(String input, String defaultValue,String assignedValue) {
 		String op = "notnull";
 		if (null == input) {
 			op = defaultValue;

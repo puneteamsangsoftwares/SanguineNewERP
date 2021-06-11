@@ -361,7 +361,12 @@ public class clsProductMasterDaoImpl implements clsProductMasterDao {
 
 	@Override
 	public List funGetProdSuppWaiseProdList(String suppCode, String clientCode) {
-		String sql = "select a.strProdCode,a.dblLastCost,a.dblMargin,a.dblStandingOrder,a.dblAMCAmt,a.dteInstallation,a.intWarrantyDays from tblprodsuppmaster a,tblproductmaster b " + "where a.strSuppCode='" + suppCode + "' and a.strClientCode= '" + clientCode + "' and a.strProdCode=b.strProdCode order by b.strProdName ";
+		String sql = "SELECT a.strProdCode,a.dblLastCost,a.dblMargin,a.dblStandingOrder,a.dblAMCAmt,"
+				+ " a.dteInstallation,a.intWarrantyDays,b.strProdName,c.strPName"
+				+ " FROM tblprodsuppmaster a,tblproductmaster b ,tblpartymaster c"
+				+ " WHERE a.strProdCode=b.strProdCode AND a.strSuppCode=c.strPCode AND"
+				+ " a.strSuppCode='"+suppCode+"' AND a.strClientCode= '"+clientCode+"'  "
+				+ " ORDER BY b.strProdName";
 		List list = sessionFactory.getCurrentSession().createNativeQuery(sql).list();
 
 		return list;

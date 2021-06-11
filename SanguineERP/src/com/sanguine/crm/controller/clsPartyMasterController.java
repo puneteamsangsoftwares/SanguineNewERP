@@ -18,6 +18,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -84,7 +86,12 @@ public class clsPartyMasterController {
 	
 	@Autowired
 	private intfBaseService objBaseService;
-
+	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+	    binder.setAutoGrowCollectionLimit(1000000);
+	}
+	
 	Map<String,String> hmCategory=new HashMap<>();
 
 	@RequestMapping(value = "/frmCustomerMaster", method = RequestMethod.GET)
@@ -343,13 +350,21 @@ public class clsPartyMasterController {
 		objModel.setDtCreatedDate(objGlobalFunctions.funGetCurrentDateTime("yyyy-MM-dd"));
 		objModel.setStrUserCreated(userCode);
 		objModel.setStrPartyType(objGlobalFunctions.funIfNull(objBean.getStrPartyType(), " ", objBean.getStrPartyType()));
-		objModel.setStrPartyIndi(objBean.getStrPartyIndi());
+		objModel.setStrPartyIndi(objGlobalFunctions.funIfNull(objBean.getStrPartyIndi(),"",objBean.getStrPartyIndi()));
 		objModel.setDblDiscount(objBean.getDblDiscount());
 		objModel.setStrOperational(objBean.getStrOperational());
-		objModel.setStrECCNo(objBean.getStrECCNo());
+		objModel.setStrECCNo(objGlobalFunctions.funIfNull(objBean.getStrECCNo(),"",objBean.getStrECCNo()));
 		objModel.setStrPType("cust");
-		objModel.setStrAccManager(objBean.getStrAccManager());
-		objModel.setDtInstallions(objGlobalFunctions.funGetDate("yyyy-MM-dd", objBean.getDtInstallions()));
+		objModel.setStrAccManager(objGlobalFunctions.funIfNull(objBean.getStrAccManager(),"",objBean.getStrAccManager()));
+		
+		if(objBean.getDtInstallions()!=null)
+		{
+			objModel.setDtInstallions(objGlobalFunctions.funGetDate("yyyy-MM-dd", objBean.getDtInstallions()));
+		}
+		else
+		{
+			objModel.setDtInstallions("1900-01-01 00:00:00");
+		}
 		objModel.setStrGSTNo(objBean.getStrGSTNo());
 		if (objBean.getStrPartyNameMarathi() == null) {
 			objModel.setStrPNHindi("");
@@ -444,23 +459,20 @@ public class clsPartyMasterController {
 		if (null != listProdsupp) {
 			for (int i = 0; i < listProdsupp.size(); i++) {
 				Object[] arrObj = (Object[]) listProdsupp.get(i);
-				clsProductMasterModel objModel = objProductMasterService.funGetObject(arrObj[0].toString(), clientCode);
-				clsProdSuppMasterModel obj = new clsProdSuppMasterModel();
-				clsPartyMasterModel objCust = objPartyMasterService.funGetObject(PCode, clientCode);
-				if (null != objModel) {
-					obj.setStrSuppCode(PCode);
-					obj.setStrSuppName(objCust.getStrPName());
-					obj.setStrProdCode(arrObj[0].toString());
-					obj.setStrProdName(objModel.getStrProdName());
-					obj.setDblLastCost(Double.parseDouble(arrObj[1].toString()));
-					obj.setDblMargin(Double.parseDouble(arrObj[2].toString()));
-					obj.setDblAMCAmt(Double.parseDouble(arrObj[4].toString()));
-					obj.setDteInstallation(objGlobalFunctions.funGetDate("dd-MM-yyyy", arrObj[5].toString()));
-					obj.setIntWarrantyDays(Integer.parseInt(arrObj[6].toString()));
-					obj.setStrClientCode(clientCode);
-					obj.setDblStandingOrder(Double.parseDouble(arrObj[3].toString()));
-					listGenProdsupp.add(obj);
-				}
+				clsProdSuppMasterModel obj = new clsProdSuppMasterModel();				
+				obj.setStrSuppCode(PCode);
+				obj.setStrSuppName(arrObj[8].toString());
+				obj.setStrProdCode(arrObj[0].toString());
+				obj.setStrProdName(arrObj[7].toString());
+				obj.setDblLastCost(Double.parseDouble(arrObj[1].toString()));
+				obj.setDblMargin(Double.parseDouble(arrObj[2].toString()));
+				obj.setDblAMCAmt(Double.parseDouble(arrObj[4].toString()));
+				obj.setDteInstallation(objGlobalFunctions.funGetDate("dd-MM-yyyy", arrObj[5].toString()));
+				obj.setIntWarrantyDays(Integer.parseInt(arrObj[6].toString()));
+				obj.setStrClientCode(clientCode);
+				obj.setDblStandingOrder(Double.parseDouble(arrObj[3].toString()));
+				listGenProdsupp.add(obj);
+				
 			}
 		}
 		return listGenProdsupp;

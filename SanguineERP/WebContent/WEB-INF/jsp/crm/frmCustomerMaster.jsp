@@ -439,14 +439,14 @@ var isLikeCustClk=false;
 			switch (fieldName) 
 			{		   
 			   case 'custMaster':
-				   if(isLikeCustClk)
-				   {
-				   		funPartyProdDataForLikeUser(code);
-				   }
-			       else
-				   {
-				   		funSetCustomer(code);
-				   }
+			   if(isLikeCustClk)
+			   {
+			   		funPartyProdDataForLikeUser(code);
+			   }
+		       else
+			   {
+			   		funSetCustomer(code);
+			   }
 			       break;
 			   
 			   case 'productmaster':
@@ -909,9 +909,9 @@ var isLikeCustClk=false;
 		    return opt;
 		} 
 		
-		/* function funloadAllProductinGrid1(prodCode,itemName,amount,margin,standingOrder)
+		 function funloadAllProductinGrid1(prodCode,itemName,amount,margin,standingOrder)
 		{	
-		    var table = document.getElementById("tblProdDet1");
+		    var table = document.getElementById("tblProdCRMCustDet");
 		    var rowCount = table.rows.length;
 		    var row = table.insertRow(rowCount);
 		    row.insertCell(0).innerHTML= "<input name=\"listclsProdSuppMasterModel["+(rowCount)+"].strProdCode\" readonly=\"readonly\" class=\"Box\" size=\"15%\" id=\"txtProdCode."+(rowCount)+"\" value="+prodCode+">";		    
@@ -920,11 +920,11 @@ var isLikeCustClk=false;
 		    row.insertCell(3).innerHTML= "<input name=\"listclsProdSuppMasterModel["+(rowCount)+"].dblLastCost\" id=\"txtAmount."+(rowCount)+"\" required = \"required\" style=\"text-align: right;\" size=\"5%\" class=\"decimal-places-amt\" value="+amount+">";
 		    row.insertCell(4).innerHTML= "<input name=\"listclsProdSuppMasterModel["+(rowCount)+"].dblMargin\" id=\"txtMargin."+(rowCount)+"\" required = \"required\" style=\"text-align: right;\" size=\"5%\" class=\"decimal-places-amt\" value="+margin+">";
 		    row.insertCell(5).innerHTML= '<input type="button" class="deletebutton" value = "Delete" onClick="Javacsript:funDeleteRowForProd(this)">';
-		    funApplyNumberValidation();
-		    return false;
-		} */
+		  //  funApplyNumberValidation();
+		   // return false;
+		} 
 		
-		   function pageselectCallback(page_index, jq)
+		function pageselectCallback(page_index, jq)
 		{
 	    	var max_elem = Math.min((page_index+1) * items_per_page, listProductData.length);
 		    var newcontent="";
@@ -1001,10 +1001,14 @@ var isLikeCustClk=false;
 				    {
 				    	if(clientCode!='141.001'){
 				    		funRemoveProdRows();
-					    	//funRemoveProdRows();
-					    	btnAllProduct="";
-					    	listProductData=response;
-					    	showTable();
+				    		$('#tblProdCRMCustDet tbody').empty();					    
+					    	btnAllProduct="";					    	
+					    	$.each(response, function(i,item)
+					    	{
+								
+			    					funloadAllProductinGrid1(response[i].strProdCode,response[i].strProdName,response[i].dblLastCost,response[i].dblMargin,response[i].dblStandingOrder);	
+			    					
+					    	});
 				    	}
 				    	else
 				    	{
@@ -1221,12 +1225,16 @@ var isLikeCustClk=false;
 				    success: function(response)
 				    {
 				    	if(clientCode!='141.001'){
-				    		funRemoveProdRows();
-					    	//funRemoveProdRows();
-					    	btnAllProduct="";
-					    	listProductData=response;
+				    		
+				    		$('#tblProdCRMCustDet tbody').empty();					    	
+					    	btnAllProduct="";	
 					    	
-					    	showTable();
+					 	    $.each(response, function(i,item)
+					    	{
+									funloadAllProductinGrid1(response[i].strProdCode,response[i].strProdName,response[i].dblLastCost,response[i].dblMargin,response[i].dblStandingOrder);	
+			    					
+					    	});
+					    
 					    	
 				    	}
 				    	else
@@ -1614,11 +1622,10 @@ var isLikeCustClk=false;
 									</div>
 									
 				      		<div class="col-md-6">
-						            <a href="#"><button class="btn btn-primary center-block" id="btnAdd" value="Add" onclick="return funAddRow()">Add</button></a>&nbsp;
-									<a href="#"><button class="btn btn-primary center-block" id="btnAllProd" value="All Product" onclick="return funLoadAllProduct()"
-										class="form_button">All Product</button></a>
-								 <button  type="button" class="btn btn-primary center-block" id="btnLikeCustomer" value="Like Customer" onclick="funLikeCustomer()"
-										class="form_button">Like Customer</button>
+						            <input type="button"  class="btn btn-primary center-block"  id="btnAdd" value="Add" onclick="return funAddRow()"/>&nbsp;
+									<input type="button"  class="btn btn-primary center-block" id="btnAllProd" value="All Product" onclick="return funLoadAllProduct()"/>
+								 <input type="button"  class="btn btn-primary center-block"  id="btnLikeCustomer" value="Like Customer" onclick="funLikeCustomer()"/>
+										
 							</div>
 						</div>
 <!-- 						<div style="background-color: #a4d7ff; border: 1px solid #ccc; display: block; height: 250px; margin: auto; overflow-x: hidden; overflow-y: scroll; width: 80%;"> -->
@@ -1669,10 +1676,10 @@ var isLikeCustClk=false;
 							</div>
 						</div>
 								
-					<%-- <div class="dynamicTableContainer" style="height: 450px;" id="divProductDetails1">
+					<div class="dynamicTableContainer" style="height: 450px;" id="divProductDetails1">
 						<table style="height: 10px; border: #0F0;width: 100%;font-size:11px;
 						font-weight: bold;">
-							<tr bgcolor="#72BEFC">
+							<tr bgcolor="white">
 												<td style="border: 1px white solid;width:10%"><label>Product Code</label></td>
 												<td style="border: 1px  white solid;width:50%"><label>Product Name</label></td>
 												<td style="border: 1px  white solid;width:10%"><label>Std Order Qty</label></td>
@@ -1683,9 +1690,7 @@ var isLikeCustClk=false;
 						</table>
 						<div
 							style="background-color: #C0E2FE; border: 1px solid #ccc; display: block; height: 410px; margin: auto; overflow-x: hidden; overflow-y: scroll; width: 99.80%;">
-								<table id="tblProdDet1"
-								style="width: 100%; height: 24px; border: #0F0; table-layout: fixed; overflow: scroll"
-								class="transTablex col11-center">
+								<table id="tblProdCRMCustDet" style="width: 100%; height: 24px; border: #0F0; table-layout: fixed; overflow: scroll;background-color:white" class="transTablex col11-center">
 								<tbody>
 								<col style="width:10%">					
 								<col style="width:50%">
@@ -1697,7 +1702,7 @@ var isLikeCustClk=false;
 								</tbody>
 							</table>
 						</div>
-					</div> --%>
+					</div> 
 			
 				<dl id="Searchresult" style="overflow:auto;width: 80%;"></dl>
 				<div id="Pagination" class="pagination" style="width: 80%;margin-left: 26px;">
