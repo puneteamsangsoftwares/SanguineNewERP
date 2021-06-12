@@ -2297,7 +2297,7 @@ public class clsGRNController {
 					.getRealPath("/resources/images/company_Logo.png");
 			StringBuilder sqlBuilder = new StringBuilder();
 			sqlBuilder.setLength(0);
-			sqlBuilder
+			/*sqlBuilder
 					.append(" SELECT g.strGRNCode, DATE_FORMAT(g.dtGRNDate,'%d-%m-%Y') as dtGRNDate, g.strSuppCode, g.strAgainst, g.strPONo, g.strBillNo, DATE_FORMAT(g.dtBillDate,'%d-%m-%Y') as dtBillDate, DATE_FORMAT(g.dtDueDate,'%d-%m-%Y') "
 							+ " as dtDueDate, g.strPayMode, g.dblSubTotal, g.dblDisRate, g.dblDisAmt, g.dblTaxAmt, g.dblExtra, g.dblTotal, "
 							+ " g.strNarration, g.strLocCode, s.strPCode, s.strPName, s.strBAdd1, s.strBAdd2, s.strBCity, s.strBPin, "
@@ -2306,14 +2306,28 @@ public class clsGRNController {
 							+ " FROM tblgrnhd AS g INNER JOIN tblpartymaster AS s ON g.strSuppCode = s.strPCode and s.strClientCode='"
 							+ clientCode
 							+ "'"
-							/*+ "	Left outer join tblgrntaxdtl as t on t.strGRNCode=g.strGRNCode and t.strClientCode='"
+							+ "	Left outer join tblgrntaxdtl as t on t.strGRNCode=g.strGRNCode and t.strClientCode='"
 							+ clientCode
-							+ "'"*/
+							+ "'"
 							+ " WHERE g.strGRNCode = '"
 							+ grnCode
 							+ "' and g.strClientCode='"
 							+ clientCode
-							+ "'");
+							+ "'");*/
+			sqlBuilder
+			.append(" SELECT g.strGRNCode, DATE_FORMAT(g.dtGRNDate,'%d-%m-%Y') as dtGRNDate, g.strSuppCode, g.strAgainst, g.strPONo, g.strBillNo, DATE_FORMAT(g.dtBillDate,'%d-%m-%Y') as dtBillDate, DATE_FORMAT(g.dtDueDate,'%d-%m-%Y') "
+					+ " as dtDueDate, g.strPayMode, g.dblSubTotal, g.dblDisRate, g.dblDisAmt, g.dblTaxAmt, g.dblExtra, g.dblTotal, "
+					+ " g.strNarration, g.strLocCode, s.strPCode, s.strPName, s.strBAdd1, s.strBAdd2, s.strBCity, s.strBPin, "
+					+ " s.strBState, s.strBCountry, g.strNo,g.strRefNo, DATE_FORMAT(g.dtRefDate,'%d-%m-%Y') as dtRefDate,g.dblLessAmt,dblTaxAmt ,g.dblDisRate,g.strNarration ,g.strVehNo "
+					+ ",g.strUserCreated,g.strAuthLevel1,g.strAuthLevel2,a.strLocName AS strLocName "
+					+ " FROM tblgrnhd AS g INNER JOIN tblpartymaster AS s ON g.strSuppCode = s.strPCode and s.strClientCode='"
+					+ clientCode
+					+ "' ,tbllocationmaster as a "
+					+ " WHERE  g.strLocCode=a.strLocCode AND g.strGRNCode = '"
+					+ grnCode
+					+ "' and g.strClientCode='"
+					+ clientCode
+					+ "'");
 
 			JasperDesign jd = JRXmlLoader.load(reportName);
 			JRDesignQuery newQuery = new JRDesignQuery();

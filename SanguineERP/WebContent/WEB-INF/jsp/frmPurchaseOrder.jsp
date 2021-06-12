@@ -1136,8 +1136,10 @@
 							    		count=i;
 										funAddProductFromPI(response[i][0],response[i][5],response[i][6],response[i][7]
 										,response[i][8],response[i][1],response[i][3],response[i][2],response[i][4]);
+										$("#txtLocCode").val(response[i][10]);
 									});
 							    	listRow=count+1;
+							    			
 							    },
 							    error: function(jqXHR, exception) {
 						            if (jqXHR.status === 0) {

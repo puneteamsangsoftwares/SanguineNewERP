@@ -100,7 +100,7 @@ public class clsPurchaseReturnDaoImpl implements clsPurchaseReturnDao {
 		sbsql.append("SELECT c.strProdCode,a.strGRNCode,a.dblQty, IFNULL(b.PRQty,0), a.dblQty - IFNULL(b.PRQty,0), "
 				+" a.dblUnitPrice, a.dblWeight,c.strUOM,c.strProdName, IF(LENGTH(c.strExpDate)=0,'N',c.strExpDate),a.dblDiscount, " 
 				+"  IFNULL(c.strNonStockableItem,''),  "
-				+" IFNULL(p.dblConversion,1), IFNULL(p.strCurrency,''),c.dblWeight "
+				+" IFNULL(p.dblConversion,1), IFNULL(p.strCurrency,''),c.dblWeight AS PWeight "
 				+" FROM tblgrnhd p, tblgrndtl a "
 				+" LEFT OUTER JOIN ( "
 				+" SELECT a.strGRNCode AS GRNCode, b.strProdCode, SUM(b.dblQty) AS PRQty "

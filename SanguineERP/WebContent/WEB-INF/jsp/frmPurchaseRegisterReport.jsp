@@ -51,6 +51,12 @@
 			case 'suppcode':
 		    	funSetSupplier(code);
 		        break;
+		        
+			case 'locationmaster':
+				funSetLocation(code);
+		        break;    
+		        
+		        
 			}
 		}
 		
@@ -144,7 +150,47 @@
 			 }
 			
 		}
-		 
+		
+		
+		//Get and Set location data
+		function funSetLocation(code) {
+			var searchUrl = "";
+			searchUrl = getContextPath()+ "/loadLocationMasterData.html?locCode=" + code;
+			$.ajax({
+				type : "GET",
+				url : searchUrl,
+				dataType : "json",
+				success : function(response) {
+					if (response.strLocCode == 'Invalid Code') {
+						alert("Invalid Location Code");
+						$("#txtLocCode").val('');
+						$("#lblLocName").text("");
+						$("#txtLocCode").focus();
+					} else {
+						$("#txtLocCode").val(response.strLocCode);						
+						$("#lblLocName").text(response.strLocName);
+						$("#txtProdCode").focus();
+					}
+				},
+				error : function(jqXHR, exception) {
+					if (jqXHR.status === 0) {
+						alert('Not connect.n Verify Network.');
+					} else if (jqXHR.status == 404) {
+						alert('Requested page not found. [404]');
+					} else if (jqXHR.status == 500) {
+						alert('Internal Server Error [500].');
+					} else if (exception === 'parsererror') {
+						alert('Requested JSON parse failed.');
+					} else if (exception === 'timeout') {
+						alert('Time out error.');
+					} else if (exception === 'abort') {
+						alert('Ajax request aborted.');
+					} else {
+						alert('Uncaught Error.n' + jqXHR.responseText);
+					}
+				}
+			});
+		}
 		
 		
 </script>
@@ -195,6 +241,16 @@
                    <div class="col-md-2"><label>Property Name </label>
 					 <s:select id="strPropertyCode" path="strPropertyCode" items="${listOfProperty}" required="true"></s:select>	
                    </div>
+                   
+                   <div class="col-md-2">
+							<label id="lblLocation">Location</label>
+							<s:input id="txtLocCode" path="strLocationCode" ondblclick="funHelp('locationmaster')"
+								cssClass="searchTextBox" />
+				   </div>
+				   <div class="col-md-2">
+							<s:label id="lblLocName" path="strLocName"
+								style="background-color:#dcdada94; width: 100%; height:51%;margin-top: 27px;padding:4px;" />
+				   </div>
                   					
 			</div>
 			

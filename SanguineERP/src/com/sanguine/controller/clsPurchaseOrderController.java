@@ -490,10 +490,15 @@ public class clsPurchaseOrderController {
 		}
 
 		String clientCode = req.getSession().getAttribute("clientCode").toString();
-		String sql = " select a.strProdCode,(a.dblQty - ifnull(b.POQty,0)) as dblQty,c.dblCostRM,c.dblWeight, " + " a.strPICode , c.strProdName,c.strUOM,ifnull(d.strSuppCode,'') as strSuppCode, " + " ifnull(e.strPName,'') as strPName,date(a.dtReqDate)   from tblpurchaseindenddtl a " + " left outer join (select b.strPICode, b.strProdCode,sum(dblOrdQty) POQty "
+		/*String sql = " select a.strProdCode,(a.dblQty - ifnull(b.POQty,0)) as dblQty,c.dblCostRM,c.dblWeight, " + " a.strPICode , c.strProdName,c.strUOM,ifnull(d.strSuppCode,'') as strSuppCode, " + " ifnull(e.strPName,'') as strPName,date(a.dtReqDate)   from tblpurchaseindenddtl a " + " left outer join (select b.strPICode, b.strProdCode,sum(dblOrdQty) POQty "
 				+ " from tblpurchaseorderhd a,tblpurchaseorderdtl b  where a.strPOCode = b.strPOCode " + " and  a.strClientCode='" + clientCode + "'  and b.strClientCode='" + clientCode + "' " + "	group by b.strPICode, b.strProdCode) as b on a.strPIcode = b.strPICode and a.strProdCode = b.strProdCode " + "	left outer join tblproductmaster c on a.strProdCode=c.strProdCode and c.strClientCode='"
 				+ clientCode + "' " + "	left outer join tblprodsuppmaster d on c.strProdCode=d.strProdCode and d.strDefault='y'and d.strClientCode='" + clientCode + "' " + " left outer join tblpartymaster e on d.strSuppCode=e.strPCode and e.strClientCode='" + clientCode + "'  " + "	 where  a.dblQty > ifnull(b.POQty,0) and a.strClientCode='" + clientCode + "' and (" + strPICodes + ")  ";
-
+         */
+		String sql = " select a.strProdCode,(a.dblQty - ifnull(b.POQty,0)) as dblQty,c.dblCostRM,c.dblWeight, " + " a.strPICode , c.strProdName,c.strUOM,ifnull(d.strSuppCode,'') as strSuppCode, " + " ifnull(e.strPName,'') as strPName,date(a.dtReqDate),f.strLocCode   from"
+				+ " tblpurchaseindendhd f LEFT OUTER join  tblpurchaseindenddtl a ON f.strPIcode=a.strPIcode " + " left outer join (select b.strPICode, b.strProdCode,sum(dblOrdQty) POQty "
+				+ " from tblpurchaseorderhd a,tblpurchaseorderdtl b  where a.strPOCode = b.strPOCode " + " and  a.strClientCode='" + clientCode + "'  and b.strClientCode='" + clientCode + "' " + "	group by b.strPICode, b.strProdCode) as b on a.strPIcode = b.strPICode and a.strProdCode = b.strProdCode " + "	left outer join tblproductmaster c on a.strProdCode=c.strProdCode and c.strClientCode='"
+				+ clientCode + "' " + "	left outer join tblprodsuppmaster d on c.strProdCode=d.strProdCode and d.strDefault='y'and d.strClientCode='" + clientCode + "' " + " left outer join tblpartymaster e on d.strSuppCode=e.strPCode and e.strClientCode='" + clientCode + "'  " + "	 where  a.dblQty > ifnull(b.POQty,0) and a.strClientCode='" + clientCode + "' and (" + strPICodes + ")  ";
+        
 		return objPurchaseOrderService.funGetPIData(sql, PICode, clientCode);
 	}
 

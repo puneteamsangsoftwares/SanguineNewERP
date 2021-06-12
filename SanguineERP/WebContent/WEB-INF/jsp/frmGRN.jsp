@@ -256,7 +256,7 @@
 		    unitPrice=unitPrice/currValue;
 		    dblDiscount=dblDiscount/currValue;
 		    totalPrice=totalPrice/currValue;
-		    row.insertCell(2).innerHTML= "<input name=\"listGRNDtl["+(rowCount)+"].dblQtyRbl\"    required = \"required\" size=\"7%\" style=\"text-align: right;width:100%;border:1px solid #a2a2a2;padding:1px;\" readonly=\"readonly\" class=\"decimal-places inputText-Auto\" id=\"txtQtyRec."+(rowCount)+"\" value='"+qtyrecb+" '>"; 
+		    row.insertCell(2).innerHTML= "<input name=\"listGRNDtl["+(rowCount)+"].dblQtyRbl\"    required = \"required\" size=\"6%\" style=\"text-align: right;width:100%;border:1px solid #a2a2a2;padding:1px;\" readonly=\"readonly\" class=\"decimal-places inputText-Auto\" id=\"txtQtyRec."+(rowCount)+"\" value='"+qtyrecb+" '>"; 
 		    row.insertCell(3).innerHTML= "<input name=\"listGRNDtl["+(rowCount)+"].dblDCQty\" type=\"text\"  required = \"required\" size=\"6%\" style=\"text-align: right;width:100%;border:1px solid #a2a2a2;padding:1px;\" class=\"decimal-places inputText-Auto\" id=\"txtDCQty."+(rowCount)+"\" value="+dcQty+">";
 		    row.insertCell(4).innerHTML= "<input name=\"listGRNDtl["+(rowCount)+"].dblDCWt\" type=\"text\"  required = \"required\" style=\"text-align: right;width:100%;border:1px solid #a2a2a2;padding:1px;\" size=\"6%\" class=\"decimal-places inputText-Auto\" id=\"txtDCWt."+(rowCount)+"\" value=0>";
 		    row.insertCell(5).innerHTML= "<input name=\"listGRNDtl["+(rowCount)+"].dblQty\" type=\"text\"  required = \"required\" style=\"text-align: right;width:100%;border:1px solid #a2a2a2;padding:1px;\" size=\"6%\" class=\"decimal-places inputText-Auto QtyCell\" id=\"txtQuantity1."+(rowCount)+"\" value='"+qtyrecevd+"' onblur=\"funUpdatePrice(this);\" >";

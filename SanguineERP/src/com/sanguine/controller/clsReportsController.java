@@ -5682,6 +5682,10 @@ public class clsReportsController {
 		{
 			sqlQuery = sqlQuery + " AND e.strPropertyCode='"+objBean.getStrPropertyCode()+"' ";
 		}
+		if (null != objBean.getStrLocationCode() && objBean.getStrLocationCode().length() > 0  && !objBean.getStrLocationCode().equalsIgnoreCase("All"))
+		{
+			sqlQuery = sqlQuery + " AND a.strLocCode='"+objBean.getStrLocationCode()+"' ";
+		}
 		String fd = fromDate.split("-")[0];
 		String fm = fromDate.split("-")[1];
 		String fy = fromDate.split("-")[2];
@@ -6016,7 +6020,11 @@ public class clsReportsController {
 	{
 		sqlQuery = sqlQuery + " AND f.strPropertyCode='"+objBean.getStrPropertyCode()+"' ";
 	}
-
+    
+	if (null != objBean.getStrLocationCode() && objBean.getStrLocationCode().length() > 0  && !objBean.getStrLocationCode().equalsIgnoreCase("All"))
+	{
+		sqlQuery = sqlQuery + " AND a.strLocCode='"+objBean.getStrLocationCode()+"' ";
+	}
 
 	String fromDate = objBean.getDteFromDate();
 	String toDate = objBean.getDteToDate();
@@ -6139,6 +6147,7 @@ public class clsReportsController {
 			String userCode = req.getSession().getAttribute("usercode").toString();
 			String propertyCode = req.getSession().getAttribute("propertyCode").toString();
 			clsPropertySetupModel objSetup = objSetupMasterService.funGetObjectPropertySetup(propertyCode, clientCode);
+			
 			if (objSetup == null)
 			{
 				objSetup = new clsPropertySetupModel();
@@ -6181,9 +6190,12 @@ public class clsReportsController {
 			
 			if (null != objBean.getStrPropertyCode() && objBean.getStrPropertyCode().length() > 0  && !objBean.getStrPropertyCode().equalsIgnoreCase("All"))
 			{
-				sqlQuery = sqlQuery + " AND f.strPropertyName='"+objBean.getStrPropertyCode()+"' ";
+				sqlQuery = sqlQuery + " AND f.strPropertyCode='"+objBean.getStrPropertyCode()+"' ";
 			}
-			
+			if (null != objBean.getStrLocationCode() && objBean.getStrLocationCode().length() > 0  && !objBean.getStrLocationCode().equalsIgnoreCase("All"))
+			{
+				sqlQuery = sqlQuery + " AND a.strLocCode='"+objBean.getStrLocationCode()+"' ";
+			}
 			String fromDate = objBean.getDteFromDate();
 			String toDate = objBean.getDteToDate();
 
@@ -8031,10 +8043,12 @@ public class clsReportsController {
 		if (null != objBean.getStrPropertyCode() && objBean.getStrPropertyCode().length() > 0  && !objBean.getStrPropertyCode().equalsIgnoreCase("All"))
 		{
 			sqlQuery = sqlQuery + " AND e.strPropertyCode ='"+objBean.getStrPropertyCode()+"' ";
-			//AND f.strPropertyCode='01'  AND a.strLocCode=e.strLocCode AND e.strPropertyCode=f.strPropertyCode 
-			
+			 
 		}
-		
+		if (null != objBean.getStrLocationCode() && objBean.getStrLocationCode().length() > 0  && !objBean.getStrLocationCode().equalsIgnoreCase("All"))
+		{
+			sqlQuery = sqlQuery + " AND a.strLocCode='"+objBean.getStrLocationCode()+"' ";
+		}
 	
 		String fd = fromDate.split("-")[0];
 		String fm = fromDate.split("-")[1];
