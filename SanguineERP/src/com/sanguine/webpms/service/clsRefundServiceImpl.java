@@ -48,7 +48,7 @@ public class clsRefundServiceImpl implements clsRefundService {
 		String registrationNo = "";
 		String folioNo = "";
 		String checkInNo = "";
-		String billNo = objRefundBean.getStrDocNo();
+		String billNo =objGlobal.funIfNull(objRefundBean.getStrDocNo(), "", objRefundBean.getStrDocNo());
 		//String PMSDate = objGlobal.funGetDate("yyyy-MM-dd", request.getSession().getAttribute("PMSDate").toString());
 		
 
@@ -63,12 +63,12 @@ public class clsRefundServiceImpl implements clsRefundService {
 		} else {
 			objModel.setStrReceiptNo(objRefundBean.getStrReceiptNo());
 		}
-		objModel.setStrAgainst("Bill");
+		objModel.setStrAgainst(objRefundBean.getStrAgainst());
 		objModel.setDblPaidAmt(0.00);
 		objModel.setDblReceiptAmt(-1 * objRefundBean.getDblReceiptAmt());
         objModel.setDteReceiptDate(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 		objModel.setStrCheckInNo(" ");
-		objModel.setStrBillNo(objRefundBean.getStrDocNo());
+		objModel.setStrBillNo(billNo);
 		objModel.setStrRegistrationNo(" ");
 		objModel.setStrReservationNo(reservationNo);
 		objModel.setStrFolioNo(" "); //Use For Receipt Type
@@ -98,7 +98,7 @@ public class clsRefundServiceImpl implements clsRefundService {
 			balance=Double.parseDouble(guestlist.get(0).toString());
 		}
 		    
-		double amount1=balance+objRefundBean.getDblReceiptAmt();
+	/*	double amount1=balance+objRefundBean.getDblReceiptAmt();
 		String sqlguest=" update tblguestmaster a set a.dblClosingBalance='"+amount1+"' where a.strGuestCode='"+objRefundBean.getStrCustomerCode()+ "' ";
 		objWebPMSUtility.funExecuteUpdate(sqlguest, "sql");
 		
@@ -107,7 +107,7 @@ public class clsRefundServiceImpl implements clsRefundService {
 		objBillHdModel.setDblOpeningBalance(amount1);
 		objBillHdModel.setDblClosingBalance(objRefundBean.getDblReceiptAmt());
 		objBillService.funAddUpdateBillHd(objBillHdModel);
-
+*/
 		objModel.setListPaymentRecieptDtlModel(listPaymentReceiptDtlModel);
 		return objModel;
 	}

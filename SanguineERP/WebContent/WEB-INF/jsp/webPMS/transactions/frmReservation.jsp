@@ -1216,7 +1216,7 @@
 			alert('Only One Guest is Allowed at a time.');
 			return;
 		}*/
-		
+		funCheckRoomAvailability();
 		var labCorporate = $("#lblCorporateDesc").text();
 		if(labCorporate=='')
 		{
@@ -1803,6 +1803,49 @@
 			}
 		}		
 		return flag;
+	}
+	
+	function funCheckRoomAvailability()
+	{
+        
+		var flagRoom=true;
+		var roomNo=$("#txtRoomNo").val();
+		var arrDate=$("#txtArrivalDate").val();	
+		var depDate=$("#txtDepartureDate").val();
+		var searchurl=getContextPath()+"/CheckRoomAvailability.html?RoomNo="+roomNo+"&ArrivalDate="+arrDate+"&departureDate="+depDate;
+		 $.ajax({
+			        type: "GET",
+			        url: searchurl,
+			        dataType: "json",
+			        success: function(response)
+			        {
+			        	if(response[0][0]=='Valid')
+			        	{
+			        	
+			        	}
+			        	else
+			        	{
+			        		alert("Room is Reserved\n RoomNo:"+response[0][0]+"\n Arrival Date:"+response[0][1]+" Departure Date"+response[0][2])
+			        	}
+					},
+					error: function(jqXHR, exception) {
+			            if (jqXHR.status === 0) {
+			                alert('Not connect.n Verify Network.');
+			            } else if (jqXHR.status == 404) {
+			                alert('Requested page not found. [404]');
+			            } else if (jqXHR.status == 500) {
+			                alert('Internal Server Error [500].');
+			            } else if (exception === 'parsererror') {
+			                alert('Requested JSON parse failed.');
+			            } else if (exception === 'timeout') {
+			                alert('Time out error.');
+			            } else if (exception === 'abort') {
+			                alert('Ajax request aborted.');
+			            } else {
+			                alert('Uncaught Error.n' + jqXHR.responseText);
+			            }		            
+			        }
+		      });
 	}
 	
 	function funGetPreviouslyLoadedPkgList(resPackageIncomeHeadList)

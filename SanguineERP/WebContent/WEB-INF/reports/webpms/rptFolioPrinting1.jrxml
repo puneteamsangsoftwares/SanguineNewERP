@@ -37,6 +37,7 @@
 	<parameter name="pbankAcNo" class="java.lang.String"/>
 	<parameter name="pbankIFSC" class="java.lang.String"/>
 	<parameter name="pbranchnName" class="java.lang.String"/>
+	<parameter name="guestMobileNo" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT b.dteDocDate,b.strDocNo,b.strPerticulars,b.dblDebitAmt,b.dblCreditAmt,b.dblBalanceAmt
 FROM tblfoliohd a
@@ -176,7 +177,7 @@ WHERE DATE(b.dteDocDate) BETWEEN '2016-03-25' AND '2016-03-25' AND a.strFolioNo=
 				<text><![CDATA[Remarks             :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="94" y="98" width="346" height="14" uuid="2721457a-8086-462b-b990-f64b7c9148dd"/>
+				<reportElement x="94" y="98" width="236" height="14" uuid="2721457a-8086-462b-b990-f64b7c9148dd"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
@@ -323,6 +324,20 @@ WHERE DATE(b.dteDocDate) BETWEEN '2016-03-25' AND '2016-03-25' AND a.strFolioNo=
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{lblDepartureTime}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="340" y="98" width="82" height="14" uuid="d98e6a58-6041-4c6f-95a5-68941b87c040"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mobile No.            :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="437" y="98" width="115" height="14" uuid="c7af28e6-619a-4434-ab66-f8ae7777fdd1"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{guestMobileNo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

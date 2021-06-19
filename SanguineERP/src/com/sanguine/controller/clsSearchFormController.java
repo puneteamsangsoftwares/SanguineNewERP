@@ -728,6 +728,9 @@ public class clsSearchFormController {
 				searchFormTitle = "Product Master";
 				break;
 			}
+			
+			
+			
 			case "productmasterStkable": {
 				columnNames = "a.strProdCode,a.strProdName,c.strSGName,d.strGName,a.strUOM,a.strProdType,a.strBarCode" + ",a.strSpecification,a.strCalAmtOn,a.strClass,a.strNonStockableItem,a.strPartNo";
 				tableName = "clsProductMasterModel a , clsSubGroupMasterModel c " + ", clsGroupMasterModel d ";
@@ -5006,6 +5009,19 @@ public class clsSearchFormController {
 			idColumnName = "strReasonCode";
 			searchFormTitle = "Reason Master";
 				break;
+		}
+		
+		case "productInCRMCust": {
+			columnNames = "a.strProdCode,a.strProdName,c.strSGName,d.strGName,a.strUOM,a.strProdType" + ",a.strSpecification,a.strCalAmtOn,a.strClass,a.strNonStockableItem,a.strPartNo";
+			tableName = "clsProductMasterModel a , clsSubGroupMasterModel c , clsGroupMasterModel d ";
+		
+			tableName = tableName + " where  ";
+			
+			tableName = tableName + "  a.strSGCode=c.strSGCode and c.strGCode=d.strGCode and a.strNotInUse='N' " + " and a.strClientCode='" + clientCode + "'  and c.strClientCode='" + clientCode + "' and d.strClientCode='" + clientCode + "' and a.strProdType='Produced' ";
+			listColumnNames = "Product Code,Product Name,Sub Group,Group,UOM,Product Type,Specification,Cal Amt On" + ",Class,Non Stockable,PartNo";
+			idColumnName = "a.strProdCode";
+			searchFormTitle = "Product Master";
+			break;
 		}
 		
 	

@@ -140,7 +140,7 @@ public class clsFolioPrintingController {
 			
 			
 			// get all parameters
-			
+			String strMobileNo="";
 			List listOfParametersFromFolio = objFolioService.funGetParametersList(sqlParametersFromFolio);
 			if (listOfParametersFromFolio.size() > 0) {
 				Object[] arr = (Object[]) listOfParametersFromFolio.get(0);
@@ -170,7 +170,7 @@ public class clsFolioPrintingController {
 						+ "IFNULL(d.intPinCodePermanent,''), IFNULL(d.strAddressOfc,''), "
 						+ "IFNULL(d.strCityOfc,''), IFNULL(d.strStateOfc,''), "
 						+ "IFNULL(d.strCountryOfc,''), IFNULL(d.intPinCodeOfc,''), "
-						+ "IFNULL(d.strGSTNo,'') FROM tblguestmaster d "
+						+ "IFNULL(d.strGSTNo,''),d.lngMobileNo FROM tblguestmaster d "
 						+ "WHERE d.strGuestCode= '"+guestCode+"' AND d.strClientCode='"+clientCode+"'";
 				
 				List listguest = objFolioService.funGetParametersList(sqlAddr);
@@ -266,12 +266,13 @@ public class clsFolioPrintingController {
 							guestAddr=guestAddr;
 						}
 					}
+					strMobileNo=arrGuest[17].toString();
 				}
 				
 				//Printing Balance
 				if(clientCode.equalsIgnoreCase("378.001"))
 				{
-				
+					reportParams.put("guestMobileNo" ,strMobileNo);				
 					clsFolioPrintingBean folioBean = new clsFolioPrintingBean();
 					double debitAmt = Double.parseDouble(arr[16].toString());
 					double creditAmt = 0.00;

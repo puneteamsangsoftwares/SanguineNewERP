@@ -160,7 +160,24 @@ public class clsGuestMasterController {
 
 	    }
 		objGuestMasterModel.setDteAnniversaryDate(objGlobal.funGetDate("dd-MM-yyyy", objGuestMasterModel.getDteAnniversaryDate()));
-
+      
+		if(req.getParameter("form")!=null){
+        	String sql="Select a.depositTotal + b.refundTotal as BalanceAmt from"
+        			+ " (select ifnull(sum(a.dblReceiptAmt),0) as depositTotal from tblreceipthd a,tblreceiptdtl b"
+        			+ " where a.strReceiptNo=b.strReceiptNo and a.strAgainst='Deposit' and a.strType != 'Refund Amt' "
+        			+ " and b.strCustomerCode='"+guestCode+"') a ,"
+        			+ " (select ifnull(sum(a.dblReceiptAmt),0) as refundTotal  from tblreceipthd a,tblreceiptdtl b"
+        			+ " where a.strReceiptNo=b.strReceiptNo and a.strType='Refund Amt'"
+        			+ " and b.strCustomerCode='"+guestCode+"') b"; 
+        	List listDepoRefTotal = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
+    		if(!listDepoRefTotal.isEmpty())
+    		{
+    			double bal = Double.parseDouble(String.valueOf(listDepoRefTotal.get(0)));
+    			objGuestMasterModel.setDblClosingBalance(bal);//Refer for refund form,dont refer to guest master
+    			
+    		}
+        }
+        
 		return objGuestMasterModel;
 	}
 	@RequestMapping(value = "/checkGuestMobileNo", method = RequestMethod.GET)

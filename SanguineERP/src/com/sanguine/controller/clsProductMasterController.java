@@ -418,15 +418,18 @@ public class clsProductMasterController {
 						objGlobal = new clsGlobalFunctions();
 						clsSupplierMasterModel objSuppModel = objSupplierMasterService.funGetObject(objProdSupp.getStrSuppCode(), clientCode);
 						clsProdSuppMasterModel ob = new clsProdSuppMasterModel(clsProdSuppMasterModel_ID);
-
-						ob.setStrSuppCode(objProdSupp.getStrSuppCode());
-						ob.setStrProdCode(objGeneralModel.getStrProdCode());
-						ob.setDblLastCost(objGeneralModel.getDblMRP());
-						ob.setStrSuppUOM("");
-						ob.setDtLastDate(objGeneralModel.getDtLastModified());
-						ob.setStrClientCode(clientCode);
-						ob.setDblMargin(objProdSupp.getDblMargin());
-						ob.setDblStandingOrder(objProdSupp.getDblStandingOrder());
+                        if(objProdSupp.getStrSuppCode()!=null)
+                        {
+                        	ob.setStrSuppCode(objProdSupp.getStrSuppCode());
+    						ob.setStrProdCode(objGeneralModel.getStrProdCode());
+    						ob.setDblLastCost(objGeneralModel.getDblMRP());
+    						ob.setStrSuppUOM("");
+    						ob.setDtLastDate(objGeneralModel.getDtLastModified());
+    						ob.setStrClientCode(clientCode);
+    						ob.setDblMargin(objProdSupp.getDblMargin());
+    						ob.setDblStandingOrder(objProdSupp.getDblStandingOrder());
+                        }
+						
 
 						objProductMasterService.funAddUpdateProdSupplier(ob);
 //					}

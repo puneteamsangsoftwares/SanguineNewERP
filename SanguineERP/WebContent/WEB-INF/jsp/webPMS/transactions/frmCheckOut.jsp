@@ -58,7 +58,7 @@
 					           var splitAllBill=message.split("#");
 					           for(var k=0;k<splitAllBill.length;k++)
 				        	   {					        			        	
-						       	   window.open(getContextPath()+"/rptBillPrinting.html?fromDate="+pmsDate+"&toDate="+pmsDate+"&billNo="+splitAllBill[k]+"&strSelectBill="+strSelectBill);
+						       	   window.open(getContextPath()+"/rptBillPrinting.html?fromDate="+pmsDate+"&toDate="+pmsDate+"&billNo="+splitAllBill[k]+"&strSelectBill=Package,Room Tariff");
 				        	   }					           
 				<%
 				}}%>

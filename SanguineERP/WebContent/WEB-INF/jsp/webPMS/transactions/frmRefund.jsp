@@ -167,7 +167,7 @@
 		
 		$.ajax({
 			type : "GET",
-			url : getContextPath()+ "/loadGuestCode.html?guestCode=" + code,
+			url : getContextPath()+ "/loadGuestCode.html?guestCode=" + code+"&form=Refund",
 			dataType : "json",
 			success : function(response){ 
 				funSetGuestInfo(response);
@@ -199,6 +199,12 @@
 	{
 		$("#txtCreditName").val(obj.strGuestCode);
 		$("#txtCredit").val(obj.strFirstName);
+		if($("#cmbAgainst").val()=='Deposit')
+		{
+			$("#txtReceiptAmt").val(obj.dblClosingBalance);
+		}
+	
+		
 	
 	}	
 	
@@ -546,6 +552,29 @@
 	{
 		var flg=true;
 		
+		if($("#cmbAgainst").val()=='Deposit')
+		{
+			if($("#txtCreditName").val().trim().length==0)
+			{
+				alert("Please Select Guest for deposit!!");
+				 flg=false;
+			}
+			
+		}
+		if($("#cmbAgainst").val()=='Bill')
+		{
+			if($("#txtCreditName").val().trim().length==0)
+			{
+				alert("Please Select Guest for Refund!!");
+				 flg=false;
+			}
+							 
+			if($("#txtDocCode").val().trim().length==0)
+			{
+				alert("Please Select Bill No for Refund!!");
+				 flg=false;
+			}
+		}
 		if($("#txtSettlementCode").val().trim().length==0)
 		{
 			alert("Please Select Payment mode!!");
@@ -604,6 +633,18 @@ function funCreateNewGuest(){
 <%-- 		var GuestDetails='<%=session.getAttribute("GuestDetails").toString()%>'; --%>
 // 		var guest=GuestDetails.split("#");
 	}
+   function  funClickAgainst(){
+	   
+	   if($("#cmbAgainst").val()=='Bill')
+	   {
+		   funHelp1('BillForRefund');
+		   
+	   }
+	   else if($("#cmbAgainst").val()=='Deposit')
+	   {
+		   document.getElementById('txtDocCode').style.visibility='hidden';
+	   }
+   }
 </script>
 
 </head>
@@ -624,20 +665,19 @@ function funCreateNewGuest(){
 			<div class="col-md-6"><s:input id="txtCredit"  path="" readonly="true" style="margin-top: 27px;"></s:input>
 			</div>
 	       </div></div>
-            <div class="col-md-5"></div>	
+           <div class="col-md-5"></div>	 -->
 		
-	   	    <div class="col-md-3"><label>Bill</label>
+	       <div class="col-md-3"><label>Bill</label>
 	   	       <div class="row">
-			    <%--  <div class="col-md-6"><s:select id="cmbAgainst" items="${listAgainst}" name="cmbAgainst" path="strAgainst"></s:select></div> --%>
-			     <div class="col-md-6"><s:input id="txtDocCode" path="strDocNo" readonly="readonly" ondblclick="funHelp1('BillForRefund');" style="height: 95%;" class="searchTextBox" ></s:input></div>
-		    </div></div>
+			     <div class="col-md-6"><s:select id="cmbAgainst" items="${listAgainst}" name="cmbAgainst" path="strAgainst" onchange="funClickAgainst();"></s:select></div>
+			     <div class="col-md-6"><s:input id="txtDocCode" path="strDocNo" readonly="readonly" style="height: 95%;" class="searchTextBox" ></s:input></div>
+		    </div></div> 
 		  
-	  	    <div class="col-md-2"><label id="lblGuestName"></label>
+	  	    <div class="col-md-4"><label id="lblGuestName"></label>
 		          <label id="lblGuestFullName" style=" width: 100%; height: 45%;"></label>
 		    </div>
             
-            <div class="col-md-5"></div>
-            
+         <div class="col-md-5"></div> 
             <div class="col-md-3">
 	   	    <div class="row">
 		    <div class="col-md-6"><label>Refund Amount</label>
@@ -666,9 +706,9 @@ function funCreateNewGuest(){
 			      <s:input type="text" id="txtSettlementDesc" path="strSettlementDesc"/>
 		    </div>
 		
-		    <div class="col-md-5"></div>
+		 <!--    <div class="col-md-5"></div> -->
 		    
-			<div class="col-md-3">
+			<div class="col-md-5">
 	   	       <div class="row">
 			     <div class="col-md-6" id="lblCardOrCheck"><label id="lblCardNo">Card No</label>
 			        <s:input type="text" id="txtCardNo" path="strCardNo"/>

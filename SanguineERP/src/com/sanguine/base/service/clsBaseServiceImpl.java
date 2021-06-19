@@ -13,6 +13,7 @@ import com.sanguine.base.dao.intfBaseDao;
 import com.sanguine.base.model.clsBaseModel;
 
 @Service("intfBaseService")
+@Transactional(readOnly = true,propagation = Propagation.NOT_SUPPORTED)
 public class clsBaseServiceImpl implements intfBaseService {
 
 	@Autowired

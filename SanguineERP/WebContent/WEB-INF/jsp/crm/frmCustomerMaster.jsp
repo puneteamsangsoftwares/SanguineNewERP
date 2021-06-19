@@ -245,6 +245,7 @@ var isLikeCustClk=false;
 		        type: "GET",
 		        url: gurl+code,
 		        dataType: "json",
+		        async:false,
 		    
 		        success: function(response)
 		        {		        	
@@ -370,6 +371,7 @@ var isLikeCustClk=false;
 		        type: "GET",
 		        url: gurl+code,
 		        dataType: "json",
+		        async:false,
 		      
 		        success: function(response)
 		        {
@@ -449,7 +451,7 @@ var isLikeCustClk=false;
 			   }
 			       break;
 			   
-			   case 'productmaster':
+			   case 'productInCRMCust':
 			    	funSetProduct(code);
 			        break;
 			        
@@ -571,7 +573,7 @@ var isLikeCustClk=false;
 		 //   funApplyNumberValidation();
 		    
 		    //rowCount++;
-		    return false;
+		   // return false;
 		}
 		 
 		function funInsertProdRow1()
@@ -600,7 +602,7 @@ var isLikeCustClk=false;
 		    var itemName = $("#lblProdName").text();
 		    var margin = $("#txtMargin").val();
 		    var standingOrder = $("#txtStandingOrder").val();
-		    var table = document.getElementById("tblProdDetPg");
+		    var table = document.getElementById("tblProdCRMCustDet");
 		    var rowCount = table.rows.length;
 		    var row = table.insertRow(rowCount);
 		    rowCount=listRow;
@@ -612,7 +614,7 @@ var isLikeCustClk=false;
 		    row.insertCell(5).innerHTML= '<input type="button" class="deletebutton" value = "Delete" onClick="Javacsript:funDeleteRowForProd(this)">';
 		   // funApplyNumberValidation();
 		    listRow++;
-		    return false;
+		  //  return false;
 		}
 		
 		function funDeleteRow(obj)
@@ -654,13 +656,13 @@ var isLikeCustClk=false;
 		    var table = document.getElementById("tblPartyTax");
 		    var rowCount = table.rows.length;
 		    var row = table.insertRow(rowCount);
-		    row.insertCell(0).innerHTML= "<input class=\"Box\" size=\"11%\" name=\"listclsPartyTaxIndicatorDtlModel["+(rowCount-1)+"].strTaxCode\" id=\"txtTaxCode."+(rowCount-1)+"\" value='"+taxCode+"'>";
-		    row.insertCell(1).innerHTML= "<input class=\"Box\" size=\"38%\" name=\"listclsPartyTaxIndicatorDtlModel["+(rowCount-1)+"].strTaxDesc\" id=\"txtTaxDesc."+(rowCount-1)+"\" value='"+taxDesc+"'>";
+		    row.insertCell(0).innerHTML= "<input class=\"Box\" size=\"11%\" name=\"listclsPartyTaxIndicatorDtlModel["+(rowCount)+"].strTaxCode\" id=\"txtTaxCode."+(rowCount-1)+"\" value='"+taxCode+"'>";
+		    row.insertCell(1).innerHTML= "<input class=\"Box\" size=\"38%\" name=\"listclsPartyTaxIndicatorDtlModel["+(rowCount)+"].strTaxDesc\" id=\"txtTaxDesc."+(rowCount-1)+"\" value='"+taxDesc+"'>";
 		    //row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"10%\" name=\"listclsPartyTaxIndicatorDtlModel["+(rowCount-1)+"].strTaxCode\" id=\"taxcode."+(rowCount-1)+"\" value="+taxCode+">";
 		    //row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"20%\"  id=\"taxDesc."+(rowCount-1)+"\" value="+taxDesc+">";		    
 		    row.insertCell(2).innerHTML= '<input type="button" class="deletebutton" value = "Delete" onClick="Javacsript:funDeleteRowForTax(this)">';		    
-		     funResetTaxField();
-		    return false;
+		    // funResetTaxField();
+		   // return false;
 		}
 		
 		
@@ -669,10 +671,10 @@ var isLikeCustClk=false;
 		    var table = document.getElementById("tblPartyTax");
 		    var rowCount = table.rows.length;
 		    var row = table.insertRow(rowCount);
-		    row.insertCell(0).innerHTML= "<input class=\"Box\" size=\"11%\" name=\"listclsPartyTaxIndicatorDtlModel["+(rowCount-1)+"].strTaxCode\" id=\"txtTaxCode."+(rowCount-1)+"\" value='"+taxCode+"'>";
-		    row.insertCell(1).innerHTML= "<input class=\"Box\" size=\"38%\" name=\"listclsPartyTaxIndicatorDtlModel["+(rowCount-1)+"].strTaxDesc\" id=\"txtTaxDesc."+(rowCount-1)+"\" value='"+taxDesc+"'>";
+		    row.insertCell(0).innerHTML= "<input class=\"Box\" size=\"11%\" name=\"listclsPartyTaxIndicatorDtlModel["+(rowCount)+"].strTaxCode\" id=\"txtTaxCode."+(rowCount-1)+"\" value='"+taxCode+"'>";
+		    row.insertCell(1).innerHTML= "<input class=\"Box\" size=\"38%\" name=\"listclsPartyTaxIndicatorDtlModel["+(rowCount)+"].strTaxDesc\" id=\"txtTaxDesc."+(rowCount-1)+"\" value='"+taxDesc+"'>";
 		    row.insertCell(2).innerHTML= '<input type="button" class="deletebutton" value = "Delete" onClick="Javacsript:funDeleteRowForTax(this)">';
-		    return false;
+		  //  return false;
 		}
 		
 		
@@ -716,7 +718,7 @@ var isLikeCustClk=false;
 		
 		function funDuplicateProduct(strProdCode)
 		{
-			var table = document.getElementById("tblProdDetPg");
+			var table = document.getElementById("tblProdCRMCustDet");
 			var clientCode='<%=session.getAttribute("clientCode").toString()%>';
 			if(clientCode=='141.001'){
 				table = document.getElementById("tblProdDet1");
@@ -738,7 +740,7 @@ var isLikeCustClk=false;
 		    	    }
 		    	    else
 		    	    {
-		    	    	  $('#tblProdDetPg tr').each(function()
+		    	    	  $('#tblProdCRMCustDet tr').each(function()
 		    					    {
 		    						    if(strProdCode==$(this).find('input').val())// `this` is TR DOM element
 		    		    				{
@@ -766,7 +768,7 @@ var isLikeCustClk=false;
 			else
 			{
 				 var index = obj.parentNode.parentNode.rowIndex;
-				 var table = document.getElementById("tblProdDetPg");
+				 var table = document.getElementById("tblProdCRMCustDet");
 				 table.deleteRow(index);
 				
 			}
@@ -795,11 +797,21 @@ var isLikeCustClk=false;
 				    success: function(response)
 				    {
 				    	if(clientCode!='141.001'){
-				    		btnAllProduct="All Product";
+				    		//btnAllProduct="All Product";
 				    		//funRemoveProdRows();
 					    	//funRemoveProdRows();
-					    	listProductData=response;
-					    	showTable();
+					    	//listProductData[i].strProdCode listProductData[i].strProdName listProductData[i].dblListPrice
+					    	
+					    	
+				    		$('#tblProdCRMCustDet tbody').empty();					    
+					    	btnAllProduct="";					    	
+					    	$.each(response, function(i,item)
+					    	{
+								
+			    					funloadAllProductinGrid1(response[i].strProdCode,response[i].strProdName,response[i].dblListPrice,0,0);	
+			    					
+					    	});
+					    	
 				    	}
 				    	else
 				    	{
@@ -858,7 +870,7 @@ var isLikeCustClk=false;
 			table.deleteRow(0);
 			rowCount--;
 		}
-		/* var table = document.getElementById("tblProdDetPg");
+		/* var table = document.getElementById("tblProdCRMCustDet");
 		var rowCount = table.rows.length;
 		while(rowCount>0)
 		{
@@ -970,7 +982,9 @@ var isLikeCustClk=false;
 		
 		function funOnClickProdTab() {
 			var strCustCode=$("#txtPartyCode").val();
-			if(strCustCode!='')
+			var table = document.getElementById("tblProdCRMCustDet");
+			var rowCount = table.rows.length;
+			if(strCustCode!='' && rowCount==0 )
 			{
 				funPartyProdData(strCustCode);
 				
@@ -1582,7 +1596,7 @@ var isLikeCustClk=false;
 							
 									<div class="col-md-2">
 										<label>Product Code:</label>
-										<input id="txtProdCode" ondblclick="funHelp('productmaster')" type="text" Class="searchTextBox" />
+										<input id="txtProdCode" ondblclick="funHelp('productInCRMCust')" type="text" Class="searchTextBox" />
 									</div>
 									
 									<div class="col-md-3">

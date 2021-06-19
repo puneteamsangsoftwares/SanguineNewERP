@@ -371,7 +371,7 @@ public class clsBillPrintingController {
 					sqlBillDtl = "SELECT DATE(b.dteDocDate),b.strDocNo,"
 							+ "IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(b.strPerticulars,'(', -1),')',1),''),b.dblDebitAmt,b.dblCreditAmt,"
 							+ "b.dblBalanceAmt ,ifnull(a.strReservationNo,'') ,b.strPerticulars FROM tblbillhd a INNER JOIN tblbilldtl b "
-							+ "ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo AND b.strPerticulars IN("+billNames.substring(0, billNames.length()-1)+") "
+							+ "ON a.strFolioNo=b.strFolioNo AND a.strBillNo=b.strBillNo AND ( b.strPerticulars IN('Package','Room Tariff') or b.strRevenueType='Income Head') "
 							+ "WHERE a.strBillNo='"+billNo+"' AND a.strClientCode='"+clientCode+"' order by b.dblCreditAmt ,b.dteDocDate";
 				}
 				

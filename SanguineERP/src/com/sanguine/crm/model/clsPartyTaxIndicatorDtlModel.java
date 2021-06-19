@@ -15,23 +15,9 @@ public class clsPartyTaxIndicatorDtlModel implements Serializable {
 	@Column(name = "intId")
 	private long intId;
 
-	// @Id
-
-	/*
-	 * @Column(name="strPCode",columnDefinition="VARCHAR(20) NOT NULL default ''"
-	 * ) private String strPCode;
-	 * 
-	 * @Column(name="strClientCode",columnDefinition=
-	 * "VARCHAR(20) NOT NULL default ''") private String strClientCode;
-	 */
 
 	@Column(name = "strTaxCode", columnDefinition = "VARCHAR(20) NOT NULL default ''")
 	private String strTaxCode;
-
-	/*
-	 * public String getStrPCode() { return strPCode; } public void
-	 * setStrPCode(String strPCode) { this.strPCode = strPCode; }
-	 */
 
 	public String getStrTaxCode() {
 		return strTaxCode;
@@ -41,9 +27,5 @@ public class clsPartyTaxIndicatorDtlModel implements Serializable {
 		this.strTaxCode = strTaxCode;
 	}
 
-	/*
-	 * public String getStrClientCode() { return strClientCode; } public void
-	 * setStrClientCode(String strClientCode) { this.strClientCode =
-	 * strClientCode; }
-	 */
+	
 }

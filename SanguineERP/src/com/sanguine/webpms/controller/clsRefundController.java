@@ -135,10 +135,12 @@ public class clsRefundController {
 		if(strModule.equalsIgnoreCase("3-WebPMS"))
 		{
 		List<String> listAgainst = new ArrayList<>();
-		listAgainst.add("Reservation");
+		//listAgainst.add("Reservation");
 		//listAgainst.add("Check-In");
-		listAgainst.add("Folio-No");
+		//listAgainst.add("Folio-No");
 		listAgainst.add("Bill");
+		listAgainst.add("Deposit");
+		
 		model.put("listAgainst", listAgainst);
 		
 		List<String> listSettlement = new ArrayList<>();
@@ -266,9 +268,9 @@ public class clsRefundController {
 					
 					String sqlRefund="select a.strReceiptNo, DATE_FORMAT(a.dteReceiptDate,'%d-%m-%Y'),a.strBillNo, "
 									 +	" IFNULL(d.strFirstName,''), IFNULL(d.strMiddleName,''),  "
-									 +	" IFNULL(d.strLastName,''),a.dblReceiptAmt AS RefundAmt,c.dblGrandTotal,b.strRemarks,e.strSettlementDesc "
-									 +	" from tblreceipthd a,tblreceiptdtl b,tblbillhd c,tblguestmaster d,tblsettlementmaster e "
-									 +	" where a.strReceiptNo='"+reciptNo+"' and a.strReceiptNo=b.strReceiptNo and a.strBillNo=c.strBillNo "
+									 +	" IFNULL(d.strLastName,''),a.dblReceiptAmt AS RefundAmt,0,b.strRemarks,e.strSettlementDesc "
+									 +	" from tblreceipthd a,tblreceiptdtl b,tblguestmaster d,tblsettlementmaster e "//tblbillhd c
+									 +	" where a.strReceiptNo='"+reciptNo+"' and a.strReceiptNo=b.strReceiptNo " //and a.strBillNo=c.strBillNo "
 									 +	" and b.strCustomerCode=d.strGuestCode and b.strSettlementCode=e.strSettlementCode";
 
 					List listOfPayment = objGlobalFunctionsService.funGetDataList(sqlRefund, "sql");

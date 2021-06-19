@@ -1160,7 +1160,7 @@ $(document).ready(function()
 				    	else
 				    		document.getElementById("chkComesaRegionItem").checked=false;
 				    	
-				    	z
+				    	
 				    	funGetImage(code);
 				    	funSetProdSupplierData(code);
 				    	funSetProdAttributeData(code);
@@ -1812,12 +1812,24 @@ $(document).ready(function()
 		    var rowCount = table.rows.length;
 		    var row = table.insertRow(rowCount);
 		    rowCount=listRowCustTabGrid;
+		    
+		    var dblStandingOrder=1;
+		    if(!($('#txtStandingOrder').val()==''));	    
+		    {
+		    	dblStandingOrder=$('#txtStandingOrder').val();
+		    }
+		    var dblMargin=0;
+		    if(!($('#txtMargin').val()==''));
+		    {
+		    	dblMargin=$('#txtMargin').val();
+		    }
+		    
 		    // onClick=Javacsript:funLoadAllProduct('"+strCustCode+"')
 		   
 		    row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box \" size=\"15%\" name=\"listProdCustMargin["+(rowCount)+"].strSuppCode\" id=\"strCustCode."+(rowCount)+"\" value='"+strCustCode+"' >";
 		    row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box \" size=\"28%\"  id=\"strCName."+(rowCount)+"\" value='"+strCustName+"' >";
-		    row.insertCell(2).innerHTML= "<input type=\"text\"  size=\"20%\" required = \"required\" style=\"text-align: right;border:1px solid #a2a2a2;width:97%;\"  name=\"listProdCustMargin["+(rowCount)+"].dblStandingOrder\" id=\"dblMargin."+(rowCount)+"\" value='1' >";
-		    row.insertCell(3).innerHTML= "<input type=\"text\"  size=\"20%\" required = \"required\" style=\"text-align: right;width:75%;border:1px solid #a2a2a2;\" name=\"listProdCustMargin["+(rowCount)+"].dblMargin\" id=\"dblMargin."+(rowCount)+"\" value='0' >";
+		    row.insertCell(2).innerHTML= "<input type=\"text\"  size=\"20%\" required = \"required\" style=\"text-align: right;border:1px solid #a2a2a2;width:97%;\"  name=\"listProdCustMargin["+(rowCount)+"].dblStandingOrder\" id=\"dblMargin."+(rowCount)+"\" value='"+dblStandingOrder+"' >";
+		    row.insertCell(3).innerHTML= "<input type=\"text\"  size=\"20%\" required = \"required\" style=\"text-align: right;width:75%;border:1px solid #a2a2a2;\" name=\"listProdCustMargin["+(rowCount)+"].dblMargin\" id=\"dblMargin."+(rowCount)+"\" value='"+dblMargin+"' >";
 		    row.insertCell(4).innerHTML= '<input type="button" class="deletebutton" value = "Delete" onClick="funDeleteRowForCust(this)">';
 	
 		    listRowCustTabGrid++;
@@ -1930,17 +1942,17 @@ $(document).ready(function()
 	        dataType: "json",
 	        success: function(response)
 	        {		      
-	        	var count=0;
+	        	
 	        	$.each(response, function(i,item)
 					{	
-	        		count=i;
+	        		
 			        	funSetCustGrid(response[i].strSuppCode,response[i].strSuppName,
 			        			response[i].dblStandingOrder,response[i].dblMargin);
 			        	 
-			        	
+			        	listRowCustTabGrid=i+1;	
 			        	
 					});	 	
-	        	listRowCustTabGrid=count+i;	
+	        	
 	        		
 			},
 			error: function(jqXHR, exception) {

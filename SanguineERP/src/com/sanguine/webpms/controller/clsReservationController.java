@@ -1160,6 +1160,44 @@ public class clsReservationController {
 		
 		return roomDesc;
 	}
+	@RequestMapping(value = "/CheckRoomAvailability", method = RequestMethod.GET)
+	public @ResponseBody List funCheckRoomAvailability(String roomNo, HttpServletRequest req) throws ParseException {
+		
+		
+		String RoomNo=req.getParameter("RoomNo").toString();
+		String ArrivalDate=objGlobal.funGetDate("yyyy-MM-dd",  req.getParameter("ArrivalDate").toString()); 
+		String departureDate=getPreviousDate(objGlobal.funGetDate("yyyy-MM-dd", req.getParameter("departureDate").toString()));
+		
+		
+		List list=new ArrayList<>();
+		String sql="select a.strReservationNo,DATE_FORMAT(date(a.dteArrivalDate),'%d-%m-%Y') ,"
+				+ " DATE_FORMAT(date(a.dteDepartureDate),'%d-%m-%Y') from tblreservationhd a ,tblreservationdtl b."
+				+ " where a.strReservationNo=b.strReservationNo and b.strRoomNo='"+RoomNo+"'"
+				+ " and ('"+ArrivalDate+"' BETWEEN date(a.dteArrivalDate) and date(a.dteDepartureDate)"
+				+ " OR '"+departureDate+"' BETWEEN date(a.dteArrivalDate) and date(a.dteDepartureDate))";
+	    list = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
+		if(list!=null && list.size()>0)
+		{			
+							
+		}
+		else
+		{
+			list.add("Valid");
+		}
+		return list;
+		
+		
+	}
+	public static String getPreviousDate(String  curDate) throws ParseException {
+		  final SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		  final Date date = format1.parse(curDate);
+		  final Calendar calendar = Calendar.getInstance();
+		  calendar.setTime(date);
+		  calendar.add(Calendar.DAY_OF_YEAR, -1);
+		  return format1.format(calendar.getTime()); 
+  }
+	
+	
 	
 	@RequestMapping(value = "/getGuestCode", method = RequestMethod.GET)
 	public @ResponseBody clsGuestMasterHdModel fungetGuestCode(@RequestParam("guestCode") String guestCode, HttpServletRequest req){

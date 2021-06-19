@@ -279,17 +279,15 @@ public class clsPartyMasterController {
 			objModel.setStrUserCreated(userCode);
 			objModel.setDtCreatedDate(objGlobalFunctions.funGetCurrentDateTime("yyyy-MM-dd"));
 		} else {
-			clsPartyMasterModel objModel1 = objPartyMasterService.funGetObject(objBean.getStrPCode(), clientCode);
-			if (null == objModel1) {
+			 objModel = objPartyMasterService.funGetObject(objBean.getStrPCode(), clientCode);
+			if (null == objModel) {
 				lastNo = objGlobalFunctionsService.funGetLastNo("tblpartymaster", "PartyMaster", "intPid", clientCode);
 				String PCode = "C" + String.format("%06d", lastNo);
 				objModel = new clsPartyMasterModel(new clsPartyMasterModel_ID(PCode, clientCode));
 				objModel.setIntPId(lastNo);
 				objModel.setStrUserCreated(userCode);
 				objModel.setDtCreatedDate(objGlobalFunctions.funGetCurrentDateTime("yyyy-MM-dd"));
-			} else {
-				objModel = new clsPartyMasterModel(new clsPartyMasterModel_ID(objBean.getStrPCode(), clientCode));
-			}
+			} 
 		}
 		objModel.setStrPName(objBean.getStrPName());
 		objModel.setStrPhone(objBean.getStrPhone());
@@ -379,9 +377,11 @@ public class clsPartyMasterController {
 		objModel.setStrCurrency(objGlobalFunctions.funIfNull(objBean.getStrCurrency(), " ", objBean.getStrCurrency()));
 		objModel.setStrApplForWT(objBean.getStrApplForWT());
 		objModel.setStrRegion(objBean.getStrRegion());
-		List<clsPartyTaxIndicatorDtlModel> listPartyTaxDtl = new ArrayList<clsPartyTaxIndicatorDtlModel>();
+		List<clsPartyTaxIndicatorDtlModel> listPartyTaxDtl = objModel.getArrListPartyTaxDtlModel();
+				//
 		List<clsPartyTaxIndicatorDtlModel> arrListTemp = objBean.getListclsPartyTaxIndicatorDtlModel();
 		if (arrListTemp != null) {
+			listPartyTaxDtl=new ArrayList<clsPartyTaxIndicatorDtlModel>();
 			Iterator<clsPartyTaxIndicatorDtlModel> it = arrListTemp.iterator();
 			while (it.hasNext()) {
 				clsPartyTaxIndicatorDtlModel Obj = it.next();
