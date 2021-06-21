@@ -255,6 +255,7 @@
 	<field name="strUserCreated" class="java.lang.String"/>
 	<field name="strAuthLevel2" class="java.lang.String"/>
 	<field name="strAuthLevel1" class="java.lang.String"/>
+	<field name="strLocName" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -326,7 +327,7 @@
 				<textElement>
 					<font fontName="Serif" size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Location :"+$P{location}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Location :"+$F{strLocName}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="7" y="64" width="209" height="1" uuid="4563b136-9227-4360-a4e2-ff6b50bbafe5"/>

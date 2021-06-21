@@ -654,7 +654,7 @@ public class clsGRNController {
 						ob.setDblTaxableAmt(Double.parseDouble(dff.format(taxableAmt * currValue)));
 						ob.setDblTaxAmt(Double.parseDouble(dff.format(taxAmt * currValue)));
 						ob.setDblUnitPrice(ob.getDblUnitPrice() * currValue);
-						ob.setDblTotalPrice(ob.getDblQty()  * ob.getDblUnitPrice() * currValue);						
+						ob.setDblTotalPrice(Double.parseDouble(dff.format(ob.getDblQty()  * ob.getDblUnitPrice() * currValue)));						
 						ob.setDblFreeQty(ob.getDblFreeQty());
 						ob.setStrGroupTaxCode(objGlobalFunctions.funIfNull(ob.getStrGroupTaxCode(), "", ob.getStrGroupTaxCode()));
 						objGRNService.funAddUpdateDtl(ob);	
@@ -1904,7 +1904,7 @@ public class clsGRNController {
 							+ currValue
 							+ ") as dblTotal, "
 							+ " g.strNarration, g.strLocCode, s.strPCode, s.strPName, s.strBAdd1, s.strBAdd2, s.strBCity, s.strBPin, "
-							+ " s.strBState, s.strBCountry, g.strNo,g.strRefNo, DATE_FORMAT(g.dtRefDate,'%d-%m-%Y') as dtRefDate,g.dblLessAmt,dblTaxAmt ,g.dblDisRate,g.strNarration ,g.strVehNo,g.strUserCreated,g.strAuthLevel2,g.strAuthLevel1 "
+							+ " s.strBState, s.strBCountry, g.strNo,g.strRefNo, DATE_FORMAT(g.dtRefDate,'%d-%m-%Y') as dtRefDate,g.dblLessAmt,dblTaxAmt ,g.dblDisRate,g.strNarration ,g.strVehNo,g.strUserCreated,g.strAuthLevel2,g.strAuthLevel1,a.strLocName AS strLocName "
 							+ " FROM "
 							+ webStockDB
 							+ ".tblgrnhd AS g INNER JOIN "
@@ -1916,7 +1916,9 @@ public class clsGRNController {
 							+ webStockDB
 							+ ".tblgrntaxdtl as t on t.strGRNCode=g.strGRNCode and t.strClientCode='"
 							+ clientCode
-							+ "'"
+							+ "' ,"
+							+ webStockDB
+							+ ".tbllocationmaster AS a "
 							+ " WHERE g.strGRNCode = '"
 							+ grnCode
 							+ "' and g.strClientCode='"

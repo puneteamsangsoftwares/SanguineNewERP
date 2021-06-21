@@ -974,7 +974,8 @@
 			</div>
 			<div class="center" style="text-align:center">
 				<a href="#"><button class="btn btn-primary center-block" id="btnSubmit" value="Submit">Submit</button></a> &nbsp;
-				<a href="#"><button class="btn btn-primary center-block"  value="Reset" onclick="funResetFields();">Reset</button></a>
+				<!-- <a href="#"><button class="btn btn-primary center-block"  value="Reset" onclick="funResetFields();">Reset</button></a> -->
+			    <input type="reset" value="Reset" class="btn btn-primary center-block" class="form_button" onclick="funResetFields()"/>
 			</div>
 	</s:form>
 </div>
