@@ -111,6 +111,7 @@ public class clsInvoiceFlashController {
 		BigDecimal dblTotalValue = new BigDecimal(0);
 		BigDecimal dblSubTotalValue = new BigDecimal(0);
 		BigDecimal dblTaxTotalValue = new BigDecimal(0);
+		BigDecimal dblExtraCharges = new BigDecimal(0);
 		double currValue = 1.0;
 		if(currencyCode.equalsIgnoreCase("All"))
 		{
@@ -159,7 +160,7 @@ public class clsInvoiceFlashController {
 		else
 		{
 			sqlInvoiceFlash.append("(select a.strInvCode ,DATE_FORMAT(a.dteInvDate,'%d-%m-%Y'),b.strPName,a.strAgainst,a.strVehNo,a.dblSubTotalAmt/" + currValue + ",a.dblTaxAmt/" + currValue + ""
-					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,c.strSettlementDesc,'Invoice',ifnull(a.strNarration,'') "
+					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,c.strSettlementDesc,'Invoice',ifnull(a.strNarration,'') ,a.dblExtraCharges "
 					+ " FROM tblpartymaster b,tblsettlementmaster c,tblinvoicehd a "
 					+ " where   date(a.dteInvDate) between '" + fromDate + "' and '" + toDate + "' " + " and a.strLocCode='" + locCode +"' "
 					+ " and a.strCustCode=b.strPCode and  a.strClientCode='" + strClientCode + "'");
@@ -179,7 +180,7 @@ public class clsInvoiceFlashController {
 			sqlInvoiceFlash.append( " UNION ");
 			
 			sqlInvoiceFlash.append("(select a.strInvCode ,DATE_FORMAT(a.dteInvDate,'%d-%m-%Y'),b.strPName,a.strAgainst,a.strVehNo,a.dblSubTotalAmt/" + currValue + ",a.dblTaxAmt/" + currValue + ""
-					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,'Multisettle','Invoice',ifnull(a.strNarration,'') "
+					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,'Multisettle','Invoice',ifnull(a.strNarration,'') ,a.dblExtraCharges "//12
 					+ " FROM tblpartymaster b,tblinvoicehd a "
 					+ " where   date(a.dteInvDate) between '" + fromDate + "' and '" + toDate + "' " + " and a.strLocCode='" + locCode +"' "
 					+ " and a.strCustCode=b.strPCode and  a.strClientCode='" + strClientCode + "'");
@@ -196,7 +197,6 @@ public class clsInvoiceFlashController {
 			sqlInvoiceFlash.append("  and a.strNarration not like '%Entry deleted%'"
 				+ " and b.strPropCode='"+propertyCode+"' order by a.strInvCode  )");
 			
-		
 			
 			
 		}
@@ -234,13 +234,18 @@ public class clsInvoiceFlashController {
 				
 				listofInvFlash.add(objBean);
 				objBean.setStrSettleDesc(objInvoice[9].toString());
+				objBean.setDblExtraCharges(Double.parseDouble(objInvoice[12].toString()));
+				
 				BigDecimal value = new BigDecimal(Double.parseDouble(objInvoice[7].toString()));
 				dblTotalValue = dblTotalValue.add(value);
 				value = new BigDecimal(Double.parseDouble(objInvoice[5].toString()));
 				dblSubTotalValue = dblSubTotalValue.add(value);
-
+				
 				value = new BigDecimal(Double.parseDouble(objInvoice[6].toString()));
 				dblTaxTotalValue = dblTaxTotalValue.add(value);
+				value= new BigDecimal(Double.parseDouble(objInvoice[12].toString()));
+				dblExtraCharges=dblExtraCharges.add(value);
+
 			}
 		}
 		
@@ -248,6 +253,7 @@ public class clsInvoiceFlashController {
 		listofInvoiveTotal.add(df.format(dblTotalValue));
 		listofInvoiveTotal.add(df.format(dblSubTotalValue));
 		listofInvoiveTotal.add(df.format(dblTaxTotalValue));
+		listofInvoiveTotal.add(df.format(dblExtraCharges));
 		//System.out.print(dblTaxTotalValue + "ttoalsubtotal" + dblTaxTotalValue);
 		return listofInvoiveTotal;
 	}
@@ -1562,6 +1568,9 @@ public class clsInvoiceFlashController {
 		BigDecimal dblTotalValue = new BigDecimal(0);
 		BigDecimal dblSubTotalValue = new BigDecimal(0);
 		BigDecimal dblTaxTotalValue = new BigDecimal(0);
+		BigDecimal dblExtraCharges = new BigDecimal(0);
+
+		
 		
 		StringBuilder sqlInvoiceFlash = new StringBuilder();
 		headerList.add("Invoice Code");
@@ -1589,6 +1598,7 @@ public class clsInvoiceFlashController {
 				
 		 }
 		}
+		headerList.add("Extra Charges");
 		headerList.add("Grand Total");
 		headerList.add("Remark");
         
@@ -1638,7 +1648,7 @@ public class clsInvoiceFlashController {
 		else
 		{
 			sqlInvoiceFlash.append("(select a.strInvCode ,DATE_FORMAT(a.dteInvDate,'%d-%m-%Y'),b.strPName,a.strAgainst,a.strVehNo,a.dblSubTotalAmt/" + currValue + ",a.dblTaxAmt/" + currValue + ""
-					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,c.strSettlementDesc,'invoice',ifnull(a.strNarration,'') "
+					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,c.strSettlementDesc,'invoice',ifnull(a.strNarration,''),a.dblExtraCharges "
 					+ " FROM tblpartymaster b,tblsettlementmaster c,tblinvoicehd a "
 					+ " where   date(a.dteInvDate) between '" + fromDate + "' and '" + toDate + "' " + " and a.strLocCode='" + locCode +"' "
 					+ " and a.strCustCode=b.strPCode and  a.strClientCode='" + clientCode + "'");
@@ -1660,7 +1670,7 @@ public class clsInvoiceFlashController {
 			sqlInvoiceFlash.append( " UNION ");
 				
 			sqlInvoiceFlash.append("(select a.strInvCode ,DATE_FORMAT(a.dteInvDate,'%d-%m-%Y'),b.strPName,a.strAgainst,a.strVehNo,a.dblSubTotalAmt/" + currValue + ",a.dblTaxAmt/" + currValue + ""
-					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,'invoice','Multisettle',ifnull(a.strNarration,'') "
+					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,'invoice','Multisettle',ifnull(a.strNarration,''),a.dblExtraCharges "
 					+ " FROM tblpartymaster b,tblinvoicehd a "
 					+ " where   date(a.dteInvDate) between '" + fromDate + "' and '" + toDate + "' " + " and a.strLocCode='" + locCode +"' "
 					+ " and a.strCustCode=b.strPCode and  a.strClientCode='" + clientCode + "'");
@@ -1681,7 +1691,12 @@ public class clsInvoiceFlashController {
 			
 			
 		}
-		
+	/*	a.dblExtraCharges
+		objBean.setDblExtraCharges(Double.parseDouble(objInvoice[12].toString()));
+		value= new BigDecimal(Double.parseDouble(objInvoice[12].toString()));
+		dblExtraCharges=dblExtraCharges.add(value);
+		listofInvoiveTotal.add(df.format(dblExtraCharges));
+		*/
 		DecimalFormat df = new DecimalFormat("#.##");
 		List listOfInvoice = objGlobalService.funGetList(sqlInvoiceFlash.toString(), "sql");
 		if (listOfInvoice !=null && !listOfInvoice.isEmpty()) {
@@ -1760,7 +1775,8 @@ public class clsInvoiceFlashController {
 						
 				
 				//dataList.add(df.format(Double.parseDouble(objInvoice[6].toString())));
-				dataList.add(df.format(Double.parseDouble(objInvoice[7].toString())));
+				dataList.add(Double.parseDouble(objInvoice[12].toString()));//Extra Charges
+				dataList.add(df.format(Double.parseDouble(objInvoice[7].toString())));//Grand Total
 				dataList.add(objInvoice[11].toString());
 				detailList.add(dataList);
 				
@@ -1770,6 +1786,8 @@ public class clsInvoiceFlashController {
 				dblSubTotalValue = dblSubTotalValue.add(value);
 				value = new BigDecimal(Double.parseDouble(objInvoice[6].toString()));
 				dblTaxTotalValue = dblTaxTotalValue.add(value);
+				value= new BigDecimal(Double.parseDouble(objInvoice[12].toString()));
+				dblExtraCharges=dblExtraCharges.add(value);
 			}
 		}
 
@@ -1788,6 +1806,7 @@ public class clsInvoiceFlashController {
 		    }
 			
 		}
+		totalsList.add(df.format(dblExtraCharges));
 		totalsList.add(df.format(dblTotalValue));
 		
 		

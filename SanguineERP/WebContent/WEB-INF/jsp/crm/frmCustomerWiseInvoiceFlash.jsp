@@ -264,11 +264,13 @@
 			
 		
 			
-			function funGetTotalValue(dblTotalValue,dblSubTotalValue,dblTaxTotalValue)
+			function funGetTotalValue(dblTotalValue,dblSubTotalValue,dblTaxTotalValue,dblExtraCharges)
 			{
 				$("#txtTotValue").val(parseFloat(dblTotalValue).toFixed(maxQuantityDecimalPlaceLimit));
 				$("#txtSubTotValue").val(parseFloat(dblSubTotalValue).toFixed(maxQuantityDecimalPlaceLimit));
 				$("#txtTaxTotValue").val(parseFloat(dblTaxTotalValue).toFixed(maxQuantityDecimalPlaceLimit));
+				$("#txTotExtraValue").val(parseFloat(dblExtraCharges).toFixed(maxQuantityDecimalPlaceLimit));
+
 			}
 			
 		
@@ -335,7 +337,7 @@
 					    	funBillWiseProductDetail(response[0])
 					    	document.getElementById("txtSubTotValue").style.visibility = "visible"; 
 							document.getElementById("txtTaxTotValue").style.visibility = "visible";
-							funGetTotalValue(response[1],response[2],response[3]);
+							funGetTotalValue(response[1],response[2],response[3],response[4]);
 					    	
 					    },
 					    error: function(jqXHR, exception) {
@@ -381,9 +383,10 @@
 			    row.insertCell(5).innerHTML= "<input name=\"StrAgainst["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"25%\" id=\"StrAgainst."+(rowCount)+"\" value='"+data.strAgainst+"'>";
 			    row.insertCell(6).innerHTML= "<input name=\"StrVehNo["+(rowCount)+"]\" id=\"StrVehNo."+(rowCount)+"\" readonly=\"readonly\" size=\"14%\" class=\"Box\" value="+data.strVehNo+">";
 			    row.insertCell(7).innerHTML= "<input name=\"StrCurrency["+(rowCount)+"]\" id=\"StrCurrency."+(rowCount)+"\" readonly=\"readonly\" size=\"10%\" class=\"Box\" value="+data.strCurrency+">";
-			    row.insertCell(8).innerHTML= "<input name=\"DblSubTotalAmt["+(rowCount)+"]\" id=\"DblSubTotalAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;\" size=\"13%\" class=\"Box\" value="+data.dblSubTotalAmt+">";
-			    row.insertCell(9).innerHTML= "<input name=\"DblTaxAmt["+(rowCount)+"]\" id=\"DblTaxAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;\" size=\"12%\" class=\"Box\" value="+data.dblTaxAmt+">";
-			    row.insertCell(10).innerHTML= "<input name=\"DblTotalAmt["+(rowCount)+"]\" id=\"DblTotalAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;\" size=\"10%\" class=\"Box\" value="+data.dblTotalAmt+">";
+			    row.insertCell(8).innerHTML= "<input name=\"DblSubTotalAmt["+(rowCount)+"]\" id=\"DblSubTotalAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;\" size=\"12%\" class=\"Box\" value="+data.dblSubTotalAmt+">";
+			    row.insertCell(9).innerHTML= "<input name=\"DblTaxAmt["+(rowCount)+"]\" id=\"DblTaxAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;\" size=\"11%\" class=\"Box\" value="+data.dblTaxAmt+">";
+			    row.insertCell(10).innerHTML= "<input name=\"DblExtraChargesAmt["+(rowCount)+"]\" id=\"DblExtraChargesAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;\" size=\"11%\" class=\"Box\" value="+data.dblExtraCharges+">";
+			    row.insertCell(11).innerHTML= "<input name=\"DblTotalAmt["+(rowCount)+"]\" id=\"DblTotalAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;\" size=\"10%\" class=\"Box\" value="+data.dblTotalAmt+">";
 			   
 			    
 			    funApplyNumberValidation();
@@ -502,28 +505,30 @@
 						<table style="width: 100%; border: #0F0; table-layout: fixed;"
 							class="transTablex col15-center">
 							<tr bgcolor="#c0c0c0">
-								<td width="7.6%">Invoice Code</td>
+								<td width="6%">Invoice Code</td>
 								<!--  COl1   -->
-								<td width="5.3%">Date</td>
+								<td width="4.3%">Date</td>
 								<!--  COl2   -->
-								<td width="5.4%">JV No</td>
+								<td width="4.4%">JV No</td>
 								<!--  COl3   -->
-								<td width="11%">Customer Name</td>
+								<td width="10%">Customer Name</td>
 								<!--  COl4   -->
-								<td width="4.6%"> Settement</td>
+								<td width="5.4%"> Settement</td>
 								<!--  COl5   -->
-								<td width="4.5%">Against</td>
+								<td width="4.2%">Against</td>
 								<!-- COl6   -->
-								<td width="3.2%">Vehicle No</td>
+								<td width="4.5%">Vehicle No</td>
 								<!-- COl7   -->
-								<td width="3.2%">Currency</td>  
+								<td width="4.5%">Currency</td>  
 								<!--  COl8   -->
 								<td width="5.8%">SubTotal</td>
 								<!--  COl9   -->
 								<td width="5.3%">Tax Amount</td>
 								<!--  COl10   -->
+								<td width="5.3%">Extra Charges</td>
+								<!--  COl11   -->
 								<td width="5.2%">Grand Total</td>
-								<!--COl11   -->
+								<!--COl12   -->
 			
 							</tr>
 						</table>
@@ -553,7 +558,9 @@
 								<!--  COl9   -->
 								<col style="width: 5%">
 								<!--  COl10   -->
-								<col style="width: 4%">
+								<col style="width: 5%">
+								<!--  COl10   -->
+								<col style="width: 4.8%">
 								<!--  COl11  -->
 								</tbody>
 							</table>
@@ -564,16 +571,20 @@
 						<table id="tblTotalFlash" class="transTablex"
 							style="font-size: 11px; font-weight: bold;">
 							<tr style="margin-left: 28px">
-								<td id="labld26" style="width:60%; text-align:right">Total</td>
+								<td id="labld26" style="width:48%; text-align:right">Total</td>
 								<td id="tdSubTotValue" style="width:13%; align:right">
 									<input id="txtSubTotValue" style="width: 100%; text-align: right;" class="Box"></input>
 								</td>
 								<td id="tdTaxTotValue" style="width:13%; align:right">
 									<input id="txtTaxTotValue" style="width: 100%; text-align: right;" class="Box"></input>
 								</td>
+								<td id="tdTotExtraValue" style="width:14%; align:right">
+									<input id="txTotExtraValue" style="width: 100%; text-align: right;" class="Box"></input>
+								</td>
 								<td id="tdTotValue" style="width:14%; align:right">
 									<input id="txtTotValue" style="width: 100%; text-align: right;" class="Box"></input>
 								</td>
+								
 			
 							</tr>
 						</table>

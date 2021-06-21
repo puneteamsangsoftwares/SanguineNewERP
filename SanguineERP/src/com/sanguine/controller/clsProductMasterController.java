@@ -319,9 +319,11 @@ public class clsProductMasterController {
 						clsSupplierMasterModel objSuppModel = objSupplierMasterService.funGetObject(objProdSupp.getStrSuppCode(), clientCode);
 						clsProdSuppMasterModel ob = new clsProdSuppMasterModel(clsProdSuppMasterModel_ID);
 						ob.setStrSuppUOM(objGlobal.funIfNull(objProdSupp.getStrSuppUOM(), "", objProdSupp.getStrSuppUOM()));
-						ob.setDtLastDate(objGlobal.funGetDate("yyyy-MM-dd", objProdSupp.getDtLastDate()));
 						ob.setStrLeadTime(objGlobal.funIfNull(objProdSupp.getStrLeadTime(), "", objProdSupp.getStrLeadTime()));
 						ob.setStrDefault(objGlobal.funIfNull(objProdSupp.getStrDefault(), "N", "Y"));
+						ob.setDteInstallation(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+						ob.setDtLastDate(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+					
 						if (defaulltSupplier.equalsIgnoreCase(objProdSupp.getStrSuppCode())) {
 							ob.setStrDefault("Y");
 						}
@@ -424,14 +426,21 @@ public class clsProductMasterController {
     						ob.setStrProdCode(objGeneralModel.getStrProdCode());
     						ob.setDblLastCost(objGeneralModel.getDblMRP());
     						ob.setStrSuppUOM("");
-    						ob.setDtLastDate(objGeneralModel.getDtLastModified());
+    						ob.setDtLastDate(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
+    						ob.setDteInstallation(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
     						ob.setStrClientCode(clientCode);
     						ob.setDblMargin(objProdSupp.getDblMargin());
     						ob.setDblStandingOrder(objProdSupp.getDblStandingOrder());
+    						ob.setStrLeadTime(objGlobal.funIfNull(objProdSupp.getStrLeadTime(), "", objProdSupp.getStrLeadTime()));
+    						ob.setStrDefault(objGlobal.funIfNull(objProdSupp.getStrDefault(), "N", "Y"));
+    						ob.setStrSuppPartNo(objGlobal.funIfNull(objProdSupp.getStrSuppPartNo(), "", objProdSupp.getStrSuppPartNo()));
+    						ob.setStrSuppPartDesc(objGlobal.funIfNull(objProdSupp.getStrSuppPartDesc(), "", objProdSupp.getStrSuppPartDesc()));
+    						
+    						objProductMasterService.funAddUpdateProdSupplier(ob);
+
                         }
 						
 
-						objProductMasterService.funAddUpdateProdSupplier(ob);
 //					}
 
 				}
@@ -482,7 +491,7 @@ public class clsProductMasterController {
 			clsProdSuppMasterModel objProdSupplier = (clsProdSuppMasterModel) ob[0];
 			clsSupplierMasterModel objSupplier = (clsSupplierMasterModel) ob[1];
 			objProdSupplier.setStrSuppName(objSupplier.getStrPName());
-			objProdSupplier.setDtLastDate(objGlobal.funGetDate("yyyy/MM/dd", objProdSupplier.getDtLastDate()));
+			objProdSupplier.setDtLastDate(objGlobal.funGetCurrentDateTime("yyyy-MM-dd"));
 			listProdSupp.add(objProdSupplier);
 		}
 		return listProdSupp;
