@@ -46,12 +46,14 @@ import com.sanguine.bean.clsPhysicalStkPostBean;
 import com.sanguine.model.clsAuditDtlModel;
 import com.sanguine.model.clsAuditHdModel;
 import com.sanguine.model.clsCompanyMasterModel;
+import com.sanguine.model.clsGroupMasterModel;
 import com.sanguine.model.clsLocationMasterModel;
 import com.sanguine.model.clsProductMasterModel;
 import com.sanguine.model.clsPropertySetupModel;
 import com.sanguine.model.clsStkPostingDtlModel;
 import com.sanguine.model.clsStkPostingHdModel;
 import com.sanguine.model.clsStkPostingHdModel_ID;
+import com.sanguine.model.clsSubGroupMasterModel;
 import com.sanguine.model.clsUserDtlModel;
 import com.sanguine.service.clsGlobalFunctionsService;
 import com.sanguine.service.clsProductMasterService;
@@ -569,6 +571,7 @@ public class clsStkPostingController {
 		String stockPostingCode = objBean.getStrDocCode();
 		String type = objBean.getStrDocType();
 		funCallReport(stockPostingCode, type, resp, req);
+		
 	}
 
 	@RequestMapping(value = "/openRptPhysicalStockPostingSlip", method = RequestMethod.GET)
@@ -667,11 +670,11 @@ public class clsStkPostingController {
 				servletOutputStream.write(bytes, 0, bytes.length);
 				servletOutputStream.flush();
 				servletOutputStream.close();
-			} else if (type.trim().equalsIgnoreCase("xls")) {
+			} else if (type.trim().equalsIgnoreCase("docxls")) {
 				JRExporter exporterXLS = new JRXlsExporter();
 				exporterXLS.setParameter(JRPdfExporterParameter.JASPER_PRINT, p);
 				exporterXLS.setParameter(JRPdfExporterParameter.OUTPUT_STREAM, resp.getOutputStream());
-				resp.setHeader("Content-Disposition", "attachment;filename=" + "rptPhysicalStockPsostingSlip." + type.trim());
+				resp.setHeader("Content-Disposition", "attachment;filename=" + "rptPhysicalStockPsostingSlip.xls");
 				exporterXLS.exportReport();
 				resp.setContentType("application/xlsx");
 			}
@@ -733,5 +736,61 @@ public class clsStkPostingController {
 
 
 	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping(value = "/PhyStkPstExcelSlipExport", method = RequestMethod.GET)
+	public ModelAndView funCallExcelExportPhysicalSlip(@ModelAttribute("command") clsReportBean objBean, HttpServletResponse resp, HttpServletRequest req) {
+		
+		String clientCode = req.getSession().getAttribute("clientCode").toString();
+		String companyName = req.getSession().getAttribute("companyName").toString();
+		String userCode = req.getSession().getAttribute("usercode").toString();
+		
+		String stockPostingCode= objBean.getStrDocCode();
+		String header ="";
+		header="PostingCode,ProductCode,ProductName,ProductName,Weig_Avg_Price,Current_Stk,Current_Stk_Value,Physical_Stk,Physical_Stk_Value,Variance_Stk,Variance_Stk";
+		
+				
+		List ExportList = new ArrayList();
+		//String reportName="PhysicalStkExcelExportSlip ";
+		//ExportList.add(reportName);
+		String[] ExcelHeader = header.split(",");
+		ExportList.add(ExcelHeader);
+		String propCode = req.getSession().getAttribute("propertyCode").toString();
+		DecimalFormat decformat=new DecimalFormat("#.##");
+		
+	
+		String sql="SELECT a.strPSCode Posting_Code, a.strProdCode Product_Code, b.strProdName Product_Name, b.strUOM UOM, "
+				+ " a.dblPrice Weig_Avg_Price, a.dblCStock Current_Stock, "
+				+ " (a.dblCStock * a.dblPrice) Current_Stk_Value, a.dblPStock Physical_Stock,(a.dblPStock * a.dblPrice) Physical_Stk_Value,"
+				+ " a.dblVariance Varaince_Stk, (a.dblVariance * a.dblPrice) Variance_Stk_Value "
+				+ " FROM tblstockpostingdtl a, tblproductmaster b "
+				+ " WHERE a.strProdCode = b.strProdCode AND a.strPSCode = '"+stockPostingCode+"' ";
+		
+		List list = objGlobalFunctionsService.funGetList(sql, "sql");
+		
+		List PhyStkPstlist = new ArrayList();
+		for (int i = 0; i < list.size(); i++) 
+		{
+			Object[] ob = (Object[]) list.get(i);
+			List DataList = new ArrayList<>();
+			DataList.add(ob[0]);
+			DataList.add(ob[1]);
+			DataList.add(ob[2]);
+			DataList.add(ob[3]);
+			DataList.add(decformat.format(ob[4]));
+			DataList.add(decformat.format(ob[5]));
+			DataList.add(decformat.format(ob[6]));
+			DataList.add(decformat.format(ob[7]));
+			DataList.add(decformat.format(ob[8]));
+			DataList.add(decformat.format(ob[9]));
+			DataList.add(decformat.format(ob[10]));
+			PhyStkPstlist.add(DataList);
+			
+		}
+		ExportList.add(PhyStkPstlist);
+
+		return new ModelAndView("excelView", "stocklist", ExportList);
+	}
+
 
 }

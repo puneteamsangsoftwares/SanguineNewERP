@@ -49,7 +49,17 @@
 		{
 			if (actionName == 'submit') 
 			{
-					document.forms[0].action = "rptPhysicalStockPsostingSlip.html";
+				
+					if($("#cmbDocType").val()=="REPORTXLS")
+						{
+						var code=$("#txtSTCode").val();	
+						document.forms[0].action = "PhyStkPstExcelSlipExport.html";
+						
+						}
+					else
+						{
+						document.forms[0].action = "rptPhysicalStockPsostingSlip.html";
+						}
 			}
 		}
 	}
@@ -60,8 +70,8 @@
 	<body>
 	<div class="container masterTable">
 		<label id="formHeading">Physical Stock Posting Slip</label>
-	    <s:form name="PhysicalStockPostingSlip" method="GET" action="rptPhysicalStockPsostingSlip.html" target="_blank">
-	   	    <div class="row">	
+	   <s:form name="PhysicalStockPostingSlip" method="GET" action="rptPhysicalStockPsostingSlip.html" target="_blank"> 
+	   <div class="row">	
 		       <div class="col-md-2"><label >Stock Posting Code</label>
 			         <s:input id="txtSTCode" path="strDocCode" readonly="true" ondblclick="funHelp('stkpostcodeslip')" cssClass="searchTextBox" cssStyle="width:150px;background-position: 136px 4px;"/>
 			   </div>
@@ -70,7 +80,8 @@
 			   <div class="col-md-2"><label>Report Type</label>
 					<s:select id="cmbDocType" path="strDocType"  style="width:auto;">
 				    		<s:option value="PDF">PDF</s:option>
-				    		<s:option value="XLS">EXCEL</s:option>
+				    		<s:option value="DOCXLS">DOC EXCEL</s:option>
+				    		<s:option value="REPORTXLS">REPORT EXCEL</s:option>
 				    		<s:option value="HTML">HTML</s:option>
 				    		<s:option value="CSV">CSV</s:option>
 				     </s:select>

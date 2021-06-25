@@ -296,9 +296,18 @@ function funHelp(transactionName)
 		 
 		
 	   	
-	   	
+		 if($("#cmbReportType").val()=="Summary")
+			{
+			
+			document.forms[0].action = "rptMISLocationWiseCategoryWiseSummaryReport.html";
+			
+			}
+		else
+			{
+			document.forms[0].action ="rptMISLocationWiseCategoryWiseReport.html";
+			}
 		
-   	document.forms["frmMaterialIssueRegisterReport"].submit();
+   
    	}
    	
    	
@@ -526,9 +535,9 @@ function funHelp(transactionName)
   <div class="container transTable">
 	<label id="formHeading">Material Issue Location - Group - Sub Group Wise Report</label>
 	<s:form name="frmMISLocReport" method="POST"
-		action="rptMISLocationWiseCategoryWiseReport.html" target="_blank">
-		
-		<input type="hidden" value="${urlHits}" name="saddr">
+	           action="rptMISLocationWiseCategoryWiseReport.html" target="_blank">
+	
+	<input type="hidden" value="${urlHits}" name="saddr">
 		<br>
 		<div class="row">
 			 <div class="col-md-2"><label>From Date</label>
@@ -554,6 +563,13 @@ function funHelp(transactionName)
 			 <div class="col-md-2"><label id="lblFrmLocName" style="background-color:#dcdada94; width:100%; height:51%;margin-top: 27px;padding:4px;"></label>
 			 </div>
 			<div class="col-md-6"></div>
+			
+			<div class="col-md-2"><label>Type</label>
+				  <s:select id="cmbReportType" path="strReportType" style="width:auto">
+                        <s:option value="Detail">Detail</s:option>
+						<s:option value="Summary">Summary</s:option>
+                  </s:select>
+			   </div>
 			
 			<div class="col-md-2"><label>To Location</label>
 			     <input type="text" id="txtLocCode" Class="searchTextBox" placeholder="Type to search"  ></input>
@@ -681,8 +697,8 @@ function funHelp(transactionName)
 		<p align="center">
 			<input type="submit" value="Submit" onclick="return btnSubmit_Onclick()" class="btn btn-primary center-block"
 				class="form_button" /> &nbsp;
-			<a STYLE="text-decoration: none" href="frmMaterialIssueRegisterReport.html?saddr=${urlHits}">
-			&nbsp;
+			<%-- <a STYLE="text-decoration: none" href="frmMaterialIssueRegisterReport.html?saddr=${urlHits}">
+			&nbsp; --%>
 			<input type="button" id="reset" name="reset" value="Reset" class="btn btn-primary center-block" class="form_button" /></a>
 		</p>
 		<br>

@@ -20,10 +20,12 @@ import java.util.Set;
 
 
 
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 
 
@@ -49,6 +51,7 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -59,6 +62,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
 
 
 
@@ -128,6 +132,7 @@ public class clsReportsController {
 
 	@Autowired
 	private clsRecipeMasterService objRecipeMasterService;
+	private LinkedHashMap<String, Object> hmdate;
 
 	/**
 	 * Report Code
@@ -8187,6 +8192,239 @@ public class clsReportsController {
 	}
 
 
+	@RequestMapping(value = "/rptMISLocationWiseCategoryWiseSummaryReport", method = RequestMethod.POST)
+	private ModelAndView funShowMISLocationWiseCategoryWiseSummaryReport(@ModelAttribute("command") clsReportBean objBean, HttpServletResponse resp, HttpServletRequest req)
+	{
+		Connection con = objGlobalFunctions.funGetConnection(req);
+		String clientCode = req.getSession().getAttribute("clientCode").toString();
+		String companyName = req.getSession().getAttribute("companyName").toString();
+		String userCode = req.getSession().getAttribute("usercode").toString();
+		String propertyCode = req.getSession().getAttribute("propertyCode").toString();
+		clsPropertySetupModel objSetup = objSetupMasterService.funGetObjectPropertySetup(propertyCode, clientCode);
+		String dateTime[] = objGlobalFunctions.funGetCurrentDateTime("dd-MM-yyyy").split(" ");
+		List footer = new ArrayList<>();
+		if (objSetup == null)
+		{
+			objSetup = new clsPropertySetupModel();
+		}
 
+		
+		String fromDate = objBean.getDtFromDate();
+		String toDate = objBean.getDtToDate();
+
+		String fd = fromDate.split("-")[0];
+		String fm = fromDate.split("-")[1];
+		String fy = fromDate.split("-")[2];
+
+		String td = toDate.split("-")[0];
+		String tm = toDate.split("-")[1];
+		String ty = toDate.split("-")[2];
+
+		String dteFromDate = fy + "-" + fm + "-" + fd;
+		String dteToDate = ty + "-" + tm + "-" + td;
+		
+		String tempToLoc[] = objBean.getStrToLoc().split(",");
+		String fromLoc = objBean.getStrFromLoc();
+		 String tempSG[] = objBean.getStrSGCode().split(",");
+		String strToLocCodes = "",strSubGroupCodes="";
+		String strFromLocCodes = "";
+
+		for (int i = 0; i < tempSG.length; i++)
+		{
+			if (strSubGroupCodes.length() > 0)
+			{
+				strSubGroupCodes = strSubGroupCodes + " or c.strSGCode='" + tempSG[i] + "' ";
+			}
+			else
+			{
+				strSubGroupCodes = "c.strSGCode='" + tempSG[i] + "' ";
+
+			}
+		}
+		
+		for (int i = 0; i < tempToLoc.length; i++)
+		{
+			if (strToLocCodes.length() > 0)
+			{
+				strToLocCodes = strToLocCodes + " or a.strLocTo='" + tempToLoc[i] + "' ";
+			}
+			else
+			{
+				strToLocCodes = "a.strLocTo='" + tempToLoc[i] + "' ";
+
+			}
+		}
+		
+		String periodFromDate = fromDate + "  -  " + toDate;
+		List listLOCWiseData = new ArrayList();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		String printedOnDate = dtf.format(now);
+		listLOCWiseData.add("rptMISLocationWiseCategorySummaryReport_" + fromDate + "to" + toDate + "_" + userCode);
+		List titleData = new ArrayList<>();
+		titleData.add("MIS Location Wise Category Wise Summary Report");
+		listLOCWiseData.add(titleData);
+		List filterData = new ArrayList<>();
+		filterData.add("Period From");
+		filterData.add(periodFromDate);
+		filterData.add("Printed On");
+		filterData.add(printedOnDate);
+
+		listLOCWiseData.add(filterData);
+		
+		ArrayList<String> locNameList = new ArrayList<String>();
+		ArrayList<Object> hearderList = new ArrayList<Object>();
+		
+		hearderList.add("GRPName");
+		hearderList.add("SGName");
+		
+		
+
+		String webStockDB = req.getSession().getAttribute("WebStockDB").toString();
+		String propNameSql = "select a.strPropertyName  from " + webStockDB + ".tblpropertymaster a where a.strPropertyCode='" + propertyCode + "' and a.strClientCode='" + clientCode + "' ";
+		List listPropName = objGlobalFunctionsService.funGetDataList(propNameSql, "sql");
+		String propName = "";
+		if (listPropName.size() > 0)
+		{
+			propName = listPropName.get(0).toString();
+		}
+
+		ArrayList fieldList = new ArrayList();
+
+//		listLOCWiseData.add("rptMISLocationWiseReport_" + dteFromDate + "to" + dteToDate + "_" + userCode);
+
+		String sqlQuery = " select  f.strGName, e.strSGName, SUM(b.dblQty), SUM(b.dblTotalPrice) " 
+				+ " from tblmishd a ,tblmisdtl b,tblproductmaster c ,tbllocationmaster d,tblsubgroupmaster e ,tblgroupmaster f  " 
+				+ " where a.strMISCode=b.strMISCode and a.strLocFrom='" + fromLoc + "' and b.strProdCode=c.strProdCode  " 
+				+ " and a.strLocTo=d.strLocCode and c.strSGCode=e.strSGCode  " + " and date(a.dtMISDate) between '" + dteFromDate + "' and '" + dteToDate + "'  "
+				+ " and " + " ( " + strToLocCodes + ") and e.strGCode=f.strGCode and ("+strSubGroupCodes+")"
+				+ " group by a.strLocTo,e.strSGName " + " order by f.strGName ,e.strSGName ASC, c.strProdName ASC ";
+		
+		List listProdDtl = objGlobalFunctionsService.funGetDataList(sqlQuery, "sql");
+		
+		List blankList = new ArrayList<>();
+		blankList.add("");
+		blankList.add("");
+		blankList.add("");
+		blankList.add("");
+
+		Object[] objHeader = (Object[]) hearderList.toArray();
+		String[] ExcelHeader = new String[objHeader.length + 2];
+		for (int k = 0; k < objHeader.length; k++)
+		{
+			blankList.add("");
+			// totList.add("");
+			ExcelHeader[k] = objHeader[k].toString();
+		}
+		blankList.add("");
+		blankList.add("");
+		ExcelHeader[objHeader.length] = "Qty Total";
+		ExcelHeader[objHeader.length + 1] = "Amt Total";
+
+		listLOCWiseData.add(ExcelHeader);
+		
+
+		String preSubGroup = "";
+		double totAmt = 0.00;
+		String sgCode = "";
+		int cnt = 0;
+		
+		
+		/*double totalQty = 0.00;
+		double totalAmt = 0.00;
+		for (int j = 0; j < listProdDtl.size(); j++)
+		{
+			Object[] arrObj = (Object[]) listProdDtl.get(j);
+			List DataList = new ArrayList<>();
+			DataList.add(arrObj[0].toString());
+			DataList.add(arrObj[1].toString());
+			
+			totalQty += Double.parseDouble(arrObj[2].toString());
+			totalAmt += Double.parseDouble(arrObj[3].toString());
+			DataList.add(totalQty);
+			DataList.add(totalQty);
+			fieldList.add(DataList);
+				
+		}*/
+		List dataList = new ArrayList<>();
+		Map<String,List> hmSupplier=new LinkedHashMap<String, List>();
+        
+        DecimalFormat Decformat =new DecimalFormat("#.##");
+        List mainList=new ArrayList<>();
+        for (int j = 0; j < listProdDtl.size(); j++)
+		{
+        Object[] arrObj = (Object[]) listProdDtl.get(j);
+        if(hmSupplier.containsKey(arrObj[0].toString()))
+        {
+        	    dataList = new ArrayList<>();
+        	    dataList.add("");
+            	dataList.add(arrObj[1].toString());
+            	dataList.add(Decformat.format(Double.parseDouble(arrObj[2].toString())));
+    			dataList.add(Decformat.format(Double.parseDouble(arrObj[3].toString())));
+    			mainList.add(dataList);
+    		
+        }
+        else
+        {
+        	mainList=new ArrayList<>();
+	    	dataList = new ArrayList<>();
+	    	dataList.add("");
+	    	dataList.add(arrObj[1].toString());
+        	dataList.add(Decformat.format(Double.parseDouble(arrObj[2].toString())));
+			dataList.add(Decformat.format(Double.parseDouble(arrObj[3].toString())));
+			mainList.add(dataList);
+			hmSupplier.put(arrObj[0].toString(), mainList);	
+        }
+		
+	}	
+        
+        for (Map.Entry<String,List> entry : hmSupplier.entrySet()) 
+		 {
+			 double totQty1=0.00;
+			 double totAmt1=0.00;	
+			 List listSuppName=new ArrayList<>();
+			 fieldList.add(listSuppName);
+			
+			 listSuppName=new ArrayList<>();
+		     listSuppName.add(entry.getKey());
+			 fieldList.add(listSuppName);
+		     List prodlist=entry.getValue();
+			 for (int j = 0; j < prodlist.size(); j++)
+				 {
+					 List prodArr =   (List) prodlist.get(j);
+					 fieldList.add(prodArr);
+					 totQty1=totQty1 + Double.parseDouble(prodArr.get(2).toString());
+					 totAmt1=totAmt1 + Double.parseDouble(prodArr.get(3).toString());
+				 }
+				 
+				 List total=new ArrayList<>();
+				
+				 total.add(entry.getKey() +"  Total");
+				 total.add(" ");
+				 total.add(totQty1);
+				 total.add(totAmt1);
+				 fieldList.add(total);
+			}
+		
+	        List blank = new ArrayList<>();
+			blank.add("");
+			fieldList.add(blank);
+		
+		
+	
+			footer.add("Created on :" +dateTime[0]);
+			footer.add("AT :" +dateTime[1]);
+			footer.add("By :" +userCode);
+			fieldList.add(footer);
+			listLOCWiseData.add(fieldList);//2
+			
+			listLOCWiseData.add(companyName);	
+//			listLOCWiseData.add("MIS Location Wise Category Wise Report");
+			listLOCWiseData.add("Reporting For:"+fromLoc);
+			return new ModelAndView("excelViewFromDateTodateWithReportName", "listFromDateTodateWithReportName", listLOCWiseData);
+		
+	}
+	
+	
 	
 }

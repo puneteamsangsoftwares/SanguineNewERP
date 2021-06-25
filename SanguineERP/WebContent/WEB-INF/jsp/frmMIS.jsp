@@ -725,14 +725,14 @@
 	    row.insertCell(0).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"9%\" name=\"listMISDtl["+(rowCount)+"].strProdCode\" id=\"txtProdCode."+(rowCount)+"\" value='"+strProdCode+"' />";	    
 	    row.insertCell(1).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"35%\" name=\"listMISDtl["+(rowCount)+"].strProdName\" id=\"strProdName."+(rowCount)+"\" value='"+strProdName+"' />";
 	    row.insertCell(2).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"6%\" style=\"margin-left: -38px;\" name=\"listMISDtl["+(rowCount)+"].strUOM\" id=\"strUOM."+(rowCount)+"\" value='"+strUOM+"' />";
-	    row.insertCell(3).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"6%\" style=\"margin-left: -18px;\" name=\"listMISDtl["+(rowCount)+"].dblStock\" id=\"dblStock."+(rowCount)+"\" value='"+dblStock+"'/>";
-	    row.insertCell(4).innerHTML= "<input type=\"text\" required = \"required\" size=\"4%\" style=\"border: 1px solid #a29c9c;padding: 1px;text-align: right;\" class=\"decimal-places inputText-Auto\" name=\"listMISDtl["+(rowCount)+"].dblQty\" id=\"dblQty."+(rowCount)+"\" value="+dblQty+" onblur=\"Javacsript:funUpdatePrice(this)\" >";
-	    row.insertCell(5).innerHTML= "<input class=\"inputText-Auto Box\" size=\"7%\" disabled=\"disabled\" id=\"dblPendingQty."+(rowCount)+"\" value="+dblIssueQty+" >";
+	    row.insertCell(3).innerHTML= "<input readonly=\"readonly\" class=\"Box\" size=\"6%\" style=\"margin-left: -36px;\" name=\"listMISDtl["+(rowCount)+"].dblStock\" id=\"dblStock."+(rowCount)+"\" value='"+dblStock+"'/>";
+	    row.insertCell(4).innerHTML= "<input type=\"text\" required = \"required\" size=\"4%\" style=\"border: 1px solid #a29c9c;padding: 1px;text-align: right;margin-left: -13px;\" class=\"decimal-places inputText-Auto\" name=\"listMISDtl["+(rowCount)+"].dblQty\" id=\"dblQty."+(rowCount)+"\" value="+dblQty+" onblur=\"Javacsript:funUpdatePrice(this)\" >";
+	    row.insertCell(5).innerHTML= "<input class=\"inputText-Auto Box\" size=\"7%\" style=\"margin-left: -15px;\"  disabled=\"disabled\" id=\"dblPendingQty."+(rowCount)+"\" value="+dblIssueQty+" >";
 	    row.insertCell(6).innerHTML= "<input readonly=\"true\"  required = \"required\" size=\"7%\" style=\"text-align: right;\" class=\"inputText-Auto\" name=\"listMISDtl["+(rowCount)+"].dblUnitPrice\" id=\"dblUnitPrice."+(rowCount)+"\" value="+dblUnitPrice+" >";
-	    row.insertCell(7).innerHTML= "<input class=\"Box\" size=\"7%\" style=\"text-align: right;\" readonly=\"readonly\" size=\"7%\" name=\"listMISDtl["+(rowCount)+"].dblTotalPrice\" id=\"dblTotalPrice."+(rowCount)+"\" value="+dblTotalPrice+" >";
-	    row.insertCell(8).innerHTML= "<input readonly=\"true\" size=\"13%\" class=\"Box\" name=\"listMISDtl["+(rowCount)+"].strReqCode\" id=\"strReqCode."+(rowCount)+"\" value="+strReqcode+" >";
-	    row.insertCell(9).innerHTML= "<input size=\"20%\" name=\"listMISDtl["+(rowCount)+"].strRemarks\" id=\"txtRemarks."+(rowCount)+"\" value='"+strRemarks+"' />";		    
-	    row.insertCell(10).innerHTML='<input type="button" class="deletebutton" value = "Delete" onClick="Javacsript:funDeleteRow(this)">';
+	    row.insertCell(7).innerHTML= "<input class=\"Box\" size=\"7%\" style=\"text-align: right;margin-left:18px;\" readonly=\"readonly\" size=\"7%\" name=\"listMISDtl["+(rowCount)+"].dblTotalPrice\" id=\"dblTotalPrice."+(rowCount)+"\" value="+dblTotalPrice+" >";
+	    row.insertCell(8).innerHTML= "<input readonly=\"true\" size=\"13%\" style=\"margin-left:35px;\" class=\"Box\" name=\"listMISDtl["+(rowCount)+"].strReqCode\" id=\"strReqCode."+(rowCount)+"\" value="+strReqcode+" >";
+	    row.insertCell(9).innerHTML= "<input size=\"20%\" style=\"margin-left:45px;\" name=\"listMISDtl["+(rowCount)+"].strRemarks\" id=\"txtRemarks."+(rowCount)+"\" value='"+strRemarks+"' />";		    
+	    row.insertCell(10).innerHTML='<input type="button"  style=\"margin-left:75px;\"  class="deletebutton" value = "Delete" onClick="Javacsript:funDeleteRow(this)">';
 	    row.insertCell(11).innerHTML= "<input name=\"listMISDtl["+(rowCount)+"].strExpiry\" type=\"hidden\" value = '"+strExpiry+"' >";
 	    funApplyNumberValidation();
 	    funCalculateTotalAmt();
@@ -1872,17 +1872,17 @@
 					style="width: 100%; border: #0F0; table-layout: fixed; overflow: scroll"
 					class="transTablex col11-center">
 					<tbody>
-					<col style="width:6%">					
-					<col style="width:22%">
+					<col style="width:8%">					
+					<col style="width:28%">
+					<col style="width:4%">
 					<col style="width:3%">
-					<col style="width:3%">
-					<col style="width:5%">
+					<col style="width:7%">
 					<col style="width:5%">
 					<col style="width:5%">
 					<col style="width:5%">
 					<col style="width:8%">
 					<col style="width:14%">
-					<col style="width:3.5%">
+					<col style="width:3%">
 					<col style="width:0%">
 					</tbody>
 				</table>
