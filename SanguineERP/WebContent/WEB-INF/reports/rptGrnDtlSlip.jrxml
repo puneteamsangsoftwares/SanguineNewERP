@@ -8,6 +8,7 @@
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="244"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="756"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.report.description"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -255,6 +256,7 @@
 	<field name="strAuthLevel2" class="java.lang.String"/>
 	<field name="strAuthLevel1" class="java.lang.String"/>
 	<field name="strLocName" class="java.lang.String"/>
+	<field name="dblFreightAmt" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -900,7 +902,7 @@ $F{dblWeight}]]></textFieldExpression>
 	<summary>
 		<band height="418">
 			<rectangle>
-				<reportElement x="204" y="2" width="228" height="120" uuid="47004fbf-106c-4fad-b0f9-3e300bfce858"/>
+				<reportElement x="204" y="2" width="228" height="144" uuid="47004fbf-106c-4fad-b0f9-3e300bfce858"/>
 			</rectangle>
 			<staticText>
 				<reportElement x="208" y="5" width="161" height="15" uuid="22cc9b85-6565-411d-9557-7535d91f9403"/>
@@ -924,7 +926,7 @@ $F{dblWeight}]]></textFieldExpression>
 				<text><![CDATA[Less Amount]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="208" y="102" width="162" height="19" uuid="3bc4ef40-0163-42bf-aa86-cc810d955fa2"/>
+				<reportElement x="208" y="126" width="162" height="19" uuid="3bc4ef40-0163-42bf-aa86-cc810d955fa2"/>
 				<textElement>
 					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
@@ -940,7 +942,9 @@ $F{dblWeight}]]></textFieldExpression>
 				<reportElement x="205" y="80" width="226" height="1" uuid="8706fb50-89c1-4208-84f1-1a81f98febd4"/>
 			</line>
 			<line>
-				<reportElement x="379" y="4" width="1" height="118" uuid="649561a2-bbd5-49b0-94f0-89fb23e056f6"/>
+				<reportElement x="379" y="4" width="1" height="143" uuid="649561a2-bbd5-49b0-94f0-89fb23e056f6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 			</line>
 			<textField isStretchWithOverflow="true" pattern="###0.##" isBlankWhenNull="true">
 				<reportElement x="379" y="5" width="52" height="15" uuid="15bec8ce-18c5-4514-94f8-05a2109b5054"/>
@@ -958,7 +962,7 @@ $F{dblWeight}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$F{dblExtra}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00#" isBlankWhenNull="true">
-				<reportElement x="379" y="101" width="52" height="19" uuid="1093f7ed-6054-4ecb-a809-ea8f8a0ccb53"/>
+				<reportElement x="379" y="127" width="52" height="19" uuid="1093f7ed-6054-4ecb-a809-ea8f8a0ccb53"/>
 				<textElement textAlignment="Right">
 					<font fontName="Serif" size="9" isBold="true"/>
 				</textElement>
@@ -1228,6 +1232,23 @@ $F{dblWeight}]]></textFieldExpression>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="77" y="192" width="107" height="20" uuid="772af832-cbf7-4c5c-a4e6-71fd19b44d60"/>
 				<textFieldExpression><![CDATA[$F{strUserCreated}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="204" y="124" width="226" height="1" uuid="ffa3d132-a7b0-4ced-94e5-8eef3cabbcf2"/>
+			</line>
+			<staticText>
+				<reportElement x="209" y="102" width="162" height="19" uuid="9957a417-24dd-435c-8cfd-698964cee1ab"/>
+				<textElement>
+					<font fontName="Serif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Freight]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00#" isBlankWhenNull="true">
+				<reportElement x="380" y="104" width="52" height="15" uuid="82b56551-0c21-40ca-b7d9-d97b491245c5"/>
+				<textElement textAlignment="Right">
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dblFreightAmt}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

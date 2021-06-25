@@ -1904,7 +1904,7 @@ public class clsGRNController {
 							+ currValue
 							+ ") as dblTotal, "
 							+ " g.strNarration, g.strLocCode, s.strPCode, s.strPName, s.strBAdd1, s.strBAdd2, s.strBCity, s.strBPin, "
-							+ " s.strBState, s.strBCountry, g.strNo,g.strRefNo, DATE_FORMAT(g.dtRefDate,'%d-%m-%Y') as dtRefDate,g.dblLessAmt,dblTaxAmt ,g.dblDisRate,g.strNarration ,g.strVehNo,g.strUserCreated,g.strAuthLevel2,g.strAuthLevel1,a.strLocName AS strLocName "
+							+ " s.strBState, s.strBCountry, g.strNo,g.strRefNo, DATE_FORMAT(g.dtRefDate,'%d-%m-%Y') as dtRefDate,g.dblLessAmt,dblTaxAmt ,g.dblDisRate,g.strNarration ,g.strVehNo,g.strUserCreated,g.strAuthLevel2,g.strAuthLevel1,a.strLocName AS strLocName,g.dblFreight AS dblFreightAmt "
 							+ " FROM "
 							+ webStockDB
 							+ ".tblgrnhd AS g INNER JOIN "
@@ -2321,7 +2321,7 @@ public class clsGRNController {
 					+ " as dtDueDate, g.strPayMode, g.dblSubTotal, g.dblDisRate, g.dblDisAmt, g.dblTaxAmt, g.dblExtra, g.dblTotal, "
 					+ " g.strNarration, g.strLocCode, s.strPCode, s.strPName, s.strBAdd1, s.strBAdd2, s.strBCity, s.strBPin, "
 					+ " s.strBState, s.strBCountry, g.strNo,g.strRefNo, DATE_FORMAT(g.dtRefDate,'%d-%m-%Y') as dtRefDate,g.dblLessAmt,dblTaxAmt ,g.dblDisRate,g.strNarration ,g.strVehNo "
-					+ ",g.strUserCreated,g.strAuthLevel1,g.strAuthLevel2,a.strLocName AS strLocName "
+					+ ",g.strUserCreated,g.strAuthLevel1,g.strAuthLevel2,a.strLocName AS strLocName ,g.dblFreight AS dblFreightAmt "
 					+ " FROM tblgrnhd AS g INNER JOIN tblpartymaster AS s ON g.strSuppCode = s.strPCode and s.strClientCode='"
 					+ clientCode
 					+ "' ,tbllocationmaster as a "
