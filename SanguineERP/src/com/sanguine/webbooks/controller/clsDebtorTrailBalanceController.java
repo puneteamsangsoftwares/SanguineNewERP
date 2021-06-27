@@ -182,8 +182,8 @@ public class clsDebtorTrailBalanceController {
 			String sunCrAccountCode = glCode;
 			String sql="";
 			StringBuilder sbSqllink=new StringBuilder();
-			sbSqllink.append(" select a.strAccountCode,a.strMasterDesc from "+webStockDB+".tbllinkup a where a.strWebBookAccCode='"+glCode+"' and a.strPropertyCode='"+propertyCode+"' and a.strClientCode='"+clientCode+"' ");
-			 List listDebtor = objBaseService.funGetListModuleWise(sbSqllink, "sql", "WebStocks");	 
+			sbSqllink.append("select a.strDebtorCode,CONCAT(a.strFirstName,' ',a.strMiddleName,' ',a.strLastName) FROM tblsundarydebtormaster a where a.strAccountCode='"+glCode+"'");
+			 List listDebtor =  objGlobalFunctionsService.funGetListModuleWise(sbSqllink.toString(), "sql"); 
 					 if (listDebtor.size() > 0 && listDebtor != null) {
 					for (int i = 0; i < listDebtor.size(); i++) {
 						Object[] debArr = (Object[]) listDebtor.get(i);
@@ -206,16 +206,6 @@ public class clsDebtorTrailBalanceController {
 
 							funProcessWebBookDebtorTrailBal(sunCrAccountCode, sunCrCode, startDate, newToDate, clientCode, userCode, propertyCode, req, resp);
 
-							/*
-							 * sql =
-							 * " select sum(a.dblDebitAmt-a.dblCreditAmt) from tblledgersummary a "
-							 * + " where  a.strUserCode='"+userCode+"' " +
-							 * " and a.strPropertyCode='"
-							 * +propertyCode+"' and a.strClientCode='"
-							 * +clientCode+
-							 * "' group by a.strUserCode,a.strPropertyCode,strClientCode "
-							 * ;
-							 */
 							sql = " select ifnull(sum(bal),0) from  (select (IF(a.strCrDr='Dr',a.dblOpeningbal,0) - IF(a.strCrDr='Cr',a.dblOpeningbal,0)) bal " 
 								+ " from tblsundarydebtoropeningbalance a " + " where a.strDebtorCode='" + sunCrCode + "' and a.strAccountCode='" + sunCrAccountCode + "' AND a.strClientCode='" + clientCode + "' " + " UNION All "
 								+ " SELECT SUM(a.dblDebitAmt-a.dblCreditAmt) bal " + " FROM tblledgersummary a " + " WHERE a.strUserCode='" + userCode + "' AND a.strPropertyCode='" + propertyCode + "' " + " AND a.strClientCode='" + clientCode + "' " 

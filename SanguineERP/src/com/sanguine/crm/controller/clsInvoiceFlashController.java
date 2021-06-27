@@ -160,7 +160,7 @@ public class clsInvoiceFlashController {
 		else
 		{
 			sqlInvoiceFlash.append("(select a.strInvCode ,DATE_FORMAT(a.dteInvDate,'%d-%m-%Y'),b.strPName,a.strAgainst,a.strVehNo,a.dblSubTotalAmt/" + currValue + ",a.dblTaxAmt/" + currValue + ""
-					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,c.strSettlementDesc,'Invoice',ifnull(a.strNarration,'') ,a.dblExtraCharges "
+					+ ",a.dblGrandTotal/" + currValue + ",a.strExciseable,c.strSettlementDesc,'Invoice',ifnull(a.strNarration,'') ,a.dblExtraCharges "
 					+ " FROM tblpartymaster b,tblsettlementmaster c,tblinvoicehd a "
 					+ " where   date(a.dteInvDate) between '" + fromDate + "' and '" + toDate + "' " + " and a.strLocCode='" + locCode +"' "
 					+ " and a.strCustCode=b.strPCode and  a.strClientCode='" + strClientCode + "'");
@@ -180,7 +180,7 @@ public class clsInvoiceFlashController {
 			sqlInvoiceFlash.append( " UNION ");
 			
 			sqlInvoiceFlash.append("(select a.strInvCode ,DATE_FORMAT(a.dteInvDate,'%d-%m-%Y'),b.strPName,a.strAgainst,a.strVehNo,a.dblSubTotalAmt/" + currValue + ",a.dblTaxAmt/" + currValue + ""
-					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,'Multisettle','Invoice',ifnull(a.strNarration,'') ,a.dblExtraCharges "//12
+					+ ",a.dblGrandTotal/" + currValue + ",a.strExciseable,'Multisettle','Invoice',ifnull(a.strNarration,'') ,a.dblExtraCharges "//12
 					+ " FROM tblpartymaster b,tblinvoicehd a "
 					+ " where   date(a.dteInvDate) between '" + fromDate + "' and '" + toDate + "' " + " and a.strLocCode='" + locCode +"' "
 					+ " and a.strCustCode=b.strPCode and  a.strClientCode='" + strClientCode + "'");
@@ -1648,7 +1648,7 @@ public class clsInvoiceFlashController {
 		else
 		{
 			sqlInvoiceFlash.append("(select a.strInvCode ,DATE_FORMAT(a.dteInvDate,'%d-%m-%Y'),b.strPName,a.strAgainst,a.strVehNo,a.dblSubTotalAmt/" + currValue + ",a.dblTaxAmt/" + currValue + ""
-					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,c.strSettlementDesc,'invoice',ifnull(a.strNarration,''),a.dblExtraCharges "
+					+ ",a.dblGrandTotal/" + currValue + ",a.strExciseable,c.strSettlementDesc,'invoice',ifnull(a.strNarration,''),a.dblExtraCharges "
 					+ " FROM tblpartymaster b,tblsettlementmaster c,tblinvoicehd a "
 					+ " where   date(a.dteInvDate) between '" + fromDate + "' and '" + toDate + "' " + " and a.strLocCode='" + locCode +"' "
 					+ " and a.strCustCode=b.strPCode and  a.strClientCode='" + clientCode + "'");
@@ -1670,7 +1670,7 @@ public class clsInvoiceFlashController {
 			sqlInvoiceFlash.append( " UNION ");
 				
 			sqlInvoiceFlash.append("(select a.strInvCode ,DATE_FORMAT(a.dteInvDate,'%d-%m-%Y'),b.strPName,a.strAgainst,a.strVehNo,a.dblSubTotalAmt/" + currValue + ",a.dblTaxAmt/" + currValue + ""
-					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "),a.strExciseable,'invoice','Multisettle',ifnull(a.strNarration,''),a.dblExtraCharges "
+					+ ",a.dblGrandTotal/" + currValue + ",a.strExciseable,'invoice','Multisettle',ifnull(a.strNarration,''),a.dblExtraCharges "
 					+ " FROM tblpartymaster b,tblinvoicehd a "
 					+ " where   date(a.dteInvDate) between '" + fromDate + "' and '" + toDate + "' " + " and a.strLocCode='" + locCode +"' "
 					+ " and a.strCustCode=b.strPCode and  a.strClientCode='" + clientCode + "'");
@@ -3250,7 +3250,7 @@ public class clsInvoiceFlashController {
 			}
 			
 			sqlInvoiceFlashPDF.append("(select a.strInvCode, RIGHT(a.strInvCode,5) as SrNoOfInv,DATE_FORMAT(a.dteInvDate,'%d-%m-%Y') as dteInvDate,b.strPName as strCustName,a.dblSubTotalAmt/" + currValue + " as subTotalAmt,a.dblTaxAmt/" + currValue + " as taxAmt"
-					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + ") as totalAmt,ifnull(a.strNarration,'') as strRemark"
+					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "+a.dblExtraCharges) as totalAmt,ifnull(a.strNarration,'') as strRemark,a.dblExtraCharges as dblExtraCharges"
 					+ " FROM tblpartymaster b,tblsettlementmaster c,tblinvoicehd a "
 					+ " where   date(a.dteInvDate) between '" + fromDate + "' and '" + toDate + "' " + " and a.strLocCode='" + locCode +"' "
 					+ " and a.strCustCode=b.strPCode and  a.strClientCode='" + clientCode + "'");
@@ -3271,7 +3271,7 @@ public class clsInvoiceFlashController {
 			sqlInvoiceFlashPDF.append(" UNION ");
 			
 			sqlInvoiceFlashPDF.append("(select a.strInvCode, RIGHT(a.strInvCode,5) as SrNoOfInv,DATE_FORMAT(a.dteInvDate,'%d-%m-%Y') as dteInvDate,b.strPName as strCustName,a.dblSubTotalAmt/" + currValue + " as subTotalAmt,a.dblTaxAmt/" + currValue + " as taxAmt"
-					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + ") as totalAmt,ifnull(a.strNarration,'') as strRemark"
+					+ ",(a.dblSubTotalAmt/" + currValue + "+ a.dblTaxAmt/" + currValue + "+a.dblExtraCharges ) as totalAmt,ifnull(a.strNarration,'') as strRemark,a.dblExtraCharges as dblExtraCharges"
 					+ " FROM tblpartymaster b,tblinvoicehd a "
 					+ " where   date(a.dteInvDate) between '" + fromDate + "' and '" + toDate + "' " + " and a.strLocCode='" + locCode +"' "
 					+ " and a.strCustCode=b.strPCode and  a.strClientCode='" + clientCode + "'");

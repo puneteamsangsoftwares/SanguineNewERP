@@ -161,7 +161,7 @@ public class clsDebtorTrailBalanceFlash {
 			String sql="";
 			StringBuilder sbSqllink=new StringBuilder();
 			sbSqllink.append(" select a.strAccountCode,a.strMasterDesc from "+webStockDB+".tbllinkup a where a.strWebBookAccCode='"+glCode+"' and a.strPropertyCode='"+propertyCode+"' and a.strClientCode='"+clientCode+"' ");
-			 List listDebtor = objBaseService.funGetListModuleWise(sbSqllink, "sql", "WebStocks");	 
+			 List listDebtor = objGlobalFunctionsService.funGetListModuleWise(sbSqllink.toString(), "sql");	 
 					 if (listDebtor.size() > 0 && listDebtor != null) {
 					for (int i = 0; i < listDebtor.size(); i++) {
 						Object[] debArr = (Object[]) listDebtor.get(i);

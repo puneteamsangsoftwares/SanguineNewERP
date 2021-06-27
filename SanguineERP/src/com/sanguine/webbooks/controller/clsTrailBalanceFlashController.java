@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mysql.jdbc.Connection;
+
 import com.sanguine.base.service.intfBaseService;
 import com.sanguine.controller.clsGlobalFunctions;
 import com.sanguine.model.clsPropertySetupModel;
@@ -342,25 +343,35 @@ public class clsTrailBalanceFlashController {
 	public int funInsertCurrentAccountBal(String acCode, String fromDate, String toDate, String userCode, String propertyCode, String clientCode) {
 		String sql = "";
 
-		sql = " Delete from tblcurrentaccountbal where a.strUserCode='" + userCode + "' and a.strPropertyCode='" + propertyCode + "' AND a.strClientCode='" + clientCode + "' ";
-		objGlobalFunctionsService.funDeleteWebBookCurrentAccountBal(clientCode, userCode, propertyCode);
+		try{
+			sql = " Delete from tblcurrentaccountbal where a.strUserCode='" + userCode + "' and a.strPropertyCode='" + propertyCode + "' AND a.strClientCode='" + clientCode + "' ";
+			objGlobalFunctionsService.funDeleteWebBookCurrentAccountBal(clientCode, userCode, propertyCode);
 
-		sql = " INSERT INTO tblcurrentaccountbal (strAccountCode, strAccountName,  dteBalDate,strDrCrCode, strTransecType, dblDrAmt,dblCrAmt,dblBalAmt,strUserCode, strPropertyCode, strClientCode)  " + " (SELECT b.strAccountCode,b.strAccountName,DATE_FORMAT(DATE(a.dteVouchDate),'%d-%m-%Y'),'','JV', sum(b.dblDrAmt),sum(b.dblCrAmt),sum(b.dblDrAmt - b.dblCrAmt),'" + userCode + "','" + propertyCode
-				+ "','" + clientCode + "' " + " FROM tbljvhd a, tbljvdtl b " + " WHERE a.strVouchNo=b.strVouchNo AND DATE(a.dteVouchDate) BETWEEN '" + fromDate + "' AND '" + toDate + "' " + " AND b.strAccountCode='" + acCode + "'  AND a.strPropertyCode=b.strPropertyCode " + " AND a.strPropertyCode='" + propertyCode + "' AND a.strClientCode='" + clientCode + "' group by b.strAccountCode ) ";
+			sql = " INSERT INTO tblcurrentaccountbal (strAccountCode, strAccountName,  dteBalDate,strDrCrCode, strTransecType, dblDrAmt,dblCrAmt,dblBalAmt,strUserCode, strPropertyCode, strClientCode)  " + " (SELECT b.strAccountCode,b.strAccountName,DATE_FORMAT(DATE(a.dteVouchDate),'%d-%m-%Y'),'','JV', sum(b.dblDrAmt),sum(b.dblCrAmt),sum(b.dblDrAmt - b.dblCrAmt),'" + userCode + "','" + propertyCode
+					+ "','" + clientCode + "' " + " FROM tbljvhd a, tbljvdtl b " + " WHERE a.strVouchNo=b.strVouchNo AND DATE(a.dteVouchDate) BETWEEN '" + fromDate + "' AND '" + toDate + "' " + " AND b.strAccountCode='" + acCode + "'  AND a.strPropertyCode=b.strPropertyCode " + " AND a.strPropertyCode='" + propertyCode + "' AND a.strClientCode='" + clientCode + "' group by b.strAccountCode ) ";
+			 
+			
+			
+			objBaseService.funExcecteUpdateModuleWise(new StringBuilder(sql), "sql","WebBooks");
 
-		objGlobalFunctionsService.funUpdateAllModule(sql, "sql");
+			sql = " INSERT INTO tblcurrentaccountbal (strAccountCode, strAccountName,  dteBalDate,strDrCrCode, strTransecType, dblDrAmt,dblCrAmt,dblBalAmt,strUserCode, strPropertyCode, strClientCode)  " + " (SELECT b.strAccountCode,b.strAccountName,DATE_FORMAT(DATE(a.dteVouchDate),'%d-%m-%Y'),'','Payment', sum(b.dblDrAmt),sum(b.dblCrAmt),sum(b.dblDrAmt - b.dblCrAmt),'" + userCode + "','" + propertyCode
+					+ "','" + clientCode + "' " + "  FROM tblpaymenthd a, tblpaymentdtl b " + " WHERE a.strVouchNo=b.strVouchNo AND DATE(a.dteVouchDate) BETWEEN '" + fromDate + "' AND '" + toDate + "' " + " AND b.strAccountCode='" + acCode + "'  AND a.strPropertyCode=b.strPropertyCode " + " AND a.strPropertyCode='" + propertyCode + "' AND a.strClientCode='" + clientCode + "' group by b.strAccountCode ) ";
 
-		sql = " INSERT INTO tblcurrentaccountbal (strAccountCode, strAccountName,  dteBalDate,strDrCrCode, strTransecType, dblDrAmt,dblCrAmt,dblBalAmt,strUserCode, strPropertyCode, strClientCode)  " + " (SELECT b.strAccountCode,b.strAccountName,DATE_FORMAT(DATE(a.dteVouchDate),'%d-%m-%Y'),'','Payment', sum(b.dblDrAmt),sum(b.dblCrAmt),sum(b.dblDrAmt - b.dblCrAmt),'" + userCode + "','" + propertyCode
-				+ "','" + clientCode + "' " + "  FROM tblpaymenthd a, tblpaymentdtl b " + " WHERE a.strVouchNo=b.strVouchNo AND DATE(a.dteVouchDate) BETWEEN '" + fromDate + "' AND '" + toDate + "' " + " AND b.strAccountCode='" + acCode + "'  AND a.strPropertyCode=b.strPropertyCode " + " AND a.strPropertyCode='" + propertyCode + "' AND a.strClientCode='" + clientCode + "' group by b.strAccountCode ) ";
+			objBaseService.funExcecteUpdateModuleWise(new StringBuilder(sql), "sql","WebBooks");
 
-		objGlobalFunctionsService.funUpdateAllModule(sql, "sql");
+			sql = " INSERT INTO tblcurrentaccountbal (strAccountCode, strAccountName,  dteBalDate,strDrCrCode, strTransecType, dblDrAmt,dblCrAmt,dblBalAmt,strUserCode, strPropertyCode, strClientCode)  " + " (SELECT b.strAccountCode,b.strAccountName,DATE_FORMAT(DATE(a.dteVouchDate),'%d-%m-%Y'),'','Receipt', sum(b.dblDrAmt),sum(b.dblCrAmt),sum(b.dblDrAmt - b.dblCrAmt),'" + userCode + "','" + propertyCode
+					+ "','" + clientCode + "' " + " FROM tblreceipthd a, tblreceiptdtl b  " + " WHERE a.strVouchNo=b.strVouchNo AND DATE(a.dteVouchDate) BETWEEN '" + fromDate + "' AND '" + toDate + "' " + " AND b.strAccountCode='" + acCode + "'  AND a.strPropertyCode=b.strPropertyCode " + " AND a.strPropertyCode='" + propertyCode + "' AND a.strClientCode='" + clientCode + "' group by b.strAccountCode ) ";
 
-		sql = " INSERT INTO tblcurrentaccountbal (strAccountCode, strAccountName,  dteBalDate,strDrCrCode, strTransecType, dblDrAmt,dblCrAmt,dblBalAmt,strUserCode, strPropertyCode, strClientCode)  " + " (SELECT b.strAccountCode,b.strAccountName,DATE_FORMAT(DATE(a.dteVouchDate),'%d-%m-%Y'),'','Receipt', sum(b.dblDrAmt),sum(b.dblCrAmt),sum(b.dblDrAmt - b.dblCrAmt),'" + userCode + "','" + propertyCode
-				+ "','" + clientCode + "' " + " FROM tblreceipthd a, tblreceiptdtl b  " + " WHERE a.strVouchNo=b.strVouchNo AND DATE(a.dteVouchDate) BETWEEN '" + fromDate + "' AND '" + toDate + "' " + " AND b.strAccountCode='" + acCode + "'  AND a.strPropertyCode=b.strPropertyCode " + " AND a.strPropertyCode='" + propertyCode + "' AND a.strClientCode='" + clientCode + "' group by b.strAccountCode ) ";
-
-		objGlobalFunctionsService.funUpdateAllModule(sql, "sql");
-
-		return 1;
+			objBaseService.funExcecteUpdateModuleWise(new StringBuilder(sql), "sql","WebBooks");
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+			return 1;
+		
+		
 
 	}
 	

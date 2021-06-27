@@ -938,6 +938,7 @@ public class clsGlobalFunctionsDaoImpl implements clsGlobalFunctionsDao {
 				res = query.executeUpdate();
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(e);
 		}
 		return res;

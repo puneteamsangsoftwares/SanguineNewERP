@@ -235,15 +235,16 @@ public class clsTrialBalanceReportController {
 				objHmBean.setStrAccountName(objArr[3].toString());
 				objHmBean.setTypeDebitCredit(objArr[4].toString());
 				double openingAmt=0;
-				if(objArr[8].toString().equals("DIRECT INCOME") || objArr[8].toString().equals("INDIRECT EXPENSES") 
+				//Mahesh 21-06-2021(Sachin Sir)
+				/*if(objArr[8].toString().equals("DIRECT INCOME") || objArr[8].toString().equals("INDIRECT EXPENSES") 
 						|| objArr[8].toString().equals("INDIRECT INCOME") || objArr[8].toString().equals("DIRECT EXPENSES")){
 					objHmBean.setDblOpDrAmt(0);
 					objHmBean.setDblOpCrAmt(0);
-				}else{
+				}else{*/
 					objHmBean.setDblOpDrAmt(Double.parseDouble(objArr[5].toString()));
 					objHmBean.setDblOpCrAmt(Double.parseDouble(objArr[6].toString()));
 					openingAmt=Double.parseDouble(objArr[5].toString())-Double.parseDouble(objArr[6].toString());
-				}
+				//}
 				
 				objHmBean.setDblOpnAmt(openingAmt);
 				objHmBean.setDblBalAmt(openingAmt);

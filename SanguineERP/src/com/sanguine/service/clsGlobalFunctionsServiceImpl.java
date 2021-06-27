@@ -225,6 +225,7 @@ public class clsGlobalFunctionsServiceImpl implements clsGlobalFunctionsService 
 		return objGlobalDao.funUpdate(sql, queryType);
 	}
 
+	
 	public int funUpdateAllModule(String sql, String queryType) {
 		return objGlobalDao.funUpdateAllModule(sql, queryType);
 	}

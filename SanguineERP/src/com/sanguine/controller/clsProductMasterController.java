@@ -585,7 +585,32 @@ public class clsProductMasterController {
 					objModel = objProductMasterService.funGetObject(prodCode, clientCode);
 				}
 				objModel.setDblCostRM(dblreOrderPrice);
-			}else{
+			}
+			else if(objSetUp.getStrLocationWiseValuation().equals("Y"))
+			{
+				double dblreOrderPrice = 0;
+				String locCode = req.getSession().getAttribute("locationCode").toString();
+				if(req.getParameter("strFromLocCode")!=null)
+				{
+					locCode=req.getParameter("strFromLocCode").toString();
+				}
+				clsProductReOrderLevelModel objReOrder = objProductMasterService.funGetProdReOrderLvl(prodCode, locCode, clientCode);
+				if (objReOrder != null) {
+					dblreOrderPrice = objReOrder.getDblPrice();
+				}
+
+				if (prodCode.length() > 8)
+				{
+					objModel = objProductMasterService.funGetBarCodeProductObject(prodCode, clientCode);
+				} 
+				else
+				{
+					objModel = objProductMasterService.funGetObject(prodCode, clientCode);
+				}
+				objModel.setDblCostRM(dblreOrderPrice);
+
+			}
+			else{
 				if (prodCode.length() > 8) {
 					objModel = objProductMasterService.funGetBarCodeProductObject(prodCode, clientCode);
 				} else {

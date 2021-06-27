@@ -391,7 +391,7 @@
 					    	funBillWiseProductDetail(response[0])
 					    	document.getElementById("txtSubTotValue").style.visibility = "visible"; 
 							document.getElementById("txtTaxTotValue").style.visibility = "visible";
-					    	funGetTotalValue(parseFloat(response[1]),response[2],response[3]);
+					    	funGetTotalValue(parseFloat(response[1]),response[2],response[3],response[4]);
 					    	
 					    },
 					    error: function(jqXHR, exception) {
@@ -414,9 +414,11 @@
 				      });
 			}
 			
-			function funGetTotalValue(dblTotalValue,dblSubTotalValue,dblTaxTotalValue)
+			function funGetTotalValue(dblTotalValue,dblSubTotalValue,dblTaxTotalValue,dblExtraCharges)
 			{
-				$("#txtTotValue").val(parseFloat(dblTotalValue).toFixed(maxQuantityDecimalPlaceLimit));
+				$("#txtTotValue").val(parseFloat(dblExtraCharges).toFixed(maxQuantityDecimalPlaceLimit));
+				$("#txFinalTotValue").val(parseFloat(dblTotalValue).toFixed(maxQuantityDecimalPlaceLimit));
+
 				$("#txtSubTotValue").val(parseFloat(dblSubTotalValue).toFixed(maxQuantityDecimalPlaceLimit));
 				$("#txtTaxTotValue").val(parseFloat(dblTaxTotalValue).toFixed(maxQuantityDecimalPlaceLimit));
 			}
@@ -448,8 +450,10 @@
 			    row.insertCell(8).innerHTML= "<input name=\"StrCurrency["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" style=\"width:99%;\" id=\"StrCurrency."+(rowCount)+"\" value='"+data.strCurrency+"'>";
 			    row.insertCell(9).innerHTML= "<input name=\"DblSubTotalAmt["+(rowCount)+"]\" id=\"DblSubTotalAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;width:99%;\"  class=\"Box\" value="+data.dblSubTotalAmt+">";
 			    row.insertCell(10).innerHTML= "<input name=\"DblTaxAmt["+(rowCount)+"]\" id=\"DblTaxAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;width:99%;\"  class=\"Box\" value="+data.dblTaxAmt+">";
-			    row.insertCell(11).innerHTML= "<input name=\"DblTotalAmt["+(rowCount)+"]\" id=\"DblTotalAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;width:99%;\"  class=\"Box\" value="+data.dblTotalAmt+">";
-			    var x=row.insertCell(11);
+			    row.insertCell(11).innerHTML= "<input name=\"DblTaxAmt["+(rowCount)+"]\" id=\"DblTaxAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;width:99%;\"  class=\"Box\" value="+data.dblExtraCharges+">";
+
+			    row.insertCell(12).innerHTML= "<input name=\"DblTotalAmt["+(rowCount)+"]\" id=\"DblTotalAmt."+(rowCount)+"\" readonly=\"readonly\" style=\"text-align: right;width:99%;\"  class=\"Box\" value="+data.dblTotalAmt+">";
+			    var x=row.insertCell(13);
 				x.innerHTML= "<input name=\"strNarration["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" style=\"width:99%;\" id=\"strNarration."+(rowCount)+"\" value='"+data.strNarration+"'>";			
 				x.title=data.strNarration;
 			   // row.insertCell(11).innerHTML= "<input name=\"strNarration["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"50%\" id=\"strNarration."+(rowCount)+"\" value='"+data.strNarration+"'>";
@@ -1406,6 +1410,8 @@
 					<!--  COl9   -->
 					<td width="4.9%">Tax Amount</td>
 					<!--  COl10   -->
+					<td width="4.9%">Extra Charges</td>
+					<!--COl11   -->
 					<td width="4.9%">Grand Total</td>
 					<!--COl11   -->
 					<td width="13.8%">Remark</td>
@@ -1441,6 +1447,8 @@
 						<!--  COl9   -->
 						<col style="width: 4.5%">
 						<!--  COl10   -->
+						<col style="width: 4.5%">
+						<!--  COl11  -->
 						<col style="width: 4.5%">
 						<!--  COl11  -->
 						<col style="width: 12.1%">

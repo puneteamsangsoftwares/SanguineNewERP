@@ -218,7 +218,7 @@ public class clsBaseDaoImpl implements intfBaseDao {
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "WebBooksTransactionManager")
 	public void funExcecteUpdateModuleWise(StringBuilder strQuery, String queryType, String moduleType) throws Exception {
 		Query query;
-
+		
 		SessionFactory objSessionFactory = null;
 		
 		if (moduleType.equals("WebStocks")) {

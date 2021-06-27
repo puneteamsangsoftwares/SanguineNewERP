@@ -3180,36 +3180,25 @@ public class clsGlobalFunctions {
 		return stock;
 	}
 
-	public double funGetCurrentStockForProduct(String prodCode, String locCode,
-			String clientCode, String userCode, String startDate,
-			String endDate, String proprtyWiseStock) {
+	public double funGetCurrentStockForProduct(String prodCode, String locCode,String clientCode, String userCode, String startDate,String endDate, String proprtyWiseStock) {
 		double stock = funCalculateStockForTrans(prodCode, locCode, startDate,
 				endDate, clientCode, userCode, 0.00, proprtyWiseStock);
 		return stock;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public double funCalculateStockForTrans(String prodCode, String locCode,
-			String fromDate, String toDate, String clientCode, String userCode,
-			double opStk, String proprtyWiseStock) {
+	public double funCalculateStockForTrans(String prodCode, String locCode,String fromDate, String toDate, String clientCode, String userCode,double opStk, String proprtyWiseStock) {
 		double finalStock = 0, grnQty = 0, opStkQty = 0, stkTransInQty = 0, stkAdjInQty = 0, misInQty = 0, matReturnInQty = 0;
 		double stkTransOutQty = 0, stkAdjOutQty = 0, misOutQty = 0, matReturnOutQty = 0, qtyProduced = 0, purchaseReturnQty = 0, saleQty = 0, productionQty = 0, reciptQty = 0, issueQty = 0, salesReturnQty = 0;
 		double scGRNQty = 0, deliveryNoteQty = 0;
-		clsLocationMasterModel locModelProperty = objLocationMasterService
-				.funGetObject(locCode, clientCode);
-		clsPropertySetupModel setupModel = objSetupMasterService
-				.funGetObjectPropertySetup(
-						locModelProperty.getStrPropertyCode(), clientCode);
-		if (proprtyWiseStock != null && !proprtyWiseStock.equalsIgnoreCase("N")
-				&& !proprtyWiseStock.equals("")) {
-			clsPropertySetupModel objSetUp = objSetupMasterService
-					.funGetObjectPropertySetup(proprtyWiseStock, clientCode);
+		clsLocationMasterModel locModelProperty = objLocationMasterService.funGetObject(locCode, clientCode);
+		clsPropertySetupModel setupModel = objSetupMasterService.funGetObjectPropertySetup(locModelProperty.getStrPropertyCode(), clientCode);
+		if (proprtyWiseStock != null && !proprtyWiseStock.equalsIgnoreCase("N") && !proprtyWiseStock.equals("")) {
+			clsPropertySetupModel objSetUp = objSetupMasterService.funGetObjectPropertySetup(proprtyWiseStock, clientCode);
 
-			if (objSetUp != null
-					&& objSetUp.getStrWeightedAvgCal().equals("Property Wise")) {
-				List<clsLocationMasterModel> list = objLocationMasterService
-						.funLoadLocationPropertyWise(proprtyWiseStock,
-								clientCode);
+			if (objSetUp != null && objSetUp.getStrWeightedAvgCal().equals("Property Wise") && objSetUp.getStrLocationWiseValuation().equals("N")) {
+				List<clsLocationMasterModel> list = objLocationMasterService.funLoadLocationPropertyWise(proprtyWiseStock,clientCode);
+				
 				locCode = "(";
 				if (list.size() > 0) {
 					clsLocationMasterModel obLoc;
@@ -3219,6 +3208,7 @@ public class clsGlobalFunctions {
 							locCode = locCode + "'" + obLoc.getStrLocCode()
 									+ "'";
 						} else {
+							
 							locCode = locCode + ",'" + obLoc.getStrLocCode()
 									+ "'";
 						}

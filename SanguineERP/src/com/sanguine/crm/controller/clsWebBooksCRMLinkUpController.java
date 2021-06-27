@@ -285,7 +285,7 @@ public class clsWebBooksCRMLinkUpController {
 				listARLinkUp.add(objModel);
 			}
 		} else if (strDoc.equals("ExtraCharge")) {
-			if (list.size() > 0) {
+			if (list!=null && list.size() > 0) {
 				for (int cnt = 0; cnt < list.size(); cnt++) {
 					clsLinkUpHdModel objModel = new clsLinkUpHdModel();
 					Object[] arrObj = (Object[]) list.get(cnt);

@@ -227,7 +227,7 @@ public class clsJVGeneratorController {
 					+ " from clsGRNTaxDtlModel a, clsTaxHdModel b " 
 					+ " where a.strTaxCode=b.strTaxCode and a.strGRNCode='" + GRNCode + "' and a.strClientCode='" + clientCode + "' "
 				    + " and b.strChargesPayable='N' ";
-				List listTaxDtl = objGlobalFunctionsService.funGetList(sql, "hql");
+				List listTaxDtl = objGlobalFunctionsService.funGetListModuleWise(sql, "hql");
 				List<clsGRNTaxDtlModel> listGRNTaxDtl = new ArrayList<clsGRNTaxDtlModel>();
 				for (int cnt = 0; cnt < listTaxDtl.size(); cnt++) {
 					clsGRNTaxDtlModel objTaxDtl = new clsGRNTaxDtlModel();
@@ -382,7 +382,7 @@ public class clsJVGeneratorController {
 							+ " from clsGRNTaxDtlModel a, clsTaxHdModel b " 
 							+ " where a.strTaxCode=b.strTaxCode and a.strGRNCode='" + GRNCode + "' and a.strClientCode='" + clientCode + "' "
 						    + " and b.strChargesPayable='Y' ";
-					List listTaxDtlChPayables = objGlobalFunctionsService.funGetList(sql, "hql");
+					List listTaxDtlChPayables = objGlobalFunctionsService.funGetListModuleWise(sql, "hql");
 					List<clsGRNTaxDtlModel> listGRNTaxChPayableDtl = new ArrayList<clsGRNTaxDtlModel>();
 					for (int cnt = 0; cnt < listTaxDtlChPayables.size(); cnt++) {
 						clsGRNTaxDtlModel objTaxDtl = new clsGRNTaxDtlModel();
@@ -520,7 +520,7 @@ public class clsJVGeneratorController {
 				String sqlGRNDtl = " select a.strGRNCode,a.dblTotal,b.strDebtorCode,b.strPName,date(a.dtGRNDate),a.strNarration ,date(a.dtDueDate),a.strBillNo,b.strPCode "
 					+ " from tblgrnhd a,tblpartymaster b "
 					+ " where a.strSuppCode =b.strPCode and a.strGRNCode='" + objModel.getStrGRNCode() + "' and a.strClientCode='" + objModel.getStrClientCode() + "' ";
-				List listSupplier = objGlobalFunctionsService.funGetList(sqlGRNDtl, "sql");
+				List listSupplier = objGlobalFunctionsService.funGetListModuleWise(sqlGRNDtl, "sql");
 				if (null != listSupplier) {
 					for (int i = 0; i < listSupplier.size(); i++) {
 						
@@ -632,7 +632,7 @@ public class clsJVGeneratorController {
 			}else if(objModel.getStrPayMode().startsWith("S00")){ 				//check cash settlement code
 
 				String sqlCheckGrnSettlement="select a.strSettlementType from tblsettlementmaster a where a.strSettlementCode='"+objModel.getStrPayMode()+"' ";
-				List listGrnSettlement = objGlobalFunctionsService.funGetList(sqlCheckGrnSettlement, "sql");
+				List listGrnSettlement = objGlobalFunctionsService.funGetListModuleWise(sqlCheckGrnSettlement, "sql");
 				if (null != listGrnSettlement) {
 					String settlementType=(String) listGrnSettlement.get(0);
 					if(settlementType.equalsIgnoreCase("cash")){
@@ -751,7 +751,7 @@ public class clsJVGeneratorController {
 
 			List<clsInvoiceTaxDtlModel> listTaxDtl = new ArrayList<clsInvoiceTaxDtlModel>();
 			String sqlInv = "select strTaxCode,strTaxDesc,dblTaxableAmt,dblTaxAmt from tblinvtaxdtl " + "where strInvCode='" + invoiceCode + "' and strClientCode='" + clientCode + "'";
-			List list = objGlobalFunctionsService.funGetList(sqlInv, "sql");
+			List list = objGlobalFunctionsService.funGetListModuleWise(sqlInv, "sql");
 			
 			for (int cnt = 0; cnt < list.size(); cnt++) {
 				clsInvoiceTaxDtlModel objTaxDtl = new clsInvoiceTaxDtlModel();
@@ -877,10 +877,10 @@ public class clsJVGeneratorController {
 			}
 			
 			String sql = " select a.strInvCode,a.dblGrandTotal,b.strDebtorCode,b.strPName,date(a.dteInvDate),a.strNarration "
-				+ ",date(a.dteInvDate),a.strInvCode,b.strApplForWT " 
+				+ ",date(a.dteInvDate) as dtInvoiceDte ,a.strInvCode as InvoiceCode,b.strApplForWT " 
 				+ " from tblinvoicehd a,tblpartymaster b " 
 				+ " where a.strCustCode =b.strPCode and a.strInvCode='" + objModel.getStrInvCode() + "' and a.strClientCode='" + objModel.getStrClientCode() + "'   ";
-			List listCust = objGlobalFunctionsService.funGetList(sql, "sql");
+			List listCust = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
 			if (null != listCust) {
 				for (int i = 0; i < listCust.size(); i++) {
 					

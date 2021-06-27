@@ -733,7 +733,46 @@ public class clsGRNController {
 										objProductMasterService.funAddUpdateProdReOrderLvl(reeorderLevelForPropertyWiseLocation);
 									}
 								}
-							} else {
+							}
+							else if( objSetUp.getStrLocationWiseValuation().equals("Y"))
+							{
+								// Location wise rate save
+								double dblreOrderPrice = 0;
+								clsProductReOrderLevelModel objReOrder = objProductMasterService.funGetProdReOrderLvl(ob.getStrProdCode(),objHdModel.getStrLocCode(),clientCode);
+								if (objReOrder != null) {
+									if (ob.getDblUnitPrice() != objReOrder.getDblPrice()) {
+										dblreOrderPrice = objReOrder.getDblPrice();
+										List<clsLocationMasterModel> listLocModel = objLocationMasterService.funLoadLocationPropertyWise(objSetUp.getStrPropertyCode(),clientCode);
+										proprtyWiseStock = propCode;
+										stock = objGlobalFunctions.funGetCurrentStockForProduct(ob.getStrProdCode(),objHdModel.getStrLocCode(),clientCode,userCode,startDate,
+												objGlobalFunctions.funGetCurrentDate("yyyy-MM-dd"),proprtyWiseStock);
+										String strstock = stock.toString();
+
+										if (strstock.contains("-")) {
+											stock = 0.0;
+										}
+										weigthedvalue = stock * dblreOrderPrice;
+										double tempval = ob.getDblQty() * ob.getDblUnitPrice();
+										
+										if(objSetUp.getStrIncludeTaxInWeightAvgPrice().equalsIgnoreCase("Y"))
+										{
+										   tempval=tempval + ob.getDblTaxAmt();	
+										}
+
+										weightedStk = stock + ob.getDblQty()+ob.getDblFreeQty();
+										if (weightedStk == 0.0) {
+											weightedStk = 1.0;
+										}
+										double temp = weigthedvalue + tempval;
+										weightedAvg = temp / weightedStk;
+										weightedAvg = Double.parseDouble(df.format(temp / weightedStk).toString());
+										objReOrder.setDblPrice(weightedAvg);
+										objProductMasterService.funAddUpdateProdReOrderLvl(objReOrder);
+
+										
+									}
+								}
+								else {
 								if (ob.getDblUnitPrice() != objModel.getDblCostRM() || ob.getDblFreeQty()>0) {// Weighted average Calculating Logic and
 									// Update In Product Master
 									stock = objGlobalFunctions.funGetCurrentStockForProduct(ob.getStrProdCode(),objHdModel.getStrLocCode(),
