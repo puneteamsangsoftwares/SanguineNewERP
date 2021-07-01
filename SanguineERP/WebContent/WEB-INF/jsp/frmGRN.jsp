@@ -140,6 +140,7 @@
 		var gPOCode="";
 		var taxOnTax='N';
 		var clientCode='<%=session.getAttribute("clientCode").toString()%>';
+		var strOpenTaxCalculation= '<%=session.getAttribute("strOpenTaxCalculation").toString()%>'; 
 		
 		$(function()
 		{
@@ -252,7 +253,7 @@
 			//var currValue=funGetCurrencyCode(cmbCurrency);
 			var groupTaxCode="";
 		    var groupTaxName="";
-			if(clientCode=='382.000' || clientCode=='389.001' || clientCode=='211.001' || clientCode=='384.001')
+			if(strOpenTaxCalculation=='Y') //if(clientCode=='382.000' || clientCode=='389.001' || clientCode=='211.001' || clientCode=='384.001')
 	    	{
 		    	 groupTaxCode= $("#txtGroupTaxCode").val();
 		    	 groupTaxName=mapForGroupTax.get(groupTaxCode);
@@ -612,7 +613,7 @@
 		    freeQuantity=parseFloat(freeQuantity).toFixed(maxQuantityDecimalPlaceLimit);
 		    var groupTaxCode="";
 		    var groupTaxName="";
-		    if(clientCode=='382.000' || clientCode=='389.001' || clientCode=='211.001' || clientCode=='384.001')
+		    if(strOpenTaxCalculation=='Y') // if(clientCode=='382.000' || clientCode=='389.001' || clientCode=='211.001' || clientCode=='384.001')
 	    	{
 		    	 groupTaxCode= $("#txtGroupTaxCode").val();
 		    	 groupTaxName=mapForGroupTax.get(groupTaxCode);
@@ -1397,7 +1398,7 @@
 		    	/*var qty=parseFloat($(this).find(".QtyCell").val());
 		    	var discAmt1=parseFloat($(this).find(".txtDisc").val());
 		    	var unitPrice=parseFloat($(this).find(".price").val());*/
-	    	    if(clientCode=='382.000' || clientCode=='389.001' || clientCode=='211.001' || clientCode=='384.001' )
+	    	    if(strOpenTaxCalculation=='Y')   //if(clientCode=='382.000' || clientCode=='389.001' || clientCode=='211.001' || clientCode=='384.001' )
 		    	{
 	    	    	var weight=0;
 			    	prodCodeForTax=prodCodeForTax+"!"+prodCode+","+unitPrice+","+suppCode+","+qty+","+discAmt1+","+weight+","+GroupTaxCode;
@@ -1998,7 +1999,7 @@
 			disc = (parseFloat(disc)/currValue).toFixed(maxAmountDecimalPlaceLimit);
 			freeQuantity = parseFloat(freeQuantity).toFixed(maxQuantityDecimalPlaceLimit);
 			var groupTaxName="";
-			if(clientCode=='382.000' || clientCode=='389.001' || clientCode=='211.001' || clientCode=='384.001' )
+			if(strOpenTaxCalculation=='Y') //if(clientCode=='382.000' || clientCode=='389.001' || clientCode=='211.001' || clientCode=='384.001' )
 	    	{
 				if(groupTaxCode.length>0)
 				{

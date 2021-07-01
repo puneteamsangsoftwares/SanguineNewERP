@@ -630,7 +630,7 @@ public class clsGRNController {
 						double taxableAmt = 0.0,taxAmt = 0.0;						
 						String prdDetailForTax = ob.getStrProdCode() + "," + ob.getDblUnitPrice() + ","
 								+ objHdModel.getStrSuppCode() + "," + ob.getDblQty() + "," + dblDiscount;
-						if(clientCode.equals("382.000")  || clientCode.equals("389.001") || clientCode.equals("211.001") || clientCode.equals("384.001") )
+						if(objSetUp.getStrOpenTaxCalculation().equalsIgnoreCase("Y"))//if(clientCode.equals("382.000")  || clientCode.equals("389.001") || clientCode.equals("211.001") || clientCode.equals("384.001") )
 						{
 							prdDetailForTax = ob.getStrProdCode() + "," + ob.getDblUnitPrice() + ","
 									+ objHdModel.getStrSuppCode() + "," + ob.getDblQty() + "," + dblDiscount+ ",0," + ob.getStrGroupTaxCode();
@@ -733,10 +733,10 @@ public class clsGRNController {
 										objProductMasterService.funAddUpdateProdReOrderLvl(reeorderLevelForPropertyWiseLocation);
 									}
 								}
-							}
+							} 
 							else if( objSetUp.getStrLocationWiseValuation().equals("Y"))
 							{
-								// Location wise rate save
+								// property wise rate save
 								double dblreOrderPrice = 0;
 								clsProductReOrderLevelModel objReOrder = objProductMasterService.funGetProdReOrderLvl(ob.getStrProdCode(),objHdModel.getStrLocCode(),clientCode);
 								if (objReOrder != null) {
@@ -771,8 +771,21 @@ public class clsGRNController {
 
 										
 									}
+								} else {
+									// location wise product entry not found in
+									// reorder table--> insert new with rate
+									List<clsLocationMasterModel> listLocModel = objLocationMasterService.funLoadLocationPropertyWise(objSetUp.getStrPropertyCode(),clientCode);
+									for (clsLocationMasterModel obj : listLocModel) {
+										clsProductReOrderLevelModel reeorderLevelForPropertyWiseLocation = new clsProductReOrderLevelModel(new clsProductReOrderLevelModel_ID(obj.getStrLocCode(),clientCode,ob.getStrProdCode()));
+										reeorderLevelForPropertyWiseLocation.setDblReOrderLevel(0);
+										reeorderLevelForPropertyWiseLocation.setDblReOrderQty(0);
+										reeorderLevelForPropertyWiseLocation.setDblPrice(ob.getDblUnitPrice());
+										objProductMasterService.funAddUpdateProdReOrderLvl(reeorderLevelForPropertyWiseLocation);
+									}
 								}
-								else {
+							
+							}
+							else {
 								if (ob.getDblUnitPrice() != objModel.getDblCostRM() || ob.getDblFreeQty()>0) {// Weighted average Calculating Logic and
 									// Update In Product Master
 									stock = objGlobalFunctions.funGetCurrentStockForProduct(ob.getStrProdCode(),objHdModel.getStrLocCode(),

@@ -138,7 +138,7 @@ public class clsInvoiceFlashController {
 	
 		if (objCompModel.getStrWebBookModule().equals("Yes")) {
 			sqlInvoiceFlash.append("select a.strInvCode ,DATE_FORMAT(a.dteInvDate,'%d-%m-%Y'),b.strPName,a.strAgainst,a.strVehNo,a.dblSubTotalAmt/" + currValue + ",a.dblTaxAmt/" + currValue + ""
-					+ ",a.dblGrandTotal/" + currValue + ",a.strExciseable,c.strSettlementDesc,ifnull(d.strVouchNo,''),ifnull(a.strNarration,'') "
+					+ ",a.dblGrandTotal/" + currValue + ",a.strExciseable,c.strSettlementDesc,ifnull(d.strVouchNo,''),ifnull(a.strNarration,'') ,a.dblExtraCharges "
 					+ " FROM tblpartymaster b,tblsettlementmaster c,tblinvoicehd a left outer join "+dbWebBook+".tbljvhd d on a.strInvCode=d.strSourceDocNo"
 					+ " where   date(a.dteInvDate) between '" + fromDate + "' and '" + toDate + "' " + " and a.strLocCode='" + locCode +"' "
 					+ " and a.strCustCode=b.strPCode and  a.strClientCode='" + strClientCode + "'");
@@ -234,6 +234,7 @@ public class clsInvoiceFlashController {
 				
 				listofInvFlash.add(objBean);
 				objBean.setStrSettleDesc(objInvoice[9].toString());
+				
 				objBean.setDblExtraCharges(Double.parseDouble(objInvoice[12].toString()));
 				
 				BigDecimal value = new BigDecimal(Double.parseDouble(objInvoice[7].toString()));

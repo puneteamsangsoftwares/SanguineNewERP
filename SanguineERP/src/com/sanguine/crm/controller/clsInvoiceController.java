@@ -1013,9 +1013,12 @@ public class clsInvoiceController
 					}
 				}
 
+				if(dblSubTotalAmt==0)
+				{
+					dblSubTotalAmt=objBean.getDblSubTotalAmt();
+				}
 				double grandTotal = dblSubTotalAmt + taxAmt+objHDModel.getDblExtraCharges();
 				subTotal = totalAmt + excisableTaxAmt;
-
 				if (exciseable.equalsIgnoreCase("Y"))
 				{
 					subTotal = totalExcisableAmt + excisableTaxAmt;
@@ -7300,12 +7303,8 @@ public void funCallReportInvoiceFormat8Report(@RequestParam("rptInvCode") String
 		hm.put("strBankName",objSetup.getStrBankName());
 		hm.put("strBranchName", objSetup.getStrBranchName());
 		hm.put("strBankIFSC", objSetup.getStrSwiftCode());
-		hm.put("dbldeliveryCharges", deliveryCharges);
-		
-		
-
+		hm.put("dbldeliveryCharges", deliveryCharges);	
 		// ////////////
-
 		JasperDesign jd = JRXmlLoader.load(reportName);
 		JasperReport jr = JasperCompileManager.compileReport(jd);
 		JRDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(dataList);

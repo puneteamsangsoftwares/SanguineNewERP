@@ -906,6 +906,8 @@ public class clsUserController {
 					req.getSession().setAttribute("currValue", objCurrModel.getDblConvToBaseCurr());
 				}
 				req.getSession().setAttribute("showAllTaxesOnTransactions", objSetup.getStrShowAllTaxesOnTransaction());
+				req.getSession().setAttribute("strOpenTaxCalculation", objSetup.getStrOpenTaxCalculation());
+
 
 			} else {
 				req.getSession().setAttribute("amtDecPlace", 0);
@@ -930,6 +932,8 @@ public class clsUserController {
 				req.getSession().setAttribute("invoieFormat", "");
 				req.getSession().setAttribute("currencyCode", "CU00001");
 				req.getSession().setAttribute("conValue", 1);
+				req.getSession().setAttribute("strOpenTaxCalculation", "N");
+
 			}
 
 			if (req.getSession().getAttribute("selectedModuleName").equals("3-WebPMS")) {

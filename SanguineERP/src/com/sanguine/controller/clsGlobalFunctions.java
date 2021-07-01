@@ -4191,7 +4191,7 @@ public class clsGlobalFunctions {
 
 				
 			} 
-		    else if (clientCode.equals("382.000")  || clientCode.equals("389.001") || clientCode.equals("211.001") || clientCode.equals("384.001"))
+		    else if(objSetup.getStrOpenTaxCalculation().equalsIgnoreCase("Y")) //if (clientCode.equals("382.000")  || clientCode.equals("389.001") || clientCode.equals("211.001") || clientCode.equals("384.001"))
 			{
 		    	String[] spProduct = prodDetails.split("!");
 				String supplierCode = "", productCode = "";
@@ -4415,7 +4415,7 @@ public class clsGlobalFunctions {
 								+ " AND b.strTaxReversal='N' ");
 
 					} 
-					else if (clientCode.equals("382.000")  || clientCode.equals("389.001") ||  clientCode.equals("211.001") || clientCode.equals("384.001") )
+					else if(objSetup.getStrOpenTaxCalculation().equalsIgnoreCase("Y")) //if (clientCode.equals("382.000")  || clientCode.equals("389.001") ||  clientCode.equals("211.001") || clientCode.equals("384.001") )
 					{
 						sbSql.append("select '',b.strTaxCode,b.strTaxDesc,b.strTaxType,b.dblPercent,b.strTaxOnTax,b.strTaxOnTaxCode "
 								+ " ,b.strTaxCalculation,b.strTaxOnSubGroup,b.strTaxRounded,b.strCalTaxOnMRP,b.strTaxOnGD,b.dblAbatement "
