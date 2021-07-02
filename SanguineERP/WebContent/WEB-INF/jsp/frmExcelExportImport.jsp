@@ -305,7 +305,7 @@
 				   var prodStock= $("#cmbProdStock").val();
 				   var strIncludeAllProduct=$("#cmbIncludeAllProducts").val();
 				  
-				   searchUrl=getContextPath()+"/ExcelExportImport.html?formname="+transactionformName+"&prodStock="+prodStock;
+				   searchUrl=getContextPath()+"/ExcelExportImport.html?formname="+transactionformName+"&prodStock="+prodStock+"strPhyStockLocCode="+LocCode;
 				}else{
 					searchUrl=getContextPath()+"/ExcelExportImport.html?formname="+transactionformName;
 					
@@ -383,12 +383,12 @@
 		}
 		
 		if(transactionformName=="frmPhysicalStkPosting")
-			{
+		{
 			dtPhydate='<%=request.getParameter("dtPhydate") %>'
 // 			document.all["divFilter"].style.display = 'block';
 			document.getElementById("divFilter").style.display = 'block';
 				LocCode='<%=request.getParameter("strLocCode") %>'
-			}
+		}
 		if(transactionformName=="frmOpeningStock")
 		{
 			LocCode='<%=request.getParameter("strLocCode") %>'

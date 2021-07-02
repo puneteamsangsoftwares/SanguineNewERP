@@ -40,6 +40,7 @@ import com.sanguine.model.clsPartyTaxIndicatorDtlModel;
 import com.sanguine.model.clsProdSuppMasterModel;
 import com.sanguine.model.clsProductMasterModel;
 import com.sanguine.model.clsProductMasterModel_ID;
+import com.sanguine.model.clsProductReOrderLevelModel;
 import com.sanguine.model.clsPropertySetupModel;
 import com.sanguine.model.clsPurchaseIndentDtlModel;
 import com.sanguine.model.clsPurchaseOrderDtlModel;
@@ -1597,6 +1598,10 @@ public class clsExcelExportImportController {
 		String prodCode = "";
 		String clientCode = request.getSession().getAttribute("clientCode").toString();
 		
+	
+
+		String propCode = request.getSession().getAttribute("propertyCode").toString();
+		clsPropertySetupModel objSetUp = objSetupMasterService.funGetObjectPropertySetup(propCode, clientCode);
 		String prodStock=request.getParameter("prodStock");
 		try {
 			int i = 1;
@@ -1636,6 +1641,20 @@ public class clsExcelExportImportController {
 								PhyStkDtl.setDblPStock(row.getCell(4).getNumericCellValue());
 							}
 							clsProductMasterModel Prodmodel = objProductMasterService.funGetObject(prodCode, clientCode);
+							
+							if(objSetUp.getStrLocationWiseValuation().equals("Y"))
+							{
+								
+								String locCode = request.getSession().getAttribute("locationCode").toString();
+								if(request.getParameter("strPhyStockLocCode")!=null)
+								{
+									locCode=request.getParameter("strPhyStockLocCode").toString();
+								}
+								clsProductReOrderLevelModel objReOrder = objProductMasterService.funGetProdReOrderLvl(prodCode, locCode, clientCode);							
+								
+								Prodmodel.setDblCostRM(objReOrder.getDblPrice());
+
+							}
 							PhyStkDtl.setDblPrice(Prodmodel.getDblCostRM());
 							PhyStkDtl.setDblWeight(Prodmodel.getDblWeight());
 

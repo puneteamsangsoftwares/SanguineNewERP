@@ -304,7 +304,7 @@ public class clsSetupMasterDaoImpl implements clsSetupMasterDao {
 			objSetUpModel.setStrFifo(objPropSetUp3[44].toString());
 			objSetUpModel.setStrCheckPOSSales(objPropSetUp3[45].toString());
 			objSetUpModel.setStrShowAllProducts(objPropSetUp3[46].toString());
-			objSetUpModel.setStrLocationWiseValuation(objPropSetUp3[46].toString());
+			objSetUpModel.setStrLocationWiseValuation(objPropSetUp3[47].toString());
 
 		}
 		String sql4 = "SELECT a.strRateHistoryFormat,a.strPOSlipFormat,a.strSRSlipFormat,a.strWeightedAvgCal,a.strGRNRateEditable,a.strInvoiceRateEditable,	a.strSORateEditable,a.strSettlementWiseInvSer,a.strGRNProdPOWise , a.strPORateEditable,a.strCurrentDateForTransaction,a.strRoundOffFinalAmtOnTransaction ,a.strPOSTRoundOffAmtToWebBooks,a.strRecipeListPrice,a.strIncludeTaxInWeightAvgPrice,strOpenTaxCalculation"
