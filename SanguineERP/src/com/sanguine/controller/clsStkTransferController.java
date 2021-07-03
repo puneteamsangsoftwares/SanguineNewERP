@@ -330,7 +330,7 @@ public class clsStkTransferController
 		long lastNo = 0;
 		clsStkTransferHdModel objHdModel;
 
-		if (objBean.getStrSTCode().length() == 0)
+		if (objBean.getStrSTCode()==null || objBean.getStrSTCode().length() == 0)
 		{
 			String strStkTransCode = objGlobalFunctions.funGenerateDocumentCode("frmStockTransfer", objBean.getDtSTDate(), request);
 			objHdModel = new clsStkTransferHdModel(new clsStkTransferHdModel_ID(strStkTransCode, clientCode));
@@ -777,7 +777,7 @@ public class clsStkTransferController
 			String reportName = servletContext.getRealPath("/WEB-INF/reports/rptStockTransferSlip.jrxml");
 			String imagePath = servletContext.getRealPath("/resources/images/company_Logo.png");
 
-			String sql = "select a.strSTCode,DATE_FORMAT(a.dtSTDate,'%m-%d-%Y') as dtSTDate,a.strFromLocCode," + 
+			String sql = "select a.strSTCode,DATE_FORMAT(a.dtSTDate,'%d-%m-%Y') as dtSTDate,a.strFromLocCode," + 
 			         " a.strToLocCode,a.strNarration,a.strMaterialIssue,a.strWOCode" + " ,"
 					 + " a.strAgainst," + "b.strLocName as strFromLocName,c.strLocName as strToLocName,a.strUserCreated," + 
 					 " a.strAuthLevel2,a.strAuthLevel1 " + " "
