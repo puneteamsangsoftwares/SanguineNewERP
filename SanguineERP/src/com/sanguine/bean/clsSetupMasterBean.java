@@ -184,7 +184,7 @@ public class clsSetupMasterBean {
 	private String strShowAllProducts;
 	
 	private String strLocationWiseValuation;
-
+    private String strOpenTaxCalculation;
 
     public String getStrRateHistoryFormat() {
 		return strRateHistoryFormat;
@@ -1459,6 +1459,14 @@ public class clsSetupMasterBean {
 
 	public void setStrLocationWiseValuation(String strLocationWiseValuation) {
 		this.strLocationWiseValuation = strLocationWiseValuation;
+	}
+
+	public String getStrOpenTaxCalculation() {
+		return strOpenTaxCalculation;
+	}
+
+	public void setStrOpenTaxCalculation(String strOpenTaxCalculation) {
+		this.strOpenTaxCalculation = strOpenTaxCalculation;
 	}
 
 

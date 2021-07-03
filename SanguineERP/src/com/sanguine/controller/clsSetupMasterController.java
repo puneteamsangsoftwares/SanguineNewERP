@@ -609,6 +609,7 @@ public class clsSetupMasterController {
 		bean.setStrCheckPOSSales(objSetup.getStrCheckPOSSales());
 		bean.setStrShowAllProducts(objSetup.getStrShowAllProducts());
 		bean.setStrLocationWiseValuation(objSetup.getStrLocationWiseValuation());
+		bean.setStrOpenTaxCalculation(objSetup.getStrOpenTaxCalculation());
 		
 	}
 
@@ -1279,6 +1280,7 @@ public class clsSetupMasterController {
 		objPropertySetupModel.setStrCheckPOSSales(objGlobal.funIfNull(bean.getStrCheckPOSSales(),"N",bean.getStrCheckPOSSales()));
 		objPropertySetupModel.setStrShowAllProducts(objGlobal.funIfNull(bean.getStrShowAllProducts(),"N",bean.getStrShowAllProducts()));
 		objPropertySetupModel.setStrLocationWiseValuation(objGlobal.funIfNull(bean.getStrLocationWiseValuation(),"N",bean.getStrLocationWiseValuation()));
+		objPropertySetupModel.setStrOpenTaxCalculation(objGlobal.funIfNull(bean.getStrOpenTaxCalculation(),"N",bean.getStrOpenTaxCalculation()));
 		List auditFormList = bean.getListAuditForm();
 		String AuditFrom = "";
 		if (auditFormList != null) {

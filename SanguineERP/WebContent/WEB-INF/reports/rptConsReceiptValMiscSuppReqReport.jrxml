@@ -59,11 +59,11 @@ Group By a.strSuppCode, b.strPName]]>
 			<variableExpression><![CDATA[$F{SubTotal}]]></variableExpression>
 			<initialValueExpression><![CDATA[new Double(0.00)]]></initialValueExpression>
 		</variable>
-		<variable name="dblExtraCharges" class="java.lang.Double">
+		<variable name="dblExtraCharges" class="java.lang.Double" calculation="Sum">
 			<variableExpression><![CDATA[$F{ExtraCharges}]]></variableExpression>
 			<initialValueExpression><![CDATA[new Double(0.00)]]></initialValueExpression>
 		</variable>
-		<variable name="dblFreight" class="java.lang.Double" calculation="StandardDeviation">
+		<variable name="dblFreight" class="java.lang.Double" calculation="Sum">
 			<variableExpression><![CDATA[$F{Freight}]]></variableExpression>
 			<initialValueExpression><![CDATA[new Double(0.00)]]></initialValueExpression>
 		</variable>

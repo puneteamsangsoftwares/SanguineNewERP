@@ -1171,6 +1171,9 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
 		sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strLocationWiseValuation` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strShowAllProducts`; ";
 		funExecuteQuery(sql);
 		
+		sql="ALTER TABLE `tblpropertysetup` ADD COLUMN `strOpenTaxCalculation` VARCHAR(1) NOT NULL DEFAULT 'N' AFTER `strLocationWiseValuation`;";
+		funExecuteQuery(sql);
+		
 		/*----------------WebStock Forms only---------------------------*/
 		String strIndustryType = "",strWebStockModule="";
 		List<clsCompanyMasterModel> listClsCompanyMasterModel = objSetupMasterService.funGetListCompanyMasterModel();

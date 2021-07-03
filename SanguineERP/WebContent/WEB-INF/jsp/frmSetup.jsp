@@ -1497,6 +1497,12 @@
 										<s:checkbox path="strLocationWiseValuation" value="Y"/>
 									</div>
 									
+									<div class="col-md-2"></div>
+									<div class="col-md-2">	
+										<label>OpenTaxCalculation</label>
+										<s:checkbox path="strOpenTaxCalculation" value="Y"/>
+									</div>
+									
 								</div>
 							</div>
 				
