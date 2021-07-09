@@ -1171,19 +1171,16 @@ public class clsReservationController {
 		
 		List list=new ArrayList<>();
 		String sql="select a.strReservationNo,DATE_FORMAT(date(a.dteArrivalDate),'%d-%m-%Y') ,"
-				+ " DATE_FORMAT(date(a.dteDepartureDate),'%d-%m-%Y') from tblreservationhd a ,tblreservationdtl b."
+				+ " DATE_FORMAT(date(a.dteDepartureDate),'%d-%m-%Y') from tblreservationhd a ,tblreservationdtl b "
 				+ " where a.strReservationNo=b.strReservationNo and b.strRoomNo='"+RoomNo+"'"
 				+ " and ('"+ArrivalDate+"' BETWEEN date(a.dteArrivalDate) and date(a.dteDepartureDate)"
 				+ " OR '"+departureDate+"' BETWEEN date(a.dteArrivalDate) and date(a.dteDepartureDate))";
 	    list = objGlobalFunctionsService.funGetListModuleWise(sql, "sql");
-		if(list!=null && list.size()>0)
+		if(list==null || list.size()==0)
 		{			
-							
+			list.add("InValid");			
 		}
-		else
-		{
-			list.add("Valid");
-		}
+		
 		return list;
 		
 		

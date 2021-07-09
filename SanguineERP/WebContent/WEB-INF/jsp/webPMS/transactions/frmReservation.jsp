@@ -1817,16 +1817,14 @@
 			        type: "GET",
 			        url: searchurl,
 			        dataType: "json",
+			        async:false,
 			        success: function(response)
 			        {
-			        	if(response[0][0]=='Valid')
+			        	if(!(response[0]=='InValid'))
 			        	{
+			        		alert("Room is Reserved\n Reservaation number is :"+response[0][0]+"\n Arrival Date:"+response[0][1]+" Departure Date"+response[0][2])
+			        	}
 			        	
-			        	}
-			        	else
-			        	{
-			        		alert("Room is Reserved\n RoomNo:"+response[0][0]+"\n Arrival Date:"+response[0][1]+" Departure Date"+response[0][2])
-			        	}
 					},
 					error: function(jqXHR, exception) {
 			            if (jqXHR.status === 0) {

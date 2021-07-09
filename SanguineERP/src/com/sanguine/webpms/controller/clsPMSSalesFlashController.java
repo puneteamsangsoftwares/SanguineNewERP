@@ -270,11 +270,14 @@ public class clsPMSSalesFlashController {
 		
         String sql = "SELECT a.strReservationNo, DATE_FORMAT(a.dteDateCreated,'%d-%m-%Y'), "
         		+ " CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName),DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'), DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'),"
-        		+ "  IFNULL(d.dblReceiptAmt,0),a.strBookingTypeCode"
+        		+ "  IFNULL(d.dblReceiptAmt,0),a.strBookingTypeCode,g.strRoomTypeDesc,f.strRoomDesc"
         		+ " FROM   tblreservationhd a"
+        		+ " LEFT OUTER JOIN tblreservationdtl h ON a.strReservationNo=h.strReservationNo "
         		+ " LEFT OUTER JOIN tblreceipthd d ON a.strReservationNo=d.strReservationNo and d.strFlagOfAdvAmt='Y'"
         		+ " LEFT OUTER JOIN tblguestmaster e ON e.strGuestCode=a.strGuestCode "
-        		+ " LEFT OUTER JOIN tblbookingtype c ON a.strBookingTypeCode=c.strBookingTypeCode "
+        		+ " LEFT OUTER JOIN tblbookingtype c ON a.strBookingTypeCode=c.strBookingTypeCode"
+        		+ " LEFT OUTER JOIN tblroom f ON f.strRoomCode=h.strRoomNo"
+        		+ " LEFT OUTER JOIN tblroomtypemaster g ON g.strRoomTypeCode=h.strRoomType "
         		+ " WHERE  "
         		+ "  a.strClientCode='"+strClientCode+"'  AND a.strReservationNo NOT IN ( SELECT strReservationNo FROM tblcheckinhd) ;";
 
@@ -290,6 +293,8 @@ public class clsPMSSalesFlashController {
 				objBean.setDteDepartureDate(arr2[3].toString());
 				objBean.setDteArrivalDate(arr2[4].toString());
 				objBean.setDblReceiptAmt(arr2[5].toString());
+				objBean.setStrRoomType(arr2[7].toString());
+				objBean.setStrRoomDesc(arr2[8].toString());
 				listofExpectedArrDtl.add(objBean);
 				dblTotalValue = new BigDecimal(Double.parseDouble(arr2[5].toString())).add(dblTotalValue);
 
@@ -1207,13 +1212,16 @@ public class clsPMSSalesFlashController {
 		BigDecimal dblTotalValue = new BigDecimal(0);
 		DecimalFormat df = new DecimalFormat("#.##");
 		String sql = "SELECT a.strReservationNo, DATE_FORMAT(a.dteDateCreated,'%d-%m-%Y'), "
-        		+ " CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName),"
-        		+ " DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'), DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'), IFNULL(d.dblReceiptAmt,0),a.strBookingTypeCode"
+        		+ " CONCAT(e.strFirstName,' ',e.strMiddleName,' ',e.strLastName),DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'), DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'),"
+        		+ "  IFNULL(d.dblReceiptAmt,0),a.strBookingTypeCode,g.strRoomTypeDesc,f.strRoomDesc"
         		+ " FROM   tblreservationhd a"
+        		+ " LEFT OUTER JOIN tblreservationdtl h ON a.strReservationNo=h.strReservationNo "
         		+ " LEFT OUTER JOIN tblreceipthd d ON a.strReservationNo=d.strReservationNo and d.strFlagOfAdvAmt='Y'"
         		+ " LEFT OUTER JOIN tblguestmaster e ON e.strGuestCode=a.strGuestCode "
-        		+ " LEFT OUTER JOIN tblbookingtype c ON a.strBookingTypeCode=c.strBookingTypeCode "
-        		+ " WHERE "
+        		+ " LEFT OUTER JOIN tblbookingtype c ON a.strBookingTypeCode=c.strBookingTypeCode"
+        		+ " LEFT OUTER JOIN tblroom f ON f.strRoomCode=h.strRoomNo"
+        		+ " LEFT OUTER JOIN tblroomtypemaster g ON g.strRoomTypeCode=h.strRoomType "
+        		+ " WHERE  "
         		+ "  a.strClientCode='"+strClientCode+"'  AND a.strReservationNo NOT IN ( SELECT strReservationNo FROM tblcheckinhd) ;";
 
 		
@@ -1226,6 +1234,8 @@ public class clsPMSSalesFlashController {
 			    DataList.add(arr2[0].toString());
 			    DataList.add(arr2[1].toString());
 			    DataList.add(arr2[2].toString());
+			    DataList.add(arr2[7].toString());
+			    DataList.add(arr2[8].toString());
 			    DataList.add(arr2[5].toString());
 			    DataList.add(arr2[3].toString());
 			    DataList.add(arr2[4].toString());
@@ -1250,6 +1260,8 @@ public class clsPMSSalesFlashController {
 	    headerList.add("Reservation No");
 		headerList.add("Reservation Date");
 		headerList.add("Guest Name");
+		headerList.add("Room Type");
+		headerList.add("Room No");
 		headerList.add("Receipt Amount");
 		headerList.add("Arrival Date");
 		headerList.add("Departure Date");

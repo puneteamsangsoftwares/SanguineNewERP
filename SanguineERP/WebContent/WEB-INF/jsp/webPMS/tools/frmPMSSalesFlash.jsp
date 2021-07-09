@@ -347,6 +347,8 @@ function funExpectedArrDetail(ProdDtl)
 	    row.insertCell(0).innerHTML= "<input name=\"strReservationNo["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"25%\" id=\"strReservationNo."+(rowCount)+"\" value='"+data.strReservationNo+"'>";		    
 	    row.insertCell(1).innerHTML= "<input name=\"dteReservationDate["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"20%\" id=\"dteReservationDate."+(rowCount)+"\" value='"+data.dteReservationDate+"'>";
 	    row.insertCell(2).innerHTML= "<input name=\"strGuestName["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"37%\" id=\"strGuestName."+(rowCount)+"\" value='"+data.strGuestName+"'>";
+	    row.insertCell(2).innerHTML= "<input name=\"strRoomType["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"37%\" id=\"strRoomType."+(rowCount)+"\" value='"+data.strRoomType+"'>";
+	    row.insertCell(2).innerHTML= "<input name=\"strRoomDesc["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"37%\" id=\"strRoomDesc."+(rowCount)+"\" value='"+data.strRoomDesc+"'>";
 	    row.insertCell(3).innerHTML= "<input name=\"dteDepartureDate["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"19%\" id=\"dteDepartureDatet."+(rowCount)+"\" value='"+data.dteDepartureDate+"'>";
 	    row.insertCell(4).innerHTML= "<input name=\"dteArrivalDate["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"30%\" id=\"dteArrivalDate."+(rowCount)+"\" value='"+data.dteArrivalDate+"'>";
 	    row.insertCell(5).innerHTML= "<input name=\"dblReceiptAmt["+(rowCount)+"]\" id=\"dblReceiptAmt."+(rowCount)+"\" readonly=\"readonly\"   size=\"14%\" class=\"Box\" value="+data.dblReceiptAmt+">";
@@ -1719,6 +1721,8 @@ function funSetAvailableRooms(item)
 					<td width="7.4%">Reservation No</td>
 					<td width="4.5%">Reservation Date </td>
 					<td width="9.3%">Guest Name</td>
+					<td width="4.5%">Room Type </td>
+					<td width="4.5%">Room No</td>
 					<td width="7.6%">Arrival Date</td>
 					<td width="4.8%">Departure Date</td>					
 					<td width="5.1%">Receipt Amount</td>
@@ -1730,6 +1734,8 @@ function funSetAvailableRooms(item)
 						<col style="width: 7.2%">
 						<col style="width: 4.5%">
 						<col style="width: 9.2%">
+						<col style="width: 4.5%">
+						<col style="width: 4.5%">
 						<col style="width: 4.6%">
 						<col style="width: 7.6%">
 						<col style="width: 5%">

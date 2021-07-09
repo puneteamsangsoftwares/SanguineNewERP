@@ -460,7 +460,8 @@ public class clsProvisionalBillController
 						+ " left outer join tblreceiptdtl d on c.strReceiptNo=d.strReceiptNo AND d.strClientCode='"+clientCode+"'" + " left outer join"
 						+ "  tblsettlementmaster e on d.strSettlementCode=e.strSettlementCode AND e.strClientCode='"+clientCode+"'" + " "
 						+ " WHERE a.strFolioNo='" + strFolioNo + "' " + ""
-						+ " GROUP BY d.strReceiptNo,d.strSettlementCode ";
+						+ " GROUP BY d.strReceiptNo,d.strSettlementCode"
+						+ " Order By c.dteReceiptDate ";
 				
 				List paymentDtlList =  objWebPMSUtility.funExecuteQuery(sqlPaymentDtl, "sql");
 				if(paymentDtlList!=null && paymentDtlList.size()>0){

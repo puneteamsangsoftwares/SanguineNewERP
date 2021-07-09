@@ -88,8 +88,8 @@
 				<reportElement x="0" y="187" width="555" height="1" uuid="a30040ee-4d0e-4a01-9020-d0978d17843d"/>
 			</line>
 			<staticText>
-				<reportElement x="183" y="81" width="311" height="14" uuid="12ba95bd-2eb2-4697-9f48-7c0c0d2c09d0"/>
-				<textElement textAlignment="Left">
+				<reportElement x="0" y="81" width="552" height="14" uuid="12ba95bd-2eb2-4697-9f48-7c0c0d2c09d0"/>
+				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Provisional Bill]]></text>
@@ -253,7 +253,8 @@
 			</staticText>
 			<staticText>
 				<reportElement x="238" y="25" width="100" height="22" uuid="ad3135e9-4a1b-404e-a621-0d80d333be77"/>
-				<text><![CDATA[Authorized Signature]]></text>
+				<text><![CDATA[Authorized Signature
+]]></text>
 			</staticText>
 		</band>
 	</columnFooter>

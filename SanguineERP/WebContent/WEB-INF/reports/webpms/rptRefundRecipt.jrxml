@@ -122,14 +122,14 @@
 				<textElement verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Bill Amount               :]]></text>
+				<text><![CDATA[Deposit Received]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="339" y="40" width="97" height="14" uuid="1e307570-e77a-4e7f-ba3e-903f5a174436"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Amount                 :]]></text>
+				<text><![CDATA[Deposit Refund]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="60" width="97" height="14" uuid="1e307570-e77a-4e7f-ba3e-903f5a174436"/>
