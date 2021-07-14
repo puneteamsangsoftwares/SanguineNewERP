@@ -160,6 +160,7 @@ public class clsBillDiscountController {
 				//Save in void bill
 				if(objBean.getStrDiscOn().equalsIgnoreCase("Room Tariff"))
 				{
+					objModel.setStrDiscType("Room Tariff");
 					String sqlRoomTariffAmt = "select a.dblDebitAmt from tblbilldtl a where a.strPerticulars='Room Tariff' and a.strBillNo='"+objBean.getStrBillNo()+"' AND a.strClientCode='"+clientCode+"';";
 					List listRoomTariffAmt = objGlobalFunctionsService.funGetListModuleWise(sqlRoomTariffAmt, "sql");
 					if(listRoomTariffAmt!=null && listRoomTariffAmt.size()>0)
@@ -263,6 +264,8 @@ public class clsBillDiscountController {
 				}
 				else if (objBean.getStrDiscOn().equalsIgnoreCase("Income Head"))
 				{
+					objModel.setStrDiscType("Income Head");
+
 					dblGrandTotal = objBillModel.getDblGrandTotal();
 					String sqlBillDtl = "select * from tblbilldtl a where a.strBillNo='"+objBean.getStrBillNo()+"' and a.strClientCode='"+clientCode+"'";
 					List listTaxDtl = objGlobalFunService.funGetListModuleWise(sqlBillDtl, "sql");
@@ -302,7 +305,7 @@ public class clsBillDiscountController {
 				}
 				else
 				{
-				
+					objModel.setStrDiscType("All");
 				if(objBillModel!=null){
 					strBillNo=objBillModel.getStrBillNo();
 					clsVoidBillHdModel objVoidHdModel=new clsVoidBillHdModel();
