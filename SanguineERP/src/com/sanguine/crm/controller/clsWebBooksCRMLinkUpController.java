@@ -153,17 +153,19 @@ public class clsWebBooksCRMLinkUpController {
 			
 		} else if (strDoc.equals("Discount")) {
 			sqlBuilder.setLength(0);
-			sqlBuilder.append("( SELECT '','', IFNULL(b.strMasterDesc,''), IFNULL(b.strAccountCode,''), IFNULL(b.strExSuppCode,''), IFNULL(b.strExSuppName,'') " + " FROM tbllinkup b where  b.strPropertyCode='" + propertyCode + "' and b.strMasterCode='Discount' " + " and b.strOperationType='Discount' and b.strModuleType='Sale' order by IFNULL(b.strMasterDesc,''))");
-			
+			//sqlBuilder.append("( SELECT '','', IFNULL(b.strMasterDesc,''), IFNULL(b.strAccountCode,''), IFNULL(b.strExSuppCode,''), IFNULL(b.strExSuppName,'') " + " FROM tbllinkup b where  b.strPropertyCode='" + propertyCode + "' and b.strMasterCode='Discount' " + " and b.strOperationType='Discount' and b.strModuleType='Sale' order by IFNULL(b.strMasterDesc,''))");
+			sqlBuilder.append("( SELECT '', IFNULL(b.strMasterDesc,''), IFNULL(b.strAccountCode,''), IFNULL(b.strExSuppCode,''), IFNULL(b.strExSuppName,'') " + " FROM tbllinkup b where  b.strPropertyCode='" + propertyCode + "' and b.strMasterCode='Discount' " + " and b.strOperationType='Discount' and b.strModuleType='Sale' order by IFNULL(b.strMasterDesc,''))");
+		
 		} else if (strDoc.equals("RoundOff")) {
 			sqlBuilder.setLength(0);
-			sqlBuilder.append( " (SELECT '','', IFNULL(b.strMasterDesc,''), IFNULL(b.strAccountCode,''), IFNULL(b.strExSuppCode,''), IFNULL(b.strExSuppName,'') " + " FROM tbllinkup b where  b.strPropertyCode='" + propertyCode + "' and b.strMasterCode='RoundOff' " + " and b.strOperationType='RoundOff' and b.strModuleType='Sale' order by IFNULL(b.strMasterDesc,''))");
-			
+			//sqlBuilder.append( " (SELECT '','', IFNULL(b.strMasterDesc,''), IFNULL(b.strAccountCode,''), IFNULL(b.strExSuppCode,''), IFNULL(b.strExSuppName,'') " + " FROM tbllinkup b where  b.strPropertyCode='" + propertyCode + "' and b.strMasterCode='RoundOff' " + " and b.strOperationType='RoundOff' and b.strModuleType='Sale' order by IFNULL(b.strMasterDesc,''))");
+			sqlBuilder.append( " (SELECT '', IFNULL(b.strMasterDesc,''), IFNULL(b.strAccountCode,''), IFNULL(b.strExSuppCode,''), IFNULL(b.strExSuppName,'') " + " FROM tbllinkup b where  b.strPropertyCode='" + propertyCode + "' and b.strMasterCode='RoundOff' " + " and b.strOperationType='RoundOff' and b.strModuleType='Sale' order by IFNULL(b.strMasterDesc,''))");
 		
 		} else if (strDoc.equals("ExtraCharge")) {
 			sqlBuilder.setLength(0);
-			sqlBuilder.append("( SELECT '','', IFNULL(b.strMasterDesc,''), IFNULL(b.strAccountCode,''), IFNULL(b.strExSuppCode,''), IFNULL(b.strExSuppName,'') " + " FROM tbllinkup b where  b.strPropertyCode='" + propertyCode + "' and b.strMasterCode='ExtraCharge' " + " and b.strOperationType='ExtraCharge' and b.strModuleType='Sale' order by IFNULL(b.strMasterDesc,''))");
-			
+			//sqlBuilder.append("( SELECT '','', IFNULL(b.strMasterDesc,''), IFNULL(b.strAccountCode,''), IFNULL(b.strExSuppCode,''), IFNULL(b.strExSuppName,'') " + " FROM tbllinkup b where  b.strPropertyCode='" + propertyCode + "' and b.strMasterCode='ExtraCharge' " + " and b.strOperationType='ExtraCharge' and b.strModuleType='Sale' order by IFNULL(b.strMasterDesc,''))");
+			sqlBuilder.append("( SELECT '', IFNULL(b.strMasterDesc,''), IFNULL(b.strAccountCode,''), IFNULL(b.strExSuppCode,''), IFNULL(b.strExSuppName,'') " + " FROM tbllinkup b where  b.strPropertyCode='" + propertyCode + "' and b.strMasterCode='ExtraCharge' " + " and b.strOperationType='ExtraCharge' and b.strModuleType='Sale' order by IFNULL(b.strMasterDesc,''))");
+		
 		} else if (strDoc.equals("Settlement")) {
 			sqlBuilder.setLength(0);
 			sqlBuilder.append("( SELECT a.strSettlementCode,a.strSettlementDesc, IFNULL(b.strAccountCode,''), IFNULL(b.strMasterDesc,'') "
@@ -245,10 +247,10 @@ public class clsWebBooksCRMLinkUpController {
 					Object[] arrObj = (Object[]) list.get(cnt);
 					objModel.setStrMasterCode("Discount");
 					objModel.setStrMasterName("Discount");
-					objModel.setStrMasterDesc(arrObj[2].toString());
-					objModel.setStrAccountCode(arrObj[3].toString());
-					objModel.setStrExSuppCode(arrObj[4].toString());
-					objModel.setStrExSuppName(arrObj[5].toString());
+					objModel.setStrMasterDesc(arrObj[1].toString());
+					objModel.setStrAccountCode(arrObj[2].toString());
+					objModel.setStrExSuppCode(arrObj[3].toString());
+					objModel.setStrExSuppName(arrObj[4].toString());
 					listARLinkUp.add(objModel);
 				}
 			} else {
@@ -268,10 +270,10 @@ public class clsWebBooksCRMLinkUpController {
 					Object[] arrObj = (Object[]) list.get(cnt);
 					objModel.setStrMasterCode("RoundOff");
 					objModel.setStrMasterName("RoundOff");
-					objModel.setStrMasterDesc(arrObj[2].toString());
-					objModel.setStrAccountCode(arrObj[3].toString());
-					objModel.setStrExSuppCode(arrObj[4].toString());
-					objModel.setStrExSuppName(arrObj[5].toString());
+					objModel.setStrMasterDesc(arrObj[1].toString());
+					objModel.setStrAccountCode(arrObj[2].toString());
+					objModel.setStrExSuppCode(arrObj[3].toString());
+					objModel.setStrExSuppName(arrObj[4].toString());
 					listARLinkUp.add(objModel);
 				}
 			} else {
@@ -291,10 +293,10 @@ public class clsWebBooksCRMLinkUpController {
 					Object[] arrObj = (Object[]) list.get(cnt);
 					objModel.setStrMasterCode("ExtraCharge");
 					objModel.setStrMasterName("ExtraCharge");
-					objModel.setStrMasterDesc(arrObj[2].toString());
-					objModel.setStrAccountCode(arrObj[3].toString());
-					objModel.setStrExSuppCode(arrObj[4].toString());
-					objModel.setStrExSuppName(arrObj[5].toString());
+					objModel.setStrMasterDesc(arrObj[1].toString());
+					objModel.setStrAccountCode(arrObj[2].toString());
+					objModel.setStrExSuppCode(arrObj[3].toString());
+					objModel.setStrExSuppName(arrObj[4].toString());
 					listARLinkUp.add(objModel);
 				}
 			} else {

@@ -40,7 +40,7 @@ public class clsRoomTypeMasterServiceImpl implements clsRoomTypeMasterService {
 		objRoomTypeMasterModel.setStrClientCode(clientCode);
 		objRoomTypeMasterModel.setStrHsnSac(objRoomTypeMasterBean.getStrHsnSac());
 		objRoomTypeMasterModel.setStrGuestCapcity(objRoomTypeMasterBean.getStrGuestCapcity());
-        objRoomTypeMasterModel.setstrIsHouseKeeping(objRoomTypeMasterBean.getStrIsHouseKeeping());
+        objRoomTypeMasterModel.setstrIsHouseKeeping(objGlobal.funIfNull(objRoomTypeMasterBean.getStrIsHouseKeeping(), "N", objRoomTypeMasterBean.getStrIsHouseKeeping()));
 		return objRoomTypeMasterModel;
 
 	}

@@ -736,7 +736,7 @@ public class clsJVGeneratorController {
 					objJVDetailBean.setStrDescription(objLinkSubGroup.getStrMasterDesc());
 					objJVDetailBean.setStrDC("Cr");
 					objJVDetailBean.setDblDebitAmt(0.00);
-					objJVDetailBean.setDblCreditAmt(objDtl.getDblQty() * objDtl.getDblUnitPrice());
+					objJVDetailBean.setDblCreditAmt(objDtl.getDblQty() * objDtl.getDblAssValue());
 					objJVDetailBean.setStrNarration("WS Product code :" + objDtl.getStrProdCode());
 					objJVDetailBean.setStrOneLineAcc("R");
 					

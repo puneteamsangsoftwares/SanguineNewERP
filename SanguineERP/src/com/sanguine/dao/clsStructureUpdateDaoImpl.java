@@ -4624,18 +4624,7 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
 				+ "NOT NULL DEFAULT 'NOT SELECTED' AFTER `strCheckInEmailContent`;";
 		funExecutePMSQuery(sql);
 		
-		sql = "ALTER TABLE `tblfoliodtl`"
-				+ "ADD COLUMN `strUserEdited` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dblQuantity`,"
-				+ "ADD COLUMN `dteDateEdited` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' AFTER `strUserEdited`,"
-				+ "ADD COLUMN `strTransactionType` VARCHAR(50) NOT NULL DEFAULT '' AFTER `dteDateEdited`;";
-		funExecutePMSQuery(sql);
 		
-		
-		sql = "ALTER TABLE `tblbilldtl`"
-				+ "	ADD COLUMN `strUserEdited` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strClientCode`,"
-				+ "ADD COLUMN `dteDateEdited` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' AFTER `strUserEdited`,"
-				+ "ADD COLUMN `strTransactionType` VARCHAR(255) NOT NULL DEFAULT '' AFTER `dteDateEdited`;";
-		funExecutePMSQuery(sql);
 		
 		sql = "ALTER TABLE `tblpropertysetup` "
 				+ "ALTER `tmeCheckInTime` DROP DEFAULT,"
@@ -5201,12 +5190,7 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
 				+ " ADD COLUMN `strRemark` VARCHAR(600) NOT NULL DEFAULT '' AFTER `strExternalID`;";
 		funExecutePMSQuery(sql);
 		
-		sql = "ALTER TABLE `tblfoliodtl` ADD COLUMN `strRemark` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strUserEdited`;";
-		funExecutePMSQuery(sql);
-		
-		sql = "ALTER TABLE `tblfoliobckp` ADD COLUMN `strRemark` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strUserEdited`;";
-		funExecutePMSQuery(sql);
-		
+			
 		sql = "ALTER TABLE `tblpackagemasterhd` ADD COLUMN `strPackageInclusiveRoomTerrif` VARCHAR(5) NOT NULL DEFAULT 'N' AFTER `strClientCode`;";
 		funExecutePMSQuery(sql);
 		
@@ -5245,7 +5229,7 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
         funExecutePMSQuery(sql);
         
         sql=" ALTER TABLE `tblroomtypemaster`"
-          + " ADD COLUMN `strISHouseKeeping` VARCHAR(2) NOT NULL DEFAULT 'N' AFTER `strHsnSac`;" ;
+          + " ADD COLUMN `strIsHouseKeeping` VARCHAR(2) NOT NULL DEFAULT 'N' AFTER `strHsnSac`;" ;
         funExecutePMSQuery(sql);
         
         
@@ -5265,10 +5249,26 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
         funExecutePMSQuery(sql);	
         	    
            	    
-       sql="ALTER TABLE `tblfoliodtl` ADD COLUMN `dblDiscAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strRemark`, "
-       	+ " ADD COLUMN `dblDiscPer` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblDiscAmt`; ";
+             
+       sql="ALTER TABLE `tblvoidbillhd` CHANGE COLUMN `strVoidType` `strVoidType` VARCHAR (20) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci'  AFTER `strBillSettled`;";
        funExecutePMSQuery(sql);	
        
+       sql = "ALTER TABLE `tblfoliodtl`"
+    		   + "ADD COLUMN `dteDateEdited` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' AFTER `dblQuantity`,"
+				+ "ADD COLUMN `strTransactionType` VARCHAR(255) NOT NULL DEFAULT '' AFTER `dteDateEdited`,"		
+				+ "	ADD COLUMN `strUserEdited` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strTransactionType`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblfoliodtl` ADD COLUMN `strRemark` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strUserEdited`;";
+		funExecutePMSQuery(sql);
+		
+		sql = "ALTER TABLE `tblfoliobckp` ADD COLUMN `strRemark` VARCHAR(200) NOT NULL DEFAULT '' AFTER `strUserEdited`;";
+		funExecutePMSQuery(sql);
+		
+		 sql="ALTER TABLE `tblfoliodtl` ADD COLUMN `dblDiscAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strRemark`, "
+			       	+ " ADD COLUMN `dblDiscPer` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblDiscAmt`; ";
+			       funExecutePMSQuery(sql);	
+			       
        sql=" ALTER TABLE `tblfoliodtl` ADD COLUMN `strOldFolioNo` VARCHAR(15) NOT NULL DEFAULT '' AFTER `dblDiscPer`; ";
        funExecutePMSQuery(sql);	
 
@@ -5278,11 +5278,15 @@ public class clsStructureUpdateDaoImpl implements clsStructureUpdateDao {
        
        sql=" ALTER TABLE `tblfoliobckp` ADD COLUMN `strOldFolioNo` VARCHAR(15) NOT NULL DEFAULT '' AFTER `dblDiscPer`;";
        funExecutePMSQuery(sql);	   
-       
-       sql="ALTER TABLE `tblvoidbillhd` CHANGE COLUMN `strVoidType` `strVoidType` VARCHAR (20) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci'  AFTER `strBillSettled`;";
-       funExecutePMSQuery(sql);	
-       
-       sql="ALTER TABLE `tblbilldtl` ADD COLUMN `strRemark` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strUserEdited`,"
+
+	
+		sql = "ALTER TABLE `tblbilldtl`"
+				+ "ADD COLUMN `dteDateEdited` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' AFTER `strClientCode`,"
+				+ "ADD COLUMN `strTransactionType` VARCHAR(255) NOT NULL DEFAULT '' AFTER `dteDateEdited`,"		
+				+ "	ADD COLUMN `strUserEdited` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strTransactionType`;";
+		funExecutePMSQuery(sql);
+      
+		sql="ALTER TABLE `tblbilldtl` ADD COLUMN `strRemark` VARCHAR(255) NOT NULL DEFAULT '' AFTER `strUserEdited`,"
        	+ " ADD COLUMN `dblDiscAmt` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `strRemark`,"
        	+ " ADD COLUMN `dblDiscPer` DECIMAL(18,4) NOT NULL DEFAULT '0.0000' AFTER `dblDiscAmt`, "
        	+ " ADD COLUMN `strOldFolioNo` VARCHAR(20) NOT NULL DEFAULT '' AFTER `dblDiscPer`, "
