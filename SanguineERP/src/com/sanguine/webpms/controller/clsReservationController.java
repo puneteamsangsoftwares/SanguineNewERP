@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -1314,7 +1315,7 @@ public class clsReservationController {
 							  + "	AND d.strReservationNo = '"+reservationNo+"' AND a.strRoomNo=f.strRoomCode ; ";	
 		*/
 					//New for Group Reservation
-					String sqlReservation="SELECT  a.strReservationNo,e.strRoomTypeDesc, '', g.strFirstName,g.strMiddleName,g.strLastName,DATE_FORMAT(a.dteReservationDate,'%d-%m-%Y'),DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'),DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'),IFNULL(g.lngMobileNo,0),	IFNULL(g.strAddressOfc,''), IFNULL(g.strCityOfc,''), IFNULL(g.strStateOfc,''),IFNULL(g.strCountryOfc,''), IFNULL(g.intPinCodeOfc,''), "
+					/*String sqlReservation="SELECT  a.strReservationNo,e.strRoomTypeDesc, '', g.strFirstName,g.strMiddleName,g.strLastName,DATE_FORMAT(a.dteReservationDate,'%d-%m-%Y'),DATE_FORMAT(a.dteArrivalDate,'%d-%m-%Y'),DATE_FORMAT(a.dteDepartureDate,'%d-%m-%Y'),IFNULL(g.lngMobileNo,0),	IFNULL(g.strAddressOfc,''), IFNULL(g.strCityOfc,''), IFNULL(g.strStateOfc,''),IFNULL(g.strCountryOfc,''), IFNULL(g.intPinCodeOfc,''), "
 										+" e.dblRoomTerrif,SUM(a.intNoOfAdults +a.intNoOfChild),b.dblRoomRate "
 										+"  FROM tblreservationhd a LEFT OUTER "
 										+" JOIN tblreservationroomratedtl b ON a.strReservationNo=b.strReservationNo, "
@@ -1323,8 +1324,9 @@ public class clsReservationController {
 										+" WHERE a.strGroupCode=f.strGroupCode AND "
 										+" a.strReservationNo=c.strReservationNo AND c.strRoomType=e.strRoomTypeCode AND "
 										+" a.strReservationNo='"+reservationNo+"'; ";
+										*/
 					//New for Reservation
-					/*String sqlReservation="SELECT d.strReservationNo,b.strRoomTypeDesc, f.strRoomDesc, e.strFirstName,e.strMiddleName,e.strLastName, "
+					String sqlReservation="SELECT d.strReservationNo,b.strRoomTypeDesc, f.strRoomDesc, e.strFirstName,e.strMiddleName,e.strLastName, "
 										+"  DATE_FORMAT(d.dteReservationDate,'%d-%m-%Y'), DATE_FORMAT(d.dteArrivalDate,'%d-%m-%Y'), "
 										+"  DATE_FORMAT(d.dteDepartureDate,'%d-%m-%Y'), IFNULL(e.lngMobileNo,0), IFNULL(e.strAddressOfc,''), IFNULL(e.strCityOfc,''), IFNULL(e.strStateOfc,''), IFNULL(e.strCountryOfc,''), IFNULL(e.intPinCodeOfc,''), b.dblRoomTerrif, "
 										+" SUM(d.intNoOfAdults +d.intNoOfChild),h.dblRoomRate "
@@ -1335,7 +1337,7 @@ public class clsReservationController {
 										+" JOIN tblextrabed g ON g.strExtraBedTypeCode=a.strExtraBedCode "
 										+" WHERE a.strRoomType=b.strRoomTypeCode AND a.strGuestCode=e.strGuestCode AND a.strReservationNo=d.strReservationNo AND d.strReservationNo = '"+reservationNo+"' AND a.strRoomNo=f.strRoomCode ;";
 
-					*/
+					
 						List listCheckInRes = objGlobalFunctionsService.funGetListModuleWise(sqlReservation, "sql");
                         
 						
@@ -1361,7 +1363,7 @@ public class clsReservationController {
 							String gMiddleName = arrObjRoomData[4].toString();
 							String gLastName = arrObjRoomData[5].toString();
 							
-							String guestCompanyAddr= arrObjRoomData[15].toString() ;
+							String guestCompanyAddr= " ";
 							if(!arrObjRoomData[10].toString().equalsIgnoreCase(""))
 							{
 								guestCompanyAddr="," + arrObjRoomData[10].toString();
@@ -1400,7 +1402,10 @@ public class clsReservationController {
 							//double roomTarrif = Double.parseDouble(arrObjRoomData[5].toString());
 							
 							
-							
+						    reportParams.put("pCompanyName", companyName);
+						    reportParams.put("pAddress1", objSetup.getStrAdd1() + "," + objSetup.getStrAdd2() + "," + objSetup.getStrCity());
+							reportParams.put("pAddress2", objSetup.getStrState() + "," + objSetup.getStrCountry() + "," + objSetup.getStrPin());
+							 
 							reportParams.put("pGuestName", gFirstName + " "+ gMiddleName + " " + gLastName);
 							reportParams.put("pReservationDte", arrObjRoomData[6].toString());
 							reportParams.put("proomType", roomType);
@@ -1412,7 +1417,7 @@ public class clsReservationController {
 							reportParams.put("pguestCompanyAddr", guestCompanyAddr);
 							reportParams.put("strImagePath", imagePath);
 							reportParams.put("pNoOfPerson",  arrObjRoomData[16].toString());
-							reportParams.put("pRoomNo",  " ");
+							reportParams.put("pRoomNo", arrObjRoomData[2].toString());
 							if(clientCode.equalsIgnoreCase("383.001"))
 							{
 								reportParams.put("strImagePath1", imagePath1);	
@@ -1427,10 +1432,10 @@ public class clsReservationController {
 						
 						
 
-					JRDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(datalist);
+					//JRDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(datalist);
 					JasperDesign jd = JRXmlLoader.load(reportName);
 					JasperReport jr = JasperCompileManager.compileReport(jd);
-					JasperPrint jp = JasperFillManager.fillReport(jr, reportParams, beanCollectionDataSource);
+					JasperPrint jp = JasperFillManager.fillReport(jr, reportParams,new JREmptyDataSource());
 					List<JasperPrint> jprintlist = new ArrayList<JasperPrint>();
 					if (jp != null) {
 						jprintlist.add(jp);

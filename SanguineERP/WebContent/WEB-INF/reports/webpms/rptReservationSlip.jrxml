@@ -81,7 +81,9 @@
 				<imageExpression><![CDATA[$P{strImagePath}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="138" y="68" width="274" height="21" uuid="2721457a-8086-462b-b990-f64b7c9148dd"/>
+				<reportElement x="138" y="68" width="274" height="21" uuid="2721457a-8086-462b-b990-f64b7c9148dd">
+					<printWhenExpression><![CDATA[$P{pContactDetails} != null]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="12"/>
 				</textElement>
