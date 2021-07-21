@@ -2,6 +2,7 @@ package com.sanguine.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -688,15 +689,15 @@ public class clsStkTransferController
 			String reportName = servletContext.getRealPath("/WEB-INF/reports/rptStockTransferSlip.jrxml");
 			String imagePath = servletContext.getRealPath("/resources/images/company_Logo.png");
 
-			String sql = "select a.strSTCode,DATE_FORMAT(a.dtSTDate,'%m-%d-%Y') as dtSTDate,a.strFromLocCode,a.strToLocCode,a.strNarration,a.strMaterialIssue,a.strWOCode" + " ,a.strAgainst,b.strLocName as strFromLocName,c.strLocName as strToLocName from tblstocktransferhd a,tbllocationmaster b,tbllocationmaster c" + " where a.strFromLocCode=b.strLocCode and a.strToLocCode=c.strLocCode and a.strSTCode='" + stCode + "' " + " and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' " + " and c.strClientCode='" + clientCode + "' ";
+			String sql = "select a.strSTCode,DATE_FORMAT(a.dtSTDate,'%d-%m-%Y') as dtSTDate,a.strFromLocCode,a.strToLocCode,a.strNarration,a.strMaterialIssue,a.strWOCode" + " ,a.strAgainst,b.strLocName as strFromLocName,c.strLocName as strToLocName from tblstocktransferhd a,tbllocationmaster b,tbllocationmaster c" + " where a.strFromLocCode=b.strLocCode and a.strToLocCode=c.strLocCode and a.strSTCode='" + stCode + "' " + " and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' " + " and c.strClientCode='" + clientCode + "' ";
 
 			JasperDesign jd = JRXmlLoader.load(reportName);
 			JRDesignQuery newQuery = new JRDesignQuery();
 			newQuery.setText(sql);
 			jd.setQuery(newQuery);
 			//String sql2 = "select a.strSTCode,a.strProdCode,b.strProdName,a.dblQty,a.dblWeight,a.dblPrice,a.strRemark " + " from tblstocktransferdtl a,tblproductmaster b " + " where a.strProdCode=b.strProdCode and a.strSTCode='" + stCode + "' and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' ";
-			String sql2 = "select a.strSTCode,a.strProdCode,b.strProdName,a.dblQty,a.dblWeight,(b.dblCostRM*a.dblQty) as costRM,a.strRemark " + " from tblstocktransferdtl a,tblproductmaster b " + " where a.strProdCode=b.strProdCode and a.strSTCode='" + stCode + "' and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' ";
-
+			//String sql2 = "select a.strSTCode,a.strProdCode,b.strProdName,a.dblQty,a.dblWeight,(b.dblCostRM*a.dblQty) as costRM,a.strRemark " + " from tblstocktransferdtl a,tblproductmaster b " + " where a.strProdCode=b.strProdCode and a.strSTCode='" + stCode + "' and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' ";
+			String sql2 = "select a.strSTCode,a.strProdCode,b.strProdName,a.dblQty,a.dblWeight,a.dblTotalPrice as costRM,a.strRemark " + " from tblstocktransferdtl a,tblproductmaster b " + " where a.strProdCode=b.strProdCode and a.strSTCode='" + stCode + "' and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' ";
 			JRDesignQuery subQuery = new JRDesignQuery();
 			subQuery.setText(sql2);
 			Map<String, JRDataset> datasetMap = jd.getDatasetMap();
@@ -790,12 +791,17 @@ public class clsStkTransferController
 			JRDesignQuery newQuery = new JRDesignQuery();
 			newQuery.setText(sql);
 			jd.setQuery(newQuery);
-			String sql2 = "select a.strSTCode,a.strProdCode,b.strProdName,a.dblQty,a.dblWeight,(b.dblCostRM*a.dblQty) as costRM,a.strRemark,"
+			/*String sql2 = "select a.strSTCode,a.strProdCode,b.strProdName,a.dblQty,a.dblWeight,(b.dblCostRM*a.dblQty) as costRM,a.strRemark,"
+					 + " b.strUOM " + ""
+					 + "  from tblstocktransferdtl a,tblproductmaster b " + ""
+					 + "  where a.strProdCode=b.strProdCode and a.strSTCode='" + stCode + "' and "
+					 + " a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' ";*/
+            
+			String sql2 = "select a.strSTCode,a.strProdCode,b.strProdName,a.dblQty,a.dblWeight,a.dblTotalPrice as costRM,a.strRemark,"
 					 + " b.strUOM " + ""
 					 + "  from tblstocktransferdtl a,tblproductmaster b " + ""
 					 + "  where a.strProdCode=b.strProdCode and a.strSTCode='" + stCode + "' and "
 					 + " a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' ";
-
 			JRDesignQuery subQuery = new JRDesignQuery();
 			subQuery.setText(sql2);
 			Map<String, JRDataset> datasetMap = jd.getDatasetMap();
@@ -899,14 +905,25 @@ public class clsStkTransferController
 			
 			if (objSetup.getStrMultiCurrency().equalsIgnoreCase("N")){
 				if(objSetup.getStrWeightedAvgCal().equals("Property Wise")){
-					clsProductReOrderLevelModel objReOrder = objProductMasterService.funGetProdReOrderLvl(prodCode, frmlocCode, clientCode);
 					double dblreOrderPrice = 0;
+					clsProductReOrderLevelModel objReOrder = objProductMasterService.funGetProdReOrderLvl(prodCode, frmlocCode, clientCode);
+					
 					if (objReOrder != null)
 					{
 						dblreOrderPrice = objReOrder.getDblPrice();
 					}
 					objProd.setDblCostRM(dblreOrderPrice);
 				}
+				else if(objSetup.getStrLocationWiseValuation().equals("Y"))
+				{
+					double dblreOrderPrice = 0;
+					
+					clsProductReOrderLevelModel objReOrder = objProductMasterService.funGetProdReOrderLvl(prodCode, frmlocCode, clientCode);
+					if (objReOrder != null) {
+						dblreOrderPrice = objReOrder.getDblPrice();
+					}
+                    objProd.setDblCostRM(dblreOrderPrice);
+					}
 			}
 			else
 			{
@@ -1278,8 +1295,24 @@ public class clsStkTransferController
 			// stockableItem, req, resp);
 			// objGlobalFunctions.funInvokeStockFlash(startDate, LocCode,
 			// fromDate, toDate, clientCode, userCode,stockableItem);
-			String sqlHDQuery = " select a.strSTCode,a.strProdCode,b.strProdName,a.dblQty,a.dblWeight,a.dblPrice,a.strRemark " + " from tblstocktransferdtl a,tblproductmaster b " + " where a.strProdCode=b.strProdCode and a.strSTCode='" + strFromSTCode + "' and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' ";
+			//String sqlHDQuery = " select a.strSTCode,a.strProdCode,b.strProdName,a.dblQty,a.dblWeight,a.dblPrice,a.strRemark " + " from tblstocktransferdtl a,tblproductmaster b " + " where a.strProdCode=b.strProdCode and a.strSTCode='" + strFromSTCode + "' and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' ";
+			String sqlHDQuery = " SELECT b.strSTCode,b.strProdCode,c.strProdName,SUM(b.dblQty),b.dblWeight,SUM(b.dblPrice),SUM(b.dblTotalPrice),b.strRemark " + " FROM tblstocktransferhd a,tblstocktransferdtl b,tblproductmaster c " 
+			                  + " where a.strSTCode=b.strSTCode AND  b.strProdCode=c.strProdCode "
+			                  + " and a.strClientCode='" + clientCode + "' and b.strClientCode='" + clientCode + "' ";
+			if (LocCodeFrom.trim().length() > 0)
+			{
+				sqlHDQuery = sqlHDQuery + " and a.strFromLocCode='" + LocCodeFrom + "' ";
+			}
+			if (LocCodeTo.trim().length() > 0)
+			{
+				sqlHDQuery = sqlHDQuery + " and a.strToLocCode='" + LocCodeTo + "' ";
+			}
 
+			if (strFromSTCode.trim().length() > 0 && strToSTCode.trim().length() > 0)
+			{
+				sqlHDQuery = sqlHDQuery + " and a.strSTCode between '" + strFromSTCode + "' and '" + strToSTCode + "' ";
+			}
+			sqlHDQuery = sqlHDQuery + " GROUP BY b.strProdCode ";	
 			mv = funExcelExport(LocCodeFrom, sqlHDQuery, req, map);
 		}
 		catch (Exception e)
@@ -1296,11 +1329,14 @@ public class clsStkTransferController
 	public ModelAndView funExcelExport(String stCode, String sql, HttpServletRequest req, ModelMap map)
 	{
 		List listStock = new ArrayList();
-		String[] ExcelHeader = { "Sr.No.", "Product Code", "Product Name", "Qty", "Price", "Remark" };
+		String[] ExcelHeader = { "Sr.No.", "Product Code", "Product Name", "Qty", "Price","Total Price", "Remark" };
 		listStock.add(ExcelHeader);
 		double qty = 0.0;
 		double price = 0.0;
+		double totalPrice=0.0;
 
+		DecimalFormat df = new DecimalFormat("#.##");
+		
 		List listStockFlashModel = new ArrayList();
 		List list = objGlobalFunctionsService.funGetList(sql, "sql");
 		if (list.size() > 0 && !list.isEmpty() && list != null)
@@ -1312,13 +1348,15 @@ public class clsStkTransferController
 
 				qty = qty + Double.parseDouble(arrObj[3].toString());
 				price = price + Double.parseDouble(arrObj[5].toString());
-
+				totalPrice = totalPrice + Double.parseDouble(arrObj[6].toString());
+				
 				DataList.add(i + 1);
 				DataList.add(arrObj[1].toString());
 				DataList.add(arrObj[2].toString());
 				DataList.add(Double.parseDouble(arrObj[3].toString()));
 				DataList.add(Double.parseDouble(arrObj[5].toString()));
-				DataList.add(arrObj[6].toString());
+				DataList.add(Double.parseDouble(arrObj[6].toString()));
+				DataList.add(arrObj[7].toString());
 
 				listStockFlashModel.add(DataList);
 			}
@@ -1327,8 +1365,9 @@ public class clsStkTransferController
 			totalData.add("");
 			totalData.add("");
 			totalData.add("Total");
-			totalData.add(qty);
-			totalData.add(price);
+			totalData.add(df.format(qty));
+			totalData.add(df.format(price));
+			totalData.add(df.format(totalPrice));
 			totalData.add("");
 
 			listStockFlashModel.add(totalData);
