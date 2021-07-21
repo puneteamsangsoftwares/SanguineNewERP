@@ -292,7 +292,8 @@ public class clsFolioPrintingController {
 					{
 						folioBean.setDblCreditAmt(openingBalance);
 						folioBean.setDblDebitAmt(0.00);
-					}					
+					}	
+					balance=openingBalance;
 					folioBean.setDblBalanceAmt(openingBalance);
 					folioBean.setDblQuantity(0.00);
 					dataList.add(folioBean);
