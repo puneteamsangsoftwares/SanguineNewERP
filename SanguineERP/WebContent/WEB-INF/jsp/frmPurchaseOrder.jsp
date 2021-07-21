@@ -1046,7 +1046,7 @@
 					    	$(".SCode").val(response.strPCode);
 					    	$("#cmbCurrency").val(response.strCurrency);
 					    	funOnChangeCurrency();
-				 		    funSetTCForSupplier(response.strPCode);
+				 		    //funSetTCForSupplier(response.strPCode);
 				    	}
 				    },
 				    error: function(jqXHR, exception) {

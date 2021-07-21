@@ -1971,7 +1971,7 @@ public class clsGRNController {
 							+ "' ,"
 							+ webStockDB
 							+ ".tbllocationmaster AS a "
-							+ " WHERE g.strGRNCode = '"
+							+ " WHERE g.strLocCode=a.strLocCode AND  g.strGRNCode = '"
 							+ grnCode
 							+ "' and g.strClientCode='"
 							+ clientCode
