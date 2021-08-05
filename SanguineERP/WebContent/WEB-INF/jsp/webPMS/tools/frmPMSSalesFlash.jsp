@@ -344,7 +344,8 @@ function funExpectedArrDetail(ProdDtl)
      var rowCount = table.rows.length;
      var row = table.insertRow(rowCount);
     
-	    row.insertCell(0).innerHTML= "<input name=\"strReservationNo["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"25%\" id=\"strReservationNo."+(rowCount)+"\" value='"+data.strReservationNo+"'>";		    
+	    //row.insertCell(0).innerHTML= "<input name=\"strReservationNo["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"25%\" id=\"strReservationNo."+(rowCount)+"\" value='"+data.strReservationNo+"'>";		    
+	    row.insertCell(0).innerHTML= "<input name=\"strReservationNo["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"25%\" id=\"strReservationNo."+(rowCount)+"\" value='"+data.strReservationNo+"' onclick=\"funReservationOpenSlip(this)\" >";
 	    row.insertCell(1).innerHTML= "<input name=\"dteReservationDate["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"20%\" id=\"dteReservationDate."+(rowCount)+"\" value='"+data.dteReservationDate+"'>";
 	    row.insertCell(2).innerHTML= "<input name=\"strGuestName["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"37%\" id=\"strGuestName."+(rowCount)+"\" value='"+data.strGuestName+"'>";
 	    row.insertCell(3).innerHTML= "<input name=\"strRoomType["+(rowCount)+"]\" readonly=\"readonly\" class=\"Box\" size=\"37%\" id=\"strRoomType."+(rowCount)+"\" value='"+data.strRoomType+"'>";
@@ -355,6 +356,13 @@ function funExpectedArrDetail(ProdDtl)
 	    
 	funApplyNumberValidation();
 	}
+}
+
+function funReservationOpenSlip(data)
+{
+	
+	var reservationNo = data.value;
+	window.open(getContextPath()+"/rptReservationSlip.html?reservationNo="+reservationNo+"");
 }
 
 
@@ -503,6 +511,8 @@ function funCheckInOpenSlip(data,against)
 	var checkInNo = data.value;
 	window.open(getContextPath()+"/rptCheckInSlip.html?checkInNo="+checkInNo+"&cmbAgainst="+against+ "");
 }
+
+
 
 function funOnClckCheckOutBtn( divId)
 {

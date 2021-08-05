@@ -438,7 +438,7 @@ public class clsReportsController {
 			clsSupplierMasterModel objSuppModel = objSupplierMasterService.funGetObject(suppcode, clientCode);
 			String suppName = objSuppModel.getStrPName();
 			String sqlDtlQuery = " select a.strGRNCode , DATE_FORMAT(a.dtGRNDate,'%d-%m-%Y') as GRNDate ," + "ifNULL(a.strChallanNo,'') as ChallanNo ,a.dblGRNAmt ,a.dblAdjustAmt ,a.dblFreight ," + "a.dblSurcharge ,a.dblTotal ,DATE_FORMAT(b.dtBillDate,'%d-%m-%Y') as BillDate," + "DATE_FORMAT(b.dtPassDate,'%d-%m-%Y') as PassDate ,c.strPName,b.strNarration," + "ifNULL(b.strAgainst,'') as Againsts "
-					+ "from tblbillpassdtl a ,tblbillpasshd b ,tblpartymaster c " + "where a.strBillPassNo='" + BPCode + "' and b.strSuppCode=c.strPCode " + "and a.strclientCode='" + clientCode + "' and a.strClientCode='" + clientCode + "' " + "and c.strClientCode='" + clientCode + "' ";
+					+ "from tblbillpassdtl a ,tblbillpasshd b ,tblpartymaster c " + "where b.strBillPassNo='" + BPCode + "' AND a.strBillPassNo=b.strBillPassNo  and b.strSuppCode=c.strPCode " + "and a.strclientCode='" + clientCode + "' and a.strClientCode='" + clientCode + "' " + "and c.strClientCode='" + clientCode + "' ";
 
 			double GRNAmt = 0.00;
 			String getamt = "select sum(dblGRNAmt) from tblbillpassdtl " + "where strBillPassNo='" + BPCode + "' and strClientCode='" + clientCode + "' ";

@@ -7257,7 +7257,11 @@ public void funCallReportInvoiceFormat8Report(@RequestParam("rptInvCode") String
 		if(clientCode.equals("319.001") && objPropertyMaster.getPropertyName().equalsIgnoreCase("TARANG FOODS"))
 		{
 			hm.put("strCompanyName", objPropertyMaster.getPropertyName());
-		}else
+		}else if(clientCode.equals("319.001") && objPropertyMaster.getPropertyName().equalsIgnoreCase("LAXMI DELITE"))
+		{
+			hm.put("strCompanyName", objPropertyMaster.getPropertyName());
+		}
+		else
 		{
 			hm.put("strCompanyName", companyName);
 		}

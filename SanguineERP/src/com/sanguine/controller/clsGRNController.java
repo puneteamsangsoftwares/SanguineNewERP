@@ -1982,7 +1982,7 @@ public class clsGRNController {
 			newQuery.setText(sqlBuilder.toString());
 			jd.setQuery(newQuery);
 			sqlBuilder.setLength(0);
-			sqlBuilder
+	/*		sqlBuilder
 					.append("select g.strGRNCode,g.strProdCode,p.strProdName,ifnull(p.strReceivedUOM,'') as strReceivedUOM,g.dblQty,g.dblRejected,ifnull(g.dblDiscount/("
 							+ currValue
 							+ "),0) as dblDiscount, "
@@ -2011,7 +2011,39 @@ public class clsGRNController {
 							+ clientCode
 							+ "' and p.strClientCode='"
 							+ clientCode
-							+ "' order by p.strProdName ");
+							+ "' order by p.strProdName ");*/
+			sqlBuilder
+			.append("select g.strGRNCode,g.strProdCode,p.strProdName,ifnull(p.strReceivedUOM,'') as strReceivedUOM,g.dblQty,g.dblRejected,ifnull(g.dblDiscount/("
+					+ currValue
+					+ "),0) as dblDiscount, "
+					+ " g.strTaxType,ifnull(g.dblTaxableAmt/("
+					+ currValue
+					+ "),0) as dblTaxableAmt,g.dblTax,ifnull(g.dblTaxAmt/("
+					+ currValue
+					+ "),0) as dblTaxAmt, g.dblUnitPrice/("
+					+ currValue
+					+ ") as dblUnitPrice,g.dblWeight,g.strProdChar,g.dblDCQty, "
+					+ " g.dblDCWt,g.strRemarks,g.dblQtyRbl,g.strGRNProdChar,g.dblPOWeight,g.strCode, g.dblRework,g.dblPackForw,"
+					+ " g.dblRate,g.dblValue/("
+					+ currValue
+					+ ") as dblValue,p.strPartNo,p.dblUnitPrice/("
+					+ currValue
+					+ ") as stdRate,p.dblUnitPrice/("
+					+ currValue
+					+ ")*(g.dblQty-g.dblRejected) as stdAmt,g.dblFreeQty,t.strGroupTaxName AS strTaxPer from "
+					+ webStockDB
+					+ ".tblgrndtl g LEFT OUTER JOIN  "
+                    + webStockDB
+                    + ".tblgrouptaxdtl t ON g.strGroupTaxCode=t.strGroupTaxCode,"
+					+ webStockDB
+					+ ".tblproductmaster p "
+					+ " where g.strProdCode=p.strProdCode and g.strGRNCode='"
+					+ grnCode
+					+ "' and g.strClientCode='"
+					+ clientCode
+					+ "' and p.strClientCode='"
+					+ clientCode
+					+ "' GROUP BY p.strProdName order by p.strProdName ");
 			JRDesignQuery subQuery = new JRDesignQuery();
 			subQuery.setText(sqlBuilder.toString());
 			Map<String, JRDataset> datasetMap = jd.getDatasetMap();
@@ -2388,7 +2420,7 @@ public class clsGRNController {
 			newQuery.setText(sqlBuilder.toString());
 			jd.setQuery(newQuery);
 			sqlBuilder.setLength(0);
-			sqlBuilder
+		/*	sqlBuilder
 					.append("select g.strGRNCode,g.strProdCode,p.strProdName,ifnull(p.strReceivedUOM,'') as strReceivedUOM,g.dblQty,g.dblRejected,g.dblDiscount,"
 							+ " g.strTaxType,g.dblTaxableAmt,g.dblTax,dblTaxAmt, g.dblUnitPrice,g.dblWeight,g.strProdChar,g.dblDCQty,"
 							+ " g.dblDCWt,g.strRemarks,g.dblQtyRbl,g.strGRNProdChar,g.dblPOWeight,g.strCode, g.dblRework,g.dblPackForw,"
@@ -2399,7 +2431,19 @@ public class clsGRNController {
 							+ clientCode
 							+ "' and p.strClientCode='"
 							+ clientCode
-							+ "' order by p.strProdName ");
+							+ "' order by p.strProdName ");*/
+			sqlBuilder
+			.append("select g.strGRNCode,g.strProdCode,p.strProdName,ifnull(p.strReceivedUOM,'') as strReceivedUOM,g.dblQty,g.dblRejected,g.dblDiscount,"
+					+ " g.strTaxType,g.dblTaxableAmt,g.dblTax,dblTaxAmt, g.dblUnitPrice,g.dblWeight,g.strProdChar,g.dblDCQty,"
+					+ " g.dblDCWt,g.strRemarks,g.dblQtyRbl,g.strGRNProdChar,g.dblPOWeight,g.strCode, g.dblRework,g.dblPackForw,"
+					+ " g.dblRate,g.dblValue,p.strPartNo ,p.dblUnitPrice as stdRate,p.dblUnitPrice*(g.dblQty-g.dblRejected) as stdAmt,t.strGroupTaxName AS strTaxPer  from tblgrndtl g LEFT OUTER JOIN tblgrouptaxdtl t ON g.strGroupTaxCode=t.strGroupTaxCode ,tblproductmaster p "
+					+ " where g.strProdCode=p.strProdCode and g.strGRNCode='"
+					+ grnCode
+					+ "' and g.strClientCode='"
+					+ clientCode
+					+ "' and p.strClientCode='"
+					+ clientCode
+					+ "' GROUP BY p.strProdName order by p.strProdName ");
 			JRDesignQuery subQuery = new JRDesignQuery();
 			subQuery.setText(sqlBuilder.toString());
 			Map<String, JRDataset> datasetMap = jd.getDatasetMap();

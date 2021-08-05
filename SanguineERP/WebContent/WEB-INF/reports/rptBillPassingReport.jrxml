@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="742ef197-00f2-4607-abe0-b4afc8718546">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -358,24 +358,21 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 			</staticText>
 		</band>
 	</title>
-	<pageHeader>
-		<band splitType="Stretch"/>
-	</pageHeader>
-	<columnHeader>
-		<band height="104" splitType="Stretch">
+	<detail>
+		<band height="101" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<componentElement>
-				<reportElement x="2" y="4" width="549" height="96" uuid="276d2b72-5cab-4382-99f4-d55308e814a6"/>
+				<reportElement x="2" y="4" width="549" height="96" uuid="ff39762d-2e22-4657-994b-fc6530f08a89"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="dsBP" uuid="398ea72f-da2e-4e9b-b871-7e68871c20a2">
+					<datasetRun subDataset="dsBP" uuid="8d44a492-09c9-400c-81a6-e634c0450258">
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="90" uuid="6390edfd-00b2-4018-b1e5-1aa660263cf9">
+					<jr:column width="90" uuid="cba2c117-e74f-4e3f-975c-695216f405e1">
 						<jr:tableFooter style="Table 1_TD" height="30"/>
 						<jr:columnHeader style="Table 2_CH" height="30">
 							<staticText>
-								<reportElement x="3" y="0" width="85" height="30" uuid="9c9f5dd5-53e4-4d93-8ff8-d5582163faff"/>
+								<reportElement x="3" y="0" width="85" height="30" uuid="8ac962dc-617a-4159-9a7d-c0ebafa6a448"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -384,7 +381,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="3" y="0" width="85" height="30" uuid="1ed2f173-f00e-4a91-8f8b-a3916853bebc"/>
+								<reportElement x="3" y="0" width="85" height="30" uuid="ac90ae62-ea06-4686-a6b7-b54dfe03fd1b"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="Serif" size="8"/>
 								</textElement>
@@ -392,11 +389,11 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="88" uuid="d1faf1a7-dabf-4ae9-bcc2-e1de096a7d99">
+					<jr:column width="88" uuid="85021e86-f1bc-4505-bbbd-1b39fdd048c3">
 						<jr:tableFooter style="Table 1_TD" height="30"/>
 						<jr:columnHeader style="Table 2_CH" height="30">
 							<staticText>
-								<reportElement x="4" y="0" width="81" height="30" uuid="71bdd61c-16e4-4151-bf0b-181a3de108c3"/>
+								<reportElement x="4" y="0" width="81" height="30" uuid="3b4f4cbe-ff93-4fa2-83b3-e4d9df76e1d2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -405,7 +402,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="4" y="0" width="81" height="30" uuid="490b9baf-49e7-4ed7-b331-a55a8ec33aa9"/>
+								<reportElement x="4" y="0" width="81" height="30" uuid="101b1b30-ce50-4a85-aa7b-10f0385ea3f8"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="Serif" size="8"/>
 								</textElement>
@@ -413,10 +410,10 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="82" uuid="d333b5ce-7826-47e5-8676-f8485a3b8712">
+					<jr:column width="82" uuid="c77f4a9e-ed7b-46e2-831b-19cad9eac47a">
 						<jr:tableFooter style="Table 1_TD" height="30">
 							<staticText>
-								<reportElement x="40" y="1" width="39" height="19" uuid="8f05d193-d1d2-45ec-834f-30a04f373edd"/>
+								<reportElement x="40" y="1" width="39" height="19" uuid="b66c5a1b-1b04-4bca-b1ed-137c311c3e92"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -425,7 +422,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 2_CH" height="30">
 							<staticText>
-								<reportElement x="2" y="0" width="77" height="30" uuid="fec937e6-ea47-4bf9-bff2-652a2239fc52"/>
+								<reportElement x="2" y="0" width="77" height="30" uuid="0038376c-aa4e-49ce-b6be-83e9940c0c87"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -434,7 +431,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="2" y="0" width="77" height="30" uuid="0d53efad-3db6-41c2-8b1f-dcd67c479e8c"/>
+								<reportElement x="2" y="0" width="77" height="30" uuid="519cc0ab-801e-4cc5-bb42-54f6e4de4a97"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="Serif" size="8"/>
 								</textElement>
@@ -442,10 +439,10 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="9777b4e6-7d3f-43f3-b080-0da4144a080a">
+					<jr:column width="70" uuid="ec70c351-9cf3-42ee-87dc-900a2f1d59be">
 						<jr:tableFooter style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;#,##0.00#-" isBlankWhenNull="true">
-								<reportElement x="5" y="2" width="62" height="28" uuid="500a1f2c-7a55-45b8-a47c-58818e350164"/>
+								<reportElement x="5" y="2" width="62" height="28" uuid="19400dc6-c8e0-4a6f-849c-ae822b1726d7"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8" isBold="true"/>
 								</textElement>
@@ -454,7 +451,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 2_CH" height="30">
 							<staticText>
-								<reportElement x="3" y="0" width="65" height="30" uuid="4f0c008e-6269-416e-bb97-2caab8facdd6"/>
+								<reportElement x="3" y="0" width="65" height="30" uuid="d144146f-6fab-4d04-95af-74d0c4c22b36"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -463,7 +460,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="68" height="30" uuid="70ccc1ca-8c39-4b6c-b3e8-9dbeee93c932"/>
+								<reportElement x="0" y="0" width="68" height="30" uuid="f943605c-7533-4b04-87a3-52289c19af56"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8"/>
 								</textElement>
@@ -471,10 +468,10 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="61500c56-feff-4aa0-986f-656677c6fab3">
+					<jr:column width="60" uuid="5ccec3a6-b216-471a-91dd-4127c6ab8cbe">
 						<jr:tableFooter style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="2" y="3" width="55" height="25" uuid="dee98d8e-03ce-4e6c-960d-a9b70fdace53"/>
+								<reportElement x="2" y="3" width="55" height="25" uuid="ac218e79-136d-4daf-a497-ac72e1b4bcc6"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8" isBold="true"/>
 								</textElement>
@@ -483,7 +480,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 2_CH" height="30">
 							<staticText>
-								<reportElement x="8" y="0" width="49" height="30" uuid="e15a5781-835f-4071-b9a5-16b3f4499ef9"/>
+								<reportElement x="8" y="0" width="49" height="30" uuid="95fbed6c-f9b9-4b4b-8aee-115ae5c27653"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -492,7 +489,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="2" y="0" width="55" height="30" uuid="42e4fd4f-7e6b-4ade-bf1f-3796cd7e260c"/>
+								<reportElement x="2" y="0" width="55" height="30" uuid="ba62c2fe-15e5-45b9-a50c-ce4d050c6c2d"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8"/>
 								</textElement>
@@ -500,10 +497,10 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="50" uuid="537edce8-4126-449d-aee5-498738232360">
+					<jr:column width="50" uuid="9ccc14de-cdb5-49c5-a38a-4c79ef7cb85f">
 						<jr:tableFooter style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="1" y="2" width="45" height="26" uuid="4c6e2728-519c-4757-8f3a-e87fd06f2902"/>
+								<reportElement x="1" y="2" width="45" height="26" uuid="eac1d6ea-86ab-4821-abe3-a58b36bd9d98"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8" isBold="true"/>
 								</textElement>
@@ -512,7 +509,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 2_CH" height="30">
 							<staticText>
-								<reportElement x="0" y="0" width="46" height="30" uuid="c797aeae-aec6-47c5-8245-be7db9b844b0"/>
+								<reportElement x="0" y="0" width="46" height="30" uuid="4287fb11-69ac-4b4e-ae7b-b08c49ebb075"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -521,7 +518,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="46" height="30" uuid="3ea9554f-de10-4f9c-906d-5b935dc90d12"/>
+								<reportElement x="0" y="0" width="46" height="30" uuid="b833048b-a1f6-4ae7-9527-c35e2bb5bde0"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8"/>
 								</textElement>
@@ -529,10 +526,10 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="50" uuid="d14848bf-2b39-42de-a0bc-9a0b073cc8d6">
+					<jr:column width="50" uuid="a0620a08-e6ea-4a67-8768-2fea9adebe64">
 						<jr:tableFooter style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="2" y="3" width="46" height="25" uuid="129af1d2-83eb-4ae9-b46a-a6d5a87f70fb"/>
+								<reportElement x="2" y="3" width="46" height="25" uuid="7c033904-527c-4140-aeb4-fd8a326ee952"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8" isBold="true"/>
 								</textElement>
@@ -541,7 +538,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 2_CH" height="30">
 							<staticText>
-								<reportElement x="6" y="0" width="40" height="30" uuid="d6eb10f6-1453-4efd-bc96-cbab3c3da0ce"/>
+								<reportElement x="6" y="0" width="40" height="30" uuid="0f07e955-03ad-44f3-902b-91a844add3c4"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -550,7 +547,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="2" y="0" width="46" height="30" uuid="fe8abd13-3d0d-4657-93de-8a377e78b6d5"/>
+								<reportElement x="2" y="0" width="46" height="30" uuid="e2acb3d0-c711-427e-9249-8d7dabdb3fc4"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8"/>
 								</textElement>
@@ -558,10 +555,10 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="59" uuid="9dad3bf9-45dc-4def-a2a5-51a110b7a56d">
+					<jr:column width="59" uuid="db0a644c-6b48-4dad-8bc9-866191a8e8a7">
 						<jr:tableFooter style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="3" y="3" width="52" height="25" uuid="72d25b82-ce86-40ad-a97b-9eac9f908535"/>
+								<reportElement x="3" y="3" width="52" height="25" uuid="369138f6-ba9c-494a-9163-c2640f31264d"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8" isBold="true"/>
 								</textElement>
@@ -570,7 +567,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 2_CH" height="30">
 							<staticText>
-								<reportElement x="3" y="0" width="52" height="30" uuid="ef07890e-74e8-43de-ac17-a159347c854c"/>
+								<reportElement x="3" y="0" width="52" height="30" uuid="3d26f0fc-1daf-4451-ae95-131112d0e358"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -579,7 +576,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnHeader>
 						<jr:detailCell style="Table 2_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="3" y="0" width="52" height="30" uuid="a12112c2-74db-46a6-a5d7-b2342e310cc5"/>
+								<reportElement x="3" y="0" width="52" height="30" uuid="ba89fe8e-32b4-499d-aadd-72cb9de99571"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8"/>
 								</textElement>
@@ -590,25 +587,21 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 				</jr:table>
 			</componentElement>
 		</band>
-	</columnHeader>
-	<detail>
-		<band height="148" splitType="Stretch">
-			<property name="local_mesure_unitheight" value="pixel"/>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		<band height="149">
 			<componentElement>
-				<reportElement x="1" y="28" width="549" height="115" uuid="c19c91d2-293b-4b92-8771-0f7f42ad4aa4"/>
+				<reportElement x="1" y="28" width="549" height="115" uuid="1f42f11f-77e7-4c33-897b-7151e57fd2b5"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="dsTaxdtl" uuid="e267be97-c3a0-4763-81f5-13d7b6464ad6">
+					<datasetRun subDataset="dsTaxdtl" uuid="2585c678-5779-4ca6-a3ef-d90b86c8337e">
 						<datasetParameter name="GRN">
 							<datasetParameterExpression><![CDATA[$P{strTotGRNAmt}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="90" uuid="4e76e9e5-eebc-424c-b97e-eb7500752d6b">
+					<jr:column width="90" uuid="c342f6bb-4b39-4850-8577-9d8d587f25a7">
 						<jr:tableFooter style="Table 1_TD" height="30"/>
 						<jr:columnHeader style="Table 1_CH" height="30">
 							<staticText>
-								<reportElement x="6" y="0" width="80" height="30" uuid="c506510c-f45c-4792-b468-02d78512bd48"/>
+								<reportElement x="6" y="0" width="80" height="30" uuid="66753c12-aa90-4d18-8cef-0314bed07e54"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" size="10" isBold="true"/>
 								</textElement>
@@ -618,7 +611,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						<jr:columnFooter style="Table 1_TD" height="30"/>
 						<jr:detailCell style="Table 3_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="2" y="0" width="86" height="30" uuid="5fef7a57-1a8c-431d-af5f-b74362cfceaf"/>
+								<reportElement x="2" y="0" width="86" height="30" uuid="af506604-2c1d-46e6-a32b-74724d57bcb2"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="Serif" size="8" isBold="false"/>
 								</textElement>
@@ -626,11 +619,11 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="250" uuid="be076508-eac7-48b6-b957-c6debeb8c024">
+					<jr:column width="250" uuid="d7148b00-3724-438c-a689-3a20cc9160bd">
 						<jr:tableFooter style="Table 1_TD" height="30"/>
 						<jr:columnHeader style="Table 1_CH" height="30">
 							<staticText>
-								<reportElement x="3" y="0" width="247" height="30" uuid="3e8605dc-75c9-4dfd-b082-5e2d131a0fa6"/>
+								<reportElement x="3" y="0" width="247" height="30" uuid="1e0a2011-69e4-49e8-bb4b-0af787e62a09"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" size="10" isBold="true"/>
 								</textElement>
@@ -640,7 +633,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						<jr:columnFooter style="Table 1_TD" height="30"/>
 						<jr:detailCell style="Table 3_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="4" y="0" width="236" height="30" uuid="fc00c93b-8fc6-46d9-80e9-2412b61e5ea2"/>
+								<reportElement x="4" y="0" width="236" height="30" uuid="ee71108d-80a2-4b57-9e57-2a8aa9cbf61c"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="Serif" size="8" isBold="false"/>
 								</textElement>
@@ -648,11 +641,11 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="108" uuid="29ef9e3f-f9e8-4b39-9066-0aee0bce1eb8">
+					<jr:column width="108" uuid="a6f7fb93-cc51-47d7-b01f-595255108ef2">
 						<property name="local_mesure_unitheight" value="pixel"/>
 						<jr:tableFooter style="Table 1_TD" height="30">
 							<staticText>
-								<reportElement x="2" y="6" width="106" height="19" uuid="20082f67-fcef-40df-b7f1-b97d1e9d9b3b"/>
+								<reportElement x="2" y="6" width="106" height="19" uuid="c26d15f5-27da-45eb-bd92-58a42c65ed95"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -661,7 +654,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 1_CH" height="30">
 							<staticText>
-								<reportElement x="13" y="0" width="85" height="30" uuid="cd24298f-312a-4972-bc4c-798036d12c89"/>
+								<reportElement x="13" y="0" width="85" height="30" uuid="8cdb32bf-f750-42e8-9673-7be694a14d5d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" size="10" isBold="true"/>
 								</textElement>
@@ -670,7 +663,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnHeader>
 						<jr:columnFooter style="Table 1_TD" height="30">
 							<staticText>
-								<reportElement x="57" y="2" width="48" height="19" uuid="dd05d2a3-c218-401b-9095-4529567bb539"/>
+								<reportElement x="57" y="2" width="48" height="19" uuid="285fd13d-92eb-4a85-b78f-53f3a62b0be1"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -679,7 +672,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnFooter>
 						<jr:detailCell style="Table 3_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="18" y="0" width="85" height="30" uuid="f6c78e91-6431-4e0c-b059-dcb31291d787"/>
+								<reportElement x="18" y="0" width="85" height="30" uuid="a95827ea-0d65-4541-b529-1723376afaca"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8" isBold="false"/>
 								</textElement>
@@ -687,10 +680,10 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="99" uuid="8b4eb52a-ea0c-4f16-a1be-db1491251f7c">
+					<jr:column width="99" uuid="7868899a-e025-4316-8974-ba379199d2ab">
 						<jr:tableFooter style="Table 1_TD" height="30">
 							<textField pattern="#,##0.00#;(#,##0.00#-)">
-								<reportElement x="10" y="7" width="83" height="18" uuid="646e8320-5226-401f-b525-adae6a77068f"/>
+								<reportElement x="10" y="7" width="83" height="18" uuid="6f747a3a-b387-4317-9ee0-c1dd9a12bbb5"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" isBold="true"/>
 								</textElement>
@@ -699,7 +692,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:tableFooter>
 						<jr:columnHeader style="Table 1_CH" height="30">
 							<staticText>
-								<reportElement x="5" y="0" width="92" height="30" uuid="82412bf5-8bfc-4124-bf84-6ab2f41637e6"/>
+								<reportElement x="5" y="0" width="92" height="30" uuid="dd1121a0-c5c8-479b-afbe-7162b62685e2"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Serif" size="10" isBold="true"/>
 								</textElement>
@@ -708,7 +701,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnHeader>
 						<jr:columnFooter style="Table 1_TD" height="30">
 							<textField pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="6" y="1" width="91" height="29" uuid="94622ff1-93fc-4f75-928e-ccb49c5f3dd0"/>
+								<reportElement x="6" y="1" width="91" height="29" uuid="46954ec4-a98b-4ab1-9ed1-50d183f67b15"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8" isBold="true"/>
 								</textElement>
@@ -717,7 +710,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 						</jr:columnFooter>
 						<jr:detailCell style="Table 3_TD" height="30">
 							<textField isStretchWithOverflow="true" pattern="#,##0.00#;(#,##0.00#-)" isBlankWhenNull="true">
-								<reportElement x="5" y="0" width="92" height="30" uuid="f23a0532-4633-4fba-8e16-14a34f129067"/>
+								<reportElement x="5" y="0" width="92" height="30" uuid="fd188102-fe30-4802-a440-6f71621c60fb"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Serif" size="8" isBold="false"/>
 								</textElement>
@@ -728,7 +721,7 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 				</jr:table>
 			</componentElement>
 			<staticText>
-				<reportElement x="6" y="3" width="250" height="21" uuid="81bc447e-6831-44c2-bc85-41288c3ce9e6"/>
+				<reportElement x="6" y="3" width="250" height="21" uuid="96bac136-e1c2-4d48-8750-d0a174dba791"/>
 				<textElement>
 					<font fontName="Serif" size="11" isBold="true"/>
 				</textElement>
@@ -746,127 +739,127 @@ and a.strclientCode='044.001' and a.strClientCode='044.001' and c.strClientCode=
 			</line>
 		</band>
 	</columnFooter>
-	<pageFooter>
-		<band height="115" splitType="Stretch">
+	<lastPageFooter>
+		<band height="115">
 			<image hAlign="Center">
-				<reportElement x="357" y="23" width="146" height="50" uuid="aa64d3d1-c884-46d2-98c7-3366a98303c7"/>
+				<reportElement x="357" y="23" width="146" height="50" uuid="ec90efba-090c-4373-924b-e0bb9a607e91"/>
 			</image>
 			<textField isBlankWhenNull="true">
-				<reportElement x="214" y="5" width="143" height="15" uuid="f2fc8d27-5d47-49e4-b8c7-323c94cf8c89"/>
+				<reportElement x="214" y="5" width="143" height="15" uuid="22188a07-74cc-4398-a47d-a4f49116d0f5"/>
 				<textElement>
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{strCompanyName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="7" y="100" width="61" height="15" uuid="342190bd-7d98-4ae4-a6e2-6a5e477fcd8a"/>
+				<reportElement x="7" y="100" width="61" height="15" uuid="7ef52abc-7193-41ff-b90d-98c45f258e14"/>
 				<textElement>
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Created on :]]></text>
 			</staticText>
 			<line>
-				<reportElement x="99" y="74" width="1" height="20" uuid="b16832ae-45f5-46fa-824c-b8a6f9f31a51"/>
+				<reportElement x="99" y="74" width="1" height="20" uuid="e9eabe75-6d4f-4694-bc8b-88d0a50131c7"/>
 			</line>
 			<staticText>
-				<reportElement x="296" y="100" width="20" height="15" uuid="f031a3c0-d59e-467a-86ba-66e0a17a65de"/>
+				<reportElement x="296" y="100" width="20" height="15" uuid="d4a2d96b-fe06-40c1-afa1-47711f1cbd04"/>
 				<textElement>
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[By :]]></text>
 			</staticText>
 			<image hAlign="Center">
-				<reportElement x="218" y="24" width="108" height="50" uuid="cd0a2e5d-49b3-4d98-8e60-d503c514b306"/>
+				<reportElement x="218" y="24" width="108" height="50" uuid="2f18b252-e81e-4086-ab18-13e98ff34dfa"/>
 			</image>
 			<staticText>
-				<reportElement x="12" y="76" width="78" height="16" uuid="b7213ceb-306b-43c6-a652-b52500ae1546"/>
+				<reportElement x="12" y="76" width="78" height="16" uuid="eb81198d-563c-4ee5-a756-789bb388ac68"/>
 				<textElement>
 					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Stamp and Sign]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" x="218" y="74" width="108" height="22" uuid="579e367b-bde2-4bc8-ac3b-580e8943e892"/>
+				<reportElement stretchType="RelativeToBandHeight" x="218" y="74" width="108" height="22" uuid="5184d6f3-04ff-4505-9b50-0bcc74c4875b"/>
 				<textElement textAlignment="Center">
 					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Prepared by]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="357" y="74" width="146" height="20" uuid="c5334293-6438-41d3-ad15-70b3014634e3"/>
+				<reportElement x="357" y="74" width="146" height="20" uuid="781cffeb-090b-4fa5-90e2-bbb73d3c8f04"/>
 				<textElement textAlignment="Center">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Authorised Signatory]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="101" y="76" width="69" height="16" uuid="29ee3785-a4ab-40a5-9a14-b1eb39c57b24"/>
+				<reportElement x="101" y="76" width="69" height="16" uuid="d9a63373-1cde-4547-8f50-d5d8443ec3dc"/>
 				<textElement>
 					<font fontName="Serif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[By Vendor]]></text>
 			</staticText>
 			<textField evaluationTime="Report">
-				<reportElement x="503" y="100" width="50" height="15" uuid="88354e70-be51-40a0-9ae1-937f5c7bee9c"/>
+				<reportElement x="503" y="100" width="50" height="15" uuid="4bd729ff-df64-4c8d-aa17-cb0ad3487ee8"/>
 				<textElement textAlignment="Left">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="183" y="5" width="31" height="15" uuid="c9120e55-b66b-43b9-bac6-d884f873057a"/>
+				<reportElement x="183" y="5" width="31" height="15" uuid="a9048d16-ec86-406b-a644-df37b8cd3868"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[For :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="166" y="100" width="24" height="15" uuid="a84020e0-9426-4587-b750-ef37d4b1f0ff"/>
+				<reportElement x="166" y="100" width="24" height="15" uuid="4de175ca-b108-4566-a2bd-5224b9cdb62d"/>
 				<textElement>
 					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[AT :]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="8" y="74" width="171" height="21" uuid="791e5468-085f-41a0-a16a-a6eac8499035"/>
+				<reportElement x="8" y="74" width="171" height="21" uuid="ad196833-8f15-486f-a649-0bedd372eedb"/>
 			</rectangle>
 			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="70" y="100" width="90" height="15" uuid="bf12c38d-0540-4a88-bd42-9861b90fc2b9"/>
+				<reportElement x="70" y="100" width="90" height="15" uuid="4a3fab49-b295-4c82-8849-98c254b0fa45"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="12" y="6" width="170" height="22" uuid="ba383ac8-37ee-4593-9599-08a0ca06a972"/>
+				<reportElement x="12" y="6" width="170" height="22" uuid="839fe2d0-7841-4032-ba02-33e83f259130"/>
 				<textElement>
 					<font fontName="Serif" size="8"/>
 				</textElement>
 				<text><![CDATA[We acknoledge the terms and condition and accpet the above purchase order]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="453" y="100" width="50" height="15" uuid="8eceea6a-74e4-44da-9231-63599ce316ad"/>
+				<reportElement x="453" y="100" width="50" height="15" uuid="f7af81f4-834b-47fa-857c-313541ab6e2c"/>
 				<textElement textAlignment="Right">
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="HH:mm">
-				<reportElement x="190" y="100" width="56" height="15" uuid="ef830073-fc2e-49e2-8b9b-a0e417ccced5"/>
+				<reportElement x="190" y="100" width="56" height="15" uuid="67a522f3-441f-49d3-8ec7-21dd72b21b9b"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="326" y="100" width="100" height="15" uuid="f68b67d3-5256-43c4-9e46-c94a7d53b908"/>
+				<reportElement x="326" y="100" width="100" height="15" uuid="c8497653-74ab-4b2d-8013-2034d01f5c77"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{strUserCode}]]></textFieldExpression>
 			</textField>
 		</band>
-	</pageFooter>
+	</lastPageFooter>
 	<summary>
 		<band height="4" splitType="Stretch"/>
 	</summary>

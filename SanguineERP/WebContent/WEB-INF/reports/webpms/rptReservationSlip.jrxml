@@ -133,26 +133,12 @@
 				</textElement>
 				<text><![CDATA[Room No             :]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="350" y="52" width="100" height="20" uuid="1967967c-e4af-4685-a6cb-b06898270bba"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[Room Type          :]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="460" y="30" width="71" height="20" uuid="f35b0eb8-884f-4c52-ba8f-b0bf1cfb1669"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pRoomNo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="460" y="50" width="71" height="20" uuid="205d1a76-f8ec-4d11-821a-71cf05e33627"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{proomType}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="350" y="4" width="100" height="20" uuid="17ab3bf9-8e2e-4aa3-a050-63745da0ecc7">
@@ -203,7 +189,7 @@
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Homestel Addr  :]]></text>
+				<text><![CDATA[Guest Address  :]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="106" y="30" width="186" height="20" uuid="19bb0a9e-b50a-4f98-b1b5-a0646b0a5b87"/>
@@ -241,7 +227,7 @@
 				<textFieldExpression><![CDATA[$P{pstrMobileNo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="350" y="76" width="100" height="20" uuid="928ed994-d8f4-4623-9588-5589db94ba91">
+				<reportElement x="350" y="54" width="100" height="20" uuid="928ed994-d8f4-4623-9588-5589db94ba91">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -250,7 +236,7 @@
 				<text><![CDATA[Arrival Date          :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="350" y="100" width="100" height="20" uuid="8e92e819-6ff3-42f1-beca-4cc612ed6796">
+				<reportElement x="350" y="81" width="100" height="20" uuid="8e92e819-6ff3-42f1-beca-4cc612ed6796">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -259,7 +245,7 @@
 				<text><![CDATA[Departure Date    :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="460" y="76" width="88" height="20" uuid="92361d83-1a9c-45e7-a241-54d6f6285568">
+				<reportElement x="460" y="55" width="88" height="20" uuid="92361d83-1a9c-45e7-a241-54d6f6285568">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -268,7 +254,7 @@
 				<textFieldExpression><![CDATA[$P{pArrivalDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="460" y="100" width="88" height="20" uuid="22e5752a-32a6-460f-956c-64a27f7eac8a">
+				<reportElement x="460" y="82" width="88" height="20" uuid="22e5752a-32a6-460f-956c-64a27f7eac8a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -289,6 +275,20 @@
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pDaysForAccomodation}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="350" y="107" width="100" height="20" uuid="4ec84fe8-c939-40ea-aa6e-dace71156bd8"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Room Type          :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="460" y="108" width="71" height="20" uuid="101d0a48-87b9-4d9f-a83a-55781e2a14ab"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{proomType}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

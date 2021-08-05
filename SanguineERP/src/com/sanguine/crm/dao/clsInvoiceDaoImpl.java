@@ -120,9 +120,9 @@ public class clsInvoiceDaoImpl implements clsInvoiceDao {
 		if (!strlocCode.equals("")) {
 			sql = sql + " and a.strLocCode='" + strlocCode + "' ";
 		}
-		if (!dtFullFilled.equals("")) {
+		/*if (!dtFullFilled.equals("")) {
 			sql = sql + " and a.dteFulmtDate='" + dtFullFilled + "' ";
-		}
+		}*/
 
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		List list = query.list();

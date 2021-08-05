@@ -1328,7 +1328,7 @@ public class clsReservationController {
 					//New for Reservation
 					String sqlReservation="SELECT d.strReservationNo,b.strRoomTypeDesc, f.strRoomDesc, e.strFirstName,e.strMiddleName,e.strLastName, "
 										+"  DATE_FORMAT(d.dteReservationDate,'%d-%m-%Y'), DATE_FORMAT(d.dteArrivalDate,'%d-%m-%Y'), "
-										+"  DATE_FORMAT(d.dteDepartureDate,'%d-%m-%Y'), IFNULL(e.lngMobileNo,0), IFNULL(e.strAddressOfc,''), IFNULL(e.strCityOfc,''), IFNULL(e.strStateOfc,''), IFNULL(e.strCountryOfc,''), IFNULL(e.intPinCodeOfc,''), b.dblRoomTerrif, "
+										+"  DATE_FORMAT(d.dteDepartureDate,'%d-%m-%Y'), IFNULL(e.lngMobileNo,0), IFNULL(e.strAddressLocal,''), IFNULL(e.strCityLocal,''), IFNULL(e.strStateLocal,''), IFNULL(e.strCountryLocal,''), IFNULL(e.intPinCodeLocal,''), b.dblRoomTerrif, "
 										+" SUM(d.intNoOfAdults +d.intNoOfChild),h.dblRoomRate "
 										+" FROM tblroomtypemaster b, tblreservationhd d "
 										+" LEFT OUTER "
@@ -1366,19 +1366,19 @@ public class clsReservationController {
 							String guestCompanyAddr= " ";
 							if(!arrObjRoomData[10].toString().equalsIgnoreCase(""))
 							{
-								guestCompanyAddr="," + arrObjRoomData[10].toString();
+								guestCompanyAddr= arrObjRoomData[10].toString();
 							}
-							else if(!arrObjRoomData[11].toString().equalsIgnoreCase(""))
+							if(!arrObjRoomData[11].toString().equalsIgnoreCase(""))
 							{
-								guestCompanyAddr="," + arrObjRoomData[11].toString();
+								guestCompanyAddr=guestCompanyAddr+ "," + arrObjRoomData[11].toString();
 							}
-							else if(!arrObjRoomData[12].toString().equalsIgnoreCase(""))
+							if(!arrObjRoomData[12].toString().equalsIgnoreCase(""))
 							{
-								guestCompanyAddr="," + arrObjRoomData[13].toString();
+								guestCompanyAddr=guestCompanyAddr + "," + arrObjRoomData[13].toString();
 							}
-							else if(!arrObjRoomData[14].toString().equalsIgnoreCase("0"))
+							if(!arrObjRoomData[14].toString().equalsIgnoreCase("0"))
 							{
-								guestCompanyAddr="," + arrObjRoomData[14].toString();
+								guestCompanyAddr=guestCompanyAddr + "," + arrObjRoomData[14].toString();
 							}
 							else
 							{
